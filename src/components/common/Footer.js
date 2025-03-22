@@ -1,17 +1,15 @@
 import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import FacebookIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import TwitterIcon from "@mui/icons-material/X";
-import Test from "./Test";
 import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
     <footer className="footer">
       <div className="introduce">
-        <img src="/image/dora.png" />
+        <img src="/image/default_img.png" />
         <div className="link-list">
           <div className="contact">
             <div>
@@ -69,7 +67,6 @@ export default function Footer() {
               <br />
               <Link to="#">이용 약관</Link>
             </div>
-
             <Stack
               direction="row"
               spacing={1}
