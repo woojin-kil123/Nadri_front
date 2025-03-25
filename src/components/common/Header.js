@@ -1,19 +1,19 @@
 import "./default.css";
 import { Link } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
-import { use, useState } from "react";
+import { useState } from "react";
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import DirectionsIcon from "@mui/icons-material/Directions";
+import MessageIcon from "@mui/icons-material/Message";
 import Box from "@mui/material/Box";
 import Badge from "@mui/material/Badge";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import MoreIcon from "@mui/icons-material/MoreVert";
+import AccountMenu from "./AccountMenu";
 
 const Header = () => {
   const [loginId, setLoginId] = useState("user01");
@@ -58,7 +58,7 @@ const HeaderLink = (props) => {
       {loginId ? (
         <>
           <li>
-            <Icon></Icon>
+            <AccountMenu />
           </li>
         </>
       ) : (
@@ -99,18 +99,14 @@ const CustomizedInputBase = () => {
   );
 };
 const Icon = () => {
-  const [anchorEl, setAnchorEl] = useState(null);
   const menuId = "primary-search-account-menu";
-  const handleProfileMenuOpen = (e) => {
-    setAnchorEl(e.currentTarget);
-  };
 
   return (
     <>
       <Box sx={{ display: { xs: "none", md: "flex" } }}>
         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
           <Badge badgeContent={4} color="error">
-            <MailIcon />
+            <MessageIcon />
           </Badge>
         </IconButton>
         <IconButton
@@ -128,7 +124,6 @@ const Icon = () => {
           aria-label="account of current user"
           aria-controls={menuId}
           aria-haspopup="true"
-          onClick={handleProfileMenuOpen}
           color="inherit"
         >
           <AccountCircle />
