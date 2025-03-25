@@ -8,8 +8,8 @@ const PlannerFrm = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const markerPosition = {
-    lat: 33.450701,
-    lng: 126.570667,
+    lat: 37.5341338,
+    lng: 126.897333254,
   };
   const mapRef = useRef(null);
   const map = mapRef.current;
@@ -23,8 +23,8 @@ const PlannerFrm = () => {
         ref={mapRef}
         center={{
           // 지도의 중심좌표
-          lat: 33.451475,
-          lng: 126.570528,
+          lat: 37.5341338,
+          lng: 126.897333254,
         }}
         style={{
           // 지도의 크기
@@ -79,7 +79,6 @@ const PlannerFrm = () => {
                 </div>
               </div>
             </div>
-            ;
           </CustomOverlayMap>
         )}
       </Map>

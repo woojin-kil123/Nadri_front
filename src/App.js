@@ -14,6 +14,7 @@ function App() {
       <div className="content">
         <Routes>
           <Route path="/" element={<Main />} />
+          <Route path="/planner" element={<PlannerFrm />} />
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
           <Route path="/join2" element={<Join2 />} />
