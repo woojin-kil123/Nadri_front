@@ -2,6 +2,7 @@ import { AccountCircle } from "@mui/icons-material";
 import { Menu, MenuItem } from "@mui/material";
 
 const Dropdown = (props) => {
+  const className = props.className;
   const id = props.id;
   const menus = props.menus;
   const anchorEl = props.anchorEl;
@@ -10,13 +11,13 @@ const Dropdown = (props) => {
 
   const close = (e) => {
     e.stopPropagation();
-    console.log("클로즈작동");
     console.log(anchorEl, setAnchorEl);
     setAnchorEl(null);
   };
   console.log(anchorEl);
   return (
     <Menu
+      className={className}
       anchorEl={anchorEl}
       id={id}
       open={open}

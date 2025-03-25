@@ -113,6 +113,7 @@ const HeaderLink = (props) => {
               >
                 <NotificationsIcon sx={{ width: 32, height: 32 }} />
                 <Dropdown
+                  className={"alarm"}
                   id={"alarm-menu"}
                   menus={alarmMenu}
                   anchorEl={alarmEl}
