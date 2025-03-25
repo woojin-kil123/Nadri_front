@@ -5,6 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import Login from "./components/Member/Login";
 import Join from "./components/Member/Join";
 import Join2 from "./components/Member/Join2";
+import PlannerFrm from "./components/planner/PlannerFrm";
 
 function App() {
   return (

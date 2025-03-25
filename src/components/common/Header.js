@@ -43,7 +43,7 @@ const MainNavi = () => {
     <nav className="nav">
       <ul>
         <li>
-          <Link to="/board/list">플래너</Link>
+          <Link to="/planner">플래너</Link>
         </li>
         <li>
           <Link to="#">여행 정보</Link>
@@ -165,7 +165,14 @@ const CustomizedInputBase = () => {
         placeholder="검색"
         inputProps={{ "aria-label": "search google maps" }}
       />
-      <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+      <IconButton
+        type="button"
+        sx={{ p: "10px" }}
+        aria-label="search"
+        onClick={() => {
+          console.log("hi");
+        }}
+      >
         <SearchIcon />
       </IconButton>
       <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
