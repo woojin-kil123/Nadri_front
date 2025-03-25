@@ -23,7 +23,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
 
 const Header = () => {
-  const [loginId, setLoginId] = useState("user01");
+  const [loginId, setLoginId] = useState("");
   return (
     <header className="header">
       <div>
@@ -135,10 +135,7 @@ const HeaderLink = (props) => {
       ) : (
         <>
           <li>
-            <Link to="/login">로그인</Link>
-          </li>
-          <li>
-            <Link to="/join">회원가입</Link>
+            <Link to="/login">로그인 / 회원가입</Link>
           </li>
         </>
       )}
