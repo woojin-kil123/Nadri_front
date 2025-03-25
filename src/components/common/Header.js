@@ -23,7 +23,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
 
 const Header = () => {
-  const [loginId, setLoginId] = useState("");
+  const [loginId, setLoginId] = useState("123");
   return (
     <header className="header">
       <div>
@@ -80,13 +80,14 @@ const HeaderLink = (props) => {
       icon: <TagFacesIcon />,
     },
   ];
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [accountEl, setAccountEl] = useState(null);
+  const [alarmEl, setAlarmEl] = useState(null);
 
-  const accountOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  const accountOpen = (e) => {
+    setAccountEl(e.currentTarget);
   };
-  const accountClose = () => {
-    setAnchorEl(null);
+  const alarmOpen = (e) => {
+    setAlarmEl(e.currentTarget);
   };
   return (
     <ul className="user-menu">
@@ -103,29 +104,37 @@ const HeaderLink = (props) => {
               <Typography sx={{ minWidth: 100 }}>Contact</Typography>
               <Typography sx={{ minWidth: 100 }}>Profile</Typography>
               <IconButton
+                onClick={alarmOpen}
                 size="small"
                 sx={{ ml: 2 }}
-                aria-controls={anchorEl ? "alarm-menu" : undefined}
+                aria-controls={alarmEl ? "account-menu" : undefined}
                 aria-haspopup="true"
-                aria-expanded={anchorEl ? "true" : undefined}
+                aria-expanded={alarmEl ? "true" : undefined}
               >
                 <NotificationsIcon sx={{ width: 32, height: 32 }} />
+                <Dropdown
+                  id={"alarm-menu"}
+                  menus={alarmMenu}
+                  anchorEl={alarmEl}
+                  setAnchorEl={setAlarmEl}
+                ></Dropdown>
               </IconButton>
+
               {/*<Tooltip title="Account settings"> */}
               <IconButton
                 onClick={accountOpen}
                 size="small"
                 sx={{ ml: 2 }}
-                aria-controls={anchorEl ? "account-menu" : undefined}
+                aria-controls={accountEl ? "account-menu" : undefined}
                 aria-haspopup="true"
-                aria-expanded={anchorEl ? "true" : undefined}
+                aria-expanded={accountEl ? "true" : undefined}
               >
                 <AccountCircle sx={{ width: 32, height: 32 }} />
                 <Dropdown
                   id={"account-menu"}
                   menus={accountMenu}
-                  anchorEl={anchorEl}
-                  setAnchorEl={setAnchorEl}
+                  anchorEl={accountEl}
+                  setAnchorEl={setAccountEl}
                 ></Dropdown>
               </IconButton>
               {/* </Tooltip>*/}
@@ -164,92 +173,5 @@ const CustomizedInputBase = () => {
         <DirectionsIcon />
       </IconButton>
     </Paper>
-  );
-};
-const Icon = () => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  return (
-    <Fragment>
-      <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        <Typography sx={{ minWidth: 100 }}>Contact</Typography>
-        <Typography sx={{ minWidth: 100 }}>Profile</Typography>
-        <Tooltip title="Account settings">
-          <IconButton
-            onClick={handleClick}
-            size="small"
-            sx={{ ml: 2 }}
-            aria-controls={open ? "account-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-          >
-            <AccountCircle sx={{ width: 32, height: 32 }} />
-          </IconButton>
-        </Tooltip>
-      </Box>
-      <Menu
-        anchorEl={anchorEl}
-        id="account-menu"
-        open={open}
-        onClose={handleClose}
-        onClick={handleClose}
-        slotProps={{
-          paper: {
-            elevation: 0,
-            sx: {
-              overflow: "visible",
-              filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-              mt: 1.5,
-              "& .MuiAvatar-root": {
-                width: 32,
-                height: 32,
-                ml: -0.5,
-                mr: 1,
-              },
-              "&::before": {
-                content: '""',
-                display: "block",
-                position: "absolute",
-                top: 0,
-                right: 14,
-                width: 10,
-                height: 10,
-                bgcolor: "background.paper",
-                transform: "translateY(-50%) rotate(45deg)",
-                zIndex: 0,
-              },
-            },
-          },
-        }}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-      >
-        <MenuItem onClick={handleClose}>
-          <InfoIcon /> 내 정보
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <AccountCircle /> My account
-        </MenuItem>
-        <MenuItem onClick={handleClose}>Add another account</MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          Logout
-        </MenuItem>
-      </Menu>
-    </Fragment>
   );
 };
