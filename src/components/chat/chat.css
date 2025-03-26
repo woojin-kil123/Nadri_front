@@ -1,0 +1,31 @@
+.chat-modal > div {
+  background-color: aliceblue;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.chat-modal > .chat-list {
+  width: 30%;
+}
+.chat-modal > .chat-content {
+  width: 70%;
+  gap: 20px;
+}
+.chat-content > .content-top {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 40px;
+  margin-top: 10px;
+  border-bottom: 1px solid var(--gray6);
+}
+.chat-content > .content-bottom {
+  display: flex;
+  justify-content: center;
+}
+.chat-content > .content-middle {
+  border-radius: 20px;
+  align-self: center;
+  width: 90%;
+  min-height: 80%;
+}

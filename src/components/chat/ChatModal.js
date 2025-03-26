@@ -1,4 +1,5 @@
 import React from "react";
+import "./chat.css";
 import { Modal, Box, Typography, IconButton, Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useRecoilValue } from "recoil";
@@ -17,48 +18,44 @@ const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
       open={Boolean(anchorEl)}
       onClose={close}
       aria-labelledby="chat-modal-title"
+      sx={{ display: "flex" }}
     >
       <Box
+        className="chat-modal"
         sx={{
           position: "absolute",
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 600,
-          bgcolor: "background.paper",
-          boxShadow: 24,
+          width: 1200,
+          height: 800,
+          bgcolor: "transparent",
           p: 4,
           borderRadius: 2,
+          display: "flex",
+          gap: "20px",
         }}
       >
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          borderBottom={1}
-          pb={2}
-        >
-          <Typography id="chat-modal-title" variant="h6">
-            {chatTitle}
-          </Typography>
-          <IconButton onClick={close}>
-            <CloseIcon />
-          </IconButton>
-        </Box>
-        <Box sx={{ maxHeight: 400, overflowY: "auto", mt: 2 }}>
-          자식컴포넌트
-        </Box>
-        <Box
-          display="flex"
-          justifyContent="flex-end"
-          borderTop={1}
-          pt={2}
-          mt={2}
-        >
-          <Button variant="contained" color="success" onClick={close}>
-            닫기
-          </Button>
-        </Box>
+        <div className="chat-list">
+          <div className="content-top">
+            <h2>채팅목록</h2>
+          </div>
+          <div className="content-middle"></div>
+          <div className="content-bottom"></div>
+        </div>
+        <div></div>
+        <div className="chat-content">
+          <div className="content-top">
+            <h2>채팅내용</h2>
+            <IconButton onClick={close}>
+              <CloseIcon />
+            </IconButton>
+          </div>
+          <div className="content-middle"></div>
+          <div className="content-bottom">
+            <input placeholder="텍스트 입력" />
+          </div>
+        </div>
       </Box>
     </Modal>
   );
