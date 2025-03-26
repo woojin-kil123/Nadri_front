@@ -1,7 +1,7 @@
 import "./default.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import Divider from "@mui/material/Divider";
@@ -10,10 +10,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import DirectionsIcon from "@mui/icons-material/Directions";
 import Box from "@mui/material/Box";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import Logout from "@mui/icons-material/Logout";
 import InfoIcon from "@mui/icons-material/Info";
@@ -21,9 +17,13 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import Dropdown from "../utils/Dropdown";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
+import { DropdownItem } from "../utils/metaSet";
+import ChatIcon from "@mui/icons-material/Chat";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import ChatModal from "../chat/ChatModal";
 
 const Header = () => {
-  const [loginId, setLoginId] = useState("123");
+  const [loginId, setLoginId] = useState("");
   return (
     <header className="header">
       <div>
@@ -60,28 +60,34 @@ const MainNavi = () => {
 };
 const HeaderLink = (props) => {
   const loginId = props.loginId;
+  const navigate = useNavigate();
   const accountMenu = [
-    {
-      name: "내 정보",
-      icon: <InfoIcon />,
-    },
-    {
-      name: "나의 일정",
-      icon: <CalendarTodayIcon />,
-    },
+    new DropdownItem(<InfoIcon />, "내 정보", () => {
+      navigate("/mypage");
+    }),
+    new DropdownItem(<CalendarTodayIcon />, "나의 일정", () => {
+      navigate("/myplan");
+    }),
   ];
   const alarmMenu = [
-    {
-      name: "안녕하세요",
-      icon: <TagFacesIcon />,
-    },
-    {
-      name: "잘가요",
-      icon: <TagFacesIcon />,
-    },
+    new DropdownItem(<TagFacesIcon />, "안녕하세요", null),
+    new DropdownItem(<TagFacesIcon />, "잘가요", null),
   ];
+  const chatModalOpen = (e) => {
+    setChatModalEl(e.currentTarget);
+  };
+  const chatMenu = [
+    new DropdownItem(
+      <ChatBubbleOutlineIcon />,
+      "3건의 새로운 메세지가 있습니다.",
+      chatModalOpen
+    ),
+  ];
+
   const [accountEl, setAccountEl] = useState(null);
   const [alarmEl, setAlarmEl] = useState(null);
+  const [chatEl, setChatEl] = useState(null);
+  const [chatModalEl, setChatModalEl] = useState(null);
 
   const accountOpen = (e) => {
     setAccountEl(e.currentTarget);
@@ -89,10 +95,14 @@ const HeaderLink = (props) => {
   const alarmOpen = (e) => {
     setAlarmEl(e.currentTarget);
   };
+  const chatOpen = (e) => {
+    setChatEl(e.currentTarget);
+  };
   return (
     <ul className="user-menu">
       {loginId ? (
         <>
+          <ChatModal anchorEl={chatModalEl} setAnchorEl={setChatModalEl} />
           <li>
             <Box
               sx={{
@@ -101,8 +111,23 @@ const HeaderLink = (props) => {
                 textAlign: "center",
               }}
             >
-              <Typography sx={{ minWidth: 100 }}>Contact</Typography>
-              <Typography sx={{ minWidth: 100 }}>Profile</Typography>
+              <IconButton
+                onClick={chatOpen}
+                size="small"
+                sx={{ ml: 2 }}
+                aria-controls={chatEl ? "account-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={chatEl ? "true" : undefined}
+              >
+                <ChatIcon sx={{ width: 32, height: 32 }} />
+                <Dropdown
+                  className={"alarm"}
+                  id={"alarm-menu"}
+                  menus={chatMenu}
+                  anchorEl={chatEl}
+                  setAnchorEl={setChatEl}
+                ></Dropdown>
+              </IconButton>
               <IconButton
                 onClick={alarmOpen}
                 size="small"
@@ -120,7 +145,6 @@ const HeaderLink = (props) => {
                   setAnchorEl={setAlarmEl}
                 ></Dropdown>
               </IconButton>
-
               {/*<Tooltip title="Account settings"> */}
               <IconButton
                 onClick={accountOpen}
