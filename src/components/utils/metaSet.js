@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
 
 class DropdownItem {
-  constructor(icon, name, path) {
+  constructor(icon, name, clickFunc) {
     this.icon = icon;
     this.name = name;
-    this.path = path;
+    this.clickFunc = clickFunc;
   }
 }
 

@@ -11,7 +11,6 @@ const Dropdown = (props) => {
 
   const close = (e) => {
     e.stopPropagation();
-    console.log(anchorEl, setAnchorEl);
     setAnchorEl(null);
   };
   console.log(anchorEl);
@@ -56,7 +55,7 @@ const Dropdown = (props) => {
     >
       {menus.map((menu, i) => {
         return (
-          <MenuItem key={"menuitem-" + i} onClick={close}>
+          <MenuItem key={"menuitem-" + i} onClick={menu.clickFunc}>
             {menu.icon}
             {menu.name}
           </MenuItem>

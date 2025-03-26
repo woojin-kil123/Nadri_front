@@ -2,9 +2,9 @@ import Footer from "./components/common/Footer";
 import Header from "./components/common/Header";
 import Main from "./components/common/Main";
 import { Route, Routes } from "react-router-dom";
-import Login from "./components/Member/Login";
-import Join from "./components/Member/Join";
-import Join2 from "./components/Member/Join2";
+import Login from "./components/member/Login";
+import Join from "./components/member/Join";
+import Join2 from "./components/member/Join2";
 import PlannerFrm from "./components/planner/PlannerFrm";
 
 function App() {
