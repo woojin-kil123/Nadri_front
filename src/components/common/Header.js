@@ -22,6 +22,8 @@ import ChatIcon from "@mui/icons-material/Chat";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ChatModal from "../chat/ChatModal";
 import { Map } from "@mui/icons-material";
+import { useRecoilState } from "recoil";
+import { isPlannerState } from "../utils/RecoilData";
 
 const Header = () => {
   const [loginId, setLoginId] = useState("");

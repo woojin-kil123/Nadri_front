@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
 import { CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
 import "./planner.css";
-import { Close } from "@mui/icons-material";
+import { Close, Directions, Search } from "@mui/icons-material";
+import { Divider, IconButton, InputBase, Menu, Paper } from "@mui/material";
 
 const PlannerFrm = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,9 +21,40 @@ const PlannerFrm = () => {
     <div className="all-wrap">
       <div className="side-wrap">
         <div className="result-wrap">
-          <div className="search-wrap"></div>
-          <div className="filter-wrap"></div>
-          <div className="spot-wrap"></div>
+          <div className="search-wrap">
+            <CustomizedInputBase />
+          </div>
+          <div className="filter-wrap">
+            <div>숙소</div>
+            <div>식당</div>
+            <div>즐길거리</div>
+          </div>
+          <div className="sort-wrap">
+            <select>
+              <option>거리순</option>
+              <option>리뷰많은순</option>
+              <option>이름순</option>
+            </select>
+          </div>
+          <div className="spot-wrap">
+            <div className="spot-item">
+              <div className="spot-img">
+                <img alt="테스트" />
+              </div>
+              <div className="spot-title">
+                <span>플라워랜드</span>
+                <span>식당</span>
+              </div>
+              <div className="spot-address">대전광역시 중구 사정공원로 70</div>
+              <div className="spot-review">
+                <span>리뷰</span>
+                <span>23</span>
+              </div>
+              <div className="spot-btn">
+                <button>선택</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       {planWindow ? (
@@ -57,7 +89,7 @@ const PlannerFrm = () => {
           style={{
             // 지도의 크기
             width: "100%",
-            height: "800px",
+            height: "100%",
           }}
           level={3} // 지도의 확대 레벨
         >
@@ -114,6 +146,34 @@ const PlannerFrm = () => {
         </Map>
       </div>
     </div>
+  );
+};
+
+const CustomizedInputBase = () => {
+  return (
+    <Paper
+      component="form"
+      sx={{ margin: "10px", display: "flex", alignItems: "center" }}
+    >
+      <IconButton sx={{ p: "10px" }} aria-label="menu">
+        <Menu />
+      </IconButton>
+      <InputBase
+        sx={{ ml: 1, flex: 1, fontSize: "12px" }}
+        placeholder="여행지, 즐길거리 등"
+        inputProps={{ "aria-label": "search google maps" }}
+      />
+      <IconButton
+        type="button"
+        sx={{ p: "10px" }}
+        aria-label="search"
+        onClick={() => {
+          console.log("hi");
+        }}
+      >
+        <Search />
+      </IconButton>
+    </Paper>
   );
 };
 
