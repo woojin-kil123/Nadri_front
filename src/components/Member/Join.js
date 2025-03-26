@@ -50,7 +50,7 @@ const Join = () => {
           </div>
         </form>
 
-        <Link to="/Join2" className="btn-primary lg">
+        <Link to="/join2" className="btn-primary lg">
           다음
         </Link>
       </div>
