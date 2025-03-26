@@ -4,4 +4,13 @@
   margin: 0 auto;
   display: flex;
   align-items: center;
+  margin-left: 200px;
+}
+
+.nav-wrap a {
+  color: var(--main2);
+}
+
+.wirte-btn {
+  justify-items: right;
 }
