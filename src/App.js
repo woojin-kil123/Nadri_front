@@ -7,6 +7,7 @@ import Join from "./components/Member/Join";
 import Join2 from "./components/Member/Join2";
 import RePw from "./components/Member/RePw";
 import RePw2 from "./components/Member/RePw2";
+import PlannerFrm from "./components/planner/PlannerFrm";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <div className="content">
         <Routes>
           <Route path="/" element={<Main />} />
+          <Route path="/planner" element={<PlannerFrm />} />
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
           <Route path="/join2" element={<Join2 />} />

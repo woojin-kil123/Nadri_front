@@ -12,3 +12,5 @@ npm install @mui/icons-material @mui/material @emotion/styled @emotion/react
 npm install react-quill
 npm install quill-image-resize-module-react
 
+신종인 2025-03-25
+npm install react-kakao-maps-sdk

@@ -1,22 +1,29 @@
 import "./default.css";
 import { Link } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import DirectionsIcon from "@mui/icons-material/Directions";
-import MessageIcon from "@mui/icons-material/Message";
 import Box from "@mui/material/Box";
-import Badge from "@mui/material/Badge";
 import AccountCircle from "@mui/icons-material/AccountCircle";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import Typography from "@mui/material/Typography";
+import Tooltip from "@mui/material/Tooltip";
+import Logout from "@mui/icons-material/Logout";
+import InfoIcon from "@mui/icons-material/Info";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import Dropdown from "../utils/Dropdown";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import AccountMenu from "./AccountMenu";
+import TagFacesIcon from "@mui/icons-material/TagFaces";
 
 const Header = () => {
-  const [loginId, setLoginId] = useState("");
+  const [loginId, setLoginId] = useState("123");
   return (
     <header className="header">
       <div>
@@ -36,7 +43,7 @@ const MainNavi = () => {
     <nav className="nav">
       <ul>
         <li>
-          <Link to="/board/list">플래너</Link>
+          <Link to="/planner">플래너</Link>
         </li>
         <li>
           <Link to="#">여행 정보</Link>
@@ -53,12 +60,86 @@ const MainNavi = () => {
 };
 const HeaderLink = (props) => {
   const loginId = props.loginId;
+  const accountMenu = [
+    {
+      name: "내 정보",
+      icon: <InfoIcon />,
+    },
+    {
+      name: "나의 일정",
+      icon: <CalendarTodayIcon />,
+    },
+  ];
+  const alarmMenu = [
+    {
+      name: "안녕하세요",
+      icon: <TagFacesIcon />,
+    },
+    {
+      name: "잘가요",
+      icon: <TagFacesIcon />,
+    },
+  ];
+  const [accountEl, setAccountEl] = useState(null);
+  const [alarmEl, setAlarmEl] = useState(null);
+
+  const accountOpen = (e) => {
+    setAccountEl(e.currentTarget);
+  };
+  const alarmOpen = (e) => {
+    setAlarmEl(e.currentTarget);
+  };
   return (
     <ul className="user-menu">
       {loginId ? (
         <>
           <li>
-            <AccountMenu />
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                textAlign: "center",
+              }}
+            >
+              <Typography sx={{ minWidth: 100 }}>Contact</Typography>
+              <Typography sx={{ minWidth: 100 }}>Profile</Typography>
+              <IconButton
+                onClick={alarmOpen}
+                size="small"
+                sx={{ ml: 2 }}
+                aria-controls={alarmEl ? "account-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={alarmEl ? "true" : undefined}
+              >
+                <NotificationsIcon sx={{ width: 32, height: 32 }} />
+                <Dropdown
+                  className={"alarm"}
+                  id={"alarm-menu"}
+                  menus={alarmMenu}
+                  anchorEl={alarmEl}
+                  setAnchorEl={setAlarmEl}
+                ></Dropdown>
+              </IconButton>
+
+              {/*<Tooltip title="Account settings"> */}
+              <IconButton
+                onClick={accountOpen}
+                size="small"
+                sx={{ ml: 2 }}
+                aria-controls={accountEl ? "account-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={accountEl ? "true" : undefined}
+              >
+                <AccountCircle sx={{ width: 32, height: 32 }} />
+                <Dropdown
+                  id={"account-menu"}
+                  menus={accountMenu}
+                  anchorEl={accountEl}
+                  setAnchorEl={setAccountEl}
+                ></Dropdown>
+              </IconButton>
+              {/* </Tooltip>*/}
+            </Box>
           </li>
         </>
       ) : (
@@ -85,7 +166,14 @@ const CustomizedInputBase = () => {
         placeholder="검색"
         inputProps={{ "aria-label": "search google maps" }}
       />
-      <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+      <IconButton
+        type="button"
+        sx={{ p: "10px" }}
+        aria-label="search"
+        onClick={() => {
+          console.log("hi");
+        }}
+      >
         <SearchIcon />
       </IconButton>
       <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
@@ -93,39 +181,5 @@ const CustomizedInputBase = () => {
         <DirectionsIcon />
       </IconButton>
     </Paper>
-  );
-};
-const Icon = () => {
-  const menuId = "primary-search-account-menu";
-
-  return (
-    <>
-      <Box sx={{ display: { xs: "none", md: "flex" } }}>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
-            <MessageIcon />
-          </Badge>
-        </IconButton>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <IconButton
-          size="large"
-          edge="end"
-          aria-label="account of current user"
-          aria-controls={menuId}
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-      </Box>
-    </>
   );
 };
