@@ -21,6 +21,7 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import Dropdown from "../utils/Dropdown";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
+import { DropdownItem } from "../utils/metaSet";
 
 const Header = () => {
   const [loginId, setLoginId] = useState("123");
@@ -61,24 +62,12 @@ const MainNavi = () => {
 const HeaderLink = (props) => {
   const loginId = props.loginId;
   const accountMenu = [
-    {
-      name: "내 정보",
-      icon: <InfoIcon />,
-    },
-    {
-      name: "나의 일정",
-      icon: <CalendarTodayIcon />,
-    },
+    new DropdownItem(<InfoIcon />, "내 정보", "/mypage"),
+    new DropdownItem(<CalendarTodayIcon />, "나의 일정", "/myplan"),
   ];
   const alarmMenu = [
-    {
-      name: "안녕하세요",
-      icon: <TagFacesIcon />,
-    },
-    {
-      name: "잘가요",
-      icon: <TagFacesIcon />,
-    },
+    new DropdownItem(<TagFacesIcon />, "안녕하세요", "/"),
+    new DropdownItem(<TagFacesIcon />, "잘가요", "/"),
   ];
   const [accountEl, setAccountEl] = useState(null);
   const [alarmEl, setAlarmEl] = useState(null);
