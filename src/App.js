@@ -6,6 +6,7 @@ import Login from "./components/Member/Login";
 import Join from "./components/Member/Join";
 import Join2 from "./components/Member/Join2";
 import PlannerFrm from "./components/planner/PlannerFrm";
+import ReviewMain from "./components/review/ReviewMain";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
           <Route path="/join2" element={<Join2 />} />
+          <Route path="/review/*" element={<ReviewMain />}></Route>
         </Routes>
       </div>
       <Footer />
