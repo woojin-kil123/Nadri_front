@@ -21,6 +21,7 @@ import { DropdownItem } from "../utils/metaSet";
 import ChatIcon from "@mui/icons-material/Chat";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ChatModal from "../chat/ChatModal";
+import { Map } from "@mui/icons-material";
 
 const Header = () => {
   const [loginId, setLoginId] = useState("123");
@@ -67,6 +68,9 @@ const HeaderLink = (props) => {
     }),
     new DropdownItem(<CalendarTodayIcon />, "나의 일정", () => {
       navigate("/myplan");
+    }),
+    new DropdownItem(<Map />, "지도 유틸(개발용 임시)", () => {
+      navigate("/mapInfo");
     }),
   ];
   const alarmMenu = [

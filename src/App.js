@@ -6,6 +6,7 @@ import Login from "./components/member/Login";
 import Join from "./components/member/Join";
 import Join2 from "./components/member/Join2";
 import PlannerFrm from "./components/planner/PlannerFrm";
+import MapInfo from "./components/utils/MapInfo";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
           <Route path="/join2" element={<Join2 />} />
+          <Route path="/mapInfo" element={<MapInfo />} /> {/*임시*/}
         </Routes>
       </div>
       <Footer />
