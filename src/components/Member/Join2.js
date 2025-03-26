@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Join2 = () => {
   const [member, setMember] = useState({
-    memberNickname: "",
+    memberEmail: "",
     memberPw: "",
     memberNickname: "",
     memberPhone: "",
@@ -19,13 +19,13 @@ const Join2 = () => {
     const inputData = e.target.value;
     setMember({ ...member, [name]: inputData });
   };
+
   const [idCheck, setIdCheck] = useState(0);
   const pwMsgRef = useRef(null);
   const checkPw = () => {
     pwMsgRef.current.classList.remove("valid");
     pwMsgRef.current.classList.remove("invalid");
-    console.log(member.memberPw);
-    console.log(memberPwRe);
+
     if (member.memberPw === memberPwRe) {
       pwMsgRef.current.classList.add("valid");
       pwMsgRef.current.innerText = "비밀번호가 일치합니다.";
@@ -33,51 +33,53 @@ const Join2 = () => {
       pwMsgRef.current.classList.add("invalid");
       pwMsgRef.current.innerText = "비밀번호가 일치하지 않습니다.";
     }
-    console.log(pwMsgRef.current.innerText);
   };
-  const joinMember = () => {};
+  // 생년월일 처리 함수 수정
+  const birth = () => {
+    // month와 day가 1자리일 경우 앞에 0을 붙여주는 처리
+    const formattedMonth = String(month).padStart(2, "0"); // month를 문자열로 변환 후 padStart 사용
+    const formattedDay = String(day).padStart(2, "0"); // day를 문자열로 변환 후 padStart
 
-  // 상태 선언
+    const birthString = `${year}${formattedMonth}${formattedDay}`;
+    // 생년월일 정보를 바로 memberBirth에 저장
+    setMember((prevState) => ({ ...prevState, memberBirth: birthString }));
+  };
+  const joinMember = () => {
+    birth();
+    console.log(member);
+  };
+  // 생년월일 구성
   const [year, setYear] = useState("");
   const [month, setMonth] = useState("");
   const [day, setDay] = useState("");
-
-  // 연도 목록 생성
   const currentYear = new Date().getFullYear();
   const years = Array.from(
     { length: currentYear - 1900 + 1 },
     (_, i) => currentYear - i
   );
-
-  // 월 목록
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
-
-  // 일 목록 업데이트 함수
   const getDaysInMonth = (year, month) => {
     const daysInMonth = new Date(year, month, 0).getDate();
     return Array.from({ length: daysInMonth }, (_, i) => i + 1);
   };
-
-  // 월 또는 연도가 변경될 때마다 일 목록 업데이트
   const [days, setDays] = useState([]);
-
   useEffect(() => {
-    // 연도와 월이 모두 선택되었을 때만 일 목록 업데이트
     if (year && month) {
       const updatedDays = getDaysInMonth(year, month);
       setDays(updatedDays);
-
-      // 선택된 날짜가 일 목록에 없으면 첫 번째 날짜로 설정
       if (!updatedDays.includes(parseInt(day))) {
         setDay(updatedDays[0] || "");
       }
     }
   }, [year, month, day]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert(`선택된 생년월일: ${year}-${month}-${day}`);
-  };
+  // member 상태 업데이트 후 바로 실행되는 effect
+  useEffect(() => {
+    if (member.memberBirth) {
+      // memberBirth가 변경될 때마다 콘솔 로그로 출력
+      console.log(member);
+    }
+  }, [member.memberBirth]); // memberBirth 상태에 의존
 
   return (
     <section className="section">
@@ -89,6 +91,7 @@ const Join2 = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
+            birth();
             joinMember();
           }}
         >
@@ -162,6 +165,7 @@ const Join2 = () => {
             <div>
               <label htmlFor="year">연도:</label>
               <select
+                name="year"
                 id="year"
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
@@ -177,6 +181,7 @@ const Join2 = () => {
             <div>
               <label htmlFor="month">월:</label>
               <select
+                name="month"
                 id="month"
                 value={month}
                 onChange={(e) => setMonth(e.target.value)}
@@ -192,6 +197,7 @@ const Join2 = () => {
             <div>
               <label htmlFor="day">일:</label>
               <select
+                name="day"
                 id="day"
                 value={day}
                 onChange={(e) => setDay(e.target.value)}
@@ -217,10 +223,10 @@ const Join2 = () => {
                 <label>
                   <input
                     type="radio"
-                    value="male"
+                    value="M"
                     name="memberGender"
                     id="memberGender"
-                    checked={member.memberGender === "male"}
+                    checked={member.memberGender === "M"}
                     onChange={inputMemberData}
                   />
                   남성
@@ -228,10 +234,10 @@ const Join2 = () => {
                 <label>
                   <input
                     type="radio"
-                    value="female"
+                    value="F"
                     name="memberGender"
                     id="memberGender"
-                    checked={member.memberGender === "female"}
+                    checked={member.memberGender === "F"}
                     onChange={inputMemberData}
                   />
                   여성
