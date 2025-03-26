@@ -9,11 +9,10 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="introduce">
-        <img src="/image/default_img.png" />
         <div className="link-list">
           <div className="contact">
             <div>
-              Product
+              <p>Product</p>
               <ul>
                 <li>
                   <Link to="#">Features</Link>
@@ -33,7 +32,7 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              Company
+              <p>Company</p>
               <ul>
                 <li>
                   <Link to="#">About us</Link>
@@ -47,7 +46,7 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              Legal
+              <p> Legal</p>
               <ul>
                 <li>
                   <Link to="#">Terms</Link>
@@ -60,43 +59,35 @@ export default function Footer() {
                 </li>
               </ul>
             </div>
-          </div>
-          <div className="footer2">
-            <div>
-              <Link to="#">개인정보 취급방침 및 쿠키 정책</Link>
-              <br />
-              <Link to="#">이용 약관</Link>
+            <div className="terms">
+              <div>
+                <Link to="#">개인정보 취급방침 및 쿠키 정책</Link>
+              </div>
+              <div>
+                <Link to="#">이용 약관</Link>
+              </div>
+              <Stack
+                direction="row"
+                spacing={1}
+                useFlexGap
+                sx={{ justifyContent: "left", color: "text.secondary" }}
+              >
+                <IconButton href="https://github.com/mui" aria-label="GitHub">
+                  <FacebookIcon color="inherit" />
+                </IconButton>
+                <IconButton href="https://x.com/MaterialUI" aria-label="X">
+                  <TwitterIcon color="inherit" />
+                </IconButton>
+                <IconButton
+                  href="https://www.linkedin.com/company/mui/"
+                  aria-label="LinkedIn"
+                >
+                  <LinkedInIcon color="inherit" />
+                </IconButton>
+              </Stack>
             </div>
-            <Stack
-              direction="row"
-              spacing={1}
-              useFlexGap
-              sx={{ justifyContent: "left", color: "text.secondary" }}
-            >
-              <IconButton
-                color="inherit"
-                href="https://github.com/mui"
-                aria-label="GitHub"
-              >
-                <FacebookIcon />
-              </IconButton>
-              <IconButton
-                color="inherit"
-                href="https://x.com/MaterialUI"
-                aria-label="X"
-              >
-                <TwitterIcon />
-              </IconButton>
-              <IconButton
-                color="inherit"
-                href="https://www.linkedin.com/company/mui/"
-                aria-label="LinkedIn"
-              >
-                <LinkedInIcon />
-              </IconButton>
-            </Stack>
           </div>
-          <div>
+          <div className="copyright">
             <p> © 2025 나드리 All rights reserved</p>
             <p>
               대한민국의 한국어 사용자를 대상으로 하는 나드리 웹사이트
