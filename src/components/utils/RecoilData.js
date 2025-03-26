@@ -10,8 +10,8 @@ const { persistAtom } = recoilPersist();
 //외부에서 특정데이터를 통한 연산결과를 도출하고 싶으면 selector
 
 //로그인한 회원의 아이디를 저장하는 저장소(atom)
-const loginNoState = atom({
-  key: "loginNoState",
+const loginNickState = atom({
+  key: "loginNickState",
   default: "",
   effects_UNSTABLE: [persistAtom],
 });
@@ -26,9 +26,9 @@ const isLoginState = selector({
   key: "isLoginState",
   get: (state) => {
     //매개변수 state는 recoil에 저장된 데이터를 불러오기 위한 객체
-    const loginNo = state.get(loginNoState);
-    return loginNo !== "";
+    const loginNick = state.get(loginNickState);
+    return loginNick !== "";
   },
 });
 
-export { loginNoState, memberTypeState, isLoginState };
+export { loginNickState, memberTypeState, isLoginState };
