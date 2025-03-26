@@ -49,7 +49,7 @@ const MainNavi = () => {
           <Link to="#">여행 정보</Link>
         </li>
         <li>
-          <Link to="#">리뷰</Link>
+          <Link to="/review">리뷰</Link>
         </li>
         <li className="search">
           <CustomizedInputBase />
