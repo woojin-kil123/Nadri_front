@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
-import "./plannerFrm.css";
+import "./planner.css";
 import { Close } from "@mui/icons-material";
 import MapInfo from "../utils/MapInfo";
 
