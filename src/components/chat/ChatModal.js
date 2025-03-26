@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./chat.css";
 import { Modal, Box, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -35,38 +35,6 @@ const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
       socket.close();
     };
   }, []);
-  const chatDiv = useRef(null);
-  useEffect(() => {
-    if (chatDiv.current) {
-      chatDiv.current.scrollTop = chatDiv.current.scrollHeight;
-    }
-  }, [chatList]);
-  const startChat = () => {
-    console.log("웹소켓 연결 시 실행되는 함수");
-    const data = JSON.stringify(chatMsg); // 전송할 데이터 객체를 문자열로 변환
-    ws.send(data); //매개변수로 전달한 문자열을 연결된 웹소켓 서버로 전송
-    setChatMsg({ ...chatMsg, type: "chat" }); //최초 접속 이후에는 채팅만 보낼예정이므로 미리 작업
-  };
-  const receiveMsg = (receiveData) => {
-    console.log("서버에서 데이터를 받으면 실행되는 함수");
-    const data = JSON.parse(receiveData.data);
-    console.log(data);
-    setChatList([...chatList, data]);
-  };
-  const endChat = () => {
-    console.log("웹소켓 연결이 끊어지면 실행되는 함수");
-  };
-  ws.onopen = startChat;
-  ws.onmessage = receiveMsg;
-  ws.onclose = endChat;
-  const sendMessage = () => {
-    if (chatMsg.message !== "") {
-      const data = JSON.stringify(chatMsg);
-      ws.send(data);
-      setChatMsg({ ...chatMsg, message: "" });
-      console.log(data);
-    }
-  };
 
   return (
     <Modal
