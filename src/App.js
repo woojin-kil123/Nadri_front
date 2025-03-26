@@ -9,6 +9,7 @@ import RePw from "./components/member/RePw";
 import RePw2 from "./components/member/RePw2";
 import PlannerFrm from "./components/planner/PlannerFrm";
 import ReviewMain from "./components/review/ReviewMain";
+import MapInfo from "./components/utils/MapInfo";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/rePw" element={<RePw />} />
           <Route path="/rePw2" element={<RePw2 />} />
           <Route path="/review/*" element={<ReviewMain />}></Route>
+          <Route path="/mapInfo" element={<MapInfo />} /> {/*임시*/}
         </Routes>
       </div>
       <Footer />
