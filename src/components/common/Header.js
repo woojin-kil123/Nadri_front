@@ -23,7 +23,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
 
 const Header = () => {
-  const [loginId, setLoginId] = useState("123");
+  const [loginId, setLoginId] = useState("");
   return (
     <header className="header">
       <div>
