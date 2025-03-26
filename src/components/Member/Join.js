@@ -137,7 +137,6 @@ const Join = () => {
           )}
         </form>
 
-<<<<<<< HEAD
         {/* 인증 상태 메시지 */}
         {message && <p>{message}</p>}
 
@@ -147,11 +146,6 @@ const Join = () => {
             다음
           </Link>
         )}
-=======
-        <Link to="/join2" className="btn-primary lg">
-          다음
-        </Link>
->>>>>>> 9da022c045e2a6e9896d35bd2fadd01ee98a65d3
       </div>
     </section>
   );
