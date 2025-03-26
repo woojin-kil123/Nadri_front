@@ -166,7 +166,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background-color: var(--gray7);
+  background-color: var(--main1);
 }
 .footer > div {
   width: 50%;
@@ -174,11 +174,13 @@ body {
   margin: 0 auto;
   text-align: center;
 }
+.footer a {
+  color: var(--gray8);
+}
 .introduce {
   margin: 0 auto;
   display: flex;
-  justify-content: space-around;
-  gap: 50px;
+  flex-direction: column;
 }
 .link-list {
   width: 100%;
@@ -188,11 +190,11 @@ body {
   justify-content: center;
   gap: 100px;
 }
-.footer > div p {
+.footer p {
   margin: 10px 0px;
   font-family: ns-b;
   font-size: 16px;
-  color: var(--main1);
+  color: var(--main2);
 }
 
 .footer > div ul {
@@ -200,19 +202,24 @@ body {
   overflow: hidden;
   margin-bottom: 20px;
 }
-
-.footer > div ul > li a {
-  color: var(--main1);
-}
-.footer > div svg {
-  width: 40px;
-  height: 40px;
+.footer > div path {
+  width: 60px;
+  height: 60px;
+  color: var(--main2);
   align-self: center;
 }
-.footer2 {
+.terms {
+  width: 60%;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+}
+.terms > div {
   display: flex;
   justify-content: center;
-  gap: 50px;
+}
+.copyright {
+  text-align: center;
 }
 section.section {
   padding: 20px;
