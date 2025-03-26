@@ -1,7 +1,7 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const Join = () => {
+const RePw = () => {
   const [member, setMember] = useState({
     memberNickname: "",
     memberPw: "",
@@ -17,8 +17,8 @@ const Join = () => {
   return (
     <section className="section">
       <div className="join-title">
-        <h3>이메일 인증</h3>
-        <p>가입을 위해 이메일을 인증해주세요.</p>
+        <h3>비밀번호 재설정</h3>
+        <p>회원가입 시 등록한 이메일을 입력해주세요.</p>
       </div>
       <div className="join-wrap">
         <form
@@ -58,7 +58,7 @@ const Join = () => {
           </div>
         </form>
 
-        <Link to="/Join2" className="btn-primary lg">
+        <Link to="/rePw2" className="btn-primary lg">
           다음
         </Link>
       </div>
@@ -66,4 +66,4 @@ const Join = () => {
   );
 };
 
-export default Join;
+export default RePw;
