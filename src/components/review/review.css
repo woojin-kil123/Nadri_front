@@ -7,10 +7,12 @@
   margin-left: 200px;
 }
 
-.nav-wrap a {
+.nav-wrap li {
   color: var(--main2);
 }
-
+.nav-wrap li:hover {
+  color: var(--main3);
+}
 .wirte-btn {
   justify-items: right;
 }
