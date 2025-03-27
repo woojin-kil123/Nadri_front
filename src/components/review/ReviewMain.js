@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Route, Routes } from "react-router-dom";
 import { RecoilState, useRecoilValue } from "recoil";
 import "./review.css";
 import { colors } from "@mui/material";
 import axios from "axios";
+import ReviewWrite from "./ReviewWrite";
 const ReviewMain = () => {
   const backServer = process.env.REACT_APP_BACK_SERVER;
-  const [ReviewMain, setReview] = useState([]);
+  const [Review, setReview] = useState([]);
   const [pi, setPi] = useState([]);
   const [reqPage, setReqPage] = useState(1);
   const [content, setContnet] = useState(null);
@@ -63,7 +64,7 @@ const ReviewMain = () => {
           </ul>
         </nav>
         <div>
-          <Link to="#" className="btn-primary">
+          <Link to="/review/write" className="btn-primary">
             글쓰기
           </Link>
         </div>
@@ -81,6 +82,7 @@ const ReviewList = (props) => {
       .get()
       .then((res) => {
         console.log(res);
+        setReview(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -90,7 +92,7 @@ const ReviewList = (props) => {
   );*/
   return (
     <section className="section">
-      <div>data</div>
+      <div>{content}</div>
     </section>
   );
 };
