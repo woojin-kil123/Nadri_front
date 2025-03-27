@@ -6,7 +6,43 @@ import { IconButton, InputBase, Menu, Paper } from "@mui/material";
 
 const PlannerFrm = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [planWindow, setPlanwindow] = useState(true);
+  const [planWindow, setPlanwindow] = useState(false);
+
+  const [planningModal, setPlanningModal] = useState(false);
+  const planModalHandler = () => {
+    setPlanningModal(!planningModal);
+    console.log(planningModal);
+  };
+
+  const [contentList, setContentList] = useState([
+    {
+      contentThumb:
+        "https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyNDExMDFfMTI3%2FMDAxNzMwNDIxNzMwOTk2.XIgrsfQZKau5dz1vICaytYVlbmnJvLOM0DxRt3HkGkYg.JF5wL5dOJ2ROsjxltR8Y-h4gQ3NOhk-7PMElB2F4pakg.JPEG%2F1000052381.jpg.jpg&type=f&size=340x180&quality=80&opt=2",
+      contentTitle: "플라워랜드",
+      contentType: "즐길거리",
+      contentAddr: "대전광역시 중구 사정공원로 70",
+      contentReview: 1034,
+      contentRating: 4.52,
+    },
+    {
+      contentThumb:
+        "https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyNDExMDFfMTI3%2FMDAxNzMwNDIxNzMwOTk2.XIgrsfQZKau5dz1vICaytYVlbmnJvLOM0DxRt3HkGkYg.JF5wL5dOJ2ROsjxltR8Y-h4gQ3NOhk-7PMElB2F4pakg.JPEG%2F1000052381.jpg.jpg&type=f&size=340x180&quality=80&opt=2",
+      contentTitle: "행복양꼬치",
+      contentType: "식당",
+      contentAddr: "서을특별시 은평구 구산동 역말로 47",
+      contentReview: 123,
+      contentRating: 3.12,
+    },
+    {
+      contentThumb:
+        "https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyNDExMDFfMTI3%2FMDAxNzMwNDIxNzMwOTk2.XIgrsfQZKau5dz1vICaytYVlbmnJvLOM0DxRt3HkGkYg.JF5wL5dOJ2ROsjxltR8Y-h4gQ3NOhk-7PMElB2F4pakg.JPEG%2F1000052381.jpg.jpg&type=f&size=340x180&quality=80&opt=2",
+      contentTitle: "KH정보교육원 당산지원",
+      contentType: "숙소",
+      contentAddr: "서울특별시 영등포구 선유동2로 57 이레빌딩 19층",
+      contentReview: 54,
+      contentRating: 1.1,
+    },
+  ]);
 
   const markerPosition = {
     lat: 37.5341338,
@@ -17,8 +53,6 @@ const PlannerFrm = () => {
   // console.log(map);
   // console.log(map.getCenter());
 
-  const testList = new Array(10).fill("");
-
   return (
     <div className="all-wrap">
       <div className="side-wrap">
@@ -27,7 +61,7 @@ const PlannerFrm = () => {
             <CustomizedInputBase />
           </div>
           <div className="filter-wrap">
-            <div>숙소ㅋㅋ</div>
+            <div>숙소</div>
             <div>식당</div>
             <div>즐길거리</div>
           </div>
@@ -40,8 +74,15 @@ const PlannerFrm = () => {
           </div>
         </div>
         <div className="spot-list">
-          {testList.map(() => {
-            return <TestItem />;
+          {contentList.map((content, idx) => {
+            return (
+              <PrintSpotList
+                key={"spot-" + idx}
+                content={content}
+                idx={idx}
+                planModalHandler={planModalHandler}
+              />
+            );
           })}
         </div>
       </div>
@@ -133,6 +174,7 @@ const PlannerFrm = () => {
           )}
         </Map>
       </div>
+      {planningModal && <PlanModal planModalHandler={planModalHandler} />}
     </div>
   );
 };
@@ -143,9 +185,7 @@ const CustomizedInputBase = () => {
       component="form"
       sx={{ margin: "10px", display: "flex", alignItems: "center" }}
     >
-      <IconButton sx={{ p: "10px" }} aria-label="menu">
-        <Menu />
-      </IconButton>
+      <IconButton sx={{ p: "10px" }} aria-label="menu"></IconButton>
       <InputBase
         sx={{ ml: 1, flex: 1, fontSize: "12px" }}
         placeholder="여행지, 즐길거리 등"
@@ -165,25 +205,62 @@ const CustomizedInputBase = () => {
   );
 };
 
-const TestItem = () => {
+const PrintSpotList = (props) => {
+  const content = props.content;
+  const planModalHandler = props.planModalHandler;
+
   return (
     <div className="spot-item">
-      <img
-        className="spot-img"
-        src="https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyNDExMDFfMTI3%2FMDAxNzMwNDIxNzMwOTk2.XIgrsfQZKau5dz1vICaytYVlbmnJvLOM0DxRt3HkGkYg.JF5wL5dOJ2ROsjxltR8Y-h4gQ3NOhk-7PMElB2F4pakg.JPEG%2F1000052381.jpg.jpg&type=f&size=340x180&quality=80&opt=2"
-        alt="테스트"
-      />
-      <div className="spot-title">
-        <span className="spot-name">플라워랜드</span>
-        <span className="spot-class">식당</span>
+      <img className="spot-img" src={content.contentThumb} alt="테스트" />
+      <div className="spot-title-wrap">
+        <span className="spot-title">{content.contentTitle}</span>
+        <span className="spot-type">{content.contentType}</span>
       </div>
-      <div className="spot-address">대전광역시 중구 사정공원로 70</div>
-      <div className="spot-review">
-        <span>리뷰</span>
-        <span>23</span>
+      <div className="spot-addr">{content.contentAddr}</div>
+      <div className="spot-review-wrap">
+        <div>
+          <StarRating rating={content.contentRating} />
+          <span className="spot-rating-avg">{content.contentRating}</span>
+        </div>
+        <div>
+          <span>리뷰</span>
+          <span className="spot-review-count">
+            {content.contentReview > 999 ? "999+" : content.contentReview}
+          </span>
+        </div>
       </div>
       <div className="spot-btn">
-        <button>선택</button>
+        <button onClick={planModalHandler}>선택</button>
+      </div>
+    </div>
+  );
+};
+
+const StarRating = (rating) => {
+  const percentage = (rating / 5) * 100;
+  return (
+    <div className="star-rating">
+      <div className="back-stars">★★★★★</div>
+      <div className="front-stars" style={{ width: `${percentage}%` }}>
+        ★★★★★
+      </div>
+    </div>
+  );
+};
+
+const PlanModal = (props) => {
+  const planModalHandler = props.planModalHandler;
+
+  return (
+    <div className="modal-background">
+      <div className="planning-modal">
+        <Close onClick={planModalHandler} className="close-btn" />
+        <div className="planning-info">
+          <div className="planning-img-wrap">
+            <h2>하이</h2>
+          </div>
+        </div>
+        <div className="planning-input"></div>
       </div>
     </div>
   );
