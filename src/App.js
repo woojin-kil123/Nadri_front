@@ -13,6 +13,7 @@ import MapInfo from "./components/utils/MapInfo";
 import { useRecoilState } from "recoil";
 import { isPlannerState } from "./components/utils/RecoilData";
 import { useEffect } from "react";
+import ContentMain from "./components/content/ContentMain";
 
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
@@ -45,6 +46,7 @@ function App() {
               <Route path="/rePw2" element={<RePw2 />} />
               <Route path="/review/*" element={<ReviewMain />}></Route>
               <Route path="/mapInfo" element={<MapInfo />} /> {/*임시*/}
+              <Route path="/content" element={<ContentMain />} />
             </Routes>
           </div>
           <Footer />
