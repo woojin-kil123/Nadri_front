@@ -13,6 +13,7 @@ import MapInfo from "./components/utils/MapInfo";
 import { useRecoilState } from "recoil";
 import { isPlannerState } from "./components/utils/RecoilData";
 import { useEffect } from "react";
+import ReviewWrite from "./components/review/ReviewWrite";
 
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
