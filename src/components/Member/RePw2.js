@@ -1,12 +1,23 @@
-import { useRef, useState } from "react";
+import axios from "axios";
+import { useEffect, useRef, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-const RePw2 = () => {
+const Join2 = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { email } = location.state || {}; // 이메일 데이터를 가져옴 (없으면 기본값으로 {} 설정)
+  console.log(email);
   const [member, setMember] = useState({
-    memberNickname: "",
+    memberEmail: "",
     memberPw: "",
-    memberNickname: "",
-    memberPhone: "",
   });
+
+  useEffect(() => {
+    if (email) {
+      setMember((prevState) => ({ ...prevState, memberEmail: email }));
+    }
+  }, [email]);
+
   const [memberPwRe, setMemberPwRe] = useState("");
   const inputMemberPwRe = (e) => {
     setMemberPwRe(e.target.value);
@@ -16,13 +27,12 @@ const RePw2 = () => {
     const inputData = e.target.value;
     setMember({ ...member, [name]: inputData });
   };
-  const [idCheck, setIdCheck] = useState(0);
+
   const pwMsgRef = useRef(null);
   const checkPw = () => {
     pwMsgRef.current.classList.remove("valid");
     pwMsgRef.current.classList.remove("invalid");
-    console.log(member.memberPw);
-    console.log(memberPwRe);
+
     if (member.memberPw === memberPwRe) {
       pwMsgRef.current.classList.add("valid");
       pwMsgRef.current.innerText = "비밀번호가 일치합니다.";
@@ -30,26 +40,37 @@ const RePw2 = () => {
       pwMsgRef.current.classList.add("invalid");
       pwMsgRef.current.innerText = "비밀번호가 일치하지 않습니다.";
     }
-    console.log(pwMsgRef.current.innerText);
   };
-  const joinMember = () => {};
+
+  const rePwMember = () => {
+    console.log(member);
+    axios
+      .patch(`${process.env.REACT_APP_BACK_SERVER}/member/updatePw`, member)
+      .then((res) => {
+        console.log(res);
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <section className="section">
       <div className="join-title">
-        <h3>새 비밀번호 설정</h3>
-        <p>인증이 완료되었습니다.</p>
-        <p>새로운 비밀번호를 입력해주세요.</p>
+        <h3>필수 정보 입력</h3>
+        <p>가입을 위해 필수 정보를 입력해주세요.</p>
       </div>
       <div className="join-wrap">
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            joinMember();
+            rePwMember();
           }}
         >
           <div className="input-wrap">
             <div className="input-title">
-              <label htmlFor="memberPw">새 비밀번호</label>
+              <label htmlFor="memberPw">비밀번호</label>
             </div>
             <div className="input-item">
               <input
@@ -58,14 +79,14 @@ const RePw2 = () => {
                 id="memberPw"
                 value={member.memberPw}
                 onChange={inputMemberData}
-                onblur={checkPw}
+                onBlur={checkPw}
               ></input>
             </div>
           </div>
 
           <div className="input-wrap">
             <div className="input-title">
-              <label htmlFor="memberPwRe">새 비밀번호 확인</label>
+              <label htmlFor="memberPwRe">비밀번호 확인</label>
             </div>
             <div className="input-item">
               <input
@@ -91,4 +112,4 @@ const RePw2 = () => {
   );
 };
 
-export default RePw2;
+export default Join2;
