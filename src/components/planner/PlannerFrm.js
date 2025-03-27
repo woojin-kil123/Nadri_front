@@ -1,8 +1,8 @@
 import { useRef, useState } from "react";
 import { CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
 import "./planner.css";
-import { Close, Directions, Search } from "@mui/icons-material";
-import { Divider, IconButton, InputBase, Menu, Paper } from "@mui/material";
+import { Close, Search } from "@mui/icons-material";
+import { IconButton, InputBase, Menu, Paper } from "@mui/material";
 
 const PlannerFrm = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,14 +13,16 @@ const PlannerFrm = () => {
     lng: 126.897333254,
   };
   const mapRef = useRef(null);
-  const map = mapRef.current;
-  //   console.log(map);
-  //   console.log(map.getCenter());
+  // const map = mapRef.current;
+  // console.log(map);
+  // console.log(map.getCenter());
+
+  const testList = new Array(10).fill("");
 
   return (
     <div className="all-wrap">
       <div className="side-wrap">
-        <div className="result-wrap">
+        <div className="side-header">
           <div className="search-wrap">
             <CustomizedInputBase />
           </div>
@@ -36,25 +38,11 @@ const PlannerFrm = () => {
               <option>이름순</option>
             </select>
           </div>
-          <div className="spot-wrap">
-            <div className="spot-item">
-              <div className="spot-img">
-                <img alt="테스트" />
-              </div>
-              <div className="spot-title">
-                <span>플라워랜드</span>
-                <span>식당</span>
-              </div>
-              <div className="spot-address">대전광역시 중구 사정공원로 70</div>
-              <div className="spot-review">
-                <span>리뷰</span>
-                <span>23</span>
-              </div>
-              <div className="spot-btn">
-                <button>선택</button>
-              </div>
-            </div>
-          </div>
+        </div>
+        <div className="spot-list">
+          {testList.map(() => {
+            return <TestItem />;
+          })}
         </div>
       </div>
       {planWindow ? (
@@ -174,6 +162,30 @@ const CustomizedInputBase = () => {
         <Search />
       </IconButton>
     </Paper>
+  );
+};
+
+const TestItem = () => {
+  return (
+    <div className="spot-item">
+      <img
+        className="spot-img"
+        src="https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyNDExMDFfMTI3%2FMDAxNzMwNDIxNzMwOTk2.XIgrsfQZKau5dz1vICaytYVlbmnJvLOM0DxRt3HkGkYg.JF5wL5dOJ2ROsjxltR8Y-h4gQ3NOhk-7PMElB2F4pakg.JPEG%2F1000052381.jpg.jpg&type=f&size=340x180&quality=80&opt=2"
+        alt="테스트"
+      />
+      <div className="spot-title">
+        <span className="spot-name">플라워랜드</span>
+        <span className="spot-class">식당</span>
+      </div>
+      <div className="spot-address">대전광역시 중구 사정공원로 70</div>
+      <div className="spot-review">
+        <span>리뷰</span>
+        <span>23</span>
+      </div>
+      <div className="spot-btn">
+        <button>선택</button>
+      </div>
+    </div>
   );
 };
 

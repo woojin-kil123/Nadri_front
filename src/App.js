@@ -14,6 +14,7 @@ import { useRecoilState } from "recoil";
 import { isPlannerState } from "./components/utils/RecoilData";
 import { useEffect } from "react";
 import ContentMain from "./components/content/ContentMain";
+import ReviewWrite from "./components/review/ReviewWrite";
 
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
