@@ -50,17 +50,9 @@ const Join = () => {
       )
       .then((res) => {
         console.log(res.data);
-        if (res.data === 0) {
-          setEmailCheck(1);
-          setEmailCheckMessage("사용 가능한 이메일입니다.");
-          setEmailCheckColor("green");
-          setIsEmailVerified(true);
-        } else {
-          setEmailCheck(2);
-          setEmailCheckMessage("이미 사용 중인 이메일입니다.");
-          setEmailCheckColor("red");
-          setIsEmailVerified(false);
-        }
+        setEmailCheckMessage("이메일을 인증해주세요.");
+        setEmailCheckColor("green");
+        setIsEmailVerified(true);
       })
       .catch((err) => {
         console.log(err);
@@ -72,11 +64,6 @@ const Join = () => {
 
   // 이메일 인증 요청 (이메일 중복 검사 후 실행 가능)
   const sendEmailVerification = () => {
-    if (emailCheck !== 1) {
-      alert("이메일 중복 확인을 먼저 해주세요.");
-      return;
-    }
-
     axios
       .get(
         `${process.env.REACT_APP_BACK_SERVER}/api/sendCode?email=${member.memberEmail}`
@@ -95,7 +82,7 @@ const Join = () => {
   const verifyEmailCode = () => {
     if (code === member.memberCode) {
       alert("인증이 완료되었습니다!");
-      navigate("/join2", { state: { email: member.memberEmail } });
+      navigate("/repw2", { state: { email: member.memberEmail } });
     } else {
       alert("인증 코드가 일치하지 않습니다. 다시 확인해 주세요.");
     }
@@ -104,8 +91,8 @@ const Join = () => {
   return (
     <section className="section">
       <div className="join-title">
-        <h3>이메일 인증</h3>
-        <p>가입을 위해 이메일을 인증해주세요.</p>
+        <h3>비밀번호 재설정</h3>
+        <p>회원가입 시 등록한 이메일을 입력해주세요.</p>
       </div>
       <div className="join-wrap">
         <form

@@ -30,5 +30,10 @@ const isLoginState = selector({
     return loginNick !== "";
   },
 });
+const isPlannerState = atom({
+  key: "plannerState",
+  default: false,
+  effects_UNSTABLE: [persistAtom],
+});
 
-export { loginNickState, memberTypeState, isLoginState };
+export { loginNickState, memberTypeState, isLoginState, isPlannerState };

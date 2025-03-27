@@ -61,7 +61,7 @@ const Login = () => {
             </div>
             <div className="member-link-box">
               <Link to="/join">회원가입</Link>
-              <Link to="#">비밀번호 재설정 </Link>
+              <Link to="/rePw">비밀번호 재설정 </Link>
             </div>
           </form>
         </dlv>

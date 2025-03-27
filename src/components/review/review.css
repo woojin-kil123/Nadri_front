@@ -1,0 +1,32 @@
+.nav-wrap {
+  padding: 10px;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  margin-left: 200px;
+}
+
+.nav-wrap li {
+  color: var(--main2);
+}
+.nav-wrap li:hover {
+  color: var(--main3);
+}
+.wirte-btn {
+  justify-items: right;
+}
+.green {
+  background-color: var(--main2);
+}
+.text-zone {
+  margin-top: 30px;
+  height: 300px;
+  padding-bottom: 50px;
+}
+.text-zone > .quil {
+  height: 500px;
+}
+.ql-editor > p {
+  height: 300px;
+}

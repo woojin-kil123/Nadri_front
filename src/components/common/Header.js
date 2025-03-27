@@ -21,9 +21,12 @@ import { DropdownItem } from "../utils/metaSet";
 import ChatIcon from "@mui/icons-material/Chat";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ChatModal from "../chat/ChatModal";
+import { Map } from "@mui/icons-material";
+import { useRecoilState } from "recoil";
+import { isPlannerState } from "../utils/RecoilData";
 
 const Header = () => {
-  const [loginId, setLoginId] = useState("123");
+  const [loginId, setLoginId] = useState("");
   return (
     <header className="header">
       <div>
@@ -46,10 +49,10 @@ const MainNavi = () => {
           <Link to="/planner">플래너</Link>
         </li>
         <li>
-          <Link to="#">여행 정보</Link>
+          <Link to="/tour">여행 정보</Link>
         </li>
         <li>
-          <Link to="#">리뷰</Link>
+          <Link to="/review">리뷰</Link>
         </li>
         <li className="search">
           <CustomizedInputBase />
@@ -67,6 +70,9 @@ const HeaderLink = (props) => {
     }),
     new DropdownItem(<CalendarTodayIcon />, "나의 일정", () => {
       navigate("/myplan");
+    }),
+    new DropdownItem(<Map />, "지도 유틸(개발용 임시)", () => {
+      navigate("/mapInfo");
     }),
   ];
   const alarmMenu = [
