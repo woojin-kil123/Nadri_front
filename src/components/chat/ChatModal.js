@@ -5,6 +5,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useRecoilValue } from "recoil";
 import { loginNoState } from "../utils/RecoilData";
 import SendIcon from "@mui/icons-material/Send";
+import ChatList from "./ChatList";
 
 const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
   //const userNick = useRecoilValue(loginNickState);
@@ -15,16 +16,12 @@ const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
   };
 
   const [ws, setWs] = useState({});
-  const [chatMsg, setChatMsg] = useState({
-    type: "enter",
-    memberNick: memberNick,
-    message: "",
-  });
+
   const backServer = process.env.REACT_APP_BACK_SERVER;
   // 웹소켓 요청  형식 WS://192.168.10.20:8888
   const socketServer = backServer.replace("http://", "ws://");
   useEffect(() => {
-    const socket = new WebSocket(`${socketServer}/chatList`);
+    const socket = new WebSocket(`${socketServer}/chat`);
     setWs(socket);
     //mount 될 때 useEffect함수가 실행됨.
     //return 함수는 컴포넌트가 언마운트될 때 동작해야할 코드를 작성하는 영역 -> 해당 페이지를 벗어날때 초기화해야하는게 있으면 여기서
@@ -64,6 +61,7 @@ const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
             <h2>채팅목록</h2>
           </div>
           <div className="content-middle">
+            <ChatList ws={ws} setWs={setWs} />
             <p>방1</p>
             <p>방2</p>
             <p>방3</p>
