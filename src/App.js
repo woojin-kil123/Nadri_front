@@ -47,7 +47,7 @@ function App() {
               <Route path="/rePw2" element={<RePw2 />} />
               <Route path="/review/*" element={<ReviewMain />}></Route>
               <Route path="/mapInfo" element={<MapInfo />} /> {/*임시*/}
-              <Route path="/content" element={<ContentMain />} />
+              <Route path="/tour" element={<ContentMain />} />
             </Routes>
           </div>
           <Footer />
