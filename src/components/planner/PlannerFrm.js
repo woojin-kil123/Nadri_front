@@ -27,7 +27,7 @@ const PlannerFrm = () => {
             <CustomizedInputBase />
           </div>
           <div className="filter-wrap">
-            <div>숙소</div>
+            <div>숙소ㅋㅋ</div>
             <div>식당</div>
             <div>즐길거리</div>
           </div>
