@@ -1,15 +1,23 @@
 .all-wrap {
   display: flex;
+  /* flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start; */
   position: relative;
   height: 100vh;
 }
-.side-wrap {
+
+/* .side-wrap {
   width: 300px;
   background-color: var(--gray8);
   border-right: 1px solid var(--gray7);
   box-shadow: 5px 0px 5px -2px rgba(0, 0, 0, 0.2);
   z-index: 1;
-  box-sizing: border-box;
+} */
+
+.side-header {
+  width: 300px;
+  /* height: 100px; */
 }
 .search-wrap {
   background-color: #5085bb;
@@ -34,28 +42,42 @@
   justify-content: end;
   margin: 10px;
 }
-.spot-wrap {
+
+.spot-list {
+  width: 300px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow-y: scroll;
 }
 .spot-item {
-  width: 80%;
-  height: 182px;
+  width: 235px;
+  /* height: 190px; */
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   border: 1px solid black;
   position: relative;
+  margin-bottom: 21px;
 }
-.spot-item img {
+.spot-img {
   width: 235px;
   height: 118px;
 }
+.spot-name {
+  margin-right: 8px;
+  letter-spacing: -1px;
+  font-size: 18px;
+}
+.spot-class {
+  letter-spacing: -0.3px;
+  font-size: 14px;
+}
 .spot-btn {
   position: absolute;
-  right: 5px;
-  bottom: 5px;
+  right: 2px;
+  bottom: 2px;
 }
 .plan-window {
   width: 300px;
@@ -92,7 +114,8 @@
 }
 
 .map-wrap {
-  width: 100%;
+  width: calc(100% - 400px);
+  height: 953px;
   z-index: 0;
 }
 
