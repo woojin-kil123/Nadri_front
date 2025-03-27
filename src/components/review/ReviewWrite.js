@@ -36,7 +36,7 @@ const ReviewWrite = () => {
               <label>첨부파일</label>
             </th>
             <td>
-              <label className="btn-primary sm">파일첨부</label>
+              <label className="btn-primary green">파일첨부</label>
               <div className="input-item">
                 <input type="file" style={{ display: "none" }} multiple></input>
               </div>

@@ -16,3 +16,6 @@
 .wirte-btn {
   justify-items: right;
 }
+.green {
+  background-color: var(--main2);
+}
