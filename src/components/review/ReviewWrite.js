@@ -54,7 +54,7 @@ const ReviewWrite = () => {
           </tr>
         </tbody>
       </table>
-      <div>
+      <div className="text-zone">
         <TextEditor />
       </div>
     </section>
