@@ -1,15 +1,27 @@
+import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Join2 = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { email } = location.state || {}; // 이메일 데이터를 가져옴 (없으면 기본값으로 {} 설정)
+  console.log(email);
   const [member, setMember] = useState({
-    memberEmail: "",
+    memberEmail: "1233@ㅋㅋ",
     memberPw: "",
     memberNickname: "",
     memberPhone: "",
     memberBirth: "",
     memberGender: "",
   });
+
+  useEffect(() => {
+    if (email) {
+      setMember((prevState) => ({ ...prevState, memberEmail: email }));
+    }
+  }, [email]);
+
   const [memberPwRe, setMemberPwRe] = useState("");
   const inputMemberPwRe = (e) => {
     setMemberPwRe(e.target.value);
@@ -20,7 +32,6 @@ const Join2 = () => {
     setMember({ ...member, [name]: inputData });
   };
 
-  const [idCheck, setIdCheck] = useState(0);
   const pwMsgRef = useRef(null);
   const checkPw = () => {
     pwMsgRef.current.classList.remove("valid");
@@ -34,19 +45,74 @@ const Join2 = () => {
       pwMsgRef.current.innerText = "비밀번호가 일치하지 않습니다.";
     }
   };
-  // 생년월일 처리 함수 수정
-  const birth = () => {
-    // month와 day가 1자리일 경우 앞에 0을 붙여주는 처리
-    const formattedMonth = String(month).padStart(2, "0"); // month를 문자열로 변환 후 padStart 사용
-    const formattedDay = String(day).padStart(2, "0"); // day를 문자열로 변환 후 padStart
 
-    const birthString = `${year}${formattedMonth}${formattedDay}`;
-    // 생년월일 정보를 바로 memberBirth에 저장
-    setMember((prevState) => ({ ...prevState, memberBirth: birthString }));
+  const [idCheck, setIdCheck] = useState(0);
+  const checkNickname = () => {
+    //아이디 유효성검사
+    //1. 정규표현식
+    //2. 정규표현식 만족하면 -> 중복체크
+    const idReg = /^[a-zA-Z0-9가-힣]+$/;
+    if (idReg.test(member.memberNickname)) {
+      //중복체크진행
+      axios
+        .get(
+          `${process.env.REACT_APP_BACK_SERVER}/member/exists?memberNickname=${member.memberNickname}`
+        )
+        .then((res) => {
+          console.log(res);
+          if (res.data === 0) {
+            setIdCheck(1);
+          } else {
+            setIdCheck(3);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      setIdCheck(2);
+    }
   };
+
+  const [phoneError, setPhoneError] = useState(0);
+  const checkPhone = () => {
+    const phoneRegex = /^(010-\d{4}-\d{4})$/;
+    const formattedPhone = member.memberPhone.replace(/[^0-9]/g, "");
+    let formattedPhoneWithDash = "";
+    if (formattedPhone.length === 11) {
+      formattedPhoneWithDash = `${formattedPhone.slice(
+        0,
+        3
+      )}-${formattedPhone.slice(3, 7)}-${formattedPhone.slice(7)}`;
+    } else {
+      formattedPhoneWithDash = member.memberPhone;
+    }
+
+    setMember({ ...member, memberPhone: formattedPhoneWithDash });
+
+    if (!phoneRegex.test(formattedPhoneWithDash)) {
+      setPhoneError(2);
+    } else {
+      setPhoneError(1); // 유효한 형식일 경우 에러 메시지 제거
+    }
+  };
+
   const joinMember = () => {
-    birth();
+    if (!member.memberBirth) {
+      alert("생년월일을 선택하세요.");
+      return;
+    }
+
     console.log(member);
+    axios
+      .post(`${process.env.REACT_APP_BACK_SERVER}/member/join`, member)
+      .then((res) => {
+        console.log(res);
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   // 생년월일 구성
   const [year, setYear] = useState("");
@@ -72,6 +138,15 @@ const Join2 = () => {
       }
     }
   }, [year, month, day]);
+  useEffect(() => {
+    if (year !== "" && month !== "" && day !== "") {
+      const formattedMonth = String(month).padStart(2, "0");
+      const formattedDay = String(day).padStart(2, "0");
+      const birthString = `${year}${formattedMonth}${formattedDay}`;
+
+      setMember((prevState) => ({ ...prevState, memberBirth: birthString }));
+    }
+  }, [year, month, day]);
 
   // member 상태 업데이트 후 바로 실행되는 effect
   useEffect(() => {
@@ -91,7 +166,6 @@ const Join2 = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            birth();
             joinMember();
           }}
         >
@@ -106,7 +180,7 @@ const Join2 = () => {
                 id="memberPw"
                 value={member.memberPw}
                 onChange={inputMemberData}
-                onblur={checkPw}
+                onBlur={checkPw}
               ></input>
             </div>
           </div>
@@ -139,8 +213,26 @@ const Join2 = () => {
                 id="memberNickname"
                 value={member.memberNickname}
                 onChange={inputMemberData}
+                onBlur={checkNickname}
               ></input>
             </div>
+            <p
+              className={
+                idCheck === 0
+                  ? "input-msg"
+                  : idCheck === 1
+                  ? "input-msg valid"
+                  : "input-msg invalid"
+              }
+            >
+              {idCheck === 0
+                ? ""
+                : idCheck === 1
+                ? "사용가능한 닉네임 입니다."
+                : idCheck === 2
+                ? "닉네임은 한글, 영어 대/소문자, 숫자 입니다."
+                : "이미 사용중인 닉네임 입니다."}
+            </p>
           </div>
 
           <div className="input-wrap">
@@ -154,8 +246,26 @@ const Join2 = () => {
                 id="memberPhone"
                 value={member.memberPhone}
                 onChange={inputMemberData}
+                onBlur={checkPhone}
+                maxLength={13} // 010-0000-0000 형식에 맞게 제한
+                placeholder="010-0000-0000"
               ></input>
             </div>
+            <p
+              className={
+                phoneError === 0
+                  ? "input-msg"
+                  : phoneError === 1
+                  ? "input-msg valid"
+                  : "input-msg invalid"
+              }
+            >
+              {phoneError === 0
+                ? " "
+                : phoneError === 1
+                ? " "
+                : "휴대폰 번호는 010-0000-0000 형식으로 입력해주세요."}
+            </p>
           </div>
 
           <div className="input-wrap">
@@ -223,10 +333,10 @@ const Join2 = () => {
                 <label>
                   <input
                     type="radio"
-                    value="M"
+                    value="남"
                     name="memberGender"
                     id="memberGender"
-                    checked={member.memberGender === "M"}
+                    checked={member.memberGender === "남"}
                     onChange={inputMemberData}
                   />
                   남성
@@ -234,10 +344,10 @@ const Join2 = () => {
                 <label>
                   <input
                     type="radio"
-                    value="F"
+                    value="여"
                     name="memberGender"
                     id="memberGender"
-                    checked={member.memberGender === "F"}
+                    checked={member.memberGender === "여"}
                     onChange={inputMemberData}
                   />
                   여성
