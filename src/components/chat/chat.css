@@ -1,31 +1,143 @@
+.chat-btn svg {
+  fill: var(--main2);
+}
+
 .chat-modal > div {
   background-color: aliceblue;
   border-radius: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
 }
 .chat-modal > .chat-list {
   width: 30%;
 }
-.chat-modal > .chat-content {
+.chat-modal > .chat-room {
   width: 70%;
   gap: 20px;
 }
-.chat-content > .content-top {
+.chat-modal > .chat-list {
+  width: 30%;
+  gap: 20px;
+}
+.chat-list > .content-top {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 40px;
+  margin-top: 50px;
+}
+
+.chat-list > .content-middle {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border-radius: 20px;
+  align-self: center;
+  width: 100%;
+  min-height: 70%;
+}
+.chat-list > .content-middle > div {
+  height: 40px;
+  line-height: 40px;
+  padding: 0px 40px;
+  display: flex;
+  justify-content: space-between;
+}
+.chat-list .selected-room {
+  background-color: var(--main2);
+}
+.chat-list .selected-room * {
+  color: var(--gray8);
+}
+.chat-list > .content-middle > div:hover {
+  background-color: var(--main2);
+}
+.chat-list > .content-middle > div:hover * {
+  color: var(--gray8);
+}
+.content-middle .room-title {
+  display: flex;
+  gap: 10px;
+}
+.chat-room > .content-top {
   display: flex;
   justify-content: space-between;
   padding: 10px 40px;
   margin-top: 10px;
   border-bottom: 1px solid var(--gray6);
 }
-.chat-content > .content-bottom {
-  display: flex;
-  justify-content: center;
-}
-.chat-content > .content-middle {
+.chat-room > .content-middle {
   border-radius: 20px;
   align-self: center;
-  width: 90%;
-  min-height: 80%;
+  width: 80%;
+  min-height: 70%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background-color: #f4f9ff;
+  overflow-y: auto;
+  gap: 12px;
+}
+
+/* 오른쪽 메시지 (내가 보낸 것) */
+.content-middle .right {
+  align-self: flex-end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.content-middle .right .chat-text {
+  background-color: var(--main5);
+}
+
+/* 왼쪽 메시지 (상대방) */
+.content-middle .left {
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.content-middle .chat-text {
+  margin-top: 20px;
+  max-width: 80%;
+  border-radius: 10px;
+  color: #000;
+  padding: 10px 14px;
+  font-size: 15px;
+  word-break: break-word;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+.content-middle .left .chat-text {
+  background-color: var(--gray6);
+}
+
+.chat-room > .content-bottom {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  border-top: 1px solid #ccc;
+  background-color: white;
+  border-radius: 0 0 20px 20px;
+}
+.chat-room > .content-bottom > input {
+  flex-grow: 1;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  height: 50px;
+  border-radius: 20px;
+  font-size: 14px;
+  outline: none;
+}
+.chat-room > .content-bottom > button {
+  height: 60px;
+  width: 120px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.chat-room > .content-bottom > button path {
+  color: var(--gray8);
 }

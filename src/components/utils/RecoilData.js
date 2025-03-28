@@ -25,7 +25,6 @@ const memberTypeState = atom({
 const isLoginState = selector({
   key: "isLoginState",
   get: (state) => {
-    //매개변수 state는 recoil에 저장된 데이터를 불러오기 위한 객체
     const loginNickname = state.get(loginNicknameState);
     return loginNickname !== "";
   },

@@ -2,10 +2,9 @@
   /*main color*/
   --main1: #3d3d3d;
   --main2: #30c272;
-  --main3: #0c311d;
-
-  --main4: #36c3fe;
-  --main5: #b6e6ee;
+  --main3: #166139;
+  --main4: rgb(47, 151, 33);
+  --main5: #b7e9c3;
   /*box-bg*/
   --box-bg: #f0f1f1;
   /*gray*/
@@ -151,6 +150,7 @@ body {
 
 .content {
   width: 100%;
+  min-height: 90vh;
   max-width: 1400px;
   margin: 30px auto;
   flex: 1;
@@ -163,6 +163,8 @@ body {
   color: var(--main2);
 }
 .footer {
+  position: relative;
+  height: 300px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -241,12 +243,12 @@ section.section.bg-section {
   box-sizing: border-box;
 }
 .btn-primary {
-  border: 1px solid var(--main3);
-  background-color: var(--main3);
+  border: none;
+  background-color: var(--main2);
   color: var(--gray8);
 }
 .btn-primary:hover {
-  background-color: rgba(10, 64, 126, 0.9);
+  background-color: var(--main3);
 }
 .btn-secondary {
   border: 1px solid var(--gray4);
