@@ -8,8 +8,6 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import Login from "./components/member/Login";
 import Join from "./components/member/Join";
 import Join2 from "./components/member/Join2";
-import RePw from "./components/member/RePw";
-import RePw2 from "./components/member/RePw2";
 // 여행 계획 관련
 import UpdatePw from "./components/member/UpdatePw";
 import UpdatePw2 from "./components/member/UpdatePw2";

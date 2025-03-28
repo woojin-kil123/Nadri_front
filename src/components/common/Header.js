@@ -16,7 +16,7 @@ import Dropdown from "../utils/Dropdown";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
 import { DropdownItem } from "../utils/metaSet";
-import { Map } from "@mui/icons-material";
+import { Logout, Map } from "@mui/icons-material";
 
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
@@ -26,7 +26,6 @@ import {
   memberTypeState,
 } from "../utils/RecoilData";
 import axios from "axios";
-
 
 const Header = () => {
   const isLogin = useRecoilValue(isLoginState);
@@ -39,17 +38,7 @@ const Header = () => {
         </div>
         <MainNavi></MainNavi>
 
-        <HeaderLink loginId={loginId} />
-        <button
-          onClick={() => {
-            setLoginId("유저1");
-          }}
-        >
-          로그인화면전환용
-        </button>
-
         <HeaderLink isLogin={isLogin} />
-
       </div>
     </header>
   );
@@ -95,10 +84,7 @@ const HeaderLink = (props) => {
     new DropdownItem(<CalendarTodayIcon />, "나의 일정", () => {
       navigate("/myplan");
     }),
-    new DropdownItem(<Logout />, "로그아웃", () => {
-      logout();
-    }),
-
+    new DropdownItem(<Logout />, "로그아웃", logout),
   ];
   const alarmMenu = [
     new DropdownItem(<TagFacesIcon />, "안녕하세요", null),
