@@ -1,7 +1,7 @@
 import "./default.css";
 import { Link, useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import Divider from "@mui/material/Divider";
@@ -22,11 +22,18 @@ import ChatIcon from "@mui/icons-material/Chat";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ChatModal from "../chat/ChatModal";
 import { Map } from "@mui/icons-material";
-import { useRecoilState } from "recoil";
-import { isPlannerState } from "../utils/RecoilData";
+import { useRecoilState, useRecoilValue } from "recoil";
+import {
+  isLoginState,
+  isPlannerState,
+  loginNicknameState,
+  memberTypeState,
+} from "../utils/RecoilData";
+import axios from "axios";
 
 const Header = () => {
-  const [loginId, setLoginId] = useState("");
+  const isLogin = useRecoilValue(isLoginState);
+  console.log(isLogin);
   return (
     <header className="header">
       <div>
@@ -34,7 +41,7 @@ const Header = () => {
           <Link to="/">NADRI</Link>
         </div>
         <MainNavi></MainNavi>
-        <HeaderLink loginId={loginId} />
+        <HeaderLink isLogin={isLogin} />
       </div>
     </header>
   );
@@ -62,15 +69,28 @@ const MainNavi = () => {
   );
 };
 const HeaderLink = (props) => {
-  const loginId = props.loginId;
+  const [memberNickname, setMemberNickname] =
+    useRecoilState(loginNicknameState);
+  const [memberType, setMemberType] = useRecoilState(memberTypeState);
+  const isLogin = props.isLogin;
   const navigate = useNavigate();
+  const logout = () => {
+    setMemberNickname("");
+    setMemberType(0);
+    delete axios.defaults.headers.common["Authorization"];
+    window.localStorage.removeItem("refreshToken");
+  };
   const accountMenu = [
-    new DropdownItem(<InfoIcon />, "내 정보", () => {
+    new DropdownItem(<InfoIcon />, memberNickname + "님의 정보", () => {
       navigate("/mypage");
     }),
     new DropdownItem(<CalendarTodayIcon />, "나의 일정", () => {
       navigate("/myplan");
     }),
+    new DropdownItem(<Logout />, "로그아웃", () => {
+      logout();
+    }),
+
   ];
   const alarmMenu = [
     new DropdownItem(<TagFacesIcon />, "안녕하세요", null),
@@ -103,7 +123,7 @@ const HeaderLink = (props) => {
   };
   return (
     <ul className="user-menu">
-      {loginId ? (
+      {isLogin ? (
         <>
           <ChatModal anchorEl={chatModalEl} setAnchorEl={setChatModalEl} />
           <li>
