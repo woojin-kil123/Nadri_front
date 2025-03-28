@@ -1,7 +1,7 @@
 import "./default.css";
 import { Link, useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import Divider from "@mui/material/Divider";
@@ -29,10 +29,11 @@ import {
   loginNicknameState,
   memberTypeState,
 } from "../utils/RecoilData";
+import axios from "axios";
 
 const Header = () => {
-  const [loginId, setLoginId] = useState("");
   const isLogin = useRecoilValue(isLoginState);
+  console.log(isLogin);
   return (
     <header className="header">
       <div>
@@ -73,6 +74,12 @@ const HeaderLink = (props) => {
   const [memberType, setMemberType] = useRecoilState(memberTypeState);
   const isLogin = props.isLogin;
   const navigate = useNavigate();
+  const logout = () => {
+    setMemberNickname("");
+    setMemberType(0);
+    delete axios.defaults.headers.common["Authorization"];
+    window.localStorage.removeItem("refreshToken");
+  };
   const accountMenu = [
     new DropdownItem(<InfoIcon />, memberNickname + "님의 정보", () => {
       navigate("/mypage");
@@ -82,6 +89,9 @@ const HeaderLink = (props) => {
     }),
     new DropdownItem(<Map />, "지도 유틸(개발용 임시)", () => {
       navigate("/mapInfo");
+    }),
+    new DropdownItem(<Logout />, "로그아웃", () => {
+      logout();
     }),
   ];
   const alarmMenu = [
