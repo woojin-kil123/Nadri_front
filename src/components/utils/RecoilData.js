@@ -9,9 +9,9 @@ const { persistAtom } = recoilPersist();
 //외부에서 데이터를 저장하거나 또는 사용하고싶으면 atom
 //외부에서 특정데이터를 통한 연산결과를 도출하고 싶으면 selector
 
-//로그인한 회원의 아이디를 저장하는 저장소(atom)
-const loginNickState = atom({
-  key: "loginNickState",
+//로그인한 회원의 닉네임을 저장하는 저장소(atom)
+const loginNicknameState = atom({
+  key: "loginNicknameState",
   default: "",
   effects_UNSTABLE: [persistAtom],
 });
@@ -25,9 +25,8 @@ const memberTypeState = atom({
 const isLoginState = selector({
   key: "isLoginState",
   get: (state) => {
-    //매개변수 state는 recoil에 저장된 데이터를 불러오기 위한 객체
-    const loginNick = state.get(loginNickState);
-    return loginNick !== "";
+    const loginNickname = state.get(loginNicknameState);
+    return loginNickname !== "";
   },
 });
 const isPlannerState = atom({
@@ -36,4 +35,4 @@ const isPlannerState = atom({
   effects_UNSTABLE: [persistAtom],
 });
 
-export { loginNickState, memberTypeState, isLoginState, isPlannerState };
+export { loginNicknameState, memberTypeState, isLoginState, isPlannerState };

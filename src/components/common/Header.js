@@ -1,7 +1,7 @@
 import "./default.css";
 import { Link, useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import Divider from "@mui/material/Divider";
@@ -18,8 +18,19 @@ import TagFacesIcon from "@mui/icons-material/TagFaces";
 import { DropdownItem } from "../utils/metaSet";
 import { Map } from "@mui/icons-material";
 
+import { useRecoilState, useRecoilValue } from "recoil";
+import {
+  isLoginState,
+  isPlannerState,
+  loginNicknameState,
+  memberTypeState,
+} from "../utils/RecoilData";
+import axios from "axios";
+
+
 const Header = () => {
-  const [loginId, setLoginId] = useState("");
+  const isLogin = useRecoilValue(isLoginState);
+  console.log(isLogin);
   return (
     <header className="header">
       <div>
@@ -27,6 +38,7 @@ const Header = () => {
           <Link to="/">NADRI</Link>
         </div>
         <MainNavi></MainNavi>
+
         <HeaderLink loginId={loginId} />
         <button
           onClick={() => {
@@ -35,6 +47,9 @@ const Header = () => {
         >
           로그인화면전환용
         </button>
+
+        <HeaderLink isLogin={isLogin} />
+
       </div>
     </header>
   );
@@ -62,10 +77,19 @@ const MainNavi = () => {
   );
 };
 const HeaderLink = (props) => {
-  const loginId = props.loginId;
+  const [memberNickname, setMemberNickname] =
+    useRecoilState(loginNicknameState);
+  const [memberType, setMemberType] = useRecoilState(memberTypeState);
+  const isLogin = props.isLogin;
   const navigate = useNavigate();
+  const logout = () => {
+    setMemberNickname("");
+    setMemberType(0);
+    delete axios.defaults.headers.common["Authorization"];
+    window.localStorage.removeItem("refreshToken");
+  };
   const accountMenu = [
-    new DropdownItem(<InfoIcon />, "내 정보", () => {
+    new DropdownItem(<InfoIcon />, memberNickname + "님의 정보", () => {
       navigate("/mypage");
     }),
     new DropdownItem(<CalendarTodayIcon />, "나의 일정", () => {
@@ -73,6 +97,9 @@ const HeaderLink = (props) => {
     }),
     new DropdownItem(<Map />, "지도 유틸(개발용 임시)", () => {
       navigate("/mapInfo");
+    }),
+    new DropdownItem(<Logout />, "로그아웃", () => {
+      logout();
     }),
   ];
   const alarmMenu = [
@@ -92,7 +119,7 @@ const HeaderLink = (props) => {
 
   return (
     <ul className="user-menu">
-      {loginId ? (
+      {isLogin ? (
         <>
           <li>
             <Box

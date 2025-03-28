@@ -11,6 +11,8 @@ import Join2 from "./components/member/Join2";
 import RePw from "./components/member/RePw";
 import RePw2 from "./components/member/RePw2";
 // 여행 계획 관련
+import UpdatePw from "./components/member/UpdatePw";
+import UpdatePw2 from "./components/member/UpdatePw2";
 import PlannerFrm from "./components/planner/PlannerFrm";
 // 콘텐츠 및 리뷰
 import ContentMain from "./components/content/ContentMain";
@@ -53,8 +55,8 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/join" element={<Join />} />
               <Route path="/join2" element={<Join2 />} />
-              <Route path="/rePw" element={<RePw />} />
-              <Route path="/rePw2" element={<RePw2 />} />
+              <Route path="/updatePw" element={<UpdatePw />} />
+              <Route path="/updatePw2" element={<UpdatePw2 />} />
               <Route path="/review/*" element={<ReviewMain />}></Route>
               <Route path="/mapInfo" element={<MapInfo />} /> {/*임시*/}
               <Route path="/tour" element={<ContentMain />} />
