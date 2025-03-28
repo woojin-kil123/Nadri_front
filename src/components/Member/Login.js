@@ -8,6 +8,9 @@ import { loginNicknameState, memberTypeState } from "../utils/RecoilData";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [memberNickname, setMemberNickname] =
+    useRecoilState(loginNicknameState);
+  const [memberType, setMemberType] = useRecoilState(memberTypeState);
   // member: 이메일과 비밀번호를 저장하는 상태
   const [member, setMember] = useState({ memberEmail: "", memberPw: "" });
 
@@ -60,6 +63,11 @@ const Login = () => {
       .post(`${process.env.REACT_APP_BACK_SERVER}/member/login`, member)
       .then((res) => {
         console.log(res);
+        setMemberNickname(res.data.memberNickname);
+        setMemberType(res.data.memberType);
+        //로그인 이후 axios를 통한 요청을 수행하는 경우 토큰값을 자동으로 axios에 추가하는 설정
+        axios.defaults.headers.common["Authorization"] = res.data.accessToken;
+        window.localStorage.setItem("refreshToken", res.data.refreshToken);
         // 로그인 성공 시, 로그인 상태 저장 및 페이지 이동
         navigate("/"); // 로그인 후 홈으로 이동
       })

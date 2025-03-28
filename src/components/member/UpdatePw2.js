@@ -10,7 +10,7 @@ const UpdatePw2 = () => {
 
   // 상태 관리: 회원 이메일과 비밀번호 저장
   const [member, setMember] = useState({
-    memberEmail: "user01@naver.com", // 기본 이메일 설정 (이메일 인증 페이지에서 전달된 이메일로 업데이트됨)
+    memberEmail: "", // 기본 이메일 설정 (이메일 인증 페이지에서 전달된 이메일로 업데이트됨)
     memberPw: "", // 비밀번호 상태
   });
 

@@ -10,7 +10,7 @@ const Join2 = () => {
 
   // 회원 정보를 관리하는 상태 변수
   const [member, setMember] = useState({
-    memberEmail: "user03@naver.com", // 기본 이메일 설정 (이메일 인증 페이지에서 전달된 이메일로 업데이트됨)
+    memberEmail: "", // 기본 이메일 설정 (이메일 인증 페이지에서 전달된 이메일로 업데이트됨)
     memberPw: "", // 비밀번호 상태
     memberNickname: "", // 닉네임 상태
     memberPhone: "", // 휴대폰 번호 상태
