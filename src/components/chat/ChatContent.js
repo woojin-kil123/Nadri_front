@@ -4,6 +4,12 @@ import { useEffect } from "react";
 const ChatContent = ({ ws, selectedRoom }) => {
   useEffect(() => {
     const chatNo = selectedRoom.chatNo;
+    const selectMsg = {
+      type: "select",
+      chatNo: chatNo,
+    };
+    const data = JSON.stringify(selectMsg);
+    ws.send(data);
   }, [selectedRoom]);
   return (
     <>
