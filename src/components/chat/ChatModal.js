@@ -17,7 +17,7 @@ const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
   const [ws, setWs] = useState({});
   const [chatRoom, setChatRoom] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
-
+  const [content, setContent] = useState([]);
   const backServer = process.env.REACT_APP_BACK_SERVER;
   const socketServer = backServer.replace("http://", "ws://");
   useEffect(() => {
@@ -34,14 +34,16 @@ const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
       socket.close();
     };
   }, []);
-  const startChat = (receiveData) => {
+  const startChat = () => {
     console.log("웹소켓 연결 시 실행되는 함수");
   };
   const receiveMsg = (receiveData) => {
     console.log("서버에서 데이터를 받으면 실행되는 함수");
     const data = JSON.parse(receiveData.data);
-    console.log(data);
-    setChatRoom(data);
+    console.log(data.room);
+    console.log(data.content);
+    data.room && setChatRoom(data.room);
+    data.content && setContent(data.content);
   };
   const endChat = () => {
     console.log("웹소켓 연결이 끊어지면 실행되는 함수");
@@ -95,7 +97,12 @@ const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
                   <CloseIcon />
                 </IconButton>
               </div>
-              <ChatContent ws={ws} selectedRoom={selectedRoom} />
+              <ChatContent
+                ws={ws}
+                selectedRoom={selectedRoom}
+                content={content}
+                setContent={setContent}
+              />
             </>
           ) : (
             <div>
