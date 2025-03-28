@@ -32,6 +32,7 @@
   margin: 10px;
 }
 
+/* 장소 리스트 */
 .spot-list {
   width: 300px;
   height: 796px;
@@ -64,8 +65,14 @@
 .spot-type {
   letter-spacing: -0.3px;
   font-size: 15px;
+  color: var(--gray4);
 }
 .spot-addr {
+  letter-spacing: -1px;
+  font-size: 14px;
+  color: var(--gray3);
+}
+.spot-ellipsis {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -85,25 +92,6 @@
   font-weight: 700;
   font-size: 14px;
 }
-
-.star-rating {
-  position: relative;
-  display: inline-block;
-  font-size: 16px;
-  line-height: 1;
-}
-.star-rating .back-stars {
-  color: var(--gray7);
-}
-.star-rating .front-stars {
-  position: absolute;
-  top: 0;
-  left: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  color: gold;
-}
-
 .spot-review-count {
   margin-left: 4px;
   font-weight: bold;
@@ -122,8 +110,29 @@
   font-weight: 700;
 }
 .spot-btn > button:hover {
-  background-color: var(--main5);
+  background-color: var(--main2);
+  color: var(--gray8);
 }
+/* 별점변환로직 */
+.star-rating {
+  position: relative;
+  display: inline-block;
+  font-size: 16px;
+  line-height: 1;
+}
+.star-rating .back-stars {
+  color: var(--gray7);
+}
+.star-rating .front-stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  color: gold;
+}
+
+/* 플래너(계획표) */
 .plan-window {
   width: 300px;
   height: 98%;
@@ -150,8 +159,10 @@
 }
 .close-btn {
   position: absolute;
+  top: 0;
   right: 0;
   cursor: pointer;
+  z-index: 1;
 }
 .plan-window-btn {
   position: absolute;
@@ -180,7 +191,20 @@
   font-size: 10px;
   font-weight: bold;
 }
+.plan-window-content {
+  margin-top: 20px;
+}
+.planned-item {
+  display: flex;
+  padding: 10px 0 0 15px;
+}
+.planned-img {
+  border-radius: 12px;
+  object-fit: cover;
+  margin-right: 10px;
+}
 
+/* 여행지에 추가하기 모달 */
 .modal-background {
   position: fixed;
   display: flex;
@@ -200,7 +224,11 @@
   background-color: var(--gray8);
   z-index: 3;
 }
+.planning-info {
+  margin-left: 20px;
+}
 
+/* 카카오 맵 */
 .map-wrap {
   width: calc(100% - 300px);
   height: 953px;
@@ -211,7 +239,7 @@
   left: 0;
   bottom: 40px;
   width: 288px;
-  height: 132px;
+  height: 152px;
   margin-left: -144px;
   text-align: left;
   overflow: hidden;
@@ -224,7 +252,7 @@
 }
 .overlay-wrap .overlay-info {
   width: 286px;
-  height: 120px;
+  /* height: 140px; */
   border-radius: 5px;
   border-bottom: 2px solid #ccc;
   border-right: 1px solid #ccc;
@@ -236,21 +264,32 @@
   box-shadow: 0px 1px 2px #888;
 }
 .overlay-info .overlay-title {
-  padding: 5px 0 0 10px;
-  height: 30px;
+  padding: 5px 0 5px 10px;
   background: #eee;
   border-bottom: 1px solid #ddd;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: flex-start;
+  white-space: normal;
+  word-break: break-all;
+}
+.overlay-title-name {
+  width: 240px;
+}
+.overlay-info .overlay-class {
+  margin-left: 6px;
+  margin-right: 40px;
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: -1px;
+  color: var(--gray4);
 }
 .overlay-info .overlay-close {
   position: absolute;
   top: 7px;
-  right: 15px;
-  color: #888;
-  width: 17px;
-  height: 17px;
-  /* background: url("https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png"); */
+  right: 7px;
 }
 .overlay-info .overlay-close:hover {
   cursor: pointer;
@@ -258,31 +297,42 @@
 .overlay-info .overlay-body {
   position: relative;
   overflow: hidden;
+  height: 106px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  /* margin-top: 10px; */
+  margin-left: 5px;
 }
 .overlay-info .overlay-desc {
   position: relative;
-  margin: 13px 0 0 90px;
-  height: 75px;
+  width: 180px;
+  /* margin: 0 0 0 90px; */
+  height: 80px;
 }
-.overlay-desc .overlay-ellipsis {
+.overlay-addr {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: 13px;
 }
-.overlay-desc .jibun {
+.overlay-desc .overlay-rating {
   font-size: 11px;
-  color: #888;
-  margin-top: -2px;
+  /* margin-top: -2px; */
+  margin-bottom: 21.5px;
+  letter-spacing: -1px;
 }
 .overlay-info .overlay-img {
-  position: absolute;
-  top: 6px;
-  left: 5px;
-  width: 73px;
-  height: 71px;
+  /* position: absolute; */
+  width: 85px;
+  height: 80px;
   border: 1px solid #ddd;
   color: #888;
   overflow: hidden;
+  margin-right: 10px;
+}
+.overlay-img > img {
+  object-fit: cover;
 }
 .overlay-info:after {
   content: "";
@@ -296,4 +346,6 @@
 }
 .overlay-info .overlay-link {
   color: #5085bb;
+  cursor: pointer;
+  font-size: 13px;
 }
