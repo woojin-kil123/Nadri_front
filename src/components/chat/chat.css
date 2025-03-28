@@ -1,3 +1,7 @@
+.chat-btn svg {
+  fill: var(--main2);
+}
+
 .chat-modal > div {
   background-color: aliceblue;
   border-radius: 20px;

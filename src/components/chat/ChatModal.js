@@ -2,8 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import "./chat.css";
 import { Modal, Box, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useRecoilValue } from "recoil";
-import { loginNoState } from "../utils/RecoilData";
 import SendIcon from "@mui/icons-material/Send";
 import ChatList from "./ChatList";
 
