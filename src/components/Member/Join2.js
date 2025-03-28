@@ -8,7 +8,7 @@ const Join2 = () => {
   const { email } = location.state || {}; // 이메일 데이터를 가져옴 (없으면 기본값으로 {} 설정)
   console.log(email);
   const [member, setMember] = useState({
-    memberEmail: "1233@ㅋㅋ",
+    memberEmail: "user01@naver.com",
     memberPw: "",
     memberNickname: "",
     memberPhone: "",
@@ -175,7 +175,7 @@ const Join2 = () => {
             </div>
             <div className="input-item">
               <input
-                text="password"
+                type="password"
                 name="memberPw"
                 id="memberPw"
                 value={member.memberPw}
@@ -191,7 +191,7 @@ const Join2 = () => {
             </div>
             <div className="input-item">
               <input
-                text="password"
+                type="password"
                 name="memberPwRe"
                 id="memberPwRe"
                 value={memberPwRe}
@@ -208,7 +208,7 @@ const Join2 = () => {
             </div>
             <div className="input-item">
               <input
-                text="text"
+                type="text"
                 name="memberNickname"
                 id="memberNickname"
                 value={member.memberNickname}
@@ -241,7 +241,7 @@ const Join2 = () => {
             </div>
             <div className="input-item">
               <input
-                text="text"
+                type="text"
                 name="memberPhone"
                 id="memberPhone"
                 value={member.memberPhone}

@@ -1,15 +1,49 @@
-import { Link, Route, Routes } from "react-router-dom";
 import "./member.css";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import axios from "axios";
+import Swal from "sweetalert2";
+import { useRecoilState } from "recoil";
+import { loginNoState, memberTypeState } from "../utils/RecoilData";
 
 const Login = () => {
-  const [member, setMember] = useState({ memberId: "", memberPw: "" });
+  const navigate = useNavigate();
+  const [memberNo, setMemberNo] = useRecoilState(loginNoState);
+  const [memberType, setMemberType] = useRecoilState(memberTypeState);
+  const [member, setMember] = useState({ memberEmail: "", memberPw: "" });
   const changeMember = (e) => {
     const name = e.target.name;
     const inputData = e.target.value;
     setMember({ ...member, [name]: inputData });
   };
-  const Login = () => {};
+  const Login = () => {
+    if (member.memberEmail === "" || member.memberPw === "") {
+      Swal.fire({
+        text: "아이디 또는 비밀번호를 입력하세요",
+        icon: "info",
+      });
+      return;
+    }
+
+    axios
+      .post(`${process.env.REACT_APP_BACK_SERVER}/member/login`, member)
+      .then((res) => {
+        console.log(res);
+        setMemberNo(res.data.memberNo);
+        setMemberType(res.data.memberType);
+        axios.defaults.headers.common["Authorization"] = res.data.accessToken;
+
+        window.localStorage.setItem("refreshToken", res.data.refreshToken);
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log(err);
+        Swal.fire({
+          text: "아이디 또는 비밀번호를 확인하세요.",
+          icon: "warning",
+        });
+      });
+  };
 
   return (
     <section className="section">
@@ -27,14 +61,14 @@ const Login = () => {
           >
             <div className="input-wrap">
               <div className="input-title">
-                <label htmlFor="memberId">이메일</label>
+                <label htmlFor="memberEmail">이메일</label>
               </div>
               <div className="input-item">
                 <input
                   type="text"
-                  name="memberId"
-                  id="memberId"
-                  value={member.memberId}
+                  name="memberEmail"
+                  id="memberEmail"
+                  value={member.memberEmail}
                   onChange={changeMember}
                 ></input>
               </div>
@@ -61,7 +95,7 @@ const Login = () => {
             </div>
             <div className="member-link-box">
               <Link to="/join">회원가입</Link>
-              <Link to="/rePw">비밀번호 재설정 </Link>
+              <Link to="/updatePw">비밀번호 재설정 </Link>
             </div>
           </form>
         </dlv>

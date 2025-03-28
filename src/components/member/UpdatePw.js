@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
-const Join = () => {
+const UpdatePw = () => {
   const navigate = useNavigate();
   const [member, setMember] = useState({
     memberEmail: "",
@@ -82,7 +82,7 @@ const Join = () => {
   const verifyEmailCode = () => {
     if (code === member.memberCode) {
       alert("인증이 완료되었습니다!");
-      navigate("/repw2", { state: { email: member.memberEmail } });
+      navigate("/updatePw2", { state: { email: member.memberEmail } });
     } else {
       alert("인증 코드가 일치하지 않습니다. 다시 확인해 주세요.");
     }
@@ -161,4 +161,4 @@ const Join = () => {
   );
 };
 
-export default Join;
+export default UpdatePw;

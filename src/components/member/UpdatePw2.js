@@ -2,13 +2,13 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-const Join2 = () => {
+const UpdatePw2 = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { email } = location.state || {}; // 이메일 데이터를 가져옴 (없으면 기본값으로 {} 설정)
   console.log(email);
   const [member, setMember] = useState({
-    memberEmail: "",
+    memberEmail: "user01@naver.com",
     memberPw: "",
   });
 
@@ -74,7 +74,7 @@ const Join2 = () => {
             </div>
             <div className="input-item">
               <input
-                text="password"
+                type="password"
                 name="memberPw"
                 id="memberPw"
                 value={member.memberPw}
@@ -90,7 +90,7 @@ const Join2 = () => {
             </div>
             <div className="input-item">
               <input
-                text="password"
+                type="password"
                 name="memberPwRe"
                 id="memberPwRe"
                 value={memberPwRe}
@@ -112,4 +112,4 @@ const Join2 = () => {
   );
 };
 
-export default Join2;
+export default UpdatePw2;
