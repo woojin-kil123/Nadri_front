@@ -22,11 +22,17 @@ import ChatIcon from "@mui/icons-material/Chat";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ChatModal from "../chat/ChatModal";
 import { Map } from "@mui/icons-material";
-import { useRecoilState } from "recoil";
-import { isPlannerState } from "../utils/RecoilData";
+import { useRecoilState, useRecoilValue } from "recoil";
+import {
+  isLoginState,
+  isPlannerState,
+  loginNicknameState,
+  memberTypeState,
+} from "../utils/RecoilData";
 
 const Header = () => {
   const [loginId, setLoginId] = useState("");
+  const isLogin = useRecoilValue(isLoginState);
   return (
     <header className="header">
       <div>
@@ -34,7 +40,7 @@ const Header = () => {
           <Link to="/">NADRI</Link>
         </div>
         <MainNavi></MainNavi>
-        <HeaderLink loginId={loginId} />
+        <HeaderLink isLogin={isLogin} />
       </div>
     </header>
   );
@@ -62,10 +68,13 @@ const MainNavi = () => {
   );
 };
 const HeaderLink = (props) => {
-  const loginId = props.loginId;
+  const [memberNickname, setMemberNickname] =
+    useRecoilState(loginNicknameState);
+  const [memberType, setMemberType] = useRecoilState(memberTypeState);
+  const isLogin = props.isLogin;
   const navigate = useNavigate();
   const accountMenu = [
-    new DropdownItem(<InfoIcon />, "내 정보", () => {
+    new DropdownItem(<InfoIcon />, memberNickname + "님의 정보", () => {
       navigate("/mypage");
     }),
     new DropdownItem(<CalendarTodayIcon />, "나의 일정", () => {
@@ -106,7 +115,7 @@ const HeaderLink = (props) => {
   };
   return (
     <ul className="user-menu">
-      {loginId ? (
+      {isLogin ? (
         <>
           <ChatModal anchorEl={chatModalEl} setAnchorEl={setChatModalEl} />
           <li>

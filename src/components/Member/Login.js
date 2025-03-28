@@ -4,11 +4,12 @@ import { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useRecoilState } from "recoil";
-import { loginNoState, memberTypeState } from "../utils/RecoilData";
+import { loginNicknameState, memberTypeState } from "../utils/RecoilData";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [memberNo, setMemberNo] = useRecoilState(loginNoState);
+  const [memberNickname, setMemberNickname] =
+    useRecoilState(loginNicknameState);
   const [memberType, setMemberType] = useRecoilState(memberTypeState);
   const [member, setMember] = useState({ memberEmail: "", memberPw: "" });
   const changeMember = (e) => {
@@ -29,7 +30,7 @@ const Login = () => {
       .post(`${process.env.REACT_APP_BACK_SERVER}/member/login`, member)
       .then((res) => {
         console.log(res);
-        setMemberNo(res.data.memberNo);
+        setMemberNickname(res.data.memberNickname);
         setMemberType(res.data.memberType);
         axios.defaults.headers.common["Authorization"] = res.data.accessToken;
 
