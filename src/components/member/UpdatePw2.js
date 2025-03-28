@@ -42,9 +42,8 @@ const UpdatePw2 = () => {
 
   // 비밀번호 일치 여부를 확인하는 함수
   const checkPw = () => {
-    pwMsgRef.current.classList.remove("input-ok"); // 이전 상태에서 input-ok, input-error, input-error2 클래스 제거
+    pwMsgRef.current.classList.remove("input-ok"); // 이전 상태에서 input-ok, input-error 클래스 제거
     pwMsgRef.current.classList.remove("input-error");
-    pwMsgRef.current.classList.remove("input-error2");
 
     if (member.memberPw && memberPwRe) {
       // 비밀번호와 비밀번호 확인 값이 null 또는 빈 문자열이 아니면
@@ -61,8 +60,8 @@ const UpdatePw2 = () => {
       }
     } else {
       // 비밀번호 또는 비밀번호 확인이 입력되지 않은 경우
-      pwMsgRef.current.classList.remove("input-ok", "input-error");
-      pwMsgRef.current.classList.add("input-error2");
+      pwMsgRef.current.classList.remove("input-ok");
+      pwMsgRef.current.classList.add("input-error");
       pwMsgRef.current.innerText = "비밀번호를 입력해주세요.";
       setIsFormValid(false); // 비밀번호가 입력되지 않으면 버튼을 비활성화
     }

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Join = () => {
   const navigate = useNavigate();
@@ -100,7 +101,10 @@ const Join = () => {
       alert("인증이 완료되었습니다!");
       navigate("/join2", { state: { email: member.memberEmail } }); // 인증 완료 후 회원 가입 2단계로 이동
     } else {
-      alert("인증 코드가 일치하지 않습니다. 다시 확인해 주세요."); // 인증 코드 불일치 시 경고 메시지
+      Swal.fire({
+        text: "인증 코드가 일치하지 않습니다. 다시 확인해 주세요",
+        icon: "info",
+      }); // 인증 코드 불일치 시 경고 메시지
     }
   };
 

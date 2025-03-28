@@ -12,10 +12,6 @@
   color: red; /* 빨간색으로 오류 메시지 표시 */
   font-size: 14px; /* 글자 크기 조정 */
 }
-.input-error2 {
-  color: black; /* 빨간색으로 오류 메시지 표시 */
-  font-size: 14px; /* 글자 크기 조정 */
-}
 .input-ok {
   color: green; /* 초록색으로 오케이 메시지 표시 */
   font-size: 14px; /* 글자 크기 조정 */

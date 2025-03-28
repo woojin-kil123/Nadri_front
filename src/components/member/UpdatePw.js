@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const UpdatePw = () => {
   const navigate = useNavigate(); // 페이지 이동을 위한 navigate 훅
@@ -89,7 +90,11 @@ const UpdatePw = () => {
       alert("인증이 완료되었습니다!"); // 인증 성공 시 알림
       navigate("/updatePw2", { state: { email: member.memberEmail } }); // 인증 성공 시 비밀번호 재설정 페이지로 이동
     } else {
-      alert("인증 코드가 일치하지 않습니다. 다시 확인해 주세요."); // 인증 코드 불일치 시 알림
+      Swal.fire({
+        text: "인증 코드가 일치하지 않습니다. 다시 확인해 주세요",
+        icon: "info",
+      });
+      // 인증 코드 불일치 시 알림
     }
   };
 
