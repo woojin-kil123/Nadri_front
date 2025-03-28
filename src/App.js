@@ -17,8 +17,7 @@ import PlannerFrm from "./components/planner/PlannerFrm";
 // 콘텐츠 및 리뷰
 import ContentMain from "./components/content/ContentMain";
 import ReviewMain from "./components/review/ReviewMain";
-// 유틸리티
-import MapInfo from "./components/utils/MapInfo";
+
 // 상태 관리
 import { useRecoilState } from "recoil";
 import { isPlannerState } from "./components/utils/RecoilData";
@@ -58,7 +57,6 @@ function App() {
               <Route path="/updatePw" element={<UpdatePw />} />
               <Route path="/updatePw2" element={<UpdatePw2 />} />
               <Route path="/review/*" element={<ReviewMain />}></Route>
-              <Route path="/mapInfo" element={<MapInfo />} /> {/*임시*/}
               <Route path="/tour" element={<ContentMain />} />
             </Routes>
           </div>

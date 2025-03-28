@@ -95,12 +95,10 @@ const HeaderLink = (props) => {
     new DropdownItem(<CalendarTodayIcon />, "나의 일정", () => {
       navigate("/myplan");
     }),
-    new DropdownItem(<Map />, "지도 유틸(개발용 임시)", () => {
-      navigate("/mapInfo");
-    }),
     new DropdownItem(<Logout />, "로그아웃", () => {
       logout();
     }),
+
   ];
   const alarmMenu = [
     new DropdownItem(<TagFacesIcon />, "안녕하세요", null),

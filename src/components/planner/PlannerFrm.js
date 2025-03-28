@@ -2,18 +2,37 @@ import { useRef, useState } from "react";
 import { CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
 import "./planner.css";
 import { Close, Search } from "@mui/icons-material";
-import { IconButton, InputBase, Menu, Paper } from "@mui/material";
+import { IconButton, InputBase, Paper } from "@mui/material";
 
 const PlannerFrm = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  //마커 오버레이 여닫음 state
+  const [openOverlay, setOpenOverlay] = useState(null);
+
+  //플래너 창 여닫음 state
   const [planWindow, setPlanwindow] = useState(false);
 
-  const [planningModal, setPlanningModal] = useState(false);
-  const planModalHandler = () => {
-    setPlanningModal(!planningModal);
-    console.log(planningModal);
+  //"플래너에 추가하기" 창 여닫음 state
+  const [openPlanningModal, setOpenPlanningModal] = useState(null);
+
+  //플래너에 추가한 장소 리스트 state
+  const [plannedSpot, setPlannedSpot] = useState([
+    {
+      dayDate: "",
+      startLocation: "",
+      transport: "",
+      endLocation: "",
+      order: "",
+    },
+  ]);
+  const handleAddSpot = (content) => {
+    const newSpot = {
+      dayDate: "",
+      startLocation: "",
+    };
+    setPlannedSpot([...plannedSpot, content]);
   };
 
+  //장소 리스트(임시 데이터)
   const [contentList, setContentList] = useState([
     {
       contentThumb:
@@ -23,35 +42,44 @@ const PlannerFrm = () => {
       contentAddr: "대전광역시 중구 사정공원로 70",
       contentReview: 1034,
       contentRating: 4.52,
+      contentLatLng: {
+        lat: 37.5358124,
+        lng: 126.8952968,
+      },
     },
     {
       contentThumb:
         "https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyNDExMDFfMTI3%2FMDAxNzMwNDIxNzMwOTk2.XIgrsfQZKau5dz1vICaytYVlbmnJvLOM0DxRt3HkGkYg.JF5wL5dOJ2ROsjxltR8Y-h4gQ3NOhk-7PMElB2F4pakg.JPEG%2F1000052381.jpg.jpg&type=f&size=340x180&quality=80&opt=2",
       contentTitle: "행복양꼬치",
-      contentType: "식당",
+      contentType: "음식점",
       contentAddr: "서을특별시 은평구 구산동 역말로 47",
       contentReview: 123,
       contentRating: 3.12,
+      contentLatLng: {
+        lat: 37.5355274,
+        lng: 126.8991667,
+      },
     },
     {
       contentThumb:
         "https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyNDExMDFfMTI3%2FMDAxNzMwNDIxNzMwOTk2.XIgrsfQZKau5dz1vICaytYVlbmnJvLOM0DxRt3HkGkYg.JF5wL5dOJ2ROsjxltR8Y-h4gQ3NOhk-7PMElB2F4pakg.JPEG%2F1000052381.jpg.jpg&type=f&size=340x180&quality=80&opt=2",
       contentTitle: "KH정보교육원 당산지원",
-      contentType: "숙소",
+      contentType: "숙박시설",
       contentAddr: "서울특별시 영등포구 선유동2로 57 이레빌딩 19층",
       contentReview: 54,
-      contentRating: 1.1,
+      contentRating: 1.7,
+      contentLatLng: {
+        lat: 37.53378661113698,
+        lng: 126.89695153857365,
+      },
     },
   ]);
 
-  const markerPosition = {
-    lat: 37.5341338,
-    lng: 126.897333254,
-  };
-  const mapRef = useRef(null);
-  // const map = mapRef.current;
-  // console.log(map);
-  // console.log(map.getCenter());
+  //추후 사용할 지도 시작 위치(가운데 좌표)
+  const [mapCenter, setMapCenter] = useState({
+    lat: 0,
+    lng: 0,
+  });
 
   return (
     <div className="all-wrap">
@@ -61,8 +89,8 @@ const PlannerFrm = () => {
             <CustomizedInputBase />
           </div>
           <div className="filter-wrap">
-            <div>숙소</div>
-            <div>식당</div>
+            <div>숙박시설</div>
+            <div>음식점</div>
             <div>즐길거리</div>
           </div>
           <div className="sort-wrap">
@@ -80,21 +108,20 @@ const PlannerFrm = () => {
                 key={"spot-" + idx}
                 content={content}
                 idx={idx}
-                planModalHandler={planModalHandler}
+                handleAddSpot={handleAddSpot}
+                openPlanningModal={openPlanningModal}
+                setOpenPlanningModal={setOpenPlanningModal}
               />
             );
           })}
         </div>
       </div>
       {planWindow ? (
-        <div className="plan-window">
-          <Close
-            className="close-btn"
-            onClick={() => {
-              setPlanwindow(false);
-            }}
-          />
-        </div>
+        <Planner
+          setPlanwindow={setPlanwindow}
+          plannedSpot={plannedSpot}
+          setPlannedSpot={setPlannedSpot}
+        />
       ) : (
         <div
           className="plan-window-btn"
@@ -107,78 +134,18 @@ const PlannerFrm = () => {
         </div>
       )}
       <div className="map-wrap">
-        <Map // 지도를 표시할 Container
-          id={`kakaomap`}
-          ref={mapRef}
-          center={{
-            // 지도의 중심좌표
-            lat: 37.5341338,
-            lng: 126.897333254,
-          }}
-          style={{
-            // 지도의 크기
-            width: "100%",
-            height: "100%",
-          }}
-          level={3} // 지도의 확대 레벨
-        >
-          <MapMarker
-            position={markerPosition}
-            onClick={() => setIsOpen(true)}
-          />
-          {isOpen && (
-            <CustomOverlayMap position={markerPosition}>
-              <div className="overlay-wrap">
-                <div className="overlay-info">
-                  <div className="overlay-title">
-                    KH 정보교육원 당산지원
-                    <div
-                      className="overlay-close"
-                      onClick={() => setIsOpen(false)}
-                      title="닫기"
-                    >
-                      <Close />
-                    </div>
-                  </div>
-                  <div className="overlay-body">
-                    <div className="overlay-img">
-                      <img
-                        src="https://t1.daumcdn.net/thumb/C84x76/?fname=http://t1.daumcdn.net/localfiy/D30EC4B18F484C6F9F4AA23D421DDF30"
-                        width="73"
-                        height="70"
-                        alt="카카오 스페이스닷원"
-                      />
-                    </div>
-                    <div className="overlay-desc">
-                      <div className="overlay-ellipsis">
-                        서울 영등포구 선유동2로 57 이레빌딩 19-20층
-                      </div>
-                      <div className="jibun overlay-ellipsis">
-                        (지번) 양평동4가 2
-                      </div>
-                      <div>
-                        <a
-                          href="https://kh-academy.co.kr/main/main.kh"
-                          target="_blank"
-                          className="overlay-link"
-                          rel="noreferrer"
-                        >
-                          홈페이지
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CustomOverlayMap>
-          )}
-        </Map>
+        <PrintMap
+          contentList={contentList}
+          setContentList={setContentList}
+          openOverlay={openOverlay}
+          setOpenOverlay={setOpenOverlay}
+        />
       </div>
-      {planningModal && <PlanModal planModalHandler={planModalHandler} />}
     </div>
   );
 };
 
+// 검색 창
 const CustomizedInputBase = () => {
   return (
     <Paper
@@ -205,9 +172,14 @@ const CustomizedInputBase = () => {
   );
 };
 
+// 장소 데이터 출력 창
 const PrintSpotList = (props) => {
   const content = props.content;
-  const planModalHandler = props.planModalHandler;
+  const idx = props.idx;
+  const [openPlanningModal, setOpenPlanningModal] = [
+    props.openPlanningModal,
+    props.setOpenPlanningModal,
+  ];
 
   return (
     <div className="spot-item">
@@ -216,7 +188,7 @@ const PrintSpotList = (props) => {
         <span className="spot-title">{content.contentTitle}</span>
         <span className="spot-type">{content.contentType}</span>
       </div>
-      <div className="spot-addr">{content.contentAddr}</div>
+      <div className="spot-addr spot-ellipsis">{content.contentAddr}</div>
       <div className="spot-review-wrap">
         <div>
           <StarRating rating={content.contentRating} />
@@ -230,14 +202,23 @@ const PrintSpotList = (props) => {
         </div>
       </div>
       <div className="spot-btn">
-        <button onClick={planModalHandler}>선택</button>
+        <button onClick={() => setOpenPlanningModal(idx)}>선택</button>
       </div>
+      {openPlanningModal === idx && (
+        <PlanningModal
+          openPlanningModal={openPlanningModal}
+          setOpenPlanningModal={setOpenPlanningModal}
+          content={content}
+        />
+      )}
     </div>
   );
 };
 
-const StarRating = (rating) => {
+// 리뷰 평점으로 별 채우기
+const StarRating = ({ rating }) => {
   const percentage = (rating / 5) * 100;
+
   return (
     <div className="star-rating">
       <div className="back-stars">★★★★★</div>
@@ -248,21 +229,189 @@ const StarRating = (rating) => {
   );
 };
 
-const PlanModal = (props) => {
-  const planModalHandler = props.planModalHandler;
+// 여행 플래너 출력 창
+const Planner = (props) => {
+  const setPlanwindow = props.setPlanwindow;
+  const [plannedSpot, setPlannedSpot] = [
+    props.plannedSpot,
+    props.setPlannedSpot,
+  ];
+  return (
+    <div className="plan-window">
+      <Close className="close-btn" onClick={() => setPlanwindow(false)} />
+      <div className="plan-window-content">
+        {plannedSpot.map((content, idx) => {
+          return (
+            <div className="planned-item" key={"planned-" + idx}>
+              <img
+                className="planned-img"
+                src={content.contentThumb}
+                alt="테스트"
+                width="50px"
+                height="50px"
+              />
+              <div className="spot-item">
+                <div className="spot-title-wrap">
+                  <span className="spot-title">{content.contentTitle}</span>
+                  <span className="spot-type">{content.contentType}</span>
+                </div>
+                <div className="spot-addr spot-ellipsis">
+                  {content.contentAddr}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+// "여행지에 추가하기" 모달 창
+const PlanningModal = (props) => {
+  const [openPlanningModal, setOpenPlanningModal] = [
+    props.openPlanningModal,
+    props.setOpenPlanningModal,
+  ];
+  const content = props.content;
 
   return (
     <div className="modal-background">
       <div className="planning-modal">
-        <Close onClick={planModalHandler} className="close-btn" />
+        <div className="planning-header">여행지에 추가하기</div>
+        <Close
+          onClick={() => setOpenPlanningModal(null)}
+          className="close-btn"
+        />
         <div className="planning-info">
-          <div className="planning-img-wrap">
-            <h2>하이</h2>
+          <img
+            className="planned-img"
+            src={content.contentThumb}
+            alt="테스트"
+            width="50px"
+            height="50px"
+          />
+          <div className="spot-item">
+            <div className="spot-title-wrap">
+              <span className="spot-title">{content.contentTitle}</span>
+              <span className="spot-type">{content.contentType}</span>
+            </div>
+            <div className="spot-addr">{content.contentAddr}</div>
           </div>
         </div>
-        <div className="planning-input"></div>
+      </div>
+      <div className="planning-input">
+        <div className="spot-btn">
+          <button>추가</button>
+        </div>
       </div>
     </div>
+  );
+};
+
+const PrintMap = (props) => {
+  const [contentList, setContentList] = [
+    props.contentList,
+    props.setContentList,
+  ];
+  const [openOverlay, setOpenOverlay] = [
+    props.openOverlay,
+    props.setOpenOverlay,
+  ];
+
+  return (
+    <Map // 지도를 표시할 Container
+      id={`kakaomap`}
+      center={{
+        // 지도의 중심좌표
+        lat: 37.5341338,
+        lng: 126.897333254,
+      }}
+      style={{
+        // 지도의 크기
+        width: "100%",
+        height: "100%",
+      }}
+      level={3} // 지도의 확대 레벨
+      //좌표 추출 임시툴
+      onClick={(map, e) => {
+        console.log(e.latLng.getLat() + " " + e.latLng.getLng());
+      }}
+      onCreate={(map) => {
+        console.log(map.getCenter());
+      }}
+    >
+      {contentList.map((spot, idx) => {
+        return (
+          <div key={"marker-" + idx}>
+            <MapMarker
+              position={spot.contentLatLng}
+              onClick={() => setOpenOverlay(idx)}
+            />
+            {openOverlay === idx && (
+              <CustomOverlayMap position={spot.contentLatLng}>
+                <div className="overlay-wrap">
+                  <div className="overlay-info">
+                    <div className="overlay-title">
+                      <div className="overlay-title-name">
+                        {spot.contentTitle}
+                        <span className="overlay-class">
+                          {spot.contentType}
+                        </span>
+                      </div>
+                      <div
+                        className="overlay-close"
+                        onClick={() => setOpenOverlay(null)}
+                        title="닫기"
+                      >
+                        <Close />
+                      </div>
+                    </div>
+                    <div className="overlay-body">
+                      <div className="overlay-img">
+                        <img
+                          // src="https://t1.daumcdn.net/thumb/C84x76/?fname=http://t1.daumcdn.net/localfiy/D30EC4B18F484C6F9F4AA23D421DDF30"
+                          src={spot.contentThumb}
+                          width="85"
+                          height="80"
+                          alt={spot.contentTitle}
+                        />
+                      </div>
+                      <div className="overlay-desc">
+                        <div className="overlay-addr">{spot.contentAddr}</div>
+                        <div className="overlay-rating">
+                          <StarRating rating={spot.contentRating} />
+                          <span>
+                            ({" "}
+                            {spot.contentReview > 999
+                              ? "999+"
+                              : spot.contentReview}{" "}
+                            )
+                          </span>
+                        </div>
+                        <div className="overlay-below">
+                          <div
+                            className="overlay-link"
+                            // href="#"
+                            // target="_blank"
+                            // rel="noreferrer"
+                          >
+                            상세보기
+                          </div>
+                          <div className="spot-btn">
+                            <button onClick={() => {}}>추가</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CustomOverlayMap>
+            )}
+          </div>
+        );
+      })}
+    </Map>
   );
 };
 
