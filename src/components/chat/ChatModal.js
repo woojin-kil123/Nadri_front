@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import "./chat.css";
 import { Modal, Box, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import SendIcon from "@mui/icons-material/Send";
+
 import ChatList from "./ChatList";
+import ChatContent from "./ChatContent";
 
 const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
   //const userNick = useRecoilValue(loginNickState);
@@ -14,11 +15,11 @@ const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
   };
 
   const [ws, setWs] = useState({});
+  const [chatRoom, setChatRoom] = useState([]);
+  const [selectedRoom, setSelectedRoom] = useState(null);
 
   const backServer = process.env.REACT_APP_BACK_SERVER;
-  // 웹소켓 요청  형식 WS://192.168.10.20:8888
   const socketServer = backServer.replace("http://", "ws://");
-
   useEffect(() => {
     const socket = new WebSocket(
       `${socketServer}/chat?memberNickname=${memberNickname}`
@@ -33,10 +34,21 @@ const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
       socket.close();
     };
   }, []);
-  const startChat = () => {
+  const startChat = (receiveData) => {
     console.log("웹소켓 연결 시 실행되는 함수");
   };
+  const receiveMsg = (receiveData) => {
+    console.log("서버에서 데이터를 받으면 실행되는 함수");
+    const data = JSON.parse(receiveData.data);
+    console.log(data);
+    setChatRoom(data);
+  };
+  const endChat = () => {
+    console.log("웹소켓 연결이 끊어지면 실행되는 함수");
+  };
   ws.onopen = startChat;
+  ws.onmessage = receiveMsg;
+  ws.onclose = endChat;
   return (
     <Modal
       open={Boolean(anchorEl)}
@@ -65,29 +77,31 @@ const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
             <h2>채팅목록</h2>
           </div>
           <div className="content-middle">
-            <ChatList ws={ws} setWs={setWs} />
-            <p>방1</p>
-            <p>방2</p>
-            <p>방3</p>
+            <ChatList
+              chatRoom={chatRoom}
+              selectedRoom={selectedRoom}
+              setSelectedRoom={setSelectedRoom}
+            />
           </div>
           <div className="content-bottom"></div>
         </div>
         <div></div>
-        <div className="chat-content">
-          <div className="content-top">
-            <h2>채팅내용</h2>
-            <IconButton onClick={close}>
-              <CloseIcon />
-            </IconButton>
-          </div>
-          <div className="content-middle"></div>
-          <div className="content-bottom">
-            <input placeholder="텍스트 입력" />
-            <button className="btn-primary">
-              보내기
-              <SendIcon />
-            </button>
-          </div>
+        <div className="chat-room">
+          {selectedRoom ? (
+            <>
+              <div className="content-top">
+                <h2>{selectedRoom.chatTitle}</h2>
+                <IconButton onClick={close}>
+                  <CloseIcon />
+                </IconButton>
+              </div>
+              <ChatContent ws={ws} selectedRoom={selectedRoom} />
+            </>
+          ) : (
+            <div>
+              <h1>깨끗한 채팅 부탁드립니다.</h1>
+            </div>
+          )}
         </div>
       </Box>
     </Modal>

@@ -12,7 +12,7 @@
 .chat-modal > .chat-list {
   width: 30%;
 }
-.chat-modal > .chat-content {
+.chat-modal > .chat-room {
   width: 70%;
   gap: 20px;
 }
@@ -26,6 +26,7 @@
   padding: 10px 40px;
   margin-top: 50px;
 }
+
 .chat-list > .content-middle {
   display: flex;
   flex-direction: column;
@@ -35,32 +36,44 @@
   width: 100%;
   min-height: 70%;
 }
-.chat-list > .content-middle > * {
+.chat-list > .content-middle > div {
   height: 40px;
-  text-indent: 50px;
   line-height: 40px;
+  padding: 0px 40px;
+  display: flex;
+  justify-content: space-between;
 }
-
-.chat-list > .content-middle > *:hover {
+.chat-list .selected-room {
   background-color: var(--main2);
+}
+.chat-list .selected-room * {
   color: var(--gray8);
 }
-
-.chat-content > .content-top {
+.chat-list > .content-middle > div:hover {
+  background-color: var(--main2);
+}
+.chat-list > .content-middle > div:hover * {
+  color: var(--gray8);
+}
+.content-middle .room-title {
+  display: flex;
+  gap: 10px;
+}
+.chat-room > .content-top {
   display: flex;
   justify-content: space-between;
   padding: 10px 40px;
   margin-top: 10px;
   border-bottom: 1px solid var(--gray6);
 }
-.chat-content > .content-middle {
+.chat-room > .content-middle {
   border-radius: 20px;
   align-self: center;
   width: 80%;
   min-height: 70%;
 }
 
-.chat-content > .content-bottom {
+.chat-room > .content-bottom {
   align-self: center;
   width: 100%;
   height: 100px;
@@ -71,20 +84,20 @@
   gap: 50px;
   align-items: center;
 }
-.chat-content > .content-bottom > input {
+.chat-room > .content-bottom > input {
   width: 80%;
   border-radius: 20px;
   border: none;
   height: 60px;
   text-indent: 20px;
 }
-.chat-content > .content-bottom > button {
+.chat-room > .content-bottom > button {
   height: 40px;
   width: 120px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.chat-content > .content-bottom > button path {
+.chat-room > .content-bottom > button path {
   color: var(--gray8);
 }
