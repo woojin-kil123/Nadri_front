@@ -2,14 +2,12 @@ import TelegramIcon from "@mui/icons-material/Telegram";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import StarOutlineIcon from "@mui/icons-material/StarOutline";
+import GradeIcon from "@mui/icons-material/Grade";
 import { useEffect, useState } from "react";
-import { IconButton } from "@mui/material";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { IconButton, InputBase, Paper } from "@mui/material";
 import { DropdownItem } from "../utils/metaSet";
-import Dropdown from "../utils/Dropdown";
 
-const ChatContent = ({ ws, selectedRoom, content, setContent }) => {
+const ChatContent = ({ ws, selectedRoom, content }) => {
   const loginNick = "길우진";
   const [msg, setMsg] = useState("");
   const chatNo = selectedRoom.chatNo;
@@ -21,7 +19,6 @@ const ChatContent = ({ ws, selectedRoom, content, setContent }) => {
     const data = JSON.stringify(selectMsg);
     ws.send(data);
   }, [selectedRoom]);
-
   const send = () => {
     if (!msg) {
       return;
@@ -34,45 +31,20 @@ const ChatContent = ({ ws, selectedRoom, content, setContent }) => {
     const data = JSON.stringify(chatMsg);
     ws.send(data);
   };
-  const moreMenu = [
-    new DropdownItem(
-      <PersonAddIcon sx={{ width: 35, height: 35, fill: "#30c272" }} />,
-      "초대하기",
-      () => {}
-    ),
-    new DropdownItem(
-      <ExitToAppIcon sx={{ width: 35, height: 35, fill: "#ff3d00" }} />,
-      "방 나가기",
-      () => {}
-    ),
-  ];
-  const [moreEl, setMoreEl] = useState(null);
-  const moreOpen = (e) => {
-    setMoreEl(e.currentTarget);
-  };
+
   return (
     <>
       <div className="content-top">
-        <div className="chat-title-wrap warning-icon">
+        <div className="chat-title-wrap">
+          <GradeIcon sx={{ width: 30, height: 30, cursor: "pointer" }} />
           <h2>{selectedRoom.chatTitle}</h2>
-          <StarOutlineIcon sx={{ width: 35, height: 35, cursor: "pointer" }} />
         </div>
-        <IconButton
-          onClick={moreOpen}
-          size="small"
-          aria-controls={moreEl ? "more-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={moreEl ? "true" : undefined}
-        >
-          <MoreVertIcon sx={{ width: 32, height: 32 }} />
-          <Dropdown
-            className={"more-drop"}
-            id={"more-menu"}
-            menus={moreMenu}
-            anchorEl={moreEl}
-            setAnchorEl={setMoreEl}
-          ></Dropdown>
-        </IconButton>
+        <div className="chat-search-wrap">
+          <CustomizedInputBase />
+          <IconButton sx={{ ml: 2, padding: 0 }} onClick={() => {}}>
+            <ExitToAppIcon sx={{ width: 35, height: 35, fill: "#dc143c" }} />
+          </IconButton>
+        </div>
       </div>
       <div className="content-middle">
         {content.map((c, i) => {
@@ -111,4 +83,37 @@ const ChatContent = ({ ws, selectedRoom, content, setContent }) => {
     </>
   );
 };
+
+// 검색 창
+const CustomizedInputBase = () => {
+  return (
+    <Paper
+      component="form"
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        height: 40,
+        width: 250,
+        padding: 0.3,
+      }}
+    >
+      <InputBase
+        aria-label="search"
+        sx={{ ml: 2, fontSize: "12px" }}
+        placeholder="초대할 닉네임을 입력하세요"
+      />
+      <IconButton
+        sx={{ mr: 2, padding: 0 }}
+        aria-label="search"
+        onClick={() => {
+          console.log("hi");
+        }}
+      >
+        <PersonAddIcon sx={{ width: 30, height: 30, fill: "#30c272" }} />
+      </IconButton>
+    </Paper>
+  );
+};
+
 export default ChatContent;

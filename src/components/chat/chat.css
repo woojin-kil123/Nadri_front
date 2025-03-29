@@ -47,30 +47,34 @@
   color: var(--gray8);
 }
 .chat-list > .content-middle > div:hover {
-  background-color: var(--main2);
   cursor: pointer;
 }
 .chat-list > .content-middle > div:hover * {
-  color: var(--gray8);
+  font-size: 18px;
+  transition: 0.3s;
 }
 .content-middle .room-title {
   display: flex;
+  align-items: center;
   gap: 10px;
 }
 .chat-room > .content-top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 10px 60px;
-  gap: 40px;
+  justify-content: space-between;
   margin-top: 10px;
   border-bottom: 1px solid var(--gray6);
 }
 .content-top > .chat-title-wrap {
   display: flex;
+  align-items: center;
   gap: 10px;
 }
-
+.content-top > .chat-search-wrap {
+  display: flex;
+  align-items: center;
+}
 .chat-room > .content-middle {
   border-radius: 20px;
   align-self: center;

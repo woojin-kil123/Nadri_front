@@ -8,7 +8,7 @@ import ChatContent from "./ChatContent";
 import { useRecoilValue } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
 
-const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
+const ChatModal = ({ anchorEl, setAnchorEl }) => {
   //const userNick = useRecoilValue(loginNickState);
   //const memberNickname = useRecoilValue(loginNicknameState);
   //테스트용
@@ -33,8 +33,6 @@ const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
     //return 함수는 컴포넌트가 언마운트될 때 동작해야할 코드를 작성하는 영역 -> 해당 페이지를 벗어날때 초기화해야하는게 있으면 여기서
     return () => {
       console.log("채팅페이지에서 벗어나면 실행");
-      //ws.close()는 setWs(socket)이 아직 동작하지 않았으므로 에러발생
-      //socket.close()함수가돌아가면 endChat 함수가 동작
       socket.close();
     };
   }, []);
@@ -112,7 +110,6 @@ const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
                 ws={ws}
                 selectedRoom={selectedRoom}
                 content={content}
-                setContent={setContent}
               />
             </>
           ) : (
