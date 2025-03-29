@@ -5,7 +5,9 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import { useEffect, useState } from "react";
 import { IconButton } from "@mui/material";
-import { pink } from "@mui/material/colors";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { DropdownItem } from "../utils/metaSet";
+import Dropdown from "../utils/Dropdown";
 
 const ChatContent = ({ ws, selectedRoom, content, setContent }) => {
   const loginNick = "길우진";
@@ -32,6 +34,22 @@ const ChatContent = ({ ws, selectedRoom, content, setContent }) => {
     const data = JSON.stringify(chatMsg);
     ws.send(data);
   };
+  const moreMenu = [
+    new DropdownItem(
+      <PersonAddIcon sx={{ width: 35, height: 35, fill: "#30c272" }} />,
+      "초대하기",
+      () => {}
+    ),
+    new DropdownItem(
+      <ExitToAppIcon sx={{ width: 35, height: 35, fill: "#ff3d00" }} />,
+      "방 나가기",
+      () => {}
+    ),
+  ];
+  const [moreEl, setMoreEl] = useState(null);
+  const moreOpen = (e) => {
+    setMoreEl(e.currentTarget);
+  };
   return (
     <>
       <div className="content-top">
@@ -39,14 +57,22 @@ const ChatContent = ({ ws, selectedRoom, content, setContent }) => {
           <h2>{selectedRoom.chatTitle}</h2>
           <StarOutlineIcon sx={{ width: 35, height: 35, cursor: "pointer" }} />
         </div>
-        <div className="content-btn-wrap">
-          <IconButton className="primary-icon">
-            <PersonAddIcon sx={{ width: 35, height: 35 }} />
-          </IconButton>
-          <IconButton className="danger-icon">
-            <ExitToAppIcon sx={{ width: 35, height: 35 }} />
-          </IconButton>
-        </div>
+        <IconButton
+          onClick={moreOpen}
+          size="small"
+          aria-controls={moreEl ? "more-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={moreEl ? "true" : undefined}
+        >
+          <MoreVertIcon sx={{ width: 32, height: 32 }} />
+          <Dropdown
+            className={"more-drop"}
+            id={"more-menu"}
+            menus={moreMenu}
+            anchorEl={moreEl}
+            setAnchorEl={setMoreEl}
+          ></Dropdown>
+        </IconButton>
       </div>
       <div className="content-middle">
         {content.map((c, i) => {
