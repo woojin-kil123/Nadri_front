@@ -5,10 +5,12 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import ChatList from "./ChatList";
 import ChatContent from "./ChatContent";
+import { useRecoilValue } from "recoil";
+import { loginNicknameState } from "../utils/RecoilData";
 
 const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
   //const userNick = useRecoilValue(loginNickState);
-  const memberNickname = "길우진";
+  const memberNickname = useRecoilValue(loginNicknameState);
   const close = (e) => {
     e.stopPropagation();
     setAnchorEl(null);
