@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./chat.css";
 import { Modal, Box, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-
+import PostAddIcon from "@mui/icons-material/PostAdd";
 import ChatList from "./ChatList";
 import ChatContent from "./ChatContent";
 import { useRecoilValue } from "recoil";
@@ -10,7 +10,9 @@ import { loginNicknameState } from "../utils/RecoilData";
 
 const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
   //const userNick = useRecoilValue(loginNickState);
-  const memberNickname = useRecoilValue(loginNicknameState);
+  //const memberNickname = useRecoilValue(loginNicknameState);
+  //테스트용
+  const memberNickname = "길우진";
   const close = (e) => {
     e.stopPropagation();
     setAnchorEl(null);
@@ -79,6 +81,16 @@ const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
         <div className="chat-list">
           <div className="content-top">
             <h2>채팅목록</h2>
+            <IconButton
+              size="medium"
+              className="primary-icon"
+              sx={{
+                padding: 1,
+                boxSizing: "border-box",
+              }}
+            >
+              <PostAddIcon sx={{ width: 45, height: 45 }} />
+            </IconButton>
           </div>
           <div className="content-middle">
             <ChatList
@@ -93,12 +105,9 @@ const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
         <div className="chat-room">
           {selectedRoom ? (
             <>
-              <div className="content-top">
-                <h2>{selectedRoom.chatTitle}</h2>
-                <IconButton onClick={close}>
-                  <CloseIcon />
-                </IconButton>
-              </div>
+              <IconButton className="close-btn" onClick={close}>
+                <CloseIcon />
+              </IconButton>
               <ChatContent
                 ws={ws}
                 selectedRoom={selectedRoom}

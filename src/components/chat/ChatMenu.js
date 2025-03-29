@@ -52,13 +52,13 @@ const ChatMenu = ({ chatEl, setChatEl }) => {
       <IconButton
         onClick={chatOpen}
         size="small"
-        className="chat-btn"
+        className="primary-icon"
         sx={{
           position: "fixed",
           bottom: isFooterVisible ? "350px" : "5%",
           right: "10%",
           zIndex: 100,
-          padding: 0,
+          padding: 2,
           boxSizing: "border-box",
           transition: "bottom 0.3s ease-in-out",
         }}
