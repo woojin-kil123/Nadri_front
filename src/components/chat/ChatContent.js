@@ -13,7 +13,7 @@ const ChatContent = ({ ws, selectedRoom, content }) => {
   const chatNo = selectedRoom.chatNo;
   useEffect(() => {
     const selectMsg = {
-      type: "select",
+      type: "SELECT_ROOM",
       chatNo: chatNo,
     };
     const data = JSON.stringify(selectMsg);
@@ -36,7 +36,6 @@ const ChatContent = ({ ws, selectedRoom, content }) => {
     <>
       <div className="content-top">
         <div className="chat-title-wrap">
-          <GradeIcon sx={{ width: 30, height: 30, cursor: "pointer" }} />
           <h2>{selectedRoom.chatTitle}</h2>
         </div>
         <div className="chat-search-wrap">

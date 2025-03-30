@@ -29,23 +29,32 @@ const ChatModal = ({ anchorEl, setAnchorEl }) => {
       `${socketServer}/chat?memberNickname=${memberNickname}`
     );
     setWs(socket);
-    //mount 될 때 useEffect함수가 실행됨.
-    //return 함수는 컴포넌트가 언마운트될 때 동작해야할 코드를 작성하는 영역 -> 해당 페이지를 벗어날때 초기화해야하는게 있으면 여기서
     return () => {
       console.log("채팅페이지에서 벗어나면 실행");
       socket.close();
     };
   }, []);
+
   const startChat = () => {
     console.log("웹소켓 연결 시 실행되는 함수");
+    const msg = {
+      type: "FETCH_ROOM_LIST",
+    };
+    const data = JSON.stringify(msg);
+    ws.send(data);
   };
   const receiveMsg = (receiveData) => {
     console.log("서버에서 데이터를 받으면 실행되는 함수");
+    //data 타입별로 정리
     const data = JSON.parse(receiveData.data);
-    console.log(data.room);
-    console.log(data.content);
-    data.room && setChatRoom(data.room);
-    data.content && setContent(data.content);
+    switch (data.type) {
+      case "ROOM_LIST":
+        setChatRoom(data.room);
+        break;
+      case "CHAT_CONTENT":
+        setContent(data.content);
+        break;
+    }
   };
   const endChat = () => {
     console.log("웹소켓 연결이 끊어지면 실행되는 함수");

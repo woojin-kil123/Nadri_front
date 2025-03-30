@@ -14,14 +14,6 @@ const ChatList = ({ chatRoom, selectedRoom, setSelectedRoom }) => {
             className={selectedRoom == room ? "selected-room" : ""}
           >
             <div className="room-title disabled-icon">
-              <StarOutlineIcon
-                sx={{
-                  width: 35,
-                  height: 35,
-                  cursor: "pointer",
-                  color: "#8f8f8f",
-                }}
-              />
               <h4>{room.chatTitle}</h4>
               <p style={{ color: "red" }}>{room.notRead}</p>
             </div>
