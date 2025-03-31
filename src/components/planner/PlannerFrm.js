@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
+import { Circle, CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
 import "./planner.css";
 import { Close, Search } from "@mui/icons-material";
 import { IconButton, InputBase, Paper } from "@mui/material";
@@ -74,11 +74,38 @@ const PlannerFrm = () => {
       },
     },
   ]);
+  //현재 보이는 지도 화면 state
+  const [mapBounds, setMapBounds] = useState(null);
+  //유저가 클릭한 지도 위치 state
+  const [userMarker, setUserMarker] = useState(null);
+  //유저 클릭 위치를 중심으로 하는 반경 범위
+  const [userRadius, setUserRadius] = useState(1000);
 
-  //추후 사용할 지도 시작 위치(가운데 좌표)
-  const [mapCenter, setMapCenter] = useState({
-    lat: 0,
-    lng: 0,
+  const getDistance = (lat1, lng1, lat2, lng2) => {
+    const R = 6371;
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLng = ((lng2 - lng1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c * 1000;
+  };
+
+  const visibleSpotList = contentList.filter((spot) => {
+    // if (!mapBounds) return true;
+    // const latlng = new window.kakao.maps.LatLng(
+    //   spot.contentLatLng.lat,
+    //   spot.contentLatLng.lng
+    // );
+    // return mapBounds.contain(latlng);
+    if (!userMarker) return true;
+    const { lat, lng } = spot.contentLatLng;
+    const distance = getDistance(userMarker.lat, userMarker.lng, lat, lng);
+    return distance <= userRadius;
   });
 
   return (
@@ -102,7 +129,7 @@ const PlannerFrm = () => {
           </div>
         </div>
         <div className="spot-list">
-          {contentList.map((content, idx) => {
+          {visibleSpotList.map((content, idx) => {
             return (
               <PrintSpotList
                 key={"spot-" + idx}
@@ -133,12 +160,31 @@ const PlannerFrm = () => {
           <p>계획표</p>
         </div>
       )}
+      <div className="radius-slider">
+        <label htmlFor="radiusRange">반경: {userRadius}m</label>
+        <input
+          id="radiusRange"
+          type="range"
+          min="100"
+          max="5000"
+          step="100"
+          value={userRadius}
+          onChange={(e) => {
+            setUserRadius(parseInt(e.target.value));
+          }}
+        />
+      </div>
       <div className="map-wrap">
         <PrintMap
-          contentList={contentList}
-          setContentList={setContentList}
+          visibleSpotList={visibleSpotList}
           openOverlay={openOverlay}
           setOpenOverlay={setOpenOverlay}
+          mapBounds={mapBounds}
+          setMapBounds={setMapBounds}
+          userMarker={userMarker}
+          setUserMarker={setUserMarker}
+          userRadius={userRadius}
+          setUserRadius={setUserRadius}
         />
       </div>
     </div>
@@ -310,15 +356,14 @@ const PlanningModal = (props) => {
 };
 
 const PrintMap = (props) => {
-  const [contentList, setContentList] = [
-    props.contentList,
-    props.setContentList,
-  ];
+  const visibleSpotList = props.visibleSpotList;
   const [openOverlay, setOpenOverlay] = [
     props.openOverlay,
     props.setOpenOverlay,
   ];
-
+  const [mapBounds, setMapBounds] = [props.mapBounds, props.setMapBounds];
+  const [userMarker, setUserMarker] = [props.userMarker, props.setUserMarker];
+  const [userRadius, setUserRadius] = [props.userRadius, props.setUserRadius];
   return (
     <Map // 지도를 표시할 Container
       id={`kakaomap`}
@@ -333,15 +378,48 @@ const PrintMap = (props) => {
         height: "100%",
       }}
       level={3} // 지도의 확대 레벨
-      //좌표 추출 임시툴
+      //지도 클릭 시
       onClick={(map, e) => {
-        console.log(e.latLng.getLat() + " " + e.latLng.getLng());
+        //클릭 위치 좌표
+        const lat = e.latLng.getLat();
+        const lng = e.latLng.getLng();
+        console.log(lat + " " + lng);
+        if (openOverlay === null) {
+          setUserMarker({ lat, lng });
+        }
       }}
+      //지도 로드 완료 시
       onCreate={(map) => {
-        console.log(map.getCenter());
+        //지도 중심 좌표
+        // console.log(map.getCenter());
+      }}
+      //현재 보이는 화면 범위를 가져옴
+      onBoundsChanged={(map) => {
+        setMapBounds(map.getBounds());
       }}
     >
-      {contentList.map((spot, idx) => {
+      {userMarker && (
+        <>
+          <MapMarker
+            position={userMarker}
+            image={{
+              src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png", // 예시용 커스텀 마커
+              size: { width: 24, height: 35 },
+            }}
+          />
+          <Circle
+            center={userMarker}
+            radius={userRadius}
+            strokeWeight={2}
+            strokeColor={"#00aaff"}
+            strokeOpacity={0.8}
+            strokeStyle={"solid"}
+            fillColor={"#00aaff"}
+            fillOpacity={0.2}
+          />
+        </>
+      )}
+      {visibleSpotList.map((spot, idx) => {
         return (
           <div key={"marker-" + idx}>
             <MapMarker
@@ -350,7 +428,12 @@ const PrintMap = (props) => {
             />
             {openOverlay === idx && (
               <CustomOverlayMap position={spot.contentLatLng}>
-                <div className="overlay-wrap">
+                <div
+                  className="overlay-wrap"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
                   <div className="overlay-info">
                     <div className="overlay-title">
                       <div className="overlay-title-name">
