@@ -228,6 +228,15 @@
   margin-left: 20px;
 }
 
+/* 범위 슬라이더 */
+.radius-slider {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+  background-color: var(--gray7);
+}
+
 /* 카카오 맵 */
 .map-wrap {
   width: calc(100% - 300px);
