@@ -1,6 +1,10 @@
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 const ReviewView = () => {
   const [comments, setComments] = useState(reviewData.comments);
   const [newComment, setNewComment] = useState("");
+  const navigate = useNavigate();
+
   const addComment = () => {
     if (newComment.trim() === "") return;
     setComments([...comments, { id: Date.now(), text: newComment }]);
@@ -24,7 +28,9 @@ const ReviewView = () => {
   const [isReporting, setIsReporting] = useState(false);
   const [reportReason, setReportReason] = useState("");
   const [reportTarget, setReportTarget] = useState(null); // 리뷰 또는 댓글 ID
-
+  const editReview = () => {
+    navigate("/edit-review", { state: { reviewData } });
+  };
   // 신고 버튼 클릭 시
   const handleReportClick = (target) => {
     setReportTarget(target);
@@ -45,7 +51,7 @@ const ReviewView = () => {
       <div className="page-title">리뷰 상세보기</div>
       <h2>title</h2>
       <p>content</p>
-      <button onClick={() => onEdit(reviewData)}>리뷰 수정</button>
+      <button onClick={editReview}>리뷰 수정</button>
       <button onClick={handleReportReview}>리뷰 신고</button>
       <h3>댓글</h3>
       <ul>
@@ -56,6 +62,21 @@ const ReviewView = () => {
           </li>
         ))}
       </ul>
+
+      <div>
+        <input
+          type="text"
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+        />
+        <button
+          onClick={() =>
+            setComments([...comments, { id: Date.now(), text: newComment }])
+          }
+        >
+          등록
+        </button>
+      </div>
       {isReporting && (
         <div className="modal">
           <h3>신고 사유 선택</h3>
