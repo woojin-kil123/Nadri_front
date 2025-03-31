@@ -35,7 +35,6 @@ const ChatModal = ({ anchorEl, setAnchorEl }) => {
   }, []);
 
   const startChat = () => {
-    console.log("웹소켓 연결 시 실행되는 함수");
     const data = createChatMsg("FETCH_ROOM_LIST");
     ws.send(data);
   };

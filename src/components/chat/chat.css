@@ -75,6 +75,23 @@ body .chat-popup-container {
   align-items: center;
   gap: 10px;
 }
+.chat-title-wrap > .chat-title-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+.chat-title-wrap input {
+  border: none;
+  padding: 0;
+  font-size: 20px;
+  font-family: ns-b;
+  background-color: transparent;
+  cursor: default;
+}
+.chat-title-wrap > button {
+  flex-grow: 1;
+}
 .content-top > .chat-search-wrap {
   display: flex;
   align-items: center;

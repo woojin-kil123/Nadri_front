@@ -7,6 +7,7 @@ import { IconButton, InputBase, Paper } from "@mui/material";
 import { createChatMsg, DropdownItem } from "../utils/metaSet";
 import { useRecoilValue } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
+import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 
 const ChatContent = ({
   ws,
@@ -17,6 +18,8 @@ const ChatContent = ({
   setIsSystemModal,
 }) => {
   const loginNickname = useRecoilValue(loginNicknameState);
+  const [title, setTitle] = useState("");
+  const [editMode, setEditMode] = useState(false);
   const [msg, setMsg] = useState("");
   const chatNo = selectedRoom.chatNo;
   useEffect(() => {
@@ -24,6 +27,7 @@ const ChatContent = ({
       const data = createChatMsg("SELECT_ROOM", chatNo);
       ws.send(data);
     }
+    setTitle(selectedRoom.chatTitle);
   }, [selectedRoom]);
   const send = () => {
     if (!msg) {
@@ -55,11 +59,45 @@ const ChatContent = ({
       ],
     });
   };
+  const updateTitle = () => {
+    if (editMode) {
+      if (title != "") {
+        const msg = createChatMsg("UPDATE_TITLE", chatNo, title);
+        ws.send(msg);
+      }
+    }
+    setEditMode((prev) => !prev);
+  };
   return (
     <>
       <div className="content-top">
         <div className="chat-title-wrap">
-          <h2>{selectedRoom.chatTitle}</h2>
+          <label
+            htmlFor="chat-title"
+            style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
+            className="chat-title-label"
+          >
+            <input
+              id="chat-title"
+              type="text"
+              value={title}
+              onChange={(e) => {
+                setTitle(e.target.value);
+              }}
+              size={Math.max(title.length, 1)}
+              readOnly={!editMode}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  updateTitle();
+                }
+              }}
+            />
+            <DriveFileRenameOutlineIcon
+              sx={{ width: 30, height: 30, marginLeft: "4px", color: "#333" }}
+              onClick={updateTitle}
+            />
+          </label>
         </div>
         <div className="chat-search-wrap">
           <CustomizedInputBase ws={ws} chatNo={chatNo} />
