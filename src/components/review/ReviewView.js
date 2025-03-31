@@ -5,11 +5,6 @@ const ReviewView = () => {
   const [newComment, setNewComment] = useState("");
   const navigate = useNavigate();
 
-  const addComment = () => {
-    if (newComment.trim() === "") return;
-    setComments([...comments, { id: Date.now(), text: newComment }]);
-    setNewComment("");
-  };
   const deleteComment = (id) => {
     setComments(comments.filter((comment) => comment.id !== id));
   };
@@ -32,11 +27,11 @@ const ReviewView = () => {
     navigate("/edit-review", { state: { reviewData } });
   };
   // 신고 버튼 클릭 시
-  const handleReportClick = (target) => {
+  const reportClick = (target) => {
     setReportTarget(target);
     setIsReporting(true);
   };
-  const handleReportSubmit = () => {
+  const reportSubmit = () => {
     if (!reportReason) {
       alert("신고 사유를 선택해주세요.");
       return;
@@ -52,7 +47,7 @@ const ReviewView = () => {
       <h2>title</h2>
       <p>content</p>
       <button onClick={editReview}>리뷰 수정</button>
-      <button onClick={handleReportReview}>리뷰 신고</button>
+      <button onClick={reportClick}>리뷰 신고</button>
       <h3>댓글</h3>
       <ul>
         {comments.map((comment) => (
@@ -91,7 +86,7 @@ const ReviewView = () => {
               </option>
             ))}
           </select>
-          <button onClick={handleReportSubmit}>신고 접수</button>
+          <button onClick={reportSubmit}>신고 접수</button>
           <button onClick={() => setIsReporting(false)}>취소</button>
         </div>
       )}
