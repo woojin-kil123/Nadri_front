@@ -36,7 +36,11 @@ const ChatMenu = ({ chatEl, setChatEl }) => {
   }, []);
   return (
     <>
-      <ChatModal anchorEl={chatModalEl} setAnchorEl={setChatModalEl} />
+      <ChatModal
+        anchorEl={chatModalEl}
+        setAnchorEl={setChatModalEl}
+        sx={{ zIndex: 50 }}
+      />
       <IconButton
         onClick={chatOpen}
         size="small"
@@ -45,7 +49,7 @@ const ChatMenu = ({ chatEl, setChatEl }) => {
           position: "fixed",
           bottom: isFooterVisible ? "350px" : "5%",
           right: "5%",
-          zIndex: 100,
+          zIndex: 200,
           padding: 2,
           boxSizing: "border-box",
           transition: "bottom 0.3s ease-in-out",
