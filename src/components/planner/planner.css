@@ -113,24 +113,6 @@
   background-color: var(--main2);
   color: var(--gray8);
 }
-/* 별점변환로직 */
-.star-rating {
-  position: relative;
-  display: inline-block;
-  font-size: 16px;
-  line-height: 1;
-}
-.star-rating .back-stars {
-  color: var(--gray7);
-}
-.star-rating .front-stars {
-  position: absolute;
-  top: 0;
-  left: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  color: gold;
-}
 
 /* 플래너(계획표) */
 .plan-window {
