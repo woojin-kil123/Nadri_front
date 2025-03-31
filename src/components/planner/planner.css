@@ -202,12 +202,14 @@
 .planning-modal {
   position: relative;
   width: 400px;
-  height: 300px;
+  height: 460px;
   background-color: var(--gray8);
   z-index: 3;
 }
 .planning-info {
   margin-left: 20px;
+  display: flex;
+  justify-content: center;
 }
 
 /* 범위 슬라이더 */

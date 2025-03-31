@@ -1,9 +1,11 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Circle, CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
 import "./planner.css";
 import { Close, Search } from "@mui/icons-material";
 import { IconButton, InputBase, Paper } from "@mui/material";
 import StarRating from "../utils/StarRating";
+import BasicDatePicker from "../utils/BasicDatePicker";
+import BasicSelect from "../utils/BasicSelect";
 
 const PlannerFrm = () => {
   //마커 오버레이 여닫음 state
@@ -16,15 +18,7 @@ const PlannerFrm = () => {
   const [openPlanningModal, setOpenPlanningModal] = useState(null);
 
   //플래너에 추가한 장소 리스트 state
-  const [plannedSpot, setPlannedSpot] = useState([
-    {
-      dayDate: "",
-      startLocation: "",
-      transport: "",
-      endLocation: "",
-      order: "",
-    },
-  ]);
+  const [plannedSpot, setPlannedSpot] = useState([]);
   const handleAddSpot = (content) => {
     const newSpot = {
       dayDate: "",
@@ -39,7 +33,7 @@ const PlannerFrm = () => {
   //장소 리스트(임시 데이터)
   const [contentList, setContentList] = useState([
     {
-      contentNo: 1,
+      contentId: 1,
       contentThumb:
         "https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyNDExMDFfMTI3%2FMDAxNzMwNDIxNzMwOTk2.XIgrsfQZKau5dz1vICaytYVlbmnJvLOM0DxRt3HkGkYg.JF5wL5dOJ2ROsjxltR8Y-h4gQ3NOhk-7PMElB2F4pakg.JPEG%2F1000052381.jpg.jpg&type=f&size=340x180&quality=80&opt=2",
       contentTitle: "플라워랜드",
@@ -53,7 +47,7 @@ const PlannerFrm = () => {
       },
     },
     {
-      contentNo: 2,
+      contentId: 2,
       contentThumb:
         "https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyNDExMDFfMTI3%2FMDAxNzMwNDIxNzMwOTk2.XIgrsfQZKau5dz1vICaytYVlbmnJvLOM0DxRt3HkGkYg.JF5wL5dOJ2ROsjxltR8Y-h4gQ3NOhk-7PMElB2F4pakg.JPEG%2F1000052381.jpg.jpg&type=f&size=340x180&quality=80&opt=2",
       contentTitle: "행복양꼬치",
@@ -67,7 +61,7 @@ const PlannerFrm = () => {
       },
     },
     {
-      contentNo: 3,
+      contentId: 3,
       contentThumb:
         "https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyNDExMDFfMTI3%2FMDAxNzMwNDIxNzMwOTk2.XIgrsfQZKau5dz1vICaytYVlbmnJvLOM0DxRt3HkGkYg.JF5wL5dOJ2ROsjxltR8Y-h4gQ3NOhk-7PMElB2F4pakg.JPEG%2F1000052381.jpg.jpg&type=f&size=340x180&quality=80&opt=2",
       contentTitle: "KH정보교육원 당산지원",
@@ -102,18 +96,20 @@ const PlannerFrm = () => {
     return R * c * 1000;
   };
 
-  const visibleSpotList = contentList.filter((spot) => {
-    // if (!mapBounds) return true;
-    // const latlng = new window.kakao.maps.LatLng(
-    //   spot.contentLatLng.lat,
-    //   spot.contentLatLng.lng
-    // );
-    // return mapBounds.contain(latlng);
-    if (!userMarker) return true;
-    const { lat, lng } = spot.contentLatLng;
-    const distance = getDistance(userMarker.lat, userMarker.lng, lat, lng);
-    return distance <= userRadius;
-  });
+  const visibleSpotList = userMarker
+    ? contentList.filter((spot) => {
+        // if (!mapBounds) return true;
+        // const latlng = new window.kakao.maps.LatLng(
+        //   spot.contentLatLng.lat,
+        //   spot.contentLatLng.lng
+        // );
+        // return mapBounds.contain(latlng);
+        if (!userMarker) return true;
+        const { lat, lng } = spot.contentLatLng;
+        const distance = getDistance(userMarker.lat, userMarker.lng, lat, lng);
+        return distance <= userRadius;
+      })
+    : [];
 
   return (
     <div className="all-wrap">
@@ -319,7 +315,7 @@ const PlanningModal = (props) => {
   return (
     <div className="modal-background">
       <div className="planning-modal">
-        <div className="planning-header">여행지에 추가하기</div>
+        <div className="page-title">여행지에 추가하기</div>
         <Close
           onClick={() => setOpenPlanningModal(null)}
           className="close-btn"
@@ -341,6 +337,14 @@ const PlanningModal = (props) => {
           </div>
         </div>
         <div className="planning-input">
+          <div className="date-input">
+            <span>계획일</span>
+            <BasicDatePicker />
+          </div>
+          <div>
+            <span>어떻게 가실 건가요?</span>
+            <BasicSelect />
+          </div>
           <div className="spot-btn">
             <button style={{ width: "100px", height: "30px" }}>
               여행지에 추가
