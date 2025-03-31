@@ -34,3 +34,21 @@
   display: flex;
   justify-content: center;
 }
+.review-container {
+  display: flex;
+  gap: 20px;
+}
+
+.place-info {
+  width: 200px;
+  text-align: center;
+}
+
+.place-image {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.review-form {
+  flex-grow: 1;
+}
