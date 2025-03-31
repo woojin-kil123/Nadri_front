@@ -7,5 +7,12 @@ class DropdownItem {
     this.clickFunc = clickFunc;
   }
 }
+class ChatMsg {
+  constructor(type, chatNo, message) {
+    this.type = type;
+    this.chatNo = chatNo;
+    this.message = message;
+  }
+}
 
-export { DropdownItem };
+export { DropdownItem, ChatMsg };

@@ -23,11 +23,7 @@ const ChatContent = ({ ws, selectedRoom, content }) => {
     if (!msg) {
       return;
     }
-    const chatMsg = {
-      type: "text",
-      chatNo: chatNo,
-      message: msg,
-    };
+    const chatMsg = new chatMsg("SEND_MESSAGE", chatNo, msg);
     const data = JSON.stringify(chatMsg);
     ws.send(data);
   };

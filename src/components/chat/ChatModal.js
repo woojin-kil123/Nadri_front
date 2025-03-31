@@ -7,6 +7,7 @@ import ChatList from "./ChatList";
 import ChatContent from "./ChatContent";
 import { useRecoilValue } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
+import { ChatMsg } from "../utils/metaSet";
 
 const ChatModal = ({ anchorEl, setAnchorEl }) => {
   //const userNick = useRecoilValue(loginNickState);
@@ -37,9 +38,7 @@ const ChatModal = ({ anchorEl, setAnchorEl }) => {
 
   const startChat = () => {
     console.log("웹소켓 연결 시 실행되는 함수");
-    const msg = {
-      type: "FETCH_ROOM_LIST",
-    };
+    const msg = new ChatMsg("FETCH_ROOM_LIST");
     const data = JSON.stringify(msg);
     ws.send(data);
   };
@@ -94,6 +93,9 @@ const ChatModal = ({ anchorEl, setAnchorEl }) => {
               sx={{
                 padding: 1,
                 boxSizing: "border-box",
+              }}
+              onClick={() => {
+                //채팅방 만들기
               }}
             >
               <PostAddIcon sx={{ width: 45, height: 45 }} />
