@@ -18,6 +18,7 @@ const UpdatePw = () => {
   const [emailCheckColor, setEmailCheckColor] = useState(""); // 이메일 중복 검사 메시지 색상 (유효/오류)
   const [isEmailVerified, setIsEmailVerified] = useState(false); // 이메일 인증 버튼 표시 여부
   const [timeLeft, setTimeLeft] = useState(10 * 60); // 카운트다운 타이머 변수 10분 (600초) 설정
+
   // 입력값 변경 처리 함수
   const inputMemberData = (e) => {
     const { name, value } = e.target; // input 태그의 name과 value 값 가져오기
@@ -56,7 +57,6 @@ const UpdatePw = () => {
         `${process.env.REACT_APP_BACK_SERVER}/member/existsEmail?memberEmail=${email}`
       )
       .then((res) => {
-        console.log(res.data);
         setEmailCheckMessage("이메일을 인증해주세요."); // 이메일 중복 없이 인증 요청
         setEmailCheckColor("green"); // 유효한 이메일은 초록색 메시지
         setIsEmailVerified(true); // 이메일 인증 가능 상태로 설정
@@ -76,17 +76,13 @@ const UpdatePw = () => {
         `${process.env.REACT_APP_BACK_SERVER}/api/sendCode?email=${member.memberEmail}`
       )
       .then((res) => {
-        console.log(res);
         setCode(res.data); // 서버에서 받은 인증 코드 저장
         setCodeSentTime(Date.now()); // 인증 코드가 전송된 시간 저장
         setIsVerificationSent(true); // 인증 코드 발송 상태로 변경
       })
-      .catch((error) => {
-        console.error("이메일 인증 요청 실패:", error); // 오류 발생 시 콘솔에 출력
-      });
+      .catch((error) => {});
   };
 
-  // 인증 코드 확인
   const verifyEmailCode = () => {
     // 인증 코드가 만료되었는지 확인
     const currentTime = Date.now();
@@ -100,15 +96,22 @@ const UpdatePw = () => {
     }
 
     if (code === member.memberCode) {
-      alert("인증이 완료되었습니다!");
-      navigate("/updatePw2", {
-        state: { email: member.memberEmail, code: member.memberCode },
-      }); // 인증 완료 후 회원 가입 2단계로 이동
+      Swal.fire({
+        text: "인증이 완료되었습니다!",
+        icon: "success",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // 인증 완료 후 회원 가입 2단계로 이동
+          navigate("/updatePw2", {
+            state: { email: member.memberEmail, code: member.memberCode },
+          });
+        }
+      });
     } else {
       Swal.fire({
         text: "인증 코드가 일치하지 않습니다. 다시 확인해 주세요",
         icon: "info",
-      }); // 인증 코드 불일치 시 경고 메시지
+      });
     }
   };
 

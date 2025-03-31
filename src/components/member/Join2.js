@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Join2 = () => {
   const navigate = useNavigate(); // 페이지 이동을 위한 navigate 훅
@@ -9,6 +10,18 @@ const Join2 = () => {
 
   console.log(email);
   console.log(code);
+
+  useEffect(() => {
+    if (!code) {
+      Swal.fire({
+        title: "코드 누락",
+        text: "인증 코드가 누락되었습니다. 메인 페이지로 이동합니다.",
+        icon: "error",
+      }).then(() => {
+        navigate("/"); // 메인 페이지로 이동
+      });
+    }
+  }, [code, navigate]);
 
   // 회원 정보를 관리하는 상태 변수
   const [member, setMember] = useState({
@@ -123,7 +136,11 @@ const Join2 = () => {
   // 회원가입 요청 함수
   const joinMember = () => {
     if (!member.memberBirth) {
-      alert("생년월일을 선택하세요.");
+      Swal.fire({
+        title: "생년월일 선택 오류",
+        text: "생년월일을 선택해주세요.",
+        icon: "error",
+      });
       return;
     }
 
@@ -131,11 +148,20 @@ const Join2 = () => {
     axios
       .post(`${process.env.REACT_APP_BACK_SERVER}/member/join`, member) // 서버에 회원가입 요청
       .then((res) => {
-        console.log(res); // 응답 확인
-        navigate("/"); // 회원가입 성공 후 홈으로 리디렉션
+        Swal.fire({
+          title: "회원가입 성공!",
+          text: "회원가입이 완료되었습니다.",
+          icon: "success",
+        }).then(() => {
+          navigate("/"); // 회원가입 성공 후 홈으로 리디렉션
+        });
       })
       .catch((err) => {
-        console.log(err); // 에러 발생 시 콘솔 출력
+        Swal.fire({
+          title: "오류",
+          text: "회원가입 중 오류가 발생했습니다. 다시 시도해주세요.",
+          icon: "error",
+        });
       });
   };
 

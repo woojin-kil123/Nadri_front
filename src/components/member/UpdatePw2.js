@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const UpdatePw2 = () => {
   const navigate = useNavigate(); // 페이지 이동을 위한 navigate 훅
@@ -9,6 +10,18 @@ const UpdatePw2 = () => {
 
   console.log(email);
   console.log(code);
+
+  useEffect(() => {
+    if (!code) {
+      Swal.fire({
+        title: "코드 누락",
+        text: "인증 코드가 누락되었습니다. 메인 페이지로 이동합니다.",
+        icon: "error",
+      }).then(() => {
+        navigate("/"); // 메인 페이지로 이동
+      });
+    }
+  }, [code, navigate]);
 
   // 상태 관리: 회원 이메일과 비밀번호 저장
   const [member, setMember] = useState({
@@ -69,17 +82,25 @@ const UpdatePw2 = () => {
     }
   };
 
-  // 비밀번호 업데이트 요청 함수 (서버에 PATCH 요청을 보내어 비밀번호 변경)
   const rePwMember = () => {
     console.log(member); // 변경할 회원 정보 확인
     axios
       .patch(`${process.env.REACT_APP_BACK_SERVER}/member/updatePw`, member) // 비밀번호 업데이트 API 호출
       .then((res) => {
-        console.log(res); // 응답 결과 확인
-        navigate("/"); // 비밀번호 변경 완료 후 홈 페이지로 이동
+        Swal.fire({
+          title: "비밀번호 변경 완료",
+          text: "비밀번호가 성공적으로 변경되었습니다.",
+          icon: "success",
+        }).then(() => {
+          navigate("/"); // 비밀번호 변경 완료 후 홈 페이지로 이동
+        });
       })
       .catch((err) => {
-        console.log(err); // 오류 발생 시 콘솔에 에러 출력
+        Swal.fire({
+          title: "오류",
+          text: "비밀번호 변경 중 오류가 발생했습니다. 다시 시도해주세요.",
+          icon: "error",
+        });
       });
   };
 
