@@ -3,7 +3,7 @@ import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
 import Main from "./components/common/Main";
 // 라우터 관련
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 // 멤버 관련 페이지
 import Login from "./components/member/Login";
 import Join from "./components/member/Join";
@@ -21,6 +21,7 @@ import { isLoginState, isPlannerState } from "./components/utils/RecoilData";
 // 리액트 훅
 import { useEffect, useState } from "react";
 import ChatMenu from "./components/chat/ChatMenu";
+import ProtectedRouting from "./components/utils/ProtectedRouting";
 
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
@@ -41,11 +42,14 @@ function App() {
       {isLogin && (
         <>
           <ChatMenu chatEl={chatEl} setChatEl={setChatEl} />
-          <Routes>
-            <Route path="/planner" element={<PlannerFrm />} />
-          </Routes>
         </>
       )}
+      <Routes>
+        <Route
+          path="/planner"
+          element={<ProtectedRouting element={<PlannerFrm />} />}
+        />
+      </Routes>
       {!planner && (
         <div className="wrap">
           <Header />
