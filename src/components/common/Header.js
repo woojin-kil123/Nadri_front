@@ -92,11 +92,10 @@ const HeaderLink = (props) => {
   ];
 
   const [accountEl, setAccountEl] = useState(null);
-  const [alarmEl, setAlarmEl] = useState(null);
-
   const accountOpen = (e) => {
     setAccountEl(e.currentTarget);
   };
+  const [alarmEl, setAlarmEl] = useState(null);
   const alarmOpen = (e) => {
     setAlarmEl(e.currentTarget);
   };

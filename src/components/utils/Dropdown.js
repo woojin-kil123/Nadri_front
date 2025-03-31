@@ -7,7 +7,6 @@ const Dropdown = (props) => {
   const anchorEl = props.anchorEl;
   const setAnchorEl = props.setAnchorEl;
   const direction = props.direction || "bottom";
-
   const open = Boolean(anchorEl);
   const isTop = direction === "top";
 

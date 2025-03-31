@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+import StarOutlineIcon from "@mui/icons-material/StarOutline";
 
-const ChatList = ({ chatRoom, selectedRoom, setSelectedRoom }) => {
+const ChatList = ({ roomList, selectedRoom, setSelectedRoom }) => {
   return (
     <>
-      {chatRoom.map((room, i) => {
+      {roomList.map((room, i) => {
         return (
           <div
             key={`chatRoom-${i}`}
@@ -12,7 +13,7 @@ const ChatList = ({ chatRoom, selectedRoom, setSelectedRoom }) => {
             }}
             className={selectedRoom == room ? "selected-room" : ""}
           >
-            <div className="room-title">
+            <div className="room-title disabled-icon">
               <h4>{room.chatTitle}</h4>
               <p style={{ color: "red" }}>{room.notRead}</p>
             </div>

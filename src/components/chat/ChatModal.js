@@ -2,12 +2,17 @@ import React, { useEffect, useRef, useState } from "react";
 import "./chat.css";
 import { Modal, Box, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-
+import PostAddIcon from "@mui/icons-material/PostAdd";
 import ChatList from "./ChatList";
 import ChatContent from "./ChatContent";
+import { useRecoilValue } from "recoil";
+import { loginNicknameState } from "../utils/RecoilData";
+import { ChatMsg, createChatMsg } from "../utils/metaSet";
 
-const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
+const ChatModal = ({ anchorEl, setAnchorEl }) => {
   //const userNick = useRecoilValue(loginNickState);
+  //const memberNickname = useRecoilValue(loginNicknameState);
+  //테스트용
   const memberNickname = "길우진";
   const close = (e) => {
     e.stopPropagation();
@@ -15,7 +20,7 @@ const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
   };
 
   const [ws, setWs] = useState({});
-  const [chatRoom, setChatRoom] = useState([]);
+  const [roomList, setRoomList] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [content, setContent] = useState([]);
   const backServer = process.env.REACT_APP_BACK_SERVER;
@@ -25,25 +30,34 @@ const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
       `${socketServer}/chat?memberNickname=${memberNickname}`
     );
     setWs(socket);
-    //mount 될 때 useEffect함수가 실행됨.
-    //return 함수는 컴포넌트가 언마운트될 때 동작해야할 코드를 작성하는 영역 -> 해당 페이지를 벗어날때 초기화해야하는게 있으면 여기서
     return () => {
       console.log("채팅페이지에서 벗어나면 실행");
-      //ws.close()는 setWs(socket)이 아직 동작하지 않았으므로 에러발생
-      //socket.close()함수가돌아가면 endChat 함수가 동작
       socket.close();
     };
   }, []);
+
   const startChat = () => {
     console.log("웹소켓 연결 시 실행되는 함수");
+    const data = createChatMsg("FETCH_ROOM_LIST");
+    ws.send(data);
   };
   const receiveMsg = (receiveData) => {
     console.log("서버에서 데이터를 받으면 실행되는 함수");
+    //data 타입별로 정리
     const data = JSON.parse(receiveData.data);
-    console.log(data.room);
-    console.log(data.content);
-    data.room && setChatRoom(data.room);
-    data.content && setContent(data.content);
+    console.log(data);
+    switch (data.type) {
+      case "ROOM_LIST":
+        setRoomList(data.room);
+        break;
+      case "CHAT_CONTENT":
+        const room = roomList.filter((room, i) => {
+          return data.content[0].chatNo == room.chatNo;
+        });
+        setSelectedRoom(room[0]);
+        setContent(data.content);
+        break;
+    }
   };
   const endChat = () => {
     console.log("웹소켓 연결이 끊어지면 실행되는 함수");
@@ -77,10 +91,25 @@ const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
         <div className="chat-list">
           <div className="content-top">
             <h2>채팅목록</h2>
+            <IconButton
+              size="medium"
+              className="primary-icon"
+              sx={{
+                padding: 1,
+                boxSizing: "border-box",
+              }}
+              onClick={() => {
+                //채팅방 만들기
+                const msg = createChatMsg("CREATE_ROOM");
+                ws.send(msg);
+              }}
+            >
+              <PostAddIcon sx={{ width: 45, height: 45 }} />
+            </IconButton>
           </div>
           <div className="content-middle">
             <ChatList
-              chatRoom={chatRoom}
+              roomList={roomList}
               selectedRoom={selectedRoom}
               setSelectedRoom={setSelectedRoom}
             />
@@ -91,17 +120,13 @@ const ChatModal = ({ anchorEl, setAnchorEl, chatTitle }) => {
         <div className="chat-room">
           {selectedRoom ? (
             <>
-              <div className="content-top">
-                <h2>{selectedRoom.chatTitle}</h2>
-                <IconButton onClick={close}>
-                  <CloseIcon />
-                </IconButton>
-              </div>
+              <IconButton className="close-btn" onClick={close}>
+                <CloseIcon />
+              </IconButton>
               <ChatContent
                 ws={ws}
                 selectedRoom={selectedRoom}
                 content={content}
-                setContent={setContent}
               />
             </>
           ) : (

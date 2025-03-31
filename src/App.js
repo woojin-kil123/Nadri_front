@@ -15,16 +15,16 @@ import PlannerFrm from "./components/planner/PlannerFrm";
 // 콘텐츠 및 리뷰
 import ContentMain from "./components/content/ContentMain";
 import ReviewMain from "./components/review/ReviewMain";
-
 // 상태 관리
-import { useRecoilState } from "recoil";
-import { isPlannerState } from "./components/utils/RecoilData";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { isLoginState, isPlannerState } from "./components/utils/RecoilData";
 // 리액트 훅
 import { useEffect, useState } from "react";
 import ChatMenu from "./components/chat/ChatMenu";
 
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
+  const isLogin = useRecoilValue(isLoginState);
   const loc = useLocation();
 
   useEffect(() => {
@@ -38,10 +38,14 @@ function App() {
 
   return (
     <>
-      <ChatMenu chatEl={chatEl} setChatEl={setChatEl} />
-      <Routes>
-        <Route path="/planner" element={<PlannerFrm />} />
-      </Routes>
+      {isLogin && (
+        <>
+          <ChatMenu chatEl={chatEl} setChatEl={setChatEl} />
+          <Routes>
+            <Route path="/planner" element={<PlannerFrm />} />
+          </Routes>
+        </>
+      )}
       {!planner && (
         <div className="wrap">
           <Header />

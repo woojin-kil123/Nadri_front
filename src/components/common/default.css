@@ -5,6 +5,7 @@
   --main3: #166139;
   --main4: rgb(47, 151, 33);
   --main5: #b7e9c3;
+  --warning: 
   /*box-bg*/
   --box-bg: #f0f1f1;
   /*gray*/
@@ -16,7 +17,6 @@
   --gray6: #d6d6d6;
   --gray7: #efefef;
   --gray8: #ffffff;
-
   /*line-color*/
   --line1: #222222;
   --line2: #d6d6d6;
@@ -231,7 +231,18 @@ section.section {
 section.section.bg-section {
   background-color: var(--box-bg);
 }
-
+.primary-icon svg {
+  fill: var(--main2);
+}
+.danger-icon svg {
+  fill: #ff3d00;
+}
+.warning-icon svg{
+  fill: #FFAD33;
+}
+.disabled-icon svg{
+  fill: var(--gray4);
+}
 [class^="btn-"] {
   cursor: pointer;
   font-size: 14px;
@@ -703,7 +714,12 @@ section.section.bg-section {
 .like-box > span {
   color: var(--main4);
 }
-
 .error-wrap {
   height: 600px;
+}
+.css-1toxriw-MuiList-root-MuiMenu-list li{
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  align-items: center;
 }
