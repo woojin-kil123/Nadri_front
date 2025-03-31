@@ -10,13 +10,14 @@ const UpdatePw = () => {
     memberCode: "", // 이메일 인증 코드 상태
   });
   const [code, setCode] = useState(); // 서버에서 받은 인증 코드
+  const [codeSentTime, setCodeSentTime] = useState(null); // 인증 코드가 전송된 시간
   const [isVerificationSent, setIsVerificationSent] = useState(false); // 이메일 인증 코드 발송 여부
   const [isButtonEnabled, setIsButtonEnabled] = useState(false); // "다음" 버튼 활성화 여부
   const [emailCheck, setEmailCheck] = useState(0); // 이메일 중복 체크 상태
   const [emailCheckMessage, setEmailCheckMessage] = useState(""); // 이메일 중복 검사 메시지
   const [emailCheckColor, setEmailCheckColor] = useState(""); // 이메일 중복 검사 메시지 색상 (유효/오류)
   const [isEmailVerified, setIsEmailVerified] = useState(false); // 이메일 인증 버튼 표시 여부
-
+  const [timeLeft, setTimeLeft] = useState(10 * 60); // 카운트다운 타이머 변수 10분 (600초) 설정
   // 입력값 변경 처리 함수
   const inputMemberData = (e) => {
     const { name, value } = e.target; // input 태그의 name과 value 값 가져오기
@@ -77,6 +78,7 @@ const UpdatePw = () => {
       .then((res) => {
         console.log(res);
         setCode(res.data); // 서버에서 받은 인증 코드 저장
+        setCodeSentTime(Date.now()); // 인증 코드가 전송된 시간 저장
         setIsVerificationSent(true); // 인증 코드 발송 상태로 변경
       })
       .catch((error) => {
@@ -84,18 +86,54 @@ const UpdatePw = () => {
       });
   };
 
-  // 인증 코드 확인 함수
+  // 인증 코드 확인
   const verifyEmailCode = () => {
+    // 인증 코드가 만료되었는지 확인
+    const currentTime = Date.now();
+    if (currentTime - codeSentTime > 10 * 60 * 1000) {
+      setCode(null); // 인증 코드 만료
+      Swal.fire({
+        text: "인증 코드가 만료되었습니다. 다시 시도해주세요.",
+        icon: "error",
+      });
+      return;
+    }
+
     if (code === member.memberCode) {
-      alert("인증이 완료되었습니다!"); // 인증 성공 시 알림
-      navigate("/updatePw2", { state: { email: member.memberEmail } }); // 인증 성공 시 비밀번호 재설정 페이지로 이동
+      alert("인증이 완료되었습니다!");
+      navigate("/updatePw2", {
+        state: { email: member.memberEmail, code: member.memberCode },
+      }); // 인증 완료 후 회원 가입 2단계로 이동
     } else {
       Swal.fire({
         text: "인증 코드가 일치하지 않습니다. 다시 확인해 주세요",
         icon: "info",
-      });
-      // 인증 코드 불일치 시 알림
+      }); // 인증 코드 불일치 시 경고 메시지
     }
+  };
+
+  // 타이머 업데이트 및 만료 확인
+  useEffect(() => {
+    if (isVerificationSent && timeLeft > 0) {
+      const timer = setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1); // 1초마다 1초씩 감소
+      }, 1000);
+
+      return () => clearInterval(timer); // 컴포넌트 언마운트 시 타이머 정리
+    } else if (timeLeft <= 0) {
+      setIsVerificationSent(false); // 인증 코드 만료
+      Swal.fire({
+        text: "인증 코드가 만료되었습니다. 다시 시도해주세요.",
+        icon: "error",
+      });
+    }
+  }, [isVerificationSent, timeLeft]);
+
+  // 카운트다운 포맷 (분:초 형식)
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   };
 
   return (
@@ -156,6 +194,9 @@ const UpdatePw = () => {
                   onChange={inputMemberData} // 입력값 변경 시 상태 업데이트
                   maxLength={6} // 인증 코드는 6자리만 입력 가능
                 />
+              </div>
+              <div className="countdown-timer">
+                <p>남은 시간: {formatTime(timeLeft)}</p>
               </div>
             </>
           )}

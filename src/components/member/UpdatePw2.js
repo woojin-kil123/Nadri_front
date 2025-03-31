@@ -5,8 +5,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 const UpdatePw2 = () => {
   const navigate = useNavigate(); // 페이지 이동을 위한 navigate 훅
   const location = useLocation(); // 현재 위치에서 전달된 데이터를 가져오는 훅
-  const { email } = location.state || {}; // location에서 전달된 이메일 값 (없으면 빈 객체 설정)
+  const { email, code } = location.state || {}; // 이메일과 코드 데이터를 가져옴 (없으면 기본값으로 빈 객체 설정)
+
   console.log(email);
+  console.log(code);
 
   // 상태 관리: 회원 이메일과 비밀번호 저장
   const [member, setMember] = useState({
@@ -83,66 +85,75 @@ const UpdatePw2 = () => {
 
   return (
     <section className="section">
-      <div className="join-title">
-        <h3>필수 정보 입력</h3>
-        <p>가입을 위해 필수 정보를 입력해주세요.</p>
-      </div>
-      <div className="join-wrap">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault(); // 기본 폼 제출을 막고, 비밀번호 변경 함수 호출
-            rePwMember();
-          }}
-        >
-          {/* 비밀번호 입력 */}
-          <div className="input-wrap">
-            <div className="input-title">
-              <label htmlFor="memberPw">비밀번호</label>
-            </div>
-            <div className="input-item">
-              <input
-                type="password" // 비밀번호 필드 (숨김 처리)
-                name="memberPw" // 입력 필드의 name 속성
-                id="memberPw" // 입력 필드의 id 속성
-                value={member.memberPw} // 상태에서 비밀번호 값 가져오기
-                onChange={inputMemberData} // 비밀번호 값이 변경될 때마다 상태 업데이트
-                onBlur={checkPw} // 포커스를 벗어날 때 비밀번호 일치 여부 확인
-              />
-            </div>
+      {code ? (
+        <>
+          <div className="join-title">
+            <h3>필수 정보 입력</h3>
+            <p>가입을 위해 필수 정보를 입력해주세요.</p>
           </div>
-
-          {/* 비밀번호 확인 입력 */}
-          <div className="input-wrap">
-            <div className="input-title">
-              <label htmlFor="memberPwRe">비밀번호 확인</label>
-            </div>
-            <div className="input-item">
-              <input
-                type="password" // 비밀번호 확인 필드 (숨김 처리)
-                name="memberPwRe" // 입력 필드의 name 속성
-                id="memberPwRe" // 입력 필드의 id 속성
-                value={memberPwRe} // 비밀번호 확인 값 상태
-                onChange={inputMemberPwRe} // 비밀번호 확인 값 변경 시 상태 업데이트
-                onBlur={checkPw} // 포커스를 벗어날 때 비밀번호 일치 여부 확인
-              />
-            </div>
-            {/* 비밀번호 일치 여부 메시지 표시 */}
-            <p ref={pwMsgRef}></p>
-          </div>
-
-          {/* "확인" 버튼 */}
-          <div className="join-button-box">
-            <button
-              type="submit"
-              className="btn-primary lg"
-              style={{ display: isFormValid ? "block" : "none" }} // 버튼이 비밀번호 일치 시만 보이도록 설정
-              disabled={!isFormValid} // 버튼이 비활성화되면 클릭 불가
+          <div className="join-wrap">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault(); // 기본 폼 제출을 막고, 비밀번호 변경 함수 호출
+                rePwMember();
+              }}
             >
-              확인
-            </button>
+              {/* 비밀번호 입력 */}
+              <div className="input-wrap">
+                <div className="input-title">
+                  <label htmlFor="memberPw">비밀번호</label>
+                </div>
+                <div className="input-item">
+                  <input
+                    type="password" // 비밀번호 필드 (숨김 처리)
+                    name="memberPw" // 입력 필드의 name 속성
+                    id="memberPw" // 입력 필드의 id 속성
+                    value={member.memberPw} // 상태에서 비밀번호 값 가져오기
+                    onChange={inputMemberData} // 비밀번호 값이 변경될 때마다 상태 업데이트
+                    onBlur={checkPw} // 포커스를 벗어날 때 비밀번호 일치 여부 확인
+                  />
+                </div>
+              </div>
+
+              {/* 비밀번호 확인 입력 */}
+              <div className="input-wrap">
+                <div className="input-title">
+                  <label htmlFor="memberPwRe">비밀번호 확인</label>
+                </div>
+                <div className="input-item">
+                  <input
+                    type="password" // 비밀번호 확인 필드 (숨김 처리)
+                    name="memberPwRe" // 입력 필드의 name 속성
+                    id="memberPwRe" // 입력 필드의 id 속성
+                    value={memberPwRe} // 비밀번호 확인 값 상태
+                    onChange={inputMemberPwRe} // 비밀번호 확인 값 변경 시 상태 업데이트
+                    onBlur={checkPw} // 포커스를 벗어날 때 비밀번호 일치 여부 확인
+                  />
+                </div>
+                {/* 비밀번호 일치 여부 메시지 표시 */}
+                <p ref={pwMsgRef}></p>
+              </div>
+
+              {/* "확인" 버튼 */}
+              <div className="join-button-box">
+                <button
+                  type="submit"
+                  className="btn-primary lg"
+                  style={{ display: isFormValid ? "block" : "none" }} // 버튼이 비밀번호 일치 시만 보이도록 설정
+                  disabled={!isFormValid} // 버튼이 비활성화되면 클릭 불가
+                >
+                  확인
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
-      </div>
+        </>
+      ) : (
+        <div className="join-title">
+          <h3>코드 누락</h3>
+          <p>코드가 인증되지 않았습니다.</p>
+        </div>
+      )}
     </section>
   );
 };

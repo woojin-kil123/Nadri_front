@@ -5,8 +5,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 const Join2 = () => {
   const navigate = useNavigate(); // 페이지 이동을 위한 navigate 훅
   const location = useLocation(); // 현재 위치에서 전달된 데이터를 가져오는 훅
-  const { email } = location.state || {}; // 이메일 데이터를 가져옴 (없으면 기본값으로 빈 객체 설정)
+  const { email, code } = location.state || {}; // 이메일과 코드 데이터를 가져옴 (없으면 기본값으로 빈 객체 설정)
+
   console.log(email);
+  console.log(code);
 
   // 회원 정보를 관리하는 상태 변수
   const [member, setMember] = useState({
@@ -198,222 +200,232 @@ const Join2 = () => {
 
   return (
     <section className="section">
-      <div className="join-title">
-        <h3>필수 정보 입력</h3>
-        <p>가입을 위해 필수 정보를 입력해주세요.</p>
-      </div>
-      <div className="join-wrap">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault(); // 폼 제출 시 기본 동작 방지
-            joinMember(); // 회원가입 함수 호출
-          }}
-        >
-          {/* 비밀번호 입력 */}
-          <div className="input-wrap">
-            <div className="input-title">
-              <label htmlFor="memberPw">비밀번호</label>
-            </div>
-            <div className="input-item">
-              <input
-                type="password"
-                name="memberPw"
-                id="memberPw"
-                value={member.memberPw}
-                onChange={inputMemberData}
-                onBlur={checkPw} // 입력이 끝나면 비밀번호 일치 여부 확인
-              />
-            </div>
+      {code ? (
+        <>
+          <div className="join-title">
+            <h3>필수 정보 입력</h3>
+            <p>가입을 위해 필수 정보를 입력해주세요.</p>
           </div>
 
-          {/* 비밀번호 확인 입력 */}
-          <div className="input-wrap">
-            <div className="input-title">
-              <label htmlFor="memberPwRe">비밀번호 확인</label>
-            </div>
-            <div className="input-item">
-              <input
-                type="password"
-                name="memberPwRe"
-                id="memberPwRe"
-                value={memberPwRe}
-                onChange={inputMemberPwRe}
-                onBlur={checkPw} // 입력이 끝나면 비밀번호 일치 여부 확인
-              />
-            </div>
-            <p ref={pwMsgRef}></p>
-          </div>
-
-          {/* 닉네임 입력 */}
-          <div className="input-wrap">
-            <div className="input-title">
-              <label htmlFor="memberNickname">닉네임</label>
-            </div>
-            <div className="input-item">
-              <input
-                type="text"
-                name="memberNickname"
-                id="memberNickname"
-                value={member.memberNickname}
-                onChange={inputMemberData}
-                onBlur={checkNickname} // 닉네임이 입력되면 유효성 및 중복 체크
-              />
-            </div>
-            <p
-              className={
-                nicknameCheck === 0
-                  ? ""
-                  : nicknameCheck === 1
-                  ? "input-ok"
-                  : "input-error"
-              }
+          <div className="join-wrap">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault(); // 폼 제출 시 기본 동작 방지
+                joinMember(); // 회원가입 함수 호출
+              }}
             >
-              {nicknameCheck === 0
-                ? ""
-                : nicknameCheck === 1
-                ? "사용가능한 닉네임 입니다."
-                : nicknameCheck === 2
-                ? "닉네임은 한글, 영어 대/소문자, 숫자 입니다."
-                : "이미 사용중인 닉네임 입니다."}
-            </p>
-          </div>
-
-          {/* 휴대폰 번호 입력 */}
-          <div className="input-wrap">
-            <div className="input-title">
-              <label htmlFor="memberPhone">휴대폰 번호</label>
-            </div>
-            <div className="input-item">
-              <input
-                type="text"
-                name="memberPhone"
-                id="memberPhone"
-                value={member.memberPhone}
-                onChange={inputMemberData}
-                onBlur={checkPhone} // 휴대폰 번호 입력 시 유효성 체크
-                maxLength={13} // 010-0000-0000 형식에 맞게 제한
-                placeholder="010-0000-0000"
-              />
-            </div>
-            <p
-              className={
-                phoneError === 0
-                  ? ""
-                  : phoneError === 1
-                  ? "input-ok"
-                  : "input-error"
-              }
-            >
-              {phoneError === 0
-                ? ""
-                : phoneError === 1
-                ? ""
-                : "휴대폰 번호는 010-0000-0000 형식으로 입력해주세요."}
-            </p>
-          </div>
-
-          {/* 생년월일 입력 */}
-          <div className="input-wrap">
-            <div className="input-title">
-              <label htmlFor="memberPhone">생년월일</label>
-            </div>
-            <div>
-              <label htmlFor="year">연도:</label>
-              <select
-                name="year"
-                id="year"
-                value={year}
-                onChange={(e) => setYear(e.target.value)}
-              >
-                <option value="">연도를 선택하세요</option>
-                {years.map((yearOption) => (
-                  <option key={yearOption} value={yearOption}>
-                    {yearOption}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="month">월:</label>
-              <select
-                name="month"
-                id="month"
-                value={month}
-                onChange={(e) => setMonth(e.target.value)}
-              >
-                <option value="">월을 선택하세요</option>
-                {months.map((monthOption) => (
-                  <option key={monthOption} value={monthOption}>
-                    {monthOption}월
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="day">일:</label>
-              <select
-                name="day"
-                id="day"
-                value={day}
-                onChange={(e) => setDay(e.target.value)}
-              >
-                <option value="">일을 선택하세요</option>
-                {days.map((dayOption) => (
-                  <option key={dayOption} value={dayOption}>
-                    {dayOption}일
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* 성별 선택 */}
-          <div className="input-wrap">
-            <div className="input-title">
-              <label htmlFor="memberGender">성별</label>
-            </div>
-            <div>
-              <label>성별:</label>
-              <div>
-                <label>
+              {/* 비밀번호 입력 */}
+              <div className="input-wrap">
+                <div className="input-title">
+                  <label htmlFor="memberPw">비밀번호</label>
+                </div>
+                <div className="input-item">
                   <input
-                    type="radio"
-                    value="남"
-                    name="memberGender"
-                    id="memberGender"
-                    checked={member.memberGender === "남"}
+                    type="password"
+                    name="memberPw"
+                    id="memberPw"
+                    value={member.memberPw}
                     onChange={inputMemberData}
+                    onBlur={checkPw} // 입력이 끝나면 비밀번호 일치 여부 확인
                   />
-                  남성
-                </label>
-                <label>
-                  <input
-                    type="radio"
-                    value="여"
-                    name="memberGender"
-                    id="memberGender"
-                    checked={member.memberGender === "여"}
-                    onChange={inputMemberData}
-                  />
-                  여성
-                </label>
+                </div>
               </div>
-            </div>
-          </div>
 
-          {/* 회원가입 버튼 */}
-          <div className="join-button-box">
-            <button
-              type="submit"
-              className={`join-button ${isFormValid ? "" : "disabled"}`}
-              style={{ display: isFormValid ? "block" : "none" }} // 버튼 보이기/숨기기
-              disabled={!isFormValid}
-            >
-              회원가입
-            </button>
+              {/* 비밀번호 확인 입력 */}
+              <div className="input-wrap">
+                <div className="input-title">
+                  <label htmlFor="memberPwRe">비밀번호 확인</label>
+                </div>
+                <div className="input-item">
+                  <input
+                    type="password"
+                    name="memberPwRe"
+                    id="memberPwRe"
+                    value={memberPwRe}
+                    onChange={inputMemberPwRe}
+                    onBlur={checkPw} // 입력이 끝나면 비밀번호 일치 여부 확인
+                  />
+                </div>
+                <p ref={pwMsgRef}></p>
+              </div>
+
+              {/* 닉네임 입력 */}
+              <div className="input-wrap">
+                <div className="input-title">
+                  <label htmlFor="memberNickname">닉네임</label>
+                </div>
+                <div className="input-item">
+                  <input
+                    type="text"
+                    name="memberNickname"
+                    id="memberNickname"
+                    value={member.memberNickname}
+                    onChange={inputMemberData}
+                    onBlur={checkNickname} // 닉네임이 입력되면 유효성 및 중복 체크
+                  />
+                </div>
+                <p
+                  className={
+                    nicknameCheck === 0
+                      ? ""
+                      : nicknameCheck === 1
+                      ? "input-ok"
+                      : "input-error"
+                  }
+                >
+                  {nicknameCheck === 0
+                    ? ""
+                    : nicknameCheck === 1
+                    ? "사용가능한 닉네임 입니다."
+                    : nicknameCheck === 2
+                    ? "닉네임은 한글, 영어 대/소문자, 숫자 입니다."
+                    : "이미 사용중인 닉네임 입니다."}
+                </p>
+              </div>
+
+              {/* 휴대폰 번호 입력 */}
+              <div className="input-wrap">
+                <div className="input-title">
+                  <label htmlFor="memberPhone">휴대폰 번호</label>
+                </div>
+                <div className="input-item">
+                  <input
+                    type="text"
+                    name="memberPhone"
+                    id="memberPhone"
+                    value={member.memberPhone}
+                    onChange={inputMemberData}
+                    onBlur={checkPhone} // 휴대폰 번호 입력 시 유효성 체크
+                    maxLength={13} // 010-0000-0000 형식에 맞게 제한
+                    placeholder="010-0000-0000"
+                  />
+                </div>
+                <p
+                  className={
+                    phoneError === 0
+                      ? ""
+                      : phoneError === 1
+                      ? "input-ok"
+                      : "input-error"
+                  }
+                >
+                  {phoneError === 0
+                    ? ""
+                    : phoneError === 1
+                    ? ""
+                    : "휴대폰 번호는 010-0000-0000 형식으로 입력해주세요."}
+                </p>
+              </div>
+
+              {/* 생년월일 입력 */}
+              <div className="input-wrap">
+                <div className="input-title">
+                  <label htmlFor="memberPhone">생년월일</label>
+                </div>
+                <div>
+                  <label htmlFor="year">연도:</label>
+                  <select
+                    name="year"
+                    id="year"
+                    value={year}
+                    onChange={(e) => setYear(e.target.value)}
+                  >
+                    <option value="">연도를 선택하세요</option>
+                    {years.map((yearOption) => (
+                      <option key={yearOption} value={yearOption}>
+                        {yearOption}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="month">월:</label>
+                  <select
+                    name="month"
+                    id="month"
+                    value={month}
+                    onChange={(e) => setMonth(e.target.value)}
+                  >
+                    <option value="">월을 선택하세요</option>
+                    {months.map((monthOption) => (
+                      <option key={monthOption} value={monthOption}>
+                        {monthOption}월
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="day">일:</label>
+                  <select
+                    name="day"
+                    id="day"
+                    value={day}
+                    onChange={(e) => setDay(e.target.value)}
+                  >
+                    <option value="">일을 선택하세요</option>
+                    {days.map((dayOption) => (
+                      <option key={dayOption} value={dayOption}>
+                        {dayOption}일
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* 성별 선택 */}
+              <div className="input-wrap">
+                <div className="input-title">
+                  <label htmlFor="memberGender">성별</label>
+                </div>
+                <div>
+                  <label>성별:</label>
+                  <div>
+                    <label>
+                      <input
+                        type="radio"
+                        value="남"
+                        name="memberGender"
+                        id="memberGender"
+                        checked={member.memberGender === "남"}
+                        onChange={inputMemberData}
+                      />
+                      남성
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        value="여"
+                        name="memberGender"
+                        id="memberGender"
+                        checked={member.memberGender === "여"}
+                        onChange={inputMemberData}
+                      />
+                      여성
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* 회원가입 버튼 */}
+              <div className="join-button-box">
+                <button
+                  type="submit"
+                  className={`join-button ${isFormValid ? "" : "disabled"}`}
+                  style={{ display: isFormValid ? "block" : "none" }} // 버튼 보이기/숨기기
+                  disabled={!isFormValid}
+                >
+                  회원가입
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
-      </div>
+        </>
+      ) : (
+        <div className="join-title">
+          <h3>코드 누락</h3>
+          <p>코드가 인증되지 않았습니다.</p>
+        </div>
+      )}
     </section>
   );
 };

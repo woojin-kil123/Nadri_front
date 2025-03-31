@@ -3,21 +3,20 @@ import { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
-const Join = () => {
+const EmailVerify = () => {
   const navigate = useNavigate();
   const [member, setMember] = useState({
     memberEmail: "", // 이메일
     memberCode: "", // 인증 코드
   });
   const [code, setCode] = useState(); // 서버에서 받은 인증 코드
-  const [codeSentTime, setCodeSentTime] = useState(null); // 인증 코드가 전송된 시간
   const [isVerificationSent, setIsVerificationSent] = useState(false); // 이메일 인증 요청 여부
   const [isButtonEnabled, setIsButtonEnabled] = useState(false); // "다음" 버튼 활성화 여부
   const [emailCheck, setEmailCheck] = useState(0); // 이메일 중복 확인 상태
   const [emailCheckMessage, setEmailCheckMessage] = useState(""); // 이메일 중복 검사 메시지
   const [emailCheckColor, setEmailCheckColor] = useState(""); // 이메일 중복 검사 메시지 색상
   const [isEmailVerified, setIsEmailVerified] = useState(false); // 이메일 인증 버튼 표시 여부
-  const [timeLeft, setTimeLeft] = useState(10 * 60); // 카운트다운 타이머 변수 10분 (600초) 설정
+
   // 입력값을 처리하는 함수
   const inputMemberData = (e) => {
     const { name, value } = e.target;
@@ -83,7 +82,6 @@ const Join = () => {
       )
       .then((res) => {
         setCode(res.data); // 서버에서 받은 인증 코드 저장
-        setCodeSentTime(Date.now()); // 인증 코드가 전송된 시간 저장
         setIsVerificationSent(true); // 인증 코드 요청 후 인증 코드 입력란 표시
       })
       .catch((error) => {
@@ -93,52 +91,15 @@ const Join = () => {
 
   // 인증 코드 확인
   const verifyEmailCode = () => {
-    // 인증 코드가 만료되었는지 확인
-    const currentTime = Date.now();
-    if (currentTime - codeSentTime > 10 * 60 * 1000) {
-      setCode(null); // 인증 코드 만료
-      Swal.fire({
-        text: "인증 코드가 만료되었습니다. 다시 시도해주세요.",
-        icon: "error",
-      });
-      return;
-    }
-
     if (code === member.memberCode) {
       alert("인증이 완료되었습니다!");
-      navigate("/join2", {
-        state: { email: member.memberEmail, code: member.memberCode },
-      }); // 인증 완료 후 회원 가입 2단계로 이동
+      navigate("/join2", { state: { email: member.memberEmail } }); // 인증 완료 후 회원 가입 2단계로 이동
     } else {
       Swal.fire({
         text: "인증 코드가 일치하지 않습니다. 다시 확인해 주세요",
         icon: "info",
       }); // 인증 코드 불일치 시 경고 메시지
     }
-  };
-
-  // 타이머 업데이트 및 만료 확인
-  useEffect(() => {
-    if (isVerificationSent && timeLeft > 0) {
-      const timer = setInterval(() => {
-        setTimeLeft((prevTime) => prevTime - 1); // 1초마다 1초씩 감소
-      }, 1000);
-
-      return () => clearInterval(timer); // 컴포넌트 언마운트 시 타이머 정리
-    } else if (timeLeft <= 0) {
-      setIsVerificationSent(false); // 인증 코드 만료
-      Swal.fire({
-        text: "인증 코드가 만료되었습니다. 다시 시도해주세요.",
-        icon: "error",
-      });
-    }
-  }, [isVerificationSent, timeLeft]);
-
-  // 카운트다운 포맷 (분:초 형식)
-  const formatTime = (seconds) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   };
 
   return (
@@ -200,9 +161,6 @@ const Join = () => {
                   maxLength={6} // 인증 코드는 6자리
                 />
               </div>
-              <div className="countdown-timer">
-                <p>남은 시간: {formatTime(timeLeft)}</p>
-              </div>
             </>
           )}
 
@@ -218,4 +176,4 @@ const Join = () => {
   );
 };
 
-export default Join;
+export default EmailVerify;
