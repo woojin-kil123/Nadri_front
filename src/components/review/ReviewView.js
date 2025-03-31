@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 const ReviewView = () => {
-  const [comments, setComments] = useState(reviewData.comments);
+  const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const navigate = useNavigate();
 
@@ -24,7 +24,7 @@ const ReviewView = () => {
   const [reportReason, setReportReason] = useState("");
   const [reportTarget, setReportTarget] = useState(null); // 리뷰 또는 댓글 ID
   const editReview = () => {
-    navigate("/edit-review", { state: { reviewData } });
+    navigate("/editreview");
   };
   // 신고 버튼 클릭 시
   const reportClick = (target) => {

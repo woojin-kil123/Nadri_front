@@ -22,6 +22,9 @@ import { isLoginState, isPlannerState } from "./components/utils/RecoilData";
 import { useEffect, useState } from "react";
 import ChatMenu from "./components/chat/ChatMenu";
 import ReviewWrite from "./components/review/ReviewWrite";
+import Search from "./components/review/Search";
+import ReviewView from "./components/review/ReviewView";
+import EditReview from "./components/review/EditReview";
 
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
@@ -59,8 +62,11 @@ function App() {
               <Route path="/join2" element={<Join2 />} />
               <Route path="/updatePw" element={<UpdatePw />} />
               <Route path="/updatePw2" element={<UpdatePw2 />} />
-              <Route path="/review/*" element={<ReviewMain />}></Route>
+              <Route path="/review" element={<ReviewMain />}></Route>
               <Route path="/write" element={<ReviewWrite />}></Route>
+              <Route path="/search" element={<Search />}></Route>
+              <Route path="/review/detail" element={<ReviewView />}></Route>
+              <Route path="/editreview" element={<EditReview />}></Route>
               <Route path="/tour" element={<ContentMain />} />
             </Routes>
           </div>
