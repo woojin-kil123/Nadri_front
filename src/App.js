@@ -39,24 +39,39 @@ function App() {
 
   return (
     <>
-      {isLogin && (
-        <>
-          <ChatMenu chatEl={chatEl} setChatEl={setChatEl} />
-        </>
-      )}
+      {isLogin && <ChatMenu chatEl={chatEl} setChatEl={setChatEl} />}
       <Routes>
         <Route
           path="/planner"
           element={<ProtectedRouting element={<PlannerFrm />} />}
         />
+        <Route
+          path="*"
+          element={
+            <div className="wrap">
+              <Header />
+              <div className="content">
+                <Routes>
+                  <Route path="/" element={<Main />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/join" element={<Join />} />
+                  <Route path="/join2" element={<Join2 />} />
+                  <Route path="/updatePw" element={<UpdatePw />} />
+                  <Route path="/updatePw2" element={<UpdatePw2 />} />
+                  <Route path="/review/*" element={<ReviewMain />}></Route>
+                  <Route path="/tour" element={<ContentMain />} />
+                </Routes>
+              </div>
+              <Footer />
+            </div>
+          }
+        />
       </Routes>
-      {!planner && (
+      {/* {!planner && (
         <div className="wrap">
           <Header />
           <div className="content">
             <Routes>
-              {/* <Route path="/planner" element={<PlannerFrm />} /> */}
-              <Route path="/" element={<Main />} />
               <Route path="/login" element={<Login />} />
               <Route path="/join" element={<Join />} />
               <Route path="/join2" element={<Join2 />} />
@@ -64,11 +79,12 @@ function App() {
               <Route path="/updatePw2" element={<UpdatePw2 />} />
               <Route path="/review/*" element={<ReviewMain />}></Route>
               <Route path="/tour" element={<ContentMain />} />
+              <Route path="/" element={<Main />} />
             </Routes>
           </div>
           <Footer />
         </div>
-      )}
+      )} */}
     </>
   );
 }
