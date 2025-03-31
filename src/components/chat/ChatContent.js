@@ -5,26 +5,21 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import GradeIcon from "@mui/icons-material/Grade";
 import { useEffect, useState } from "react";
 import { IconButton, InputBase, Paper } from "@mui/material";
-import { DropdownItem } from "../utils/metaSet";
+import { createChatMsg, DropdownItem } from "../utils/metaSet";
 
 const ChatContent = ({ ws, selectedRoom, content }) => {
   const loginNick = "길우진";
   const [msg, setMsg] = useState("");
   const chatNo = selectedRoom.chatNo;
   useEffect(() => {
-    const selectMsg = {
-      type: "SELECT_ROOM",
-      chatNo: chatNo,
-    };
-    const data = JSON.stringify(selectMsg);
+    const data = createChatMsg("SELECT_ROOM", chatNo);
     ws.send(data);
   }, [selectedRoom]);
   const send = () => {
     if (!msg) {
       return;
     }
-    const chatMsg = new chatMsg("SEND_MESSAGE", chatNo, msg);
-    const data = JSON.stringify(chatMsg);
+    const data = createChatMsg("SEND_MESSAGE", chatNo, msg);
     ws.send(data);
   };
 

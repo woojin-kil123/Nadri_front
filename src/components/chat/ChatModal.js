@@ -7,7 +7,7 @@ import ChatList from "./ChatList";
 import ChatContent from "./ChatContent";
 import { useRecoilValue } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
-import { ChatMsg } from "../utils/metaSet";
+import { ChatMsg, createChatMsg } from "../utils/metaSet";
 
 const ChatModal = ({ anchorEl, setAnchorEl }) => {
   //const userNick = useRecoilValue(loginNickState);
@@ -20,7 +20,7 @@ const ChatModal = ({ anchorEl, setAnchorEl }) => {
   };
 
   const [ws, setWs] = useState({});
-  const [chatRoom, setChatRoom] = useState([]);
+  const [roomList, setRoomList] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [content, setContent] = useState([]);
   const backServer = process.env.REACT_APP_BACK_SERVER;
@@ -38,19 +38,23 @@ const ChatModal = ({ anchorEl, setAnchorEl }) => {
 
   const startChat = () => {
     console.log("웹소켓 연결 시 실행되는 함수");
-    const msg = new ChatMsg("FETCH_ROOM_LIST");
-    const data = JSON.stringify(msg);
+    const data = createChatMsg("FETCH_ROOM_LIST");
     ws.send(data);
   };
   const receiveMsg = (receiveData) => {
     console.log("서버에서 데이터를 받으면 실행되는 함수");
     //data 타입별로 정리
     const data = JSON.parse(receiveData.data);
+    console.log(data);
     switch (data.type) {
       case "ROOM_LIST":
-        setChatRoom(data.room);
+        setRoomList(data.room);
         break;
       case "CHAT_CONTENT":
+        const room = roomList.filter((room, i) => {
+          return data.content[0].chatNo == room.chatNo;
+        });
+        setSelectedRoom(room[0]);
         setContent(data.content);
         break;
     }
@@ -96,6 +100,8 @@ const ChatModal = ({ anchorEl, setAnchorEl }) => {
               }}
               onClick={() => {
                 //채팅방 만들기
+                const msg = createChatMsg("CREATE_ROOM");
+                ws.send(msg);
               }}
             >
               <PostAddIcon sx={{ width: 45, height: 45 }} />
@@ -103,7 +109,7 @@ const ChatModal = ({ anchorEl, setAnchorEl }) => {
           </div>
           <div className="content-middle">
             <ChatList
-              chatRoom={chatRoom}
+              roomList={roomList}
               selectedRoom={selectedRoom}
               setSelectedRoom={setSelectedRoom}
             />

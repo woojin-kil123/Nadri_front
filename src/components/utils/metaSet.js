@@ -1,5 +1,3 @@
-import { useNavigate } from "react-router-dom";
-
 class DropdownItem {
   constructor(icon, name, clickFunc) {
     this.icon = icon;
@@ -14,5 +12,8 @@ class ChatMsg {
     this.message = message;
   }
 }
+function createChatMsg(type, chatNo, message) {
+  return JSON.stringify(new ChatMsg(type, chatNo, message));
+}
 
-export { DropdownItem, ChatMsg };
+export { DropdownItem, createChatMsg };

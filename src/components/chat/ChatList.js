@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
 
-const ChatList = ({ chatRoom, selectedRoom, setSelectedRoom }) => {
+const ChatList = ({ roomList, selectedRoom, setSelectedRoom }) => {
   return (
     <>
-      {chatRoom.map((room, i) => {
+      {roomList.map((room, i) => {
         return (
           <div
             key={`chatRoom-${i}`}
