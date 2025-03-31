@@ -437,8 +437,11 @@ const Join2 = () => {
                 <button
                   type="submit"
                   className={`join-button ${isFormValid ? "" : "disabled"}`}
-                  style={{ display: isFormValid ? "block" : "none" }} // 버튼 보이기/숨기기
                   disabled={!isFormValid}
+                  style={{
+                    pointerEvents: isFormValid ? "auto" : "none", // 버튼 비활성화 시 클릭 불가
+                    opacity: isFormValid ? 1 : 0.5, // 비활성화된 버튼은 투명도 낮추기
+                  }}
                 >
                   회원가입
                 </button>

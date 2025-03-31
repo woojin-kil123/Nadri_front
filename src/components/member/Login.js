@@ -11,6 +11,8 @@ const Login = () => {
   const [memberNickname, setMemberNickname] =
     useRecoilState(loginNicknameState);
   const [memberType, setMemberType] = useRecoilState(memberTypeState);
+  const [isButtonEnabled, setIsButtonEnabled] = useState(false); // 로그인 버튼 활성화 여부
+
   // member: 이메일과 비밀번호를 저장하는 상태
   const [member, setMember] = useState({ memberEmail: "", memberPw: "" });
 
@@ -18,11 +20,27 @@ const Login = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
+  // 이메일에 @가 포함되어 있는지 확인하는 함수
+  const validateEmail = (email) => {
+    return email.includes("@"); // 이메일에 @가 포함되어 있으면 true, 아니면 false
+  };
+
   // 입력값을 상태에 저장하는 함수
   const changeMember = (e) => {
     const name = e.target.name;
     const inputData = e.target.value;
     setMember({ ...member, [name]: inputData });
+
+    // 이메일과 비밀번호가 모두 입력되고, 이메일 형식이 올바르면 버튼을 활성화합니다.
+    if (
+      member.memberEmail &&
+      member.memberPw &&
+      validateEmail(member.memberEmail)
+    ) {
+      setIsButtonEnabled(true); // 버튼 활성화
+    } else {
+      setIsButtonEnabled(false); // 버튼 비활성화
+    }
   };
 
   // 이메일 입력란에서 포커스를 떴을 때 처리하는 함수
@@ -135,7 +153,15 @@ const Login = () => {
 
             {/* 로그인 버튼 */}
             <div className="login-button-box">
-              <button type="submit" className="btn-primary lg">
+              <button
+                type="submit"
+                className="btn-primary lg"
+                disabled={!isButtonEnabled} // 버튼 비활성화
+                style={{
+                  pointerEvents: isButtonEnabled ? "auto" : "none", // 클릭 가능/불가 설정
+                  opacity: isButtonEnabled ? 1 : 0.5, // 비활성화 시 투명도 조절
+                }}
+              >
                 로그인
               </button>
             </div>

@@ -165,6 +165,11 @@ const UpdatePw = () => {
                 value={member.memberEmail}
                 onChange={inputMemberData} // 입력값 변경 시 상태 업데이트
                 onBlur={checkEmail} // 포커스를 벗어날 때 이메일 중복 검사 실행
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    checkEmail(); // Enter 키를 누르면 중복 검사 실행
+                  }
+                }}
               />
             </div>
             {/* 이메일 중복 검사 결과 메시지 */}
@@ -174,13 +179,19 @@ const UpdatePw = () => {
           </div>
 
           {/* 이메일 인증 버튼 (중복 확인이 통과된 경우에만 표시) */}
-          {isEmailVerified && (
-            <div className="join-button-box">
-              <button type="button" onClick={sendEmailVerification}>
-                이메일 인증
-              </button>
-            </div>
-          )}
+          <div className="join-button-box">
+            <button
+              type="button"
+              onClick={sendEmailVerification}
+              disabled={!isEmailVerified} // 비활성화 조건
+              style={{
+                pointerEvents: !isEmailVerified ? "none" : "auto", // 버튼 비활성화 시 클릭 불가
+                opacity: !isEmailVerified ? 0.5 : 1, // 비활성화된 버튼은 투명도 낮추기
+              }}
+            >
+              이메일 인증
+            </button>
+          </div>
 
           {/* 이메일 인증 후 인증 코드 입력란 */}
           {isVerificationSent && (
@@ -205,11 +216,17 @@ const UpdatePw = () => {
           )}
 
           {/* "다음" 버튼 (6자리 인증 코드 입력 시 활성화) */}
-          {isButtonEnabled && (
-            <button type="submit" className="btn-primary lg">
-              다음
-            </button>
-          )}
+          <button
+            type="submit"
+            className="btn-primary lg"
+            disabled={!isButtonEnabled} // 버튼 비활성화
+            style={{
+              pointerEvents: isButtonEnabled ? "auto" : "none", // 버튼 비활성화 시 클릭 불가
+              opacity: isButtonEnabled ? 1 : 0.5, // 비활성화된 버튼은 투명도 낮추기
+            }}
+          >
+            다음
+          </button>
         </form>
       </div>
     </section>

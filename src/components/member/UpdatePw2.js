@@ -160,8 +160,11 @@ const UpdatePw2 = () => {
                 <button
                   type="submit"
                   className="btn-primary lg"
-                  style={{ display: isFormValid ? "block" : "none" }} // 버튼이 비밀번호 일치 시만 보이도록 설정
-                  disabled={!isFormValid} // 버튼이 비활성화되면 클릭 불가
+                  disabled={!isFormValid}
+                  style={{
+                    pointerEvents: isFormValid ? "auto" : "none", // 버튼 비활성화 시 클릭 불가
+                    opacity: isFormValid ? 1 : 0.5, // 비활성화된 버튼은 투명도 낮추기
+                  }}
                 >
                   확인
                 </button>
