@@ -229,7 +229,7 @@ const Join2 = () => {
       {code ? (
         <>
           <div className="join-title">
-            <h3>필수 정보 입력</h3>
+            <h2>필수 정보 입력</h2>
             <p>가입을 위해 필수 정보를 입력해주세요.</p>
           </div>
 
@@ -253,6 +253,7 @@ const Join2 = () => {
                     value={member.memberPw}
                     onChange={inputMemberData}
                     onBlur={checkPw} // 입력이 끝나면 비밀번호 일치 여부 확인
+                    placeholder="최소 8자 이상"
                   />
                 </div>
               </div>
@@ -270,6 +271,7 @@ const Join2 = () => {
                     value={memberPwRe}
                     onChange={inputMemberPwRe}
                     onBlur={checkPw} // 입력이 끝나면 비밀번호 일치 여부 확인
+                    placeholder="위 비밀번호와 동일하게 입력"
                   />
                 </div>
                 <p ref={pwMsgRef}></p>
@@ -288,6 +290,7 @@ const Join2 = () => {
                     value={member.memberNickname}
                     onChange={inputMemberData}
                     onBlur={checkNickname} // 닉네임이 입력되면 유효성 및 중복 체크
+                    placeholder="자신을 표현할 수 있는 이름을 지어주세요."
                   />
                 </div>
                 <p
@@ -346,55 +349,54 @@ const Join2 = () => {
               {/* 생년월일 입력 */}
               <div className="input-wrap">
                 <div className="input-title">
-                  <label htmlFor="memberPhone">생년월일</label>
+                  <label htmlFor="memberBirth">생년월일</label>
                 </div>
-                <div>
-                  <label htmlFor="year">연도:</label>
-                  <select
-                    name="year"
-                    id="year"
-                    value={year}
-                    onChange={(e) => setYear(e.target.value)}
-                  >
-                    <option value="">연도를 선택하세요</option>
-                    {years.map((yearOption) => (
-                      <option key={yearOption} value={yearOption}>
-                        {yearOption}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="month">월:</label>
-                  <select
-                    name="month"
-                    id="month"
-                    value={month}
-                    onChange={(e) => setMonth(e.target.value)}
-                  >
-                    <option value="">월을 선택하세요</option>
-                    {months.map((monthOption) => (
-                      <option key={monthOption} value={monthOption}>
-                        {monthOption}월
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="day">일:</label>
-                  <select
-                    name="day"
-                    id="day"
-                    value={day}
-                    onChange={(e) => setDay(e.target.value)}
-                  >
-                    <option value="">일을 선택하세요</option>
-                    {days.map((dayOption) => (
-                      <option key={dayOption} value={dayOption}>
-                        {dayOption}일
-                      </option>
-                    ))}
-                  </select>
+                <div className="select-wrap">
+                  <div className="year">
+                    <select
+                      name="year"
+                      id="year"
+                      value={year}
+                      onChange={(e) => setYear(e.target.value)}
+                    >
+                      <option value="">년도</option>
+                      {years.map((yearOption) => (
+                        <option key={yearOption} value={yearOption}>
+                          {yearOption}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="month">
+                    <select
+                      name="month"
+                      id="month"
+                      value={month}
+                      onChange={(e) => setMonth(e.target.value)}
+                    >
+                      <option value="">월</option>
+                      {months.map((monthOption) => (
+                        <option key={monthOption} value={monthOption}>
+                          {monthOption}월
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="day">
+                    <select
+                      name="day"
+                      id="day"
+                      value={day}
+                      onChange={(e) => setDay(e.target.value)}
+                    >
+                      <option value="">일</option>
+                      {days.map((dayOption) => (
+                        <option key={dayOption} value={dayOption}>
+                          {dayOption}일
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </div>
 
@@ -404,9 +406,8 @@ const Join2 = () => {
                   <label htmlFor="memberGender">성별</label>
                 </div>
                 <div>
-                  <label>성별:</label>
                   <div>
-                    <label>
+                    <label className="memberGender">
                       <input
                         type="radio"
                         value="남"
@@ -417,7 +418,7 @@ const Join2 = () => {
                       />
                       남성
                     </label>
-                    <label>
+                    <label className="memberGender">
                       <input
                         type="radio"
                         value="여"
@@ -433,7 +434,7 @@ const Join2 = () => {
               </div>
 
               {/* 회원가입 버튼 */}
-              <div className="join-button-box">
+              <div className="join-button-box2">
                 <button
                   type="submit"
                   className={`join-button ${isFormValid ? "" : "disabled"}`}

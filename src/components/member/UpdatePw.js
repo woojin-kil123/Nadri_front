@@ -17,7 +17,7 @@ const UpdatePw = () => {
   const [emailCheckMessage, setEmailCheckMessage] = useState(""); // 이메일 중복 검사 메시지
   const [emailCheckColor, setEmailCheckColor] = useState(""); // 이메일 중복 검사 메시지 색상 (유효/오류)
   const [isEmailVerified, setIsEmailVerified] = useState(false); // 이메일 인증 버튼 표시 여부
-  const [timeLeft, setTimeLeft] = useState(10 * 60); // 카운트다운 타이머 변수 10분 (600초) 설정
+  const [timeLeft, setTimeLeft] = useState(180); // 카운트다운 타이머 변수 10분 (600초) 설정
 
   // 입력값 변경 처리 함수
   const inputMemberData = (e) => {
@@ -86,7 +86,7 @@ const UpdatePw = () => {
   const verifyEmailCode = () => {
     // 인증 코드가 만료되었는지 확인
     const currentTime = Date.now();
-    if (currentTime - codeSentTime > 10 * 60 * 1000) {
+    if (currentTime - codeSentTime > 3 * 60 * 1000) {
       setCode(null); // 인증 코드 만료
       Swal.fire({
         text: "인증 코드가 만료되었습니다. 다시 시도해주세요.",
@@ -142,7 +142,7 @@ const UpdatePw = () => {
   return (
     <section className="section">
       <div className="join-title">
-        <h3>비밀번호 재설정</h3>
+        <h2>비밀번호 재설정</h2>
         <p>회원가입 시 등록한 이메일을 입력해주세요.</p>
       </div>
       <div className="join-wrap">
@@ -179,7 +179,7 @@ const UpdatePw = () => {
           </div>
 
           {/* 이메일 인증 버튼 (중복 확인이 통과된 경우에만 표시) */}
-          <div className="join-button-box">
+          <div className="verify-button-box">
             <button
               type="button"
               onClick={sendEmailVerification}
@@ -215,18 +215,20 @@ const UpdatePw = () => {
             </>
           )}
 
-          {/* "다음" 버튼 (6자리 인증 코드 입력 시 활성화) */}
-          <button
-            type="submit"
-            className="btn-primary lg"
-            disabled={!isButtonEnabled} // 버튼 비활성화
-            style={{
-              pointerEvents: isButtonEnabled ? "auto" : "none", // 버튼 비활성화 시 클릭 불가
-              opacity: isButtonEnabled ? 1 : 0.5, // 비활성화된 버튼은 투명도 낮추기
-            }}
-          >
-            다음
-          </button>
+          <div className="join-button-box">
+            {/* "다음" 버튼 (6자리 인증 코드 입력 시 활성화) */}
+            <button
+              type="submit"
+              className="btn-primary lg"
+              disabled={!isButtonEnabled} // 버튼 비활성화
+              style={{
+                pointerEvents: isButtonEnabled ? "auto" : "none", // 버튼 비활성화 시 클릭 불가
+                opacity: isButtonEnabled ? 1 : 0.5, // 비활성화된 버튼은 투명도 낮추기
+              }}
+            >
+              다음
+            </button>
+          </div>
         </form>
       </div>
     </section>

@@ -109,7 +109,7 @@ const UpdatePw2 = () => {
       {code ? (
         <>
           <div className="join-title">
-            <h3>필수 정보 입력</h3>
+            <h2>필수 정보 입력</h2>
             <p>가입을 위해 필수 정보를 입력해주세요.</p>
           </div>
           <div className="join-wrap">

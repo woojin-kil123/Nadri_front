@@ -5,6 +5,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useRecoilState } from "recoil";
 import { loginNicknameState, memberTypeState } from "../utils/RecoilData";
+import TextField from "@mui/material/TextField";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -105,7 +106,7 @@ const Login = () => {
         <Link to="/">NADRI</Link>
       </div>
       <div className="login-wrap">
-        <h1 className="login-join-title">이메일 로그인</h1>
+        <h1 className="login-title">이메일 로그인</h1>
         <div className="email-login-wrap">
           <form
             onSubmit={(e) => {
