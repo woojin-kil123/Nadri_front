@@ -202,14 +202,20 @@
 .planning-modal {
   position: relative;
   width: 400px;
-  height: 460px;
   background-color: var(--gray8);
   z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 5px 50px 5px;
 }
 .planning-info {
   margin-left: 20px;
   display: flex;
   justify-content: center;
+}
+.date-input {
+  margin-bottom: 20px;
 }
 
 /* 범위 슬라이더 */

@@ -6,6 +6,7 @@ import { IconButton, InputBase, Paper } from "@mui/material";
 import StarRating from "../utils/StarRating";
 import BasicDatePicker from "../utils/BasicDatePicker";
 import BasicSelect from "../utils/BasicSelect";
+import dayjs from "dayjs";
 
 const PlannerFrm = () => {
   //마커 오버레이 여닫음 state
@@ -312,6 +313,11 @@ const PlanningModal = (props) => {
   ];
   const content = props.content;
 
+  const now = dayjs();
+  const [date, setDate] = useState(now);
+  // console.log(date.format("YYYY-MM-DD"));
+  const [transport, setTransport] = useState("");
+
   return (
     <div className="modal-background">
       <div className="planning-modal">
@@ -339,14 +345,26 @@ const PlanningModal = (props) => {
         <div className="planning-input">
           <div className="date-input">
             <span>계획일</span>
-            <BasicDatePicker />
+            <BasicDatePicker date={date} setDate={setDate} />
           </div>
           <div>
             <span>어떻게 가실 건가요?</span>
-            <BasicSelect />
+            <BasicSelect transport={transport} setTransport={setTransport} />
           </div>
           <div className="spot-btn">
-            <button style={{ width: "100px", height: "30px" }}>
+            <button
+              style={{ width: "100px", height: "30px" }}
+              onClick={() => {
+                if (date.format("YYYY-MM-DD") < dayjs().format("YYYY-MM-DD")) {
+                  window.alert("오늘보다 이른 날짜를 고를 수 없습니다.");
+                  return;
+                }
+                if (transport === "") {
+                  window.alert("이동 수단을 선택하세요.");
+                  return;
+                }
+              }}
+            >
               여행지에 추가
             </button>
           </div>
