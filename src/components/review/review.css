@@ -30,3 +30,7 @@
 .ql-editor > p {
   height: 300px;
 }
+.rate {
+  display: flex;
+  justify-content: center;
+}

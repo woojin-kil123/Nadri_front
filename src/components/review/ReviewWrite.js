@@ -1,6 +1,25 @@
+import { useState } from "react";
 import TextEditor from "../utils/Texteditor";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import StarRateIcon from "@mui/icons-material/StarRate";
+const StarRating = ({ totalStars = 5 }) => {
+  const [rating, setRating] = useState(0);
+
+  const handleRating = (index) => {
+    setRating(index + 1);
+  };
+
+  return (
+    <div className="rate">
+      {[...Array(totalStars)].map((_, index) => (
+        <div key={index} onClick={() => handleRating(index)}>
+          {index < rating ? <StarRateIcon /> : <StarOutlineIcon />}
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const ReviewWrite = () => {
   return (
     <section className="section">
@@ -12,13 +31,7 @@ const ReviewWrite = () => {
             </th>
             <td>
               <div>당신의 경험을 평가해주세요</div>
-              <div>
-                <StarOutlineIcon></StarOutlineIcon>
-                <StarOutlineIcon></StarOutlineIcon>
-                <StarOutlineIcon></StarOutlineIcon>
-                <StarOutlineIcon></StarOutlineIcon>
-                <StarOutlineIcon></StarOutlineIcon>
-              </div>
+              <StarRating />
             </td>
           </tr>
           <tr>
@@ -36,9 +49,16 @@ const ReviewWrite = () => {
               <label>첨부파일</label>
             </th>
             <td>
-              <label className="btn-primary green">파일첨부</label>
+              <label className="btn-primary green" htmlFor="filePath">
+                파일첨부
+              </label>
               <div className="input-item">
-                <input type="file" style={{ display: "none" }} multiple></input>
+                <input
+                  type="file"
+                  id="filePath"
+                  style={{ display: "none" }}
+                  multiple
+                ></input>
               </div>
             </td>
           </tr>
