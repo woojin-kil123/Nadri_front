@@ -181,7 +181,7 @@ const CustomizedInputBase = ({ ws, chatNo }) => {
     >
       <InputBase
         aria-label="search"
-        sx={{ ml: 2, fontSize: "12px" }}
+        sx={{ ml: 1, fontSize: "12px", width: 200 }}
         placeholder="초대할 닉네임을 입력하세요"
         value={inputName}
         onChange={(e) => {

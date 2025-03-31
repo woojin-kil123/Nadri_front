@@ -14,8 +14,8 @@ const ChatList = ({ roomList, selectedRoom, setSelectedRoom }) => {
             className={selectedRoom == room ? "selected-room" : ""}
           >
             <div className="room-title disabled-icon">
+              {room.notRead > 0 && <span className="new-badge">NEW!</span>}
               <h4>{room.chatTitle}</h4>
-              <p style={{ color: "red" }}>{room.notRead}</p>
             </div>
             <p>({room.groupSize})</p>
           </div>
