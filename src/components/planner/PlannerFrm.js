@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Circle, CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
 import "./planner.css";
 import { Close, Search } from "@mui/icons-material";
@@ -7,6 +7,7 @@ import StarRating from "../utils/StarRating";
 import BasicDatePicker from "../utils/BasicDatePicker";
 import BasicSelect from "../utils/BasicSelect";
 import dayjs from "dayjs";
+import axios from "axios";
 
 const PlannerFrm = () => {
   //마커 오버레이 여닫음 state
@@ -20,6 +21,14 @@ const PlannerFrm = () => {
 
   //플래너에 추가한 장소 리스트 state
   const [plannedSpot, setPlannedSpot] = useState([]);
+
+  //현재 보이는 지도 화면 state
+  const [mapBounds, setMapBounds] = useState(null);
+  //유저가 클릭한 지도 위치 state
+  const [userMarker, setUserMarker] = useState(null);
+  //유저 클릭 위치를 중심으로 하는 반경 범위
+  const [userRadius, setUserRadius] = useState(1000);
+
   const handleAddSpot = (content) => {
     const newSpot = {
       dayDate: "",
@@ -30,6 +39,23 @@ const PlannerFrm = () => {
     };
     setPlannedSpot([...plannedSpot, content]);
   };
+
+  // useEffect(() => {
+  //   if (userMarker) {
+  //     const [lat, lng] = [userMarker.lat, userMarker.lng];
+  //     axios
+  //       .get(
+  //         `${process.env.REACT_APP_BACK_SERVER}/plan/nearby?lat=${lat}&lng=${lng}&radius=${userRadius}`
+  //       )
+  //       .then((res) => {
+  //         console.log(res.data);
+  //         setContentList(res.data);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       });
+  //   }
+  // }, [userMarker, userRadius]);
 
   //장소 리스트(임시 데이터)
   const [contentList, setContentList] = useState([
@@ -76,12 +102,6 @@ const PlannerFrm = () => {
       },
     },
   ]);
-  //현재 보이는 지도 화면 state
-  const [mapBounds, setMapBounds] = useState(null);
-  //유저가 클릭한 지도 위치 state
-  const [userMarker, setUserMarker] = useState(null);
-  //유저 클릭 위치를 중심으로 하는 반경 범위
-  const [userRadius, setUserRadius] = useState(1000);
 
   const getDistance = (lat1, lng1, lat2, lng2) => {
     const R = 6371;
@@ -436,10 +456,9 @@ const PrintMap = (props) => {
             radius={userRadius}
             strokeWeight={2}
             strokeColor={"var(--main2)"}
-            strokeOpacity={0.8}
             strokeStyle={"solid"}
-            fillColor={"var(--main5)"}
-            fillOpacity={0.2}
+            fillColor={"#0055ff"}
+            fillOpacity={0.15}
           />
         </>
       )}
