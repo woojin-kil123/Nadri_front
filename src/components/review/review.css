@@ -52,3 +52,6 @@
 .review-form {
   flex-grow: 1;
 }
+.search {
+  justify-items: center;
+}
