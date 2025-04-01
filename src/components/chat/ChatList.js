@@ -23,7 +23,7 @@ const ChatList = ({ ws, roomList, selectedRoom, setSelectedRoom }) => {
               {room.notRead > 0 && <span className="new-badge">NEW!</span>}
               <h4>{room.chatTitle}</h4>
             </div>
-            <p>({room.groupSize})</p>
+            <p>({room.groupInfo.length})</p>
           </div>
         );
       })}

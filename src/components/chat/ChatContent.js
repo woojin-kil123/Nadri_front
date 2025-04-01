@@ -8,6 +8,9 @@ import { createChatMsg, DropdownItem } from "../utils/metaSet";
 import { useRecoilValue } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import Dropdown from "../utils/Dropdown";
+import GroupIcon from "@mui/icons-material/Group";
 
 const ChatContent = ({
   ws,
@@ -19,7 +22,75 @@ const ChatContent = ({
 }) => {
   const loginNickname = useRecoilValue(loginNicknameState);
   const [title, setTitle] = useState("");
+  const [moreEl, setMoreEl] = useState(null);
   const [editMode, setEditMode] = useState(false);
+  const titleInput = useRef(null);
+  useEffect(() => {
+    if (editMode && titleInput.current) {
+      titleInput.current.focus();
+    } else {
+      titleInput.current?.blur();
+    }
+  }, [editMode]);
+  const updateTitle = () => {
+    if (editMode) {
+      if (title != "") {
+        const msg = createChatMsg("UPDATE_TITLE", chatNo, title);
+        ws.send(msg);
+      }
+    }
+    setEditMode((prev) => !prev);
+  };
+  const checkExit = () => {
+    setIsSystemModal(true);
+    setSystemModal({
+      title: "📢 시스템 메시지",
+      text: "채팅방을 나가시겠습니까?",
+      buttons: [
+        {
+          text: "확인",
+          onClick: () => {
+            const msg = createChatMsg("LEAVE_ROOM", chatNo);
+            ws.send(msg);
+            setIsSystemModal(false);
+            setSelectedRoom(null);
+          },
+        },
+        {
+          text: "닫기",
+          onClick: () => setIsSystemModal(false),
+        },
+      ],
+    });
+  };
+  const moreMenu = [
+    new DropdownItem(
+      (
+        <GroupIcon
+          sx={{ width: 30, height: 30, marginLeft: "4px", color: "#333" }}
+        />
+      ),
+      "참여중 목록"
+    ),
+    new DropdownItem(
+      (
+        <DriveFileRenameOutlineIcon
+          sx={{ width: 30, height: 30, marginLeft: "4px", color: "#333" }}
+        />
+      ),
+      "방 제목 변경",
+      updateTitle
+    ),
+    new DropdownItem(
+      <ExitToAppIcon sx={{ width: 35, height: 35, fill: "#dc143c" }} />,
+      "채팅방 나가기",
+      checkExit
+    ),
+  ];
+  const moreOpen = (e) => {
+    setMoreEl(e.currentTarget);
+  };
+
   const [msg, setMsg] = useState("");
   const chatNo = selectedRoom.chatNo;
   const previousChatNoRef = useRef(null);
@@ -47,45 +118,34 @@ const ChatContent = ({
     ws.send(data);
     setMsg("");
   };
-  const checkExit = () => {
-    setIsSystemModal(true);
-    setSystemModal({
-      title: "📢 시스템 메시지",
-      text: "채팅방을 나가시겠습니까?",
-      buttons: [
-        {
-          text: "확인",
-          onClick: () => {
-            const msg = createChatMsg("LEAVE_ROOM", chatNo);
-            ws.send(msg);
-            setIsSystemModal(false);
-            setSelectedRoom(null);
-          },
-        },
-        {
-          text: "닫기",
-          onClick: () => setIsSystemModal(false),
-        },
-      ],
-    });
-  };
-  const updateTitle = () => {
-    if (editMode) {
-      if (title != "") {
-        const msg = createChatMsg("UPDATE_TITLE", chatNo, title);
-        ws.send(msg);
-      }
-    }
-    setEditMode((prev) => !prev);
-  };
+
   return (
     <>
       <div className="content-top">
         <div className="chat-title-wrap">
+          <IconButton
+            onClick={moreOpen}
+            size="small"
+            sx={{ ml: 2 }}
+            aria-controls={moreEl ? "more-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={moreEl ? "true" : undefined}
+          >
+            <MoreVertIcon />
+            <Dropdown
+              id={"more-menu"}
+              menus={moreMenu}
+              anchorEl={moreEl}
+              setAnchorEl={setMoreEl}
+            ></Dropdown>
+          </IconButton>
           <label
             htmlFor="chat-title"
             style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
             className="chat-title-label"
+            onMouseDown={(e) => {
+              if (!editMode) e.preventDefault();
+            }}
           >
             <input
               id="chat-title"
@@ -102,18 +162,12 @@ const ChatContent = ({
                   updateTitle();
                 }
               }}
-            />
-            <DriveFileRenameOutlineIcon
-              sx={{ width: 30, height: 30, marginLeft: "4px", color: "#333" }}
-              onClick={updateTitle}
+              ref={titleInput}
             />
           </label>
         </div>
         <div className="chat-search-wrap">
           <CustomizedInputBase ws={ws} chatNo={chatNo} />
-          <IconButton sx={{ ml: 2, padding: 0 }} onClick={checkExit}>
-            <ExitToAppIcon sx={{ width: 35, height: 35, fill: "#dc143c" }} />
-          </IconButton>
         </div>
       </div>
       <div className="content-middle" ref={chatDiv}>

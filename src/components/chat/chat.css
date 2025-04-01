@@ -90,6 +90,7 @@ body .chat-popup-container {
   align-items: center;
   gap: 4px;
   cursor: pointer;
+  height: 40px;
 }
 .chat-title-wrap input {
   border: none;
@@ -98,6 +99,7 @@ body .chat-popup-container {
   font-family: ns-b;
   background-color: transparent;
   cursor: default;
+  text-align: center;
 }
 .chat-title-wrap > button {
   flex-grow: 1;
@@ -194,4 +196,9 @@ body .chat-popup-container {
 .more-drop li {
   display: flex;
   gap: 10px;
+}
+.chat-room input:focus {
+  height: 40px;
+  border-radius: 10px;
+  background-color: var(--main5);
 }
