@@ -25,6 +25,7 @@ import ChatMenu from "./components/chat/ChatMenu";
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
   const isLogin = useRecoilValue(isLoginState);
+
   const loc = useLocation();
 
   useEffect(() => {

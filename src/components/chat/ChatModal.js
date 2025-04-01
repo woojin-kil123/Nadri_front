@@ -12,7 +12,12 @@ import { createChatMsg, DropdownItem } from "../utils/metaSet";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import ChatMenu from "./ChatMenu";
 
-const ChatModal = ({ chatModalEl, setChatModalEl, setChatMenu }) => {
+const ChatModal = ({
+  chatModalEl,
+  setChatModalEl,
+  setChatMenu,
+  setIsNewMessage,
+}) => {
   const loginNickname = useRecoilValue(loginNicknameState);
   const close = (e) => {
     e.stopPropagation();
