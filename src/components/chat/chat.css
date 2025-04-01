@@ -206,7 +206,7 @@ body .chat-popup-container {
   display: flex;
   gap: 10px;
 }
-.chat-room input:focus {
+.chat-room #chat-title:focus {
   height: 40px;
   border-radius: 10px;
   background-color: var(--main5);
