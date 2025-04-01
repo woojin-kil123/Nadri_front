@@ -55,3 +55,7 @@
 .search {
   justify-items: center;
 }
+.review-content {
+  width: 90%;
+  justify-items: center;
+}

@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import "./review.css";
 const ReviewView = () => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
@@ -44,59 +45,63 @@ const ReviewView = () => {
   return (
     <section className="section">
       <div className="page-title">리뷰 상세보기</div>
-      <h2>title</h2>
-      <p>content</p>
-      <button onClick={editReview}>리뷰 수정</button>
-      <button onClick={reportClick}>리뷰 신고</button>
-      <h3>댓글</h3>
-      <ul>
-        {comments.map((comment) => (
-          <li key={comment.id}>
-            {comment.text}
-            <button onClick={() => deleteComment(comment.id)}>삭제</button>
-          </li>
-        ))}
-      </ul>
-
-      {!isCommenting ? (
-        <button onClick={() => setIsCommenting(true)}>댓글 작성</button>
-      ) : (
-        <div>
-          <input
-            type="text"
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-          />
-          <button
-            onClick={() => {
-              setComments([...comments, { id: Date.now(), text: newComment }]);
-              setNewComment(""); // 입력 필드 초기화
-              setIsCommenting(false); // 입력 필드 숨김
-            }}
-          >
-            등록
-          </button>
-          <button onClick={() => setIsCommenting(false)}>취소</button>
-        </div>
-      )}
-      {isReporting && (
-        <div className="modal">
-          <h3>신고 사유 선택</h3>
-          <select
-            onChange={(e) => setReportReason(e.target.value)}
-            value={reportReason}
-          >
-            <option value="">-- 신고 사유 선택 --</option>
-            {REPORT_REASONS.map((reason, index) => (
-              <option key={index} value={reason}>
-                {reason}
-              </option>
-            ))}
-          </select>
-          <button onClick={reportSubmit}>신고 접수</button>
-          <button onClick={() => setIsReporting(false)}>취소</button>
-        </div>
-      )}
+      <div className="review-content">
+        <h2>title</h2>
+        <p>content</p>
+        <button onClick={editReview}>리뷰 수정</button>
+        <button onClick={reportClick}>리뷰 신고</button>
+        <h3>댓글</h3>
+        <ul>
+          {comments.map((comment) => (
+            <li key={comment.id}>
+              {comment.text}
+              <button onClick={() => deleteComment(comment.id)}>삭제</button>
+            </li>
+          ))}
+        </ul>
+        {!isCommenting ? (
+          <button onClick={() => setIsCommenting(true)}>댓글 작성</button>
+        ) : (
+          <div>
+            <input
+              type="text"
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+            />
+            <button
+              onClick={() => {
+                setComments([
+                  ...comments,
+                  { id: Date.now(), text: newComment },
+                ]);
+                setNewComment(""); // 입력 필드 초기화
+                setIsCommenting(false); // 입력 필드 숨김
+              }}
+            >
+              등록
+            </button>
+            <button onClick={() => setIsCommenting(false)}>취소</button>
+          </div>
+        )}
+        {isReporting && (
+          <div className="modal">
+            <h3>신고 사유 선택</h3>
+            <select
+              onChange={(e) => setReportReason(e.target.value)}
+              value={reportReason}
+            >
+              <option value="">-- 신고 사유 선택 --</option>
+              {REPORT_REASONS.map((reason, index) => (
+                <option key={index} value={reason}>
+                  {reason}
+                </option>
+              ))}
+            </select>
+            <button onClick={reportSubmit}>신고 접수</button>
+            <button onClick={() => setIsReporting(false)}>취소</button>
+          </div>
+        )}
+      </div>
     </section>
   );
 };
