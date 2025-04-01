@@ -1,4 +1,5 @@
 import "./default.css";
+import "./header.css";
 import { Link, useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useState } from "react";
@@ -17,7 +18,6 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
 import { DropdownItem } from "../utils/metaSet";
 import { Logout, Map } from "@mui/icons-material";
-
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
   isLoginState,
@@ -32,14 +32,14 @@ const Header = () => {
   console.log(isLogin);
   return (
     <header className="header">
-      <div>
-        <div className="logo">
-          <Link to="/">NADRI</Link>
-        </div>
-        <MainNavi></MainNavi>
-
-        <HeaderLink isLogin={isLogin} />
+      <div className="logo">
+        <Link to="/">NADRI</Link>
       </div>
+      <MainNavi></MainNavi>
+      <div className="header-search">
+        <CustomizedInputBase />
+      </div>
+      <HeaderLink isLogin={isLogin} />
     </header>
   );
 };
@@ -57,9 +57,6 @@ const MainNavi = () => {
         </li>
         <li>
           <Link to="/review">리뷰</Link>
-        </li>
-        <li className="search">
-          <CustomizedInputBase />
         </li>
       </ul>
     </nav>

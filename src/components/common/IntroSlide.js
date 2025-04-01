@@ -1,169 +1,87 @@
-import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  MobileStepper,
-  useTheme,
-} from "@mui/material";
-import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import "./main.css";
+import React, { useEffect, useState } from "react";
+import { Box, Typography, Button } from "@mui/material";
 
-const steps = [
+const slides = [
   {
     title: "나만의 여행을 계획하세요",
-    description: "일정을 공유하고 함께 할 수 있어요",
-    countdown: { hours: 23, days: 5, minutes: 59, seconds: 35 },
+    description: "여행 일정을 공유하고 함께 할 수 있어요",
+    image: "/image/intro_plan.png",
   },
   {
-    title: "여행지 추천부터 계획까지",
-    description: "알고리즘 기반 맞춤 추천을 제공합니다",
+    title: "꼭 가보고 싶은 곳이 있었나요?",
+    description: "검색을 통해 원하시는 정보를 찾으세요",
+    image: "/image/intro_spot.png",
   },
   {
-    title: "친구들과 실시간 채팅",
-    description: "실시간 채팅으로 함께 계획해요",
+    title: "편하게 머물 수 있는 공간들부터",
+    description: "여러분들의 솔직한 평가를 나누세요",
+    image: "/image/intro_hotel.png",
+  },
+  {
+    title: "재미있는 즐길거리까지",
+    description: "여러분이 원한 맞춤 추천을 제공합니다",
+    image: "/image/intro_content.png",
+  },
+  {
+    title: "실시간 채팅과 다양한 리뷰와 함께",
+    description: "친구들과 편하게 여행을 계획해보세요",
+    image: "/image/intro_chat.png",
   },
 ];
 
 const IntroSlider = () => {
-  const [activeStep, setActiveStep] = useState(0);
-  const theme = useTheme();
-  const maxSteps = steps.length;
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  const handleNext = () =>
-    setActiveStep((prev) => Math.min(prev + 1, maxSteps - 1));
-  const handleBack = () => setActiveStep((prev) => Math.max(prev - 1, 0));
+  // 자동 슬라이드 전환 (5초 간격)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleDotClick = (index) => {
+    setActiveIndex(index);
+  };
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        height: "500px",
-        background: "radial-gradient(circle, #222 0%, #000 100%)",
-        color: "#fff",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        alignItems: "center",
-        p: 4,
-      }}
-    >
-      <Box
-        sx={{
-          flex: 1,
-          display: "flex",
-          width: "100%",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        {/* Left content */}
-        <Box sx={{ maxWidth: 500 }}>
-          <Typography
-            variant="h4"
-            fontWeight="bold"
-            gutterBottom
-            sx={{ color: "white" }}
-          >
-            {steps[activeStep].title}
-          </Typography>
-          <Typography variant="subtitle1" gutterBottom sx={{ color: "white" }}>
-            {steps[activeStep].description}
-          </Typography>
+    <div className="intro-wrap">
+      <div className="intro">
+        {/* Left text section */}
+        <div className="intro-text">
+          <h2>{slides[activeIndex].title}</h2>
+          <p>{slides[activeIndex].description}</p>
+          <button className="btn-primary">시작하기</button>
+        </div>
 
-          {/* Countdown section for first slide only */}
-          {activeStep === 0 && (
-            <Box sx={{ display: "flex", gap: 2, mt: 3 }}>
-              {["Hours", "Days", "Minutes", "Seconds"].map((unit, idx) => (
-                <Box
-                  key={unit}
-                  sx={{
-                    width: 60,
-                    height: 60,
-                    borderRadius: "50%",
-                    backgroundColor: "#fff",
-                    color: "#000",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: 14,
-                    fontWeight: "bold",
-                  }}
-                >
-                  {Object.values(steps[0].countdown)[idx]}
-                  <Typography variant="caption">{unit}</Typography>
-                </Box>
-              ))}
-            </Box>
-          )}
-
-          <Button
-            variant="contained"
-            sx={{
-              mt: 4,
-              backgroundColor: "#4CAF50",
-              "&:hover": { backgroundColor: "#43A047" },
-            }}
-          >
-            시작하기
-          </Button>
-        </Box>
-
-        {/* Right side - visual placeholder */}
-        <Box
-          sx={{
-            flex: 1,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+        {/* Right image section */}
+        <div className="intro-img">
+          <img
+            src={slides[activeIndex].image}
+            alt="slide"
+            style={{ width: "100%", borderRadius: "8px" }}
+          />
+        </div>
+      </div>
+      {/* 하단 원형 페이지네이션 */}
+      <Box sx={{ mt: 4, display: "flex", justifyContent: "center", gap: 1 }}>
+        {slides.map((_, index) => (
           <Box
+            key={index}
+            onClick={() => handleDotClick(index)}
             sx={{
-              width: 400,
-              height: 300,
-              backgroundColor: "#333",
-              borderRadius: 4,
-              boxShadow: 3,
+              width: 12,
+              height: 12,
+              borderRadius: "50%",
+              backgroundColor: index === activeIndex ? "#2ecc71" : "#888",
+              cursor: "pointer",
+              transition: "background-color 0.3s",
             }}
           />
-        </Box>
+        ))}
       </Box>
-
-      {/* Stepper */}
-      <MobileStepper
-        variant="dots"
-        steps={maxSteps}
-        position="static"
-        activeStep={activeStep}
-        nextButton={
-          <Button
-            size="small"
-            onClick={handleNext}
-            disabled={activeStep === maxSteps - 1}
-          >
-            다음
-            {theme.direction === "rtl" ? (
-              <KeyboardArrowLeft />
-            ) : (
-              <KeyboardArrowRight />
-            )}
-          </Button>
-        }
-        backButton={
-          <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
-            {theme.direction === "rtl" ? (
-              <KeyboardArrowRight />
-            ) : (
-              <KeyboardArrowLeft />
-            )}
-            이전
-          </Button>
-        }
-        sx={{ backgroundColor: "transparent", color: "#fff" }}
-      />
-    </Box>
+    </div>
   );
 };
 
