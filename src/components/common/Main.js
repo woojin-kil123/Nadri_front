@@ -2,7 +2,7 @@ import IntroSlider from "./IntroSlide";
 
 const Main = () => {
   return (
-    <section className="section">
+    <section className="section main-wrap">
       <IntroSlider />
     </section>
   );

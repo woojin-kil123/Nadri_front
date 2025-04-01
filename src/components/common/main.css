@@ -1,0 +1,30 @@
+.main-wrap .intro-wrap {
+  width: 80%;
+  height: 400px;
+  background: radial-gradient(circle, #222 0%, #000 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 0 auto;
+  align-items: center;
+  padding: 50px 10px;
+  gap: 10px;
+}
+.intro-wrap > .intro {
+  display: flex;
+  justify-content: space-around;
+}
+
+.intro > .intro-text {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+.intro > .intro-text > * {
+  color: #fff;
+}
+.intro > .intro-img {
+  width: 50%;
+}
