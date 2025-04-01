@@ -13,7 +13,7 @@ import UpdatePw from "./components/member/UpdatePw";
 import UpdatePw2 from "./components/member/UpdatePw2";
 import PlannerFrm from "./components/planner/PlannerFrm";
 // 콘텐츠 및 리뷰
-import ContentMain from "./components/content/ContentMain";
+import ContentList from "./components/content/ContentList";
 import ReviewMain from "./components/review/ReviewMain";
 // 상태 관리
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -46,34 +46,33 @@ function App() {
 
   return (
     <>
-      {isLogin && <ChatMenu chatEl={chatEl} setChatEl={setChatEl} />}
-      <Routes>
-        <Route
-          path="/planner"
-          element={<ProtectedRouting element={<PlannerFrm />} />}
-        />
-        <Route
-          path="*"
-          element={
-            <div className="wrap">
-              <Header />
-              <div className="content">
-                <Routes>
-                  <Route path="/" element={<Main />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/join" element={<Join />} />
-                  <Route path="/join2" element={<Join2 />} />
-                  <Route path="/updatePw" element={<UpdatePw />} />
-                  <Route path="/updatePw2" element={<UpdatePw2 />} />
-                  <Route path="/review/*" element={<ReviewMain />}></Route>
-                  <Route path="/tour" element={<ContentMain />} />
-                </Routes>
-              </div>
-              <Footer />
-            </div>
-          }
-        />
-      </Routes>
+      {isLogin && (
+        <>
+          <ChatMenu chatEl={chatEl} setChatEl={setChatEl} />
+          <Routes>
+            <Route path="/planner" element={<PlannerFrm />} />
+          </Routes>
+        </>
+      )}
+      {!planner && (
+        <div className="wrap">
+          <Header />
+          <div className="content">
+            <Routes>
+              {/* <Route path="/planner" element={<PlannerFrm />} /> */}
+              <Route path="/" element={<Main />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/join" element={<Join />} />
+              <Route path="/join2" element={<Join2 />} />
+              <Route path="/updatePw" element={<UpdatePw />} />
+              <Route path="/updatePw2" element={<UpdatePw2 />} />
+              <Route path="/review/*" element={<ReviewMain />}></Route>
+              <Route path="/content/*" element={<ContentList />} />
+            </Routes>
+          </div>
+          <Footer />
+        </div>
+      )}
     </>
   );
 }

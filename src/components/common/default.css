@@ -525,7 +525,7 @@ section.section.bg-section {
 }
 .posting-wrap > .posting-item {
   box-sizing: border-box;
-  width: calc(100% / 4);
+  width: calc(100% / 3);
   float: left;
   padding: 30px;
 }
