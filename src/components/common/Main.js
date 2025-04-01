@@ -1,7 +1,9 @@
+import IntroSlider from "./IntroSlide";
+
 const Main = () => {
   return (
     <section className="section">
-      <h1>메인</h1>
+      <IntroSlider />
     </section>
   );
 };
