@@ -65,9 +65,10 @@ const ReviewView = () => {
           onChange={(e) => setNewComment(e.target.value)}
         />
         <button
-          onClick={() =>
-            setComments([...comments, { id: Date.now(), text: newComment }])
-          }
+          onClick={() => {
+            setComments([...comments, { id: Date.now(), text: newComment }]);
+            setNewComment(""); // 입력 필드 초기화
+          }}
         >
           등록
         </button>
