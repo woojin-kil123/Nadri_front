@@ -1,0 +1,13 @@
+.side-menu a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 50px;
+}
+.side-menu .active-link > span {
+  color: var(--main2);
+  font-family: ns-b;
+}
+.side-menu .active-link > svg {
+  fill: var(--main2);
+}

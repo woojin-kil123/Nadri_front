@@ -1,8 +1,13 @@
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Circle, CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
 import "./planner.css";
 import { Close, Search } from "@mui/icons-material";
 import { IconButton, InputBase, Paper } from "@mui/material";
+import StarRating from "../utils/StarRating";
+import BasicDatePicker from "../utils/BasicDatePicker";
+import BasicSelect from "../utils/BasicSelect";
+import dayjs from "dayjs";
+import axios from "axios";
 
 const PlannerFrm = () => {
   //마커 오버레이 여닫음 state
@@ -15,26 +20,47 @@ const PlannerFrm = () => {
   const [openPlanningModal, setOpenPlanningModal] = useState(null);
 
   //플래너에 추가한 장소 리스트 state
-  const [plannedSpot, setPlannedSpot] = useState([
-    {
+  const [plannedSpot, setPlannedSpot] = useState([]);
+
+  //현재 보이는 지도 화면 state
+  const [mapBounds, setMapBounds] = useState(null);
+  //유저가 클릭한 지도 위치 state
+  const [userMarker, setUserMarker] = useState(null);
+  //유저 클릭 위치를 중심으로 하는 반경 범위
+  const [userRadius, setUserRadius] = useState(1000);
+
+  const handleAddSpot = (content) => {
+    const newSpot = {
       dayDate: "",
       startLocation: "",
       transport: "",
       endLocation: "",
       order: "",
-    },
-  ]);
-  const handleAddSpot = (content) => {
-    const newSpot = {
-      dayDate: "",
-      startLocation: "",
     };
     setPlannedSpot([...plannedSpot, content]);
   };
 
+  // useEffect(() => {
+  //   if (userMarker) {
+  //     const [lat, lng] = [userMarker.lat, userMarker.lng];
+  //     axios
+  //       .get(
+  //         `${process.env.REACT_APP_BACK_SERVER}/plan/nearby?lat=${lat}&lng=${lng}&radius=${userRadius}`
+  //       )
+  //       .then((res) => {
+  //         console.log(res.data);
+  //         setContentList(res.data);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       });
+  //   }
+  // }, [userMarker, userRadius]);
+
   //장소 리스트(임시 데이터)
   const [contentList, setContentList] = useState([
     {
+      contentId: 1,
       contentThumb:
         "https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyNDExMDFfMTI3%2FMDAxNzMwNDIxNzMwOTk2.XIgrsfQZKau5dz1vICaytYVlbmnJvLOM0DxRt3HkGkYg.JF5wL5dOJ2ROsjxltR8Y-h4gQ3NOhk-7PMElB2F4pakg.JPEG%2F1000052381.jpg.jpg&type=f&size=340x180&quality=80&opt=2",
       contentTitle: "플라워랜드",
@@ -48,6 +74,7 @@ const PlannerFrm = () => {
       },
     },
     {
+      contentId: 2,
       contentThumb:
         "https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyNDExMDFfMTI3%2FMDAxNzMwNDIxNzMwOTk2.XIgrsfQZKau5dz1vICaytYVlbmnJvLOM0DxRt3HkGkYg.JF5wL5dOJ2ROsjxltR8Y-h4gQ3NOhk-7PMElB2F4pakg.JPEG%2F1000052381.jpg.jpg&type=f&size=340x180&quality=80&opt=2",
       contentTitle: "행복양꼬치",
@@ -61,6 +88,7 @@ const PlannerFrm = () => {
       },
     },
     {
+      contentId: 3,
       contentThumb:
         "https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyNDExMDFfMTI3%2FMDAxNzMwNDIxNzMwOTk2.XIgrsfQZKau5dz1vICaytYVlbmnJvLOM0DxRt3HkGkYg.JF5wL5dOJ2ROsjxltR8Y-h4gQ3NOhk-7PMElB2F4pakg.JPEG%2F1000052381.jpg.jpg&type=f&size=340x180&quality=80&opt=2",
       contentTitle: "KH정보교육원 당산지원",
@@ -74,12 +102,6 @@ const PlannerFrm = () => {
       },
     },
   ]);
-  //현재 보이는 지도 화면 state
-  const [mapBounds, setMapBounds] = useState(null);
-  //유저가 클릭한 지도 위치 state
-  const [userMarker, setUserMarker] = useState(null);
-  //유저 클릭 위치를 중심으로 하는 반경 범위
-  const [userRadius, setUserRadius] = useState(1000);
 
   const getDistance = (lat1, lng1, lat2, lng2) => {
     const R = 6371;
@@ -95,18 +117,20 @@ const PlannerFrm = () => {
     return R * c * 1000;
   };
 
-  const visibleSpotList = contentList.filter((spot) => {
-    // if (!mapBounds) return true;
-    // const latlng = new window.kakao.maps.LatLng(
-    //   spot.contentLatLng.lat,
-    //   spot.contentLatLng.lng
-    // );
-    // return mapBounds.contain(latlng);
-    if (!userMarker) return true;
-    const { lat, lng } = spot.contentLatLng;
-    const distance = getDistance(userMarker.lat, userMarker.lng, lat, lng);
-    return distance <= userRadius;
-  });
+  const visibleSpotList = userMarker
+    ? contentList.filter((spot) => {
+        // if (!mapBounds) return true;
+        // const latlng = new window.kakao.maps.LatLng(
+        //   spot.contentLatLng.lat,
+        //   spot.contentLatLng.lng
+        // );
+        // return mapBounds.contain(latlng);
+        if (!userMarker) return true;
+        const { lat, lng } = spot.contentLatLng;
+        const distance = getDistance(userMarker.lat, userMarker.lng, lat, lng);
+        return distance <= userRadius;
+      })
+    : [];
 
   return (
     <div className="all-wrap">
@@ -161,7 +185,7 @@ const PlannerFrm = () => {
         </div>
       )}
       <div className="radius-slider">
-        <label htmlFor="radiusRange">반경: {userRadius}m</label>
+        <label htmlFor="radiusRange">검색반경: {userRadius}m</label>
         <input
           id="radiusRange"
           type="range"
@@ -179,6 +203,8 @@ const PlannerFrm = () => {
           visibleSpotList={visibleSpotList}
           openOverlay={openOverlay}
           setOpenOverlay={setOpenOverlay}
+          openPlanningModal={openPlanningModal}
+          setOpenPlanningModal={setOpenPlanningModal}
           mapBounds={mapBounds}
           setMapBounds={setMapBounds}
           userMarker={userMarker}
@@ -248,7 +274,7 @@ const PrintSpotList = (props) => {
         </div>
       </div>
       <div className="spot-btn">
-        <button onClick={() => setOpenPlanningModal(idx)}>선택</button>
+        <button onClick={() => setOpenPlanningModal(idx)}>추가</button>
       </div>
       {openPlanningModal === idx && (
         <PlanningModal
@@ -257,20 +283,6 @@ const PrintSpotList = (props) => {
           content={content}
         />
       )}
-    </div>
-  );
-};
-
-// 리뷰 평점으로 별 채우기
-const StarRating = ({ rating }) => {
-  const percentage = (rating / 5) * 100;
-
-  return (
-    <div className="star-rating">
-      <div className="back-stars">★★★★★</div>
-      <div className="front-stars" style={{ width: `${percentage}%` }}>
-        ★★★★★
-      </div>
     </div>
   );
 };
@@ -321,10 +333,15 @@ const PlanningModal = (props) => {
   ];
   const content = props.content;
 
+  const now = dayjs();
+  const [date, setDate] = useState(now);
+  // console.log(date.format("YYYY-MM-DD"));
+  const [transport, setTransport] = useState("");
+
   return (
     <div className="modal-background">
       <div className="planning-modal">
-        <div className="planning-header">여행지에 추가하기</div>
+        <div className="page-title">여행지에 추가하기</div>
         <Close
           onClick={() => setOpenPlanningModal(null)}
           className="close-btn"
@@ -345,10 +362,32 @@ const PlanningModal = (props) => {
             <div className="spot-addr">{content.contentAddr}</div>
           </div>
         </div>
-      </div>
-      <div className="planning-input">
-        <div className="spot-btn">
-          <button>추가</button>
+        <div className="planning-input">
+          <div className="date-input">
+            <span>계획일</span>
+            <BasicDatePicker date={date} setDate={setDate} />
+          </div>
+          <div>
+            <span>어떻게 가실 건가요?</span>
+            <BasicSelect transport={transport} setTransport={setTransport} />
+          </div>
+          <div className="spot-btn">
+            <button
+              style={{ width: "100px", height: "30px" }}
+              onClick={() => {
+                if (date.format("YYYY-MM-DD") < dayjs().format("YYYY-MM-DD")) {
+                  window.alert("오늘보다 이른 날짜를 고를 수 없습니다.");
+                  return;
+                }
+                if (transport === "") {
+                  window.alert("이동 수단을 선택하세요.");
+                  return;
+                }
+              }}
+            >
+              여행지에 추가
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -361,9 +400,14 @@ const PrintMap = (props) => {
     props.openOverlay,
     props.setOpenOverlay,
   ];
+  const [openPlanningModal, setOpenPlanningModal] = [
+    props.openPlanningModal,
+    props.setOpenPlanningModal,
+  ];
   const [mapBounds, setMapBounds] = [props.mapBounds, props.setMapBounds];
   const [userMarker, setUserMarker] = [props.userMarker, props.setUserMarker];
   const [userRadius, setUserRadius] = [props.userRadius, props.setUserRadius];
+
   return (
     <Map // 지도를 표시할 Container
       id={`kakaomap`}
@@ -380,11 +424,11 @@ const PrintMap = (props) => {
       level={3} // 지도의 확대 레벨
       //지도 클릭 시
       onClick={(map, e) => {
-        //클릭 위치 좌표
-        const lat = e.latLng.getLat();
-        const lng = e.latLng.getLng();
-        console.log(lat + " " + lng);
         if (openOverlay === null) {
+          //클릭 위치 좌표
+          const lat = e.latLng.getLat();
+          const lng = e.latLng.getLng();
+          console.log(lat + " " + lng);
           setUserMarker({ lat, lng });
         }
       }}
@@ -411,11 +455,10 @@ const PrintMap = (props) => {
             center={userMarker}
             radius={userRadius}
             strokeWeight={2}
-            strokeColor={"#00aaff"}
-            strokeOpacity={0.8}
+            strokeColor={"var(--main2)"}
             strokeStyle={"solid"}
-            fillColor={"#00aaff"}
-            fillOpacity={0.2}
+            fillColor={"#0055ff"}
+            fillOpacity={0.15}
           />
         </>
       )}
@@ -428,12 +471,7 @@ const PrintMap = (props) => {
             />
             {openOverlay === idx && (
               <CustomOverlayMap position={spot.contentLatLng}>
-                <div
-                  className="overlay-wrap"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                >
+                <div className="overlay-wrap">
                   <div className="overlay-info">
                     <div className="overlay-title">
                       <div className="overlay-title-name">
@@ -482,7 +520,13 @@ const PrintMap = (props) => {
                             상세보기
                           </div>
                           <div className="spot-btn">
-                            <button onClick={() => {}}>추가</button>
+                            <button
+                              onClick={() => {
+                                setOpenPlanningModal(idx);
+                              }}
+                            >
+                              추가
+                            </button>
                           </div>
                         </div>
                       </div>

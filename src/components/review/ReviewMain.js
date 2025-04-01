@@ -64,7 +64,7 @@ const ReviewMain = () => {
           </ul>
         </nav>
         <div>
-          <Link to="/review/write" className="btn-primary green">
+          <Link to="/search" className="btn-primary green">
             글쓰기
           </Link>
         </div>

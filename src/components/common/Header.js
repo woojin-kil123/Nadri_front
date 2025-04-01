@@ -53,7 +53,7 @@ const MainNavi = () => {
           <Link to="/planner">플래너</Link>
         </li>
         <li>
-          <Link to="/tour">여행 정보</Link>
+          <Link to="/content">여행 정보</Link>
         </li>
         <li>
           <Link to="/review">리뷰</Link>
