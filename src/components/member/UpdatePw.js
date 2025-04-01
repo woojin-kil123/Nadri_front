@@ -57,12 +57,17 @@ const UpdatePw = () => {
         `${process.env.REACT_APP_BACK_SERVER}/member/existsEmail?memberEmail=${email}`
       )
       .then((res) => {
-        setEmailCheckMessage("이메일을 인증해주세요."); // 이메일 중복 없이 인증 요청
-        setEmailCheckColor("green"); // 유효한 이메일은 초록색 메시지
-        setIsEmailVerified(true); // 이메일 인증 가능 상태로 설정
+        if (res.data === 0) {
+          setEmailCheckMessage("존재하지 않는 이메일입니다."); // 이메일 중복 없는 데이터
+          setEmailCheckColor("red"); // 오류 메시지 색상
+          setIsEmailVerified(false); // 이메일 인증 불가능 상태
+        } else {
+          setEmailCheckMessage("이메일을 인증해주세요."); // 이메일 중복 없이 인증 요청
+          setEmailCheckColor("green"); // 유효한 이메일은 초록색 메시지
+          setIsEmailVerified(true); // 이메일 인증 가능 상태로 설정
+        }
       })
       .catch((err) => {
-        console.log(err);
         setEmailCheckMessage("이메일 확인 중 오류가 발생했습니다.");
         setEmailCheckColor("red"); // 오류 메시지 색상
         setIsEmailVerified(false); // 이메일 인증 불가능 상태

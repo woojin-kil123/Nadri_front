@@ -70,13 +70,9 @@
   height: 48px;
   border: none;
   border-radius: 50px;
-  background-color: var(--main2);
   color: white;
   cursor: pointer;
   font-size: 16px;
-}
-.verify-button-box > button:hover {
-  background-color: var(--main3);
 }
 
 .code-input-title label {
@@ -173,7 +169,6 @@ input[type="radio"] {
 .join-button-box2 > button {
   width: 100%;
   border: none;
-  background-color: var(--main2);
   height: 47px;
   border-radius: 50px;
   color: white;
