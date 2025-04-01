@@ -13,7 +13,7 @@ import UpdatePw from "./components/member/UpdatePw";
 import UpdatePw2 from "./components/member/UpdatePw2";
 import PlannerFrm from "./components/planner/PlannerFrm";
 // 콘텐츠 및 리뷰
-import ContentMain from "./components/content/ContentMain";
+import ContentList from "./components/content/ContentList";
 import ReviewMain from "./components/review/ReviewMain";
 // 상태 관리
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -59,7 +59,7 @@ function App() {
               <Route path="/updatePw" element={<UpdatePw />} />
               <Route path="/updatePw2" element={<UpdatePw2 />} />
               <Route path="/review/*" element={<ReviewMain />}></Route>
-              <Route path="/tour" element={<ContentMain />} />
+              <Route path="/content/*" element={<ContentList />} />
             </Routes>
           </div>
           <Footer />
