@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import WarningIcon from "@mui/icons-material/Warning";
 
 const Join = () => {
   const navigate = useNavigate();
@@ -10,12 +11,14 @@ const Join = () => {
     memberCode: "", // 인증 코드
   });
   const [code, setCode] = useState(); // 서버에서 받은 인증 코드
+  const [codeSentTime, setCodeSentTime] = useState(null); // 인증 코드가 전송된 시간
   const [isVerificationSent, setIsVerificationSent] = useState(false); // 이메일 인증 요청 여부
   const [isButtonEnabled, setIsButtonEnabled] = useState(false); // "다음" 버튼 활성화 여부
   const [emailCheck, setEmailCheck] = useState(0); // 이메일 중복 확인 상태
   const [emailCheckMessage, setEmailCheckMessage] = useState(""); // 이메일 중복 검사 메시지
   const [emailCheckColor, setEmailCheckColor] = useState(""); // 이메일 중복 검사 메시지 색상
   const [isEmailVerified, setIsEmailVerified] = useState(false); // 이메일 인증 버튼 표시 여부
+  const [timeLeft, setTimeLeft] = useState(180); // 카운트다운 타이머 변수 10분 (600초) 설정
 
   // 입력값을 처리하는 함수
   const inputMemberData = (e) => {
@@ -76,42 +79,78 @@ const Join = () => {
 
   // 이메일 인증 요청
   const sendEmailVerification = () => {
-    if (emailCheck !== 1) {
-      alert("이메일 중복 확인을 먼저 해주세요."); // 이메일 중복 확인이 되어야만 인증 요청 가능
-      return;
-    }
-
-    // 이메일 인증 코드 전송 API 요청
     axios
       .get(
         `${process.env.REACT_APP_BACK_SERVER}/api/sendCode?email=${member.memberEmail}`
       )
       .then((res) => {
         setCode(res.data); // 서버에서 받은 인증 코드 저장
+        setCodeSentTime(Date.now()); // 인증 코드가 전송된 시간 저장
         setIsVerificationSent(true); // 인증 코드 요청 후 인증 코드 입력란 표시
       })
-      .catch((error) => {
-        console.error("이메일 인증 요청 실패:", error);
-      });
+      .catch((error) => {});
   };
 
-  // 인증 코드 확인
   const verifyEmailCode = () => {
+    // 인증 코드가 만료되었는지 확인
+    const currentTime = Date.now();
+    if (currentTime - codeSentTime > 3 * 60 * 1000) {
+      setCode(null); // 인증 코드 만료
+      Swal.fire({
+        text: "인증 코드가 만료되었습니다. 다시 시도해주세요.",
+        icon: "error",
+      });
+      return;
+    }
+
     if (code === member.memberCode) {
-      alert("인증이 완료되었습니다!");
-      navigate("/join2", { state: { email: member.memberEmail } }); // 인증 완료 후 회원 가입 2단계로 이동
+      Swal.fire({
+        text: "인증이 완료되었습니다!",
+        icon: "success",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // 인증 완료 후 회원 가입 2단계로 이동
+          navigate("/join2", {
+            state: { email: member.memberEmail, code: member.memberCode },
+          });
+        }
+      });
     } else {
       Swal.fire({
         text: "인증 코드가 일치하지 않습니다. 다시 확인해 주세요",
         icon: "info",
-      }); // 인증 코드 불일치 시 경고 메시지
+      });
     }
+  };
+
+  // 타이머 업데이트 및 만료 확인
+  useEffect(() => {
+    if (isVerificationSent && timeLeft > 0) {
+      const timer = setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1); // 1초마다 1초씩 감소
+      }, 1000);
+
+      return () => clearInterval(timer); // 컴포넌트 언마운트 시 타이머 정리
+    } else if (timeLeft <= 0) {
+      setIsVerificationSent(false); // 인증 코드 만료
+      Swal.fire({
+        text: "인증 코드가 만료되었습니다. 다시 시도해주세요.",
+        icon: "error",
+      });
+    }
+  }, [isVerificationSent, timeLeft]);
+
+  // 카운트다운 포맷 (분:초 형식)
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   };
 
   return (
     <section className="section">
       <div className="join-title">
-        <h3>이메일 인증</h3>
+        <h2>이메일 인증</h2>
         <p>가입을 위해 이메일을 인증해주세요.</p>
       </div>
       <div className="join-wrap">
@@ -134,6 +173,11 @@ const Join = () => {
                 value={member.memberEmail}
                 onChange={inputMemberData} // 입력값 변경 시 호출
                 onBlur={checkEmail} // 포커스를 벗어나면 이메일 중복 검사 실행
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    checkEmail(); // Enter 키를 누르면 중복 검사 실행
+                  }
+                }}
               />
             </div>
             {/* 이메일 중복 검사 결과 메시지 */}
@@ -141,20 +185,45 @@ const Join = () => {
               {emailCheckMessage}
             </p>
           </div>
+          <div className="email-verify-content">
+            <WarningIcon className="caution" />
+            <p>
+              회원 가입시 ID는 반드시 본인 소유의 연락 가능한 이메일 주소를
+              사용하여야 합니다.
+            </p>
+          </div>
 
           {/* 이메일 인증 버튼 (이메일 중복 확인이 된 경우에만 활성화) */}
-          {isEmailVerified && (
-            <div className="join-button-box">
-              <button type="button" onClick={sendEmailVerification}>
-                이메일 인증
-              </button>
-            </div>
-          )}
+
+          <div className="verify-button-box">
+            <button
+              type="button"
+              onClick={sendEmailVerification}
+              disabled={!isEmailVerified} // 비활성화 조건
+              style={{
+                pointerEvents: !isEmailVerified ? "none" : "auto", // 버튼 비활성화 시 클릭 불가
+                backgroundColor: isEmailVerified ? "#30c272" : "white", // 비활성화 시 배경색 흰색으로
+                color: isEmailVerified ? "white" : "#d3d3d3", // 비활성화 시 글자색 여린 회색으로
+              }}
+              onMouseEnter={(e) => {
+                if (isEmailVerified) {
+                  e.target.style.backgroundColor = "#166139"; // hover 시 배경색 변경
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (isEmailVerified) {
+                  e.target.style.backgroundColor = "#30c272"; // hover 끝난 후 원래 배경색으로 복구
+                }
+              }}
+            >
+              이메일 인증
+            </button>
+          </div>
 
           {/* 인증 코드 입력란 (이메일 인증 버튼을 클릭한 후에만 표시) */}
           {isVerificationSent && (
             <>
-              <div className="input-title">
+              <div className="code-input-title">
                 <label htmlFor="emailCode">인증번호 6자리</label>
               </div>
               <div className="input-item">
@@ -167,15 +236,43 @@ const Join = () => {
                   maxLength={6} // 인증 코드는 6자리
                 />
               </div>
+              <div className="countdown-timer">
+                <p>남은 시간: {formatTime(timeLeft)}</p>
+              </div>
+              <div className="countdown-content">
+                <p>
+                  인증번호는 <b>입력한 이메일 주소</b>로 발송됩니다. 수신하지
+                  못했다면 스팸함 또는 해당 이메일 서비스의 설정을 확인해주세요.
+                </p>
+              </div>
             </>
           )}
 
-          {/* 인증 코드 입력 후 "다음" 버튼 활성화 */}
-          {isButtonEnabled && (
-            <button type="submit" className="btn-primary lg">
+          <div className="join-button-box">
+            {/* 인증 코드 입력 후 "다음" 버튼 활성화 */}
+            <button
+              type="submit"
+              className="btn-primary lg"
+              disabled={!isButtonEnabled} // 버튼 비활성화
+              style={{
+                pointerEvents: !isButtonEnabled ? "none" : "auto", // 버튼 비활성화 시 클릭 불가
+                backgroundColor: isButtonEnabled ? "#30c272" : "white", // 비활성화 시 배경색 흰색으로
+                color: isButtonEnabled ? "white" : "#d3d3d3", // 비활성화 시 글자색 여린 회색으로
+              }}
+              onMouseEnter={(e) => {
+                if (isButtonEnabled) {
+                  e.target.style.backgroundColor = "#166139"; // hover 시 배경색 변경
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (isButtonEnabled) {
+                  e.target.style.backgroundColor = "#30c272"; // hover 끝난 후 원래 배경색으로 복구
+                }
+              }}
+            >
               다음
             </button>
-          )}
+          </div>
         </form>
       </div>
     </section>

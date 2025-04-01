@@ -21,6 +21,7 @@ import { isLoginState, isPlannerState } from "./components/utils/RecoilData";
 // 리액트 훅
 import { useEffect, useState } from "react";
 import ChatMenu from "./components/chat/ChatMenu";
+import Mypage from "./components/mypage/Mypage";
 import ReviewWrite from "./components/review/ReviewWrite";
 import Search from "./components/review/Search";
 import ReviewView from "./components/review/ReviewView";
@@ -73,28 +74,6 @@ function App() {
           }
         />
       </Routes>
-      {/* {!planner && (
-        <div className="wrap">
-          <Header />
-          <div className="content">
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/join" element={<Join />} />
-              <Route path="/join2" element={<Join2 />} />
-              <Route path="/updatePw" element={<UpdatePw />} />
-              <Route path="/updatePw2" element={<UpdatePw2 />} />
-              <Route path="/review" element={<ReviewMain />}></Route>
-              <Route path="/write" element={<ReviewWrite />}></Route>
-              <Route path="/search" element={<Search />}></Route>
-              <Route path="/review/detail" element={<ReviewView />}></Route>
-              <Route path="/editreview" element={<EditReview />}></Route>
-              <Route path="/tour" element={<ContentMain />} />
-              <Route path="/" element={<Main />} />
-            </Routes>
-          </div>
-          <Footer />
-        </div>
-      )} */}
     </>
   );
 }

@@ -5,12 +5,15 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useRecoilState } from "recoil";
 import { loginNicknameState, memberTypeState } from "../utils/RecoilData";
+import TextField from "@mui/material/TextField";
 
 const Login = () => {
   const navigate = useNavigate();
   const [memberNickname, setMemberNickname] =
     useRecoilState(loginNicknameState);
   const [memberType, setMemberType] = useRecoilState(memberTypeState);
+  const [isButtonEnabled, setIsButtonEnabled] = useState(false); // 로그인 버튼 활성화 여부
+
   // member: 이메일과 비밀번호를 저장하는 상태
   const [member, setMember] = useState({ memberEmail: "", memberPw: "" });
 
@@ -18,11 +21,27 @@ const Login = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
+  // 이메일에 @가 포함되어 있는지 확인하는 함수
+  const validateEmail = (email) => {
+    return email.includes("@"); // 이메일에 @가 포함되어 있으면 true, 아니면 false
+  };
+
   // 입력값을 상태에 저장하는 함수
   const changeMember = (e) => {
     const name = e.target.name;
     const inputData = e.target.value;
     setMember({ ...member, [name]: inputData });
+
+    // 이메일과 비밀번호가 모두 입력되고, 이메일 형식이 올바르면 버튼을 활성화합니다.
+    if (
+      member.memberEmail &&
+      member.memberPw &&
+      validateEmail(member.memberEmail)
+    ) {
+      setIsButtonEnabled(true); // 버튼 활성화
+    } else {
+      setIsButtonEnabled(false); // 버튼 비활성화
+    }
   };
 
   // 이메일 입력란에서 포커스를 떴을 때 처리하는 함수
@@ -87,7 +106,7 @@ const Login = () => {
         <Link to="/">NADRI</Link>
       </div>
       <div className="login-wrap">
-        <h1 className="login-join-title">이메일 로그인</h1>
+        <h1 className="login-title">이메일 로그인</h1>
         <div className="email-login-wrap">
           <form
             onSubmit={(e) => {
@@ -135,24 +154,51 @@ const Login = () => {
 
             {/* 로그인 버튼 */}
             <div className="login-button-box">
-              <button type="submit" className="btn-primary lg">
+              <button
+                type="submit"
+                className="btn-primary lg"
+                disabled={!isButtonEnabled} // 버튼 비활성화
+                style={{
+                  pointerEvents: isButtonEnabled ? "auto" : "none", // 버튼 비활성화 시 클릭 불가
+                  backgroundColor: isButtonEnabled ? "#30c272" : "white", // 비활성화 시 배경색 흰색으로
+                  color: isButtonEnabled ? "white" : "#d3d3d3", // 비활성화 시 글자색 여린 회색으로
+                }}
+                onMouseEnter={(e) => {
+                  if (isButtonEnabled) {
+                    e.target.style.backgroundColor = "#166139"; // hover 시 배경색 변경
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (isButtonEnabled) {
+                    e.target.style.backgroundColor = "#30c272"; // hover 끝난 후 원래 배경색으로 복구
+                  }
+                }}
+              >
                 로그인
               </button>
             </div>
             {/* 회원가입, 비밀번호 재설정 링크 */}
             <div className="member-link-box">
               <Link to="/join">회원가입</Link>
+              <p>|</p>
               <Link to="/updatePw">비밀번호 재설정</Link>
             </div>
           </form>
         </div>
-        {/* 카카오톡 로그인 버튼 */}
-        <div className="kakao-login-join">
-          <Link>카카오톡으로 시작하기</Link>
-        </div>
-        {/* 네이버 로그인 버튼 */}
-        <div className="naver-login-join">
-          <Link>네이버로 시작하기</Link>
+
+        <div className="social-login">
+          {/* 카카오톡 로그인 버튼 */}
+          <div className="kakao-login-join">
+            <Link>
+              <img src="/image/kakao_login.png" alt="Kakao Login" />
+            </Link>
+          </div>
+          {/* 네이버 로그인 버튼 */}
+          <div className="naver-login-join">
+            <Link>
+              <img src="/image/naver_login.png" alt="Naver Login" />
+            </Link>
+          </div>
         </div>
       </div>
     </section>
