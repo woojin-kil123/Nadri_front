@@ -75,7 +75,8 @@ body .chat-popup-container {
 .chat-room > .content-top {
   display: flex;
   align-items: center;
-  padding: 10px 60px;
+  padding: 10px 40px;
+  padding-right: 200px;
   justify-content: space-between;
   margin-top: 10px;
   border-bottom: 1px solid var(--gray6);
@@ -116,11 +117,19 @@ body .chat-popup-container {
   display: flex;
   flex-direction: column;
   padding: 20px;
+  padding-right: 60px; /* 스크롤 공간 여유 */
   background-color: #f4f9ff;
   overflow-y: auto;
   gap: 12px;
 }
-
+.content-top > .chat-search-wrap::-webkit-scrollbar {
+  width: 5px;
+  right: 0px;
+}
+.chat-room > .content-middle::-webkit-scrollbar-thumb {
+  background-color: #aaa;
+  border-radius: 4px;
+}
 /* 오른쪽 메시지 (내가 보낸 것) */
 .content-middle .right {
   align-self: flex-end;
