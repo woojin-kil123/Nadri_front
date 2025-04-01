@@ -3,7 +3,7 @@ import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
 import Main from "./components/common/Main";
 // 라우터 관련
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 // 멤버 관련 페이지
 import Login from "./components/member/Login";
 import Join from "./components/member/Join";
@@ -25,10 +25,13 @@ import ReviewWrite from "./components/review/ReviewWrite";
 import Search from "./components/review/Search";
 import ReviewView from "./components/review/ReviewView";
 import EditReview from "./components/review/EditReview";
+import ProtectedRouting from "./components/utils/ProtectedRouting";
+
 
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
   const isLogin = useRecoilValue(isLoginState);
+
   const loc = useLocation();
 
   useEffect(() => {
@@ -42,21 +45,39 @@ function App() {
 
   return (
     <>
-      {isLogin && (
-        <>
-          <ChatMenu chatEl={chatEl} setChatEl={setChatEl} />
-          <Routes>
-            <Route path="/planner" element={<PlannerFrm />} />
-          </Routes>
-        </>
-      )}
-      {!planner && (
+      {isLogin && <ChatMenu chatEl={chatEl} setChatEl={setChatEl} />}
+      <Routes>
+        <Route
+          path="/planner"
+          element={<ProtectedRouting element={<PlannerFrm />} />}
+        />
+        <Route
+          path="*"
+          element={
+            <div className="wrap">
+              <Header />
+              <div className="content">
+                <Routes>
+                  <Route path="/" element={<Main />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/join" element={<Join />} />
+                  <Route path="/join2" element={<Join2 />} />
+                  <Route path="/updatePw" element={<UpdatePw />} />
+                  <Route path="/updatePw2" element={<UpdatePw2 />} />
+                  <Route path="/review/*" element={<ReviewMain />}></Route>
+                  <Route path="/tour" element={<ContentMain />} />
+                </Routes>
+              </div>
+              <Footer />
+            </div>
+          }
+        />
+      </Routes>
+      {/* {!planner && (
         <div className="wrap">
           <Header />
           <div className="content">
             <Routes>
-              {/* <Route path="/planner" element={<PlannerFrm />} /> */}
-              <Route path="/" element={<Main />} />
               <Route path="/login" element={<Login />} />
               <Route path="/join" element={<Join />} />
               <Route path="/join2" element={<Join2 />} />
@@ -68,11 +89,12 @@ function App() {
               <Route path="/review/detail" element={<ReviewView />}></Route>
               <Route path="/editreview" element={<EditReview />}></Route>
               <Route path="/tour" element={<ContentMain />} />
+              <Route path="/" element={<Main />} />
             </Routes>
           </div>
           <Footer />
         </div>
-      )}
+      )} */}
     </>
   );
 }
