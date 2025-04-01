@@ -4,7 +4,7 @@ const ReviewView = () => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const navigate = useNavigate();
-
+  const [isCommenting, setIsCommenting] = useState(false);
   const deleteComment = (id) => {
     setComments(comments.filter((comment) => comment.id !== id));
   };
@@ -58,21 +58,27 @@ const ReviewView = () => {
         ))}
       </ul>
 
-      <div>
-        <input
-          type="text"
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-        />
-        <button
-          onClick={() => {
-            setComments([...comments, { id: Date.now(), text: newComment }]);
-            setNewComment(""); // 입력 필드 초기화
-          }}
-        >
-          등록
-        </button>
-      </div>
+      {!isCommenting ? (
+        <button onClick={() => setIsCommenting(true)}>댓글 작성</button>
+      ) : (
+        <div>
+          <input
+            type="text"
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+          />
+          <button
+            onClick={() => {
+              setComments([...comments, { id: Date.now(), text: newComment }]);
+              setNewComment(""); // 입력 필드 초기화
+              setIsCommenting(false); // 입력 필드 숨김
+            }}
+          >
+            등록
+          </button>
+          <button onClick={() => setIsCommenting(false)}>취소</button>
+        </div>
+      )}
       {isReporting && (
         <div className="modal">
           <h3>신고 사유 선택</h3>
