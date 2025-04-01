@@ -5,7 +5,7 @@ const Spotlist = () => {
   let pageNo = 1;
   const selectList = () => {
     axios
-      .get(`${backServer}/content/spotPlace`)
+      .get(`${backServer}/content/commonContent`)
       .then((res) => {
         console.log(res);
       })
