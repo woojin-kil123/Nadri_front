@@ -26,6 +26,7 @@ import ProtectedRouting from "./components/utils/ProtectedRouting";
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
   const isLogin = useRecoilValue(isLoginState);
+
   const loc = useLocation();
 
   useEffect(() => {
