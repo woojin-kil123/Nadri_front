@@ -186,7 +186,7 @@ const Join = () => {
             </p>
           </div>
           <div className="email-verify-content">
-            <WarningIcon />
+            <WarningIcon className="caution" />
             <p>
               회원 가입시 ID는 반드시 본인 소유의 연락 가능한 이메일 주소를
               사용하여야 합니다.
@@ -202,7 +202,18 @@ const Join = () => {
               disabled={!isEmailVerified} // 비활성화 조건
               style={{
                 pointerEvents: !isEmailVerified ? "none" : "auto", // 버튼 비활성화 시 클릭 불가
-                opacity: !isEmailVerified ? 0.5 : 1, // 비활성화된 버튼은 투명도 낮추기
+                backgroundColor: isEmailVerified ? "#30c272" : "white", // 비활성화 시 배경색 흰색으로
+                color: isEmailVerified ? "white" : "#d3d3d3", // 비활성화 시 글자색 여린 회색으로
+              }}
+              onMouseEnter={(e) => {
+                if (isEmailVerified) {
+                  e.target.style.backgroundColor = "#166139"; // hover 시 배경색 변경
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (isEmailVerified) {
+                  e.target.style.backgroundColor = "#30c272"; // hover 끝난 후 원래 배경색으로 복구
+                }
               }}
             >
               이메일 인증
@@ -244,8 +255,19 @@ const Join = () => {
               className="btn-primary lg"
               disabled={!isButtonEnabled} // 버튼 비활성화
               style={{
-                pointerEvents: isButtonEnabled ? "auto" : "none", // 버튼 비활성화 시 클릭 불가
-                opacity: isButtonEnabled ? 1 : 0.5, // 비활성화된 버튼은 투명도 낮추기
+                pointerEvents: !isButtonEnabled ? "none" : "auto", // 버튼 비활성화 시 클릭 불가
+                backgroundColor: isButtonEnabled ? "#30c272" : "white", // 비활성화 시 배경색 흰색으로
+                color: isButtonEnabled ? "white" : "#d3d3d3", // 비활성화 시 글자색 여린 회색으로
+              }}
+              onMouseEnter={(e) => {
+                if (isButtonEnabled) {
+                  e.target.style.backgroundColor = "#166139"; // hover 시 배경색 변경
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (isButtonEnabled) {
+                  e.target.style.backgroundColor = "#30c272"; // hover 끝난 후 원래 배경색으로 복구
+                }
               }}
             >
               다음

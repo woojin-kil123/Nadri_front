@@ -159,8 +159,19 @@ const Login = () => {
                 className="btn-primary lg"
                 disabled={!isButtonEnabled} // 버튼 비활성화
                 style={{
-                  pointerEvents: isButtonEnabled ? "auto" : "none", // 클릭 가능/불가 설정
-                  opacity: isButtonEnabled ? 1 : 0.5, // 비활성화 시 투명도 조절
+                  pointerEvents: isButtonEnabled ? "auto" : "none", // 버튼 비활성화 시 클릭 불가
+                  backgroundColor: isButtonEnabled ? "#30c272" : "white", // 비활성화 시 배경색 흰색으로
+                  color: isButtonEnabled ? "white" : "#d3d3d3", // 비활성화 시 글자색 여린 회색으로
+                }}
+                onMouseEnter={(e) => {
+                  if (isButtonEnabled) {
+                    e.target.style.backgroundColor = "#166139"; // hover 시 배경색 변경
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (isButtonEnabled) {
+                    e.target.style.backgroundColor = "#30c272"; // hover 끝난 후 원래 배경색으로 복구
+                  }
                 }}
               >
                 로그인
@@ -169,17 +180,25 @@ const Login = () => {
             {/* 회원가입, 비밀번호 재설정 링크 */}
             <div className="member-link-box">
               <Link to="/join">회원가입</Link>
+              <p>|</p>
               <Link to="/updatePw">비밀번호 재설정</Link>
             </div>
           </form>
         </div>
-        {/* 카카오톡 로그인 버튼 */}
-        <div className="kakao-login-join">
-          <Link>카카오톡으로 시작하기</Link>
-        </div>
-        {/* 네이버 로그인 버튼 */}
-        <div className="naver-login-join">
-          <Link>네이버로 시작하기</Link>
+
+        <div className="social-login">
+          {/* 카카오톡 로그인 버튼 */}
+          <div className="kakao-login-join">
+            <Link>
+              <img src="/image/kakao_login.png" alt="Kakao Login" />
+            </Link>
+          </div>
+          {/* 네이버 로그인 버튼 */}
+          <div className="naver-login-join">
+            <Link>
+              <img src="/image/naver_login.png" alt="Naver Login" />
+            </Link>
+          </div>
         </div>
       </div>
     </section>

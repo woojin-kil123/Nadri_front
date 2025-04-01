@@ -440,8 +440,19 @@ const Join2 = () => {
                   className={`join-button ${isFormValid ? "" : "disabled"}`}
                   disabled={!isFormValid}
                   style={{
-                    pointerEvents: isFormValid ? "auto" : "none", // 버튼 비활성화 시 클릭 불가
-                    opacity: isFormValid ? 1 : 0.5, // 비활성화된 버튼은 투명도 낮추기
+                    pointerEvents: !isFormValid ? "none" : "auto", // 버튼 비활성화 시 클릭 불가
+                    backgroundColor: isFormValid ? "#30c272" : "white", // 비활성화 시 배경색 흰색으로
+                    color: isFormValid ? "white" : "#d3d3d3", // 비활성화 시 글자색 여린 회색으로
+                  }}
+                  onMouseEnter={(e) => {
+                    if (isFormValid) {
+                      e.target.style.backgroundColor = "#166139"; // hover 시 배경색 변경
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (isFormValid) {
+                      e.target.style.backgroundColor = "#30c272"; // hover 끝난 후 원래 배경색으로 복구
+                    }
                   }}
                 >
                   회원가입

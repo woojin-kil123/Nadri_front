@@ -17,8 +17,6 @@
   font-size: 14px; /* 글자 크기 조정 */
 }
 
-.section {
-}
 .logo {
   width: 600px;
   margin: 0 auto;
@@ -50,7 +48,6 @@
 .login-button-box > button {
   width: 100%;
 }
-
 .join-title {
   text-align: center;
   font-size: 17px;
@@ -103,6 +100,8 @@
   font-size: 15px;
   float: left;
   margin-right: 5px;
+  position: relative;
+  bottom: 0;
 }
 .email-verify-content > svg > path {
   color: #cc4100;
@@ -161,11 +160,12 @@ input::placeholder {
   color: rgb(187, 187, 187);
 }
 .memberGender {
-  margin-right: 250px;
+  margin-right: 240px;
 }
 input[type="radio"] {
   width: 16px;
   height: 16px;
+  margin-right: 10px;
 }
 .join-button-box2 {
   text-align: center;
@@ -182,6 +182,34 @@ input[type="radio"] {
   cursor: pointer;
   margin-top: 200px;
 }
-.join-button-box2 > button:hover {
-  background-color: var(--main3);
+
+.member-link-box {
+  width: 198px;
+  margin-left: 220px;
+  text-align: center;
+  overflow: hidden;
+}
+.member-link-box > a {
+  float: left;
+  margin: 0 7px;
+}
+.member-link-box > a:hover {
+  color: black;
+}
+.member-link-box > p {
+  float: left;
+}
+
+.social-login {
+  width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.kakao-login-join > a > img {
+  width: 350px;
+}
+.naver-login-join > a > img {
+  width: 350px;
 }
