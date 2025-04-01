@@ -12,23 +12,24 @@ import axios from "axios";
 const PlannerFrm = () => {
   //마커 오버레이 여닫음 state
   const [openOverlay, setOpenOverlay] = useState(null);
-
   //플래너 창 여닫음 state
   const [planWindow, setPlanwindow] = useState(false);
-
   //"플래너에 추가하기" 창 여닫음 state
   const [openPlanningModal, setOpenPlanningModal] = useState(null);
-
   //플래너에 추가한 장소 리스트 state
-  const [plannedSpot, setPlannedSpot] = useState([]);
-
+  const [plannedSpotList, setPlannedSpotList] = useState([]);
   //현재 보이는 지도 화면 state
   const [mapBounds, setMapBounds] = useState(null);
   //유저가 클릭한 지도 위치 state
   const [userMarker, setUserMarker] = useState(null);
   //유저 클릭 위치를 중심으로 하는 반경 범위
   const [userRadius, setUserRadius] = useState(1000);
+  //장소 리스트(임시 데이터)
+  const [contentList, setContentList] = useState([]);
+  //정렬 옵션(1:거리순, 2:리뷰많은순, 3:이름순)
+  const [sortOption, setSortOption] = useState(1);
 
+  //plannedSpotList에 추가하기 전 가공 함수(미구현)
   const handleAddSpot = (content) => {
     const newSpot = {
       dayDate: "",
@@ -37,100 +38,62 @@ const PlannerFrm = () => {
       endLocation: "",
       order: "",
     };
-    setPlannedSpot([...plannedSpot, content]);
+    setPlannedSpotList([...plannedSpotList, content]);
   };
 
-  // useEffect(() => {
-  //   if (userMarker) {
-  //     const [lat, lng] = [userMarker.lat, userMarker.lng];
-  //     axios
-  //       .get(
-  //         `${process.env.REACT_APP_BACK_SERVER}/plan/nearby?lat=${lat}&lng=${lng}&radius=${userRadius}`
-  //       )
-  //       .then((res) => {
-  //         console.log(res.data);
-  //         setContentList(res.data);
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //       });
-  //   }
-  // }, [userMarker, userRadius]);
+  //장소 리스트를 받아오는 함수(마커 이동 시, 검색범위 변경 시 등등)
+  const fetchContentList = () => {
+    //사용자 마커 없을 시 미실행
+    if (!userMarker) return;
 
-  //장소 리스트(임시 데이터)
-  const [contentList, setContentList] = useState([
-    {
-      contentId: 1,
-      contentThumb:
-        "https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyNDExMDFfMTI3%2FMDAxNzMwNDIxNzMwOTk2.XIgrsfQZKau5dz1vICaytYVlbmnJvLOM0DxRt3HkGkYg.JF5wL5dOJ2ROsjxltR8Y-h4gQ3NOhk-7PMElB2F4pakg.JPEG%2F1000052381.jpg.jpg&type=f&size=340x180&quality=80&opt=2",
-      contentTitle: "플라워랜드",
-      contentType: "즐길거리",
-      contentAddr: "대전광역시 중구 사정공원로 70",
-      contentReview: 1034,
-      contentRating: 4.52,
-      contentLatLng: {
-        lat: 37.5358124,
-        lng: 126.8952968,
-      },
-    },
-    {
-      contentId: 2,
-      contentThumb:
-        "https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyNDExMDFfMTI3%2FMDAxNzMwNDIxNzMwOTk2.XIgrsfQZKau5dz1vICaytYVlbmnJvLOM0DxRt3HkGkYg.JF5wL5dOJ2ROsjxltR8Y-h4gQ3NOhk-7PMElB2F4pakg.JPEG%2F1000052381.jpg.jpg&type=f&size=340x180&quality=80&opt=2",
-      contentTitle: "행복양꼬치",
-      contentType: "음식점",
-      contentAddr: "서을특별시 은평구 구산동 역말로 47",
-      contentReview: 123,
-      contentRating: 3.12,
-      contentLatLng: {
-        lat: 37.5355274,
-        lng: 126.8991667,
-      },
-    },
-    {
-      contentId: 3,
-      contentThumb:
-        "https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyNDExMDFfMTI3%2FMDAxNzMwNDIxNzMwOTk2.XIgrsfQZKau5dz1vICaytYVlbmnJvLOM0DxRt3HkGkYg.JF5wL5dOJ2ROsjxltR8Y-h4gQ3NOhk-7PMElB2F4pakg.JPEG%2F1000052381.jpg.jpg&type=f&size=340x180&quality=80&opt=2",
-      contentTitle: "KH정보교육원 당산지원",
-      contentType: "숙박시설",
-      contentAddr: "서울특별시 영등포구 선유동2로 57 이레빌딩 19층",
-      contentReview: 54,
-      contentRating: 1.7,
-      contentLatLng: {
-        lat: 37.53378661113698,
-        lng: 126.89695153857365,
-      },
-    },
-  ]);
-
-  const getDistance = (lat1, lng1, lat2, lng2) => {
-    const R = 6371;
-    const dLat = ((lat2 - lat1) * Math.PI) / 180;
-    const dLng = ((lng2 - lng1) * Math.PI) / 180;
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos((lat1 * Math.PI) / 180) *
-        Math.cos((lat2 * Math.PI) / 180) *
-        Math.sin(dLng / 2) *
-        Math.sin(dLng / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c * 1000;
-  };
-
-  const visibleSpotList = userMarker
-    ? contentList.filter((spot) => {
-        // if (!mapBounds) return true;
-        // const latlng = new window.kakao.maps.LatLng(
-        //   spot.contentLatLng.lat,
-        //   spot.contentLatLng.lng
-        // );
-        // return mapBounds.contain(latlng);
-        if (!userMarker) return true;
-        const { lat, lng } = spot.contentLatLng;
-        const distance = getDistance(userMarker.lat, userMarker.lng, lat, lng);
-        return distance <= userRadius;
+    const [lat, lng] = [userMarker.lat, userMarker.lng];
+    const getContentTypeName = (typeId) => {
+      switch (typeId) {
+        case 12:
+          return "관광지";
+        case 14:
+          return "문화시설";
+        case 15:
+          return "축제/행사";
+        case 28:
+          return "레포츠";
+        case 38:
+          return "쇼핑";
+        case 32:
+          return "숙박시설";
+        case 39:
+          return "음식점";
+      }
+    };
+    axios
+      .get(
+        `${process.env.REACT_APP_BACK_SERVER}/plan/nearby?lat=${lat}&lng=${lng}&radius=${userRadius}`
+      )
+      .then((res) => {
+        const mappedData = res.data.map((spot) => {
+          return {
+            contentId: spot.contentId,
+            contentThumb: spot.contentThumb,
+            contentTitle: spot.contentTitle,
+            contentType: getContentTypeName(spot.contentTypeId),
+            contentAddr: spot.contentAddr,
+            contentReview: spot.contentReview,
+            contentRating: spot.contentRating,
+            contentLatLng: {
+              lat: spot.mapLat,
+              lng: spot.mapLng,
+            },
+          };
+        });
+        setContentList(mappedData);
       })
-    : [];
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  useEffect(() => {
+    fetchContentList();
+  }, [userMarker]);
 
   return (
     <div className="all-wrap">
@@ -153,7 +116,7 @@ const PlannerFrm = () => {
           </div>
         </div>
         <div className="spot-list">
-          {visibleSpotList.map((content, idx) => {
+          {contentList.map((content, idx) => {
             return (
               <PrintSpotList
                 key={"spot-" + idx}
@@ -170,8 +133,8 @@ const PlannerFrm = () => {
       {planWindow ? (
         <Planner
           setPlanwindow={setPlanwindow}
-          plannedSpot={plannedSpot}
-          setPlannedSpot={setPlannedSpot}
+          plannedSpotList={plannedSpotList}
+          setPlannedSpotList={setPlannedSpotList}
         />
       ) : (
         <div
@@ -197,10 +160,13 @@ const PlannerFrm = () => {
             setUserRadius(parseInt(e.target.value));
           }}
         />
+        <button className="re-search" onClick={fetchContentList}>
+          새로고침
+        </button>
       </div>
       <div className="map-wrap">
         <PrintMap
-          visibleSpotList={visibleSpotList}
+          contentList={contentList}
           openOverlay={openOverlay}
           setOpenOverlay={setOpenOverlay}
           openPlanningModal={openPlanningModal}
@@ -395,7 +361,7 @@ const PlanningModal = (props) => {
 };
 
 const PrintMap = (props) => {
-  const visibleSpotList = props.visibleSpotList;
+  const contentList = props.contentList;
   const [openOverlay, setOpenOverlay] = [
     props.openOverlay,
     props.setOpenOverlay,
@@ -462,7 +428,7 @@ const PrintMap = (props) => {
           />
         </>
       )}
-      {visibleSpotList.map((spot, idx) => {
+      {contentList.map((spot, idx) => {
         return (
           <div key={"marker-" + idx}>
             <MapMarker
