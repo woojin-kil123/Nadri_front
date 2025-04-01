@@ -235,7 +235,7 @@ section.section.bg-section {
   fill: var(--main2);
 }
 .danger-icon svg {
-  fill: #ff3d00;
+  fill: #dc143c;
 }
 .warning-icon svg{
   fill: #FFAD33;

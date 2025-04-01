@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
+import { createChatMsg } from "../utils/metaSet";
 
-const ChatList = ({ roomList, selectedRoom, setSelectedRoom }) => {
+const ChatList = ({ ws, roomList, selectedRoom, setSelectedRoom }) => {
   return (
     <>
       {roomList.map((room, i) => {
@@ -9,15 +10,20 @@ const ChatList = ({ roomList, selectedRoom, setSelectedRoom }) => {
           <div
             key={`chatRoom-${i}`}
             onClick={() => {
+              if (selectedRoom?.chatNo === room.chatNo) return;
               setSelectedRoom(room);
+              const msg = createChatMsg("UPDATE_STATUS", room.chatNo);
+              ws.send(msg);
             }}
-            className={selectedRoom == room ? "selected-room" : ""}
+            className={
+              selectedRoom?.chatNo === room.chatNo ? "selected-room" : ""
+            }
           >
             <div className="room-title disabled-icon">
+              {room.notRead > 0 && <span className="new-badge">NEW!</span>}
               <h4>{room.chatTitle}</h4>
-              <p style={{ color: "red" }}>{room.notRead}</p>
             </div>
-            <p>({room.groupSize})</p>
+            <p>({room.groupInfo.length})</p>
           </div>
         );
       })}
