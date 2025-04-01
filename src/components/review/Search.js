@@ -4,6 +4,7 @@ import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import "./review.css";
+import { useNavigate } from "react-router-dom";
 const Search = () => {
   return (
     <section className="section">
@@ -15,6 +16,7 @@ const Search = () => {
   );
 };
 const CustomizedInputBase = () => {
+  const navigate = useNavigate();
   return (
     <Paper
       component="form"
@@ -33,7 +35,7 @@ const CustomizedInputBase = () => {
         sx={{ p: "10px" }}
         aria-label="search"
         onClick={() => {
-          console.log("hi");
+          navigate("/write");
         }}
       >
         <SearchIcon />
