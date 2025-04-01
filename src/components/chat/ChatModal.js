@@ -5,15 +5,19 @@ import CloseIcon from "@mui/icons-material/Close";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 import ChatList from "./ChatList";
 import ChatContent from "./ChatContent";
+import AnnouncementIcon from "@mui/icons-material/Announcement";
 import { useRecoilValue } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
-import { createChatMsg } from "../utils/metaSet";
+import { createChatMsg, DropdownItem } from "../utils/metaSet";
+import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
+import ChatMenu from "./ChatMenu";
 
-const ChatModal = ({ anchorEl, setAnchorEl }) => {
+const ChatModal = ({ chatModalEl, setChatModalEl, setChatMenu }) => {
   const loginNickname = useRecoilValue(loginNicknameState);
   const close = (e) => {
     e.stopPropagation();
-    setAnchorEl(null);
+    setSelectedRoom(null);
+    setChatModalEl(null);
   };
   const [isSystemModal, setIsSystemModal] = useState(false);
   const [systemModal, setSystemModal] = useState(null);
@@ -33,7 +37,28 @@ const ChatModal = ({ anchorEl, setAnchorEl }) => {
       socket.close();
     };
   }, []);
-
+  useEffect(() => {
+    if (!Array.isArray(roomList)) return;
+    // 안읽은 메시지 있는 채팅방만 필터
+    const unreadRooms = roomList.filter((room) => room.notRead > 0);
+    // DropdownItem 리스트로 변환
+    const menuItems = unreadRooms.map((room) => {
+      return new DropdownItem(
+        <AnnouncementIcon />,
+        `${room.chatTitle}에 새 메시지!`,
+        (e) => {
+          setChatModalEl(e.currentTarget);
+          setSelectedRoom(room);
+        } // 클릭시 이동 함수
+      );
+    });
+    setChatMenu([
+      new DropdownItem(<MeetingRoomIcon />, "채팅방 입장", (e) => {
+        setChatModalEl(e.currentTarget);
+      }),
+      ...menuItems,
+    ]);
+  }, [roomList]);
   const startChat = () => {
     const data = createChatMsg("FETCH_ROOM_LIST");
     ws.send(data);
@@ -42,17 +67,30 @@ const ChatModal = ({ anchorEl, setAnchorEl }) => {
     console.log("서버에서 데이터를 받으면 실행되는 함수");
     //data 타입별로 정리
     const data = JSON.parse(receiveData.data);
-    console.log(data);
     switch (data.type) {
       case "ROOM_LIST":
         setRoomList(data.room);
+        if (selectedRoom) {
+          const sameRoom = data.room.find(
+            (r) => r.chatNo === selectedRoom.chatNo
+          );
+          if (sameRoom) {
+            setSelectedRoom(sameRoom);
+          }
+        }
         break;
       case "CHAT_CONTENT":
-        const room = roomList.filter((room, i) => {
-          return data.content[0].chatNo == room.chatNo;
-        });
-        setSelectedRoom(room[0]);
-        setContent(data.content);
+        // 1. 메시지가 없을 때는 초기화
+        if (!Array.isArray(data.content) || data.content.length === 0) {
+          setSelectedRoom(null); // 선택 해제 or 유지
+          setContent([]); // 메시지 비우기
+          break;
+        }
+        // 2. 메시지가 있다면 chatNo로 방 찾기
+        const chatNo = data.content[0].chatNo;
+        if (selectedRoom && selectedRoom.chatNo === chatNo) {
+          setContent(data.content);
+        }
         break;
       case "ERROR":
         setIsSystemModal(true);
@@ -101,7 +139,7 @@ const ChatModal = ({ anchorEl, setAnchorEl }) => {
         />
       )}
       <Modal
-        open={Boolean(anchorEl)}
+        open={Boolean(chatModalEl)}
         onClose={close}
         aria-labelledby="chat-modal-title"
         sx={{ display: "flex" }}
@@ -145,6 +183,7 @@ const ChatModal = ({ anchorEl, setAnchorEl }) => {
             </div>
             <div className="content-middle">
               <ChatList
+                ws={ws}
                 roomList={roomList}
                 selectedRoom={selectedRoom}
                 setSelectedRoom={setSelectedRoom}

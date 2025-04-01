@@ -8,16 +8,18 @@ import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 
 const ChatMenu = ({ chatEl, setChatEl }) => {
   const [chatModalEl, setChatModalEl] = useState(null);
-  const [isFooterVisible, setIsFooterVisible] = useState(false);
-  const chatOpen = (e) => {
-    setChatEl(e.currentTarget);
-  };
   const chatModalOpen = (e) => {
     setChatModalEl(e.currentTarget);
   };
-  const chatMenu = [
+
+  const [isFooterVisible, setIsFooterVisible] = useState(false);
+  const [chatMenu, setChatMenu] = useState([
     new DropdownItem(<MeetingRoomIcon />, "채팅방 입장", chatModalOpen),
-  ];
+  ]);
+  const chatOpen = (e) => {
+    setChatEl(e.currentTarget);
+  };
+
   useEffect(() => {
     const footer = document.querySelector(".footer");
     if (!footer) return;
@@ -37,8 +39,9 @@ const ChatMenu = ({ chatEl, setChatEl }) => {
   return (
     <>
       <ChatModal
-        anchorEl={chatModalEl}
-        setAnchorEl={setChatModalEl}
+        chatModalEl={chatModalEl}
+        setChatModalEl={setChatModalEl}
+        setChatMenu={setChatMenu}
         sx={{ zIndex: 50 }}
       />
       <IconButton

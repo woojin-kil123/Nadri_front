@@ -2,7 +2,7 @@ import TelegramIcon from "@mui/icons-material/Telegram";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IconButton, InputBase, Paper } from "@mui/material";
 import { createChatMsg, DropdownItem } from "../utils/metaSet";
 import { useRecoilValue } from "recoil";
@@ -22,13 +22,23 @@ const ChatContent = ({
   const [editMode, setEditMode] = useState(false);
   const [msg, setMsg] = useState("");
   const chatNo = selectedRoom.chatNo;
+  const previousChatNoRef = useRef(null);
   useEffect(() => {
-    if (selectedRoom) {
-      const data = createChatMsg("SELECT_ROOM", chatNo);
-      ws.send(data);
-    }
+    if (!selectedRoom) return;
+    // chatNo 중복 방지
+    if (selectedRoom.chatNo === previousChatNoRef.current) return;
+    const data = createChatMsg("SELECT_ROOM", chatNo);
+    ws.send(data);
     setTitle(selectedRoom.chatTitle);
+    previousChatNoRef.current = selectedRoom.chatNo;
   }, [selectedRoom]);
+  const chatDiv = useRef(null);
+  //스크롤 위치 맞추는 함수
+  useEffect(() => {
+    if (chatDiv.current) {
+      chatDiv.current.scrollTop = chatDiv.current.scrollHeight;
+    }
+  }, [content]);
   const send = () => {
     if (!msg) {
       return;
@@ -106,7 +116,7 @@ const ChatContent = ({
           </IconButton>
         </div>
       </div>
-      <div className="content-middle">
+      <div className="content-middle" ref={chatDiv}>
         {content.map((c, i) => {
           return (
             <div
