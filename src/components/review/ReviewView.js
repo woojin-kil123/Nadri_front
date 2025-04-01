@@ -1,6 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "./review.css";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ReportIcon from "@mui/icons-material/Report";
+import EditNoteIcon from "@mui/icons-material/EditNote";
+
 const ReviewView = () => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
@@ -8,6 +14,14 @@ const ReviewView = () => {
   const [isCommenting, setIsCommenting] = useState(false);
   const deleteComment = (id) => {
     setComments(comments.filter((comment) => comment.id !== id));
+  };
+
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+
+  const toggleLike = () => {
+    setLiked(!liked);
+    setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
   };
   const REPORT_REASONS = [
     "부적절한 콘텐츠 – 욕설, 비방, 혐오 발언 등이 포함된 리뷰",
@@ -48,14 +62,23 @@ const ReviewView = () => {
       <div className="review-content">
         <h2>title</h2>
         <p>content</p>
-        <button onClick={editReview}>리뷰 수정</button>
-        <button onClick={reportClick}>리뷰 신고</button>
+        <button
+          onClick={toggleLike}
+          style={{ background: "none", border: "none" }}
+        >
+          {liked ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
+        </button>
+        <span>{likeCount}</span>
+        <EditNoteIcon onClick={editReview}>리뷰 수정</EditNoteIcon>
+        <ReportIcon onClick={reportClick}>리뷰 신고</ReportIcon>
         <h3>댓글</h3>
         <ul>
           {comments.map((comment) => (
             <li key={comment.id}>
               {comment.text}
-              <button onClick={() => deleteComment(comment.id)}>삭제</button>
+              <DeleteIcon onClick={() => deleteComment(comment.id)}>
+                삭제
+              </DeleteIcon>
             </li>
           ))}
         </ul>
