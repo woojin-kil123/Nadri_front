@@ -49,19 +49,19 @@ const UserInfo = () => {
               />
             </div>
             <div className="user-profile-title">
+              <div className="user-profile-email">{member.memberEmail}</div>
               <div className="user-profile-nickname">
                 {member.memberNickname}
               </div>
-              <div className="user-profile-email">{member.memberEmail}</div>
             </div>
           </div>
-          <h2 className="user-info-title">회원 정보</h2>
           <div className="user-info-content">
+            <h2 className="user-info-title">회원 정보</h2>
             <div className="input-wrap">
               <div className="input-title">
                 <label htmlFor="memberPw">이메일</label>
               </div>
-              <div className="input-item">
+              <div className="info-item">
                 <input
                   className="left"
                   value={member.memberEmail}
@@ -73,7 +73,7 @@ const UserInfo = () => {
               <div className="input-title">
                 <label htmlFor="memberPw">닉네임</label>
               </div>
-              <div className="input-item">
+              <div className="info-item">
                 <input
                   className="left"
                   value={member.memberNickname}
@@ -85,7 +85,7 @@ const UserInfo = () => {
               <div className="input-title">
                 <label htmlFor="memberPw">휴대폰번호</label>
               </div>
-              <div className="input-item">
+              <div className="info-item">
                 <input
                   className="left"
                   value={member.memberPhone}
@@ -97,7 +97,7 @@ const UserInfo = () => {
               <div className="input-title">
                 <label htmlFor="memberPw">생년월일</label>
               </div>
-              <div className="input-item">
+              <div className="info-item">
                 <input
                   className="left"
                   value={formatBirthDate(member.memberBirth)}
@@ -109,7 +109,7 @@ const UserInfo = () => {
               <div className="input-title">
                 <label htmlFor="memberPw">성별</label>
               </div>
-              <div className="input-item">
+              <div className="info-item">
                 <input
                   className="left"
                   value={

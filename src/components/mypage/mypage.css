@@ -28,3 +28,26 @@
   width: 340px;
   cursor: pointer;
 }
+
+.user-profile {
+  width: 340px;
+  height: 340px;
+  margin: 0 auto;
+  text-align: center;
+}
+.user-profile-email {
+  color: rgb(156, 156, 156);
+}
+.user-profile-nickname {
+  color: rgb(49, 49, 49);
+  font-weight: 800;
+  font-size: 20px;
+}
+.user-info-content {
+  margin-top: 100px;
+}
+
+.info-item > input {
+  border: none;
+  border-bottom: 1px solid rgb(214, 214, 214);
+}
