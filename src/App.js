@@ -69,7 +69,11 @@ function App() {
                   <Route path="/updatePw2" element={<UpdatePw2 />} />
                   <Route path="/mypage/*" element={<Mypage />} />
                   <Route path="/review/*" element={<ReviewMain />}></Route>
-                  <Route path="/search" element={<Search />}></Route>
+                  <Route
+                    path="/review/detail/:reviewNo"
+                    element={<ReviewView />}
+                  ></Route>
+                  <Route path="/review/write" element={<ReviewWrite />}></Route>
                   <Route path="/content/*" element={<ContentList />} />
                 </Routes>
               </div>

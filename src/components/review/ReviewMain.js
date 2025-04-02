@@ -74,7 +74,7 @@ const ReviewMain = () => {
           </ul>
         </nav>
         <div>
-          <Link to="/search" className="btn-primary green">
+          <Link to="/review/write" className="btn-primary green">
             글쓰기
           </Link>
         </div>
@@ -101,7 +101,7 @@ const ReviewItem = (props) => {
     <li
       className="posting-item"
       onClick={() => {
-        //navigate(`/review/view/${review.reviewNo}`);
+        navigate(`/review/detail/${review.reviewNo}`);
       }}
     >
       <div className="posting-info">
