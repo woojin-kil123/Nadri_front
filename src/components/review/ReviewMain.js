@@ -106,6 +106,7 @@ const ReviewItem = (props) => {
     >
       <div className="posting-info">
         <div className="posting-title">{review.reviewTitle}</div>
+        <div>{review.reviewContent}</div>
         <div className="posting-sub-info">
           <span>{review.memberNickname}</span>
           <span>{review.reviewDate}</span>
