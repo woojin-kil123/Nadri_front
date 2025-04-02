@@ -17,24 +17,6 @@
   font-size: 14px; /* 글자 크기 조정 */
 }
 
-.logo {
-  width: 600px;
-  margin: 0 auto;
-  text-align: center;
-}
-.logo > a {
-  color: var(--main2);
-}
-.login-title {
-  text-align: center;
-  font-size: 17px;
-  font-weight: 100;
-  padding: 10px;
-}
-.login-wrap {
-  width: 600px;
-  margin: 0 auto;
-}
 .input-item > input {
   border-color: rgb(187, 187, 187);
 }
@@ -141,7 +123,7 @@ select {
 .day > select {
   width: 200px;
   border-color: rgb(219, 219, 219);
-  color: rgb(187, 187, 187);
+  color: black;
 }
 .year > select:focus,
 .month > select:focus,
