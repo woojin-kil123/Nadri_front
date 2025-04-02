@@ -1,10 +1,11 @@
 :root {
   /*main color*/
-  --main1: #3d3d3d;
-  --main2: #30c272;
-  --main3: #166139;
-  --main4: rgb(47, 151, 33);
-  --main5: #b7e9c3;
+  --main1: #3D3D3D;
+  --main2: #27B778;
+  --main3: #0D8577;
+  --main4: #FCC54D;
+  --main5: #C7E77F;
+  --main6: #F8EEDC;
   --warning: 
   /*box-bg*/
   --box-bg: #f0f1f1;
