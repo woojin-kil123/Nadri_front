@@ -1,4 +1,4 @@
-.nav-wrap {
+.review-nav-wrap {
   padding: 10px;
   max-width: 1400px;
   margin: 0 auto;
@@ -7,11 +7,23 @@
   margin-left: 200px;
 }
 
-.nav-wrap li {
+.review-nav-wrap li {
+  color: var(--main1);
+}
+.review-nav-wrap li:hover {
   color: var(--main2);
 }
-.nav-wrap li:hover {
-  color: var(--main3);
+.review-nav {
+  flex: 1;
+}
+.review-nav > ul {
+  display: flex;
+  align-items: center;
+}
+.review-nav > ul > li {
+  margin: 0px 15px;
+  position: relative;
+  justify-items: center;
 }
 .wirte-btn {
   justify-items: right;
