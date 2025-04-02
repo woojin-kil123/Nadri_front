@@ -4,97 +4,51 @@ import FacebookIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import TwitterIcon from "@mui/icons-material/X";
 import { Link } from "react-router-dom";
+import "./footer.css";
 
 export default function Footer() {
   return (
     <footer className="footer">
-      <div className="introduce">
-        <div className="link-list">
-          <div className="contact">
-            <div>
-              <p>Product</p>
-              <ul>
-                <li>
-                  <Link to="#">Features</Link>
-                </li>
-                <li>
-                  <Link to="#">Testimonials</Link>
-                </li>
-                <li>
-                  <Link to="#">Highlights</Link>
-                </li>
-                <li>
-                  <Link to="#">Pricing</Link>
-                </li>
-                <li>
-                  <Link to="#">FAQs</Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <p>Company</p>
-              <ul>
-                <li>
-                  <Link to="#">About us</Link>
-                </li>
-                <li>
-                  <Link to="#">Careers</Link>
-                </li>
-                <li>
-                  <Link to="#">Press</Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <p> Legal</p>
-              <ul>
-                <li>
-                  <Link to="#">Terms</Link>
-                </li>
-                <li>
-                  <Link to="#">Privacy</Link>
-                </li>
-                <li>
-                  <Link to="#">Contact</Link>
-                </li>
-              </ul>
-            </div>
-            <div className="terms">
-              <div>
-                <Link to="#">개인정보 취급방침 및 쿠키 정책</Link>
-              </div>
-              <div>
-                <Link to="#">이용 약관</Link>
-              </div>
-              <Stack
-                direction="row"
-                spacing={1}
-                useFlexGap
-                sx={{ justifyContent: "left", color: "text.secondary" }}
-              >
-                <IconButton href="https://github.com/mui" aria-label="GitHub">
-                  <FacebookIcon color="inherit" />
-                </IconButton>
-                <IconButton href="https://x.com/MaterialUI" aria-label="X">
-                  <TwitterIcon color="inherit" />
-                </IconButton>
-                <IconButton
-                  href="https://www.linkedin.com/company/mui/"
-                  aria-label="LinkedIn"
-                >
-                  <LinkedInIcon color="inherit" />
-                </IconButton>
-              </Stack>
-            </div>
+      <div className="contact-wrap">
+        <div className="footer-left">
+          <h1 className="footer-logo">Nadri</h1>
+          <ul className="footer-info">
+            <li>📍 미라특별시 비즈구 미래로123길 45 비즈빌딩 3F</li>
+            <li>📞 00-0000-0000 / FAX : 00-0000-0000</li>
+            <li>🌐 http://www.bizhowsenglish.com</li>
+            <li>✉️ bizhowsenglish@bizhows.com</li>
+          </ul>
+        </div>
+        <div className="footer-right">
+          <Stack
+            direction="row"
+            spacing={1}
+            useFlexGap
+            sx={{ justifyContent: "left", color: "text.secondary" }}
+          >
+            <IconButton href="#" aria-label="GitHub">
+              <FacebookIcon color="inherit" />
+            </IconButton>
+            <IconButton href="#" aria-label="X">
+              <TwitterIcon color="inherit" />
+            </IconButton>
+            <IconButton href="#" aria-label="LinkedIn">
+              <LinkedInIcon color="inherit" />
+            </IconButton>
+          </Stack>
+          <div>
+            <Link to="#">개인정보 취급방침 및 쿠키 정책</Link>
           </div>
-          <div className="copyright">
-            <p> © 2025 나드리 All rights reserved</p>
-            <p>
-              대한민국의 한국어 사용자를 대상으로 하는 나드리 웹사이트
-              버전입니다.
-            </p>
+          <div>
+            <Link to="#">이용 약관</Link>
           </div>
         </div>
+      </div>
+      <div className="copyright">
+        <p> © 2025 나드리 All rights reserved</p>
+        <p>
+          대한민국의 한국어 사용자를 대상으로 하는 나드리 웹사이트 버전입니다.
+        </p>
       </div>
     </footer>
   );

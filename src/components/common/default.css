@@ -79,67 +79,6 @@ body {
   font-size: 20px;
   color: var(--main2);
 }
-.footer {
-  position: relative;
-  height: 300px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background-color: var(--main1);
-}
-.footer > div {
-  width: 50%;
-  padding: 20px 10px;
-  margin: 0 auto;
-  text-align: center;
-}
-.footer a {
-  color: var(--gray8);
-}
-.introduce {
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-}
-.link-list {
-  width: 100%;
-}
-.link-list > .contact {
-  display: flex;
-  justify-content: center;
-  gap: 100px;
-}
-.footer p {
-  margin: 10px 0px;
-  font-family: ns-b;
-  font-size: 16px;
-  color: var(--main2);
-}
-
-.footer > div ul {
-  list-style-type: none;
-  overflow: hidden;
-  margin-bottom: 20px;
-}
-.footer > div path {
-  width: 60px;
-  height: 60px;
-  color: var(--main2);
-  align-self: center;
-}
-.terms {
-  width: 60%;
-  display: flex;
-  justify-content: space-around;
-  flex-direction: column;
-}
-.terms > div {
-  display: flex;
-  justify-content: center;
-}
-.copyright {
-  text-align: center;
-}
 section.section {
   padding: 20px;
   border-radius: 10px;
