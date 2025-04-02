@@ -4,12 +4,29 @@ import { RecoilState, useRecoilValue } from "recoil";
 import "./review.css";
 import axios from "axios";
 import PageNavigation from "../utils/PageNavigtion";
+import StarRating from "../utils/StarRating";
 const ReviewMain = () => {
   const backServer = process.env.REACT_APP_BACK_SERVER;
   const [review, setReview] = useState([]);
   const [pi, setPi] = useState([]);
   const [reqPage, setReqPage] = useState(1);
   const [content, setContnet] = useState(null);
+  useEffect(() => {
+    axios
+      .get(
+        `${
+          process.env.REACT_APP_BACK_SERVER
+        }/review?reqPage=${reqPage}&value=${"all"}`
+      )
+      .then((res) => {
+        console.log(res);
+        setReview(res.data.list);
+        setPi(res.data.pi);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
   const chaneContnent = (value) => {
     setContnet(value);
     axios
@@ -105,7 +122,9 @@ const ReviewItem = (props) => {
       }}
     >
       <div className="posting-info">
-        <div>{review.starRate}</div>
+        <div>
+          <StarRating rating={review.starRate} />
+        </div>
         <div className="posting-title">{review.reviewTitle}</div>
         <div>{review.reviewContent}</div>
         <div className="posting-sub-info">
