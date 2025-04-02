@@ -94,3 +94,33 @@
 .link-wrap > div > p {
   margin: 0 7px;
 }
+.footer-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 80%;
+  min-width: 800px;
+  min-height: 500px;
+  background-color: var(--gray8);
+}
+.terms-container {
+  padding: 2rem;
+  max-height: 80vh;
+  overflow-y: auto;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #333;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+/* 스크롤바 커스터마이징 선택사항 */
+.terms-container::-webkit-scrollbar {
+  width: 6px;
+}
+.terms-container::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 10px;
+}
