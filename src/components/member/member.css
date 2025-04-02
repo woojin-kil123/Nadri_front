@@ -123,7 +123,7 @@ select {
 .day > select {
   width: 200px;
   border-color: rgb(219, 219, 219);
-  color: rgb(187, 187, 187);
+  color: black;
 }
 .year > select:focus,
 .month > select:focus,
