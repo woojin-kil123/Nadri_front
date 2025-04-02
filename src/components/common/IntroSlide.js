@@ -77,7 +77,7 @@ const IntroSlider = () => {
           <img
             src={slides[activeIndex].image}
             alt="slide"
-            style={{ width: "90%", borderRadius: "8px" }}
+            style={{ width: "100%", borderRadius: "8px", float: "right" }}
           />
         </div>
       </div>

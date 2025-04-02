@@ -5,7 +5,6 @@
 }
 .main-wrap .intro-wrap {
   width: 100%;
-  height: 400px;
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -20,7 +19,7 @@
 }
 
 .intro > .intro-text {
-  width: 40%;
+  width: 50%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -42,8 +41,7 @@
   width: 200px;
 }
 .intro > .intro-img {
-  width: 50%;
-  margin: 0 auto;
+  width: 40%;
 }
 .recommand-wrap > .recommand-title {
   padding: 20px;
@@ -58,28 +56,30 @@
 
 .recommand-nav > .filter-nav {
   display: flex;
-  justify-content: space-evenly;
   padding: 10px 10px;
 }
 
-.filter-button {
+.filter-nav > .filter-button {
   padding: 8px 16px;
   border-radius: 6px;
-  background-color: #f1f8f6;
+  background-color: var(--gray8);
   width: 100px;
-  color: #333;
+  color: var(--main1);
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
-.filter-button.active {
+.filter-nav > .filter-button.active {
   background-color: var(--main2);
   color: white;
 }
-.recommand-slider {
+.recommand-wrap .recommand-slider {
   width: 100%;
+  height: 400px;
   padding: 20px 12px;
   box-sizing: border-box;
+  position: relative; /* 슬라이더 버튼 보이게 하려면 이거 중요 */
+  overflow: visible; /* 버튼 잘리는 현상 방지 */
 }
 
 /* slick-slide 자체는 block이기 때문에 간격을 줘야 함 */
@@ -94,16 +94,9 @@
   justify-content: center;
 }
 
-/* 좌우 화살표 색상 변경 */
-.slick-prev:before,
-.slick-next:before {
-  color: #4caf50;
-  font-size: 28px;
-}
-
 /* 비활성화된 화살표 회색으로 */
 .slick-disabled:before {
-  color: #ccc !important;
+  color: #ccc;
 }
 
 /* dots 하단 정렬 및 스타일 */
@@ -117,5 +110,101 @@
 }
 
 .slick-dots li.slick-active button:before {
-  color: #4caf50;
+  color: var(--main2);
+}
+.recommand-slider {
+  position: relative;
+  overflow: visible;
+  padding: 0 24px;
+}
+
+.filter-tab-wrap {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0 20px;
+}
+
+.filter-button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  background-color: #f1f8f6;
+  color: #333;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.recommand-nav .Mui-selected {
+  color: #27b778;
+}
+.filter-button.active {
+  background-color: #27b778;
+  color: white;
+}
+
+/* slick */
+.recommand-slider .slick-slide {
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+
+.slick-track > .slick-slide > div {
+  display: flex;
+  justify-content: center;
+}
+.recommand-slider .slick-prev,
+.recommand-slider .slick-next {
+  z-index: 10;
+  width: 36px;
+  height: 36px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  display: flex !important; /* 기본 block 덮어씀 */
+  align-items: center;
+  justify-content: center;
+  top: 40%;
+  transform: translateY(-50%);
+  transition: transform 0.2s ease;
+}
+
+/* 왼쪽 오른쪽 위치 */
+.recommand-slider .slick-prev {
+  left: -16px;
+}
+
+.recommand-slider .slick-next {
+  right: -16px;
+}
+
+/* 아이콘 색상 */
+.recommand-slider .slick-prev:before,
+.recommand-slider .slick-next:before {
+  font-size: 20px;
+  color: var(--main2);
+  opacity: 1;
+}
+
+/* 비활성화된 버튼 */
+.recommand-slider .slick-disabled:before {
+  color: #ccc;
+  opacity: 0.5;
+}
+
+/* 호버 시 살짝 확대 */
+.recommand-slider .slick-prev:hover,
+.recommand-slider .slick-next:hover {
+  transform: translateY(-50%) scale(1.1);
+}
+/* dots */
+.recommand-slider .slick-dots {
+  bottom: -24px;
+}
+
+.recommand-slider .slick-dots li button:before {
+  color: #ccc;
+  font-size: 10px;
+}
+
+.recommand-slider .slick-dots li.slick-active button:before {
+  color: #27b778;
 }

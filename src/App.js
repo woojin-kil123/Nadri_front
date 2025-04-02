@@ -27,6 +27,9 @@ import Search from "./components/review/Search";
 import ReviewView from "./components/review/ReviewView";
 import EditReview from "./components/review/EditReview";
 import ProtectedRouting from "./components/utils/ProtectedRouting";
+// 슬릭 슬라이더 css
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);

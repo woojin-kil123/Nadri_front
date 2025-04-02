@@ -1,10 +1,9 @@
 .card {
   width: 288px; /* 72px * 4 = 288px (기존 Tailwind 기준) */
   border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  background-color: white;
-  font-family: "Noto Sans KR", sans-serif;
+  background-color: var(--gray8);
+  padding: 0px;
 }
 
 .card > .image-container {
