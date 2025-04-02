@@ -18,7 +18,8 @@ const ReviewMain = () => {
       )
       .then((res) => {
         console.log(res);
-        setReview(res.data);
+        setReview(res.data.list);
+        setPi(res.data.pi);
       })
       .catch((err) => {
         console.log(err);
