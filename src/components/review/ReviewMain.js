@@ -105,6 +105,7 @@ const ReviewItem = (props) => {
       }}
     >
       <div className="posting-info">
+        <div>{review.starRate}</div>
         <div className="posting-title">{review.reviewTitle}</div>
         <div>{review.reviewContent}</div>
         <div className="posting-sub-info">
