@@ -9,12 +9,13 @@ import { useState } from "react";
 import LeftSideMenu from "./LeftSideMenu";
 import "./mypage.css";
 import "./LeftSideMenu";
+import UpdateInfo from "./UpdateInfo";
 
 const Mypage = () => {
   const navigate = useNavigate();
   const isLogin = useRecoilValue(isLoginState);
   const [menus, setMenus] = useState([
-    { url: "/mypage/userinfo", text: "내 정보 관리" },
+    { url: "/mypage/userInfo", text: "내 정보 관리" },
     { url: "/mypage/planners", text: "내 플래너 관리" },
     { url: "/mypage/bookmark", text: "즐겨찾기" },
     { url: "/mypage/reviews", text: "내 리뷰 관리" },
@@ -38,6 +39,7 @@ const Mypage = () => {
             <Route path="planners" element={<Planners />} />
             <Route path="bookmark" element={<Bookmark />} />
             <Route path="reviews" element={<Reviews />} />
+            <Route path="updateInfo" element={<UpdateInfo />} />
           </Routes>
         </section>
       </div>

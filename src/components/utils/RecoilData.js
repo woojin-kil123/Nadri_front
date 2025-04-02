@@ -16,7 +16,7 @@ const loginNicknameState = atom({
   effects_UNSTABLE: [persistAtom],
 });
 //로그인한 회원의 타입을 저장하는 저장소(atom)
-const memberTypeState = atom({
+const memberLevelState = atom({
   key: "memberTypeState",
   default: 0,
   effects_UNSTABLE: [persistAtom],
@@ -35,4 +35,4 @@ const isPlannerState = atom({
   effects_UNSTABLE: [persistAtom],
 });
 
-export { loginNicknameState, memberTypeState, isLoginState, isPlannerState };
+export { loginNicknameState, memberLevelState, isLoginState, isPlannerState };
