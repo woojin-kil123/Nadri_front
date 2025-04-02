@@ -1,6 +1,6 @@
 import "./main.css";
 import React, { useEffect, useState } from "react";
-import { Box, Typography, Button } from "@mui/material";
+import { Box } from "@mui/material";
 
 const slides = [
   {
@@ -72,13 +72,12 @@ const IntroSlider = () => {
             <button className="btn-primary">시작하기</button>
           </div>
         </div>
-
         {/* Right image section */}
         <div className="intro-img">
           <img
             src={slides[activeIndex].image}
             alt="slide"
-            style={{ width: "100%", borderRadius: "8px" }}
+            style={{ width: "90%", borderRadius: "8px" }}
           />
         </div>
       </div>

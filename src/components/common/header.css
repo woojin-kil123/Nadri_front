@@ -10,9 +10,6 @@
   align-items: center;
 }
 
-.header a {
-  color: var(--main2);
-}
 .header svg {
   fill: var(--main2);
 }

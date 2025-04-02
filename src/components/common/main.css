@@ -1,14 +1,18 @@
+.main-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
 .main-wrap .intro-wrap {
-  width: 80%;
+  width: 100%;
   height: 400px;
-  background: radial-gradient(circle, #222 0%, #000 100%);
   color: #fff;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   margin: 0 auto;
   align-items: center;
-  padding: 50px 10px;
+  padding: 40px 0px;
   gap: 10px;
 }
 .intro-wrap > .intro {
@@ -16,16 +20,20 @@
 }
 
 .intro > .intro-text {
-  width: 45%;
+  width: 40%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 30px;
-  padding: 20px;
+  padding: 10px;
 }
-.intro > .intro-text * {
-  color: #fff;
+.intro-text > .intro-title {
+  text-indent: 60px;
 }
+.intro-text > .intro-description {
+  text-indent: 80px;
+}
+
 .intro-text > .intro-btn-wrap {
   padding-top: 100px;
   align-self: center;
@@ -33,7 +41,81 @@
 .intro-btn-wrap > .btn-primary {
   width: 200px;
 }
-
 .intro > .intro-img {
   width: 50%;
+  margin: 0 auto;
+}
+.recommand-wrap > .recommand-title {
+  padding: 20px;
+}
+.recommand-wrap .recommand-content {
+  display: flex;
+  gap: 16px;
+  flex-wrap: nowrap;
+  justify-content: center;
+  padding: 16px 0;
+}
+
+.recommand-nav > .filter-nav {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 10px 10px;
+}
+
+.filter-button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  background-color: #f1f8f6;
+  width: 100px;
+  color: #333;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.filter-button.active {
+  background-color: var(--main2);
+  color: white;
+}
+.recommand-slider {
+  width: 100%;
+  padding: 20px 12px;
+  box-sizing: border-box;
+}
+
+/* slick-slide 자체는 block이기 때문에 간격을 줘야 함 */
+.slick-slide {
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+
+/* 카드가 세로로 안 쌓이게, 가운데 정렬되게 */
+.slick-track > .slick-slide > div {
+  display: flex;
+  justify-content: center;
+}
+
+/* 좌우 화살표 색상 변경 */
+.slick-prev:before,
+.slick-next:before {
+  color: #4caf50;
+  font-size: 28px;
+}
+
+/* 비활성화된 화살표 회색으로 */
+.slick-disabled:before {
+  color: #ccc !important;
+}
+
+/* dots 하단 정렬 및 스타일 */
+.slick-dots {
+  bottom: -24px;
+}
+
+.slick-dots li button:before {
+  color: #ccc;
+  font-size: 10px;
+}
+
+.slick-dots li.slick-active button:before {
+  color: #4caf50;
 }
