@@ -14,7 +14,7 @@ const PlannerFrm = () => {
   //마커 오버레이 여닫음 state
   const [openOverlay, setOpenOverlay] = useState(null);
   //플래너 창 여닫음 state
-  const [planWindow, setPlanwindow] = useState(false);
+  const [openPlanner, setOpenPlanner] = useState(false);
   //"플래너에 추가하기" 창 여닫음 state
   const [openPlanningModal, setOpenPlanningModal] = useState(null);
   //플래너에 추가한 장소 리스트 state
@@ -32,8 +32,9 @@ const PlannerFrm = () => {
   //필터 옵션(null:전체, 1:숙박시설, 2:음식점, 3:그외)
   const [filterOption, setFilterOption] = useState(null);
 
-  //장소 리스트를 받아오는 함수(유저 마커 이동 시, 새로고침 시)
-  //useCallback() 사용으로 함수 저장(메모리 절약)
+  /*장소 리스트를 받아오는 함수(유저 마커 이동 시, 새로고침 시)
+  useCallback() 사용으로 함수 저장(메모리 절약)
+  useMemo(): 값 저장   <=>   useCallback(): 함수 저장 */
   const getContentList = useCallback(() => {
     //사용자 마커 없을 시 취소
     if (!userMarker) return;
@@ -62,14 +63,14 @@ const PlannerFrm = () => {
     };
 
     //서버 데이터 요청
-    //유저 마커 좌표, 검색 반경, 정렬 옵션 전달
+    //유저 마커 좌표, 검색 반경 전달
     axios
+      // .get(`${process.env.REACT_APP_BACK_SERVER}/plan/nearby?lat=${lat}&lng=${lng}&radius=${userRadius}`)
       .get(`${process.env.REACT_APP_BACK_SERVER}/plan/nearby`, {
         params: {
           lat,
           lng,
           radius: userRadius,
-          sortOption,
         },
       })
       .then((res) => {
@@ -100,7 +101,7 @@ const PlannerFrm = () => {
     //아래 배열 내 값이 바뀔 때 함수를 재생성함(useCallback)
   }, [userMarker, userRadius, sortOption]);
 
-  //getContentList()를 useEffect()로 관리
+  //작성해 둔 getContentList()를 useEffect()로 관리
   useEffect(() => {
     if (!userMarker) return; //첫실행 방지
     const delay = setTimeout(() => {
@@ -108,7 +109,7 @@ const PlannerFrm = () => {
     }, 500); //지도 광클 시 데이터 계속 받아오는 현상 수정
   }, [userMarker]);
 
-  //장소 sort 함수: useMemo()로 관리 -> filter 함수와 별도로 동작하게
+  //정렬된 장소(의 값): useMemo()로 기억
   const sortedList = useMemo(() => {
     if (sortOption === 2) {
       return [...contentList].sort((a, b) => b.contentReview - a.contentReview);
@@ -118,8 +119,10 @@ const PlannerFrm = () => {
       );
     }
     return contentList; //기본값: 그대로 반환
+    //장소 새로 받아오거나, 정렬 옵션 바뀌면 새 값 업데이트(콜백 실행)
   }, [contentList, sortOption]);
-  //장소 filter 함수: sort 이후 실행됨, useMemo()로 관리
+
+  //필터링 된 장소(의 값): useMemo()로 기억
   const filteredSortedList = useMemo(() => {
     if (filterOption === 1) {
       return sortedList.filter((item) => item.contentType === "숙박시설");
@@ -133,7 +136,9 @@ const PlannerFrm = () => {
     }
     setOpenOverlay(null);
     return sortedList; //기본값: sorted 상태 그대로 반환
+    //정렬된 장소(의 값)가 변동되거나, 필터 옵션 바뀌면 새 값 업데이트(콜백 실행)
   }, [sortedList, filterOption]);
+
   //sort, filter 옵션 변경 시 오버레이 닫히게 하기(버그 수정)
   useEffect(() => {
     setOpenOverlay(null);
@@ -146,6 +151,7 @@ const PlannerFrm = () => {
     { name: "즐길거리", value: 3 },
   ];
 
+  //메인 리턴부
   return (
     <div className="all-wrap">
       <div className="side-wrap">
@@ -205,22 +211,23 @@ const PlannerFrm = () => {
                 setOpenPlanningModal={setOpenPlanningModal}
                 plannedSpotList={plannedSpotList}
                 setPlannedSpotList={setPlannedSpotList}
+                setOpenPlanner={setOpenPlanner}
               />
             );
           })}
         </div>
       </div>
-      {planWindow ? (
+      {openPlanner ? (
         <Planner
-          setPlanwindow={setPlanwindow}
+          setOpenPlanner={setOpenPlanner}
           plannedSpotList={plannedSpotList}
           setPlannedSpotList={setPlannedSpotList}
         />
       ) : (
         <div
-          className="plan-window-btn"
+          className="planner-close-btn"
           onClick={() => {
-            setPlanwindow(true);
+            setOpenPlanner(true);
           }}
         >
           <span>📆</span>
@@ -290,7 +297,7 @@ const CustomizedInputBase = () => {
   );
 };
 
-// 장소 데이터 출력 창
+// 장소 리스트 출력하는 사이드 창
 const PrintSpotList = (props) => {
   const content = props.content;
   const idx = props.idx;
@@ -302,6 +309,7 @@ const PrintSpotList = (props) => {
     props.plannedSpotList,
     props.setPlannedSpotList,
   ];
+  const setOpenPlanner = props.setOpenPlanner;
 
   return (
     <div className="spot-item">
@@ -333,6 +341,7 @@ const PrintSpotList = (props) => {
           content={content}
           plannedSpotList={plannedSpotList}
           setPlannedSpotList={setPlannedSpotList}
+          setOpenPlanner={setOpenPlanner}
         />
       )}
     </div>
@@ -341,15 +350,15 @@ const PrintSpotList = (props) => {
 
 // 여행 플래너 출력 창
 const Planner = (props) => {
-  const setPlanwindow = props.setPlanwindow;
+  const setOpenPlanner = props.setOpenPlanner;
   const [plannedSpotList, setPlannedSpotList] = [
     props.plannedSpotList,
     props.setPlannedSpotList,
   ];
   return (
-    <div className="plan-window">
-      <Close className="close-btn" onClick={() => setPlanwindow(false)} />
-      <div className="plan-window-content">
+    <div className="planner-wrap">
+      <Close className="close-btn" onClick={() => setOpenPlanner(false)} />
+      <div className="planner-content">
         {plannedSpotList.map((content, idx) => {
           return (
             <div className="planned-item" key={"planned-" + idx}>
@@ -393,7 +402,9 @@ const PlanningModal = (props) => {
   const [date, setDate] = useState(now);
   // console.log(date.format("YYYY-MM-DD"));
   const [transport, setTransport] = useState("");
+  const [order, setOrder] = useState(plannedSpotList.length);
 
+  const setOpenPlanner = props.setOpenPlanner;
   return (
     <div className="modal-background">
       <div className="planning-modal">
@@ -423,10 +434,12 @@ const PlanningModal = (props) => {
             <span>계획일</span>
             <BasicDatePicker date={date} setDate={setDate} />
           </div>
-          <div>
-            <span>어떻게 가실 건가요?</span>
-            <BasicSelect transport={transport} setTransport={setTransport} />
-          </div>
+          {order !== 0 && (
+            <div>
+              <span>어떻게 가실 건가요?</span>
+              <BasicSelect transport={transport} setTransport={setTransport} />
+            </div>
+          )}
           <div className="spot-btn">
             <button
               style={{ width: "100px", height: "30px" }}
@@ -435,7 +448,15 @@ const PlanningModal = (props) => {
                   window.alert("오늘보다 이른 날짜를 고를 수 없습니다.");
                   return;
                 }
-                if (transport === "") {
+                if (
+                  order > 0 &&
+                  date.format("YYYY-MM-DD") <
+                    plannedSpotList[order - 1].itineraryDate
+                ) {
+                  window.alert("이전 일정보다 이른 날짜를 고를 수 없습니다.");
+                  return;
+                }
+                if (order !== 0 && transport === "") {
                   window.alert("이동 수단을 선택하세요.");
                   return;
                 }
@@ -444,13 +465,14 @@ const PlanningModal = (props) => {
                   ...content,
                   itineraryDate: date.format("YYYY-MM-DD"),
                   transport: transport,
-                  order: plannedSpotList.length + 1,
+                  order,
                 };
 
                 //함수형 업데이트(동기형 업데이트)
                 //직전 상태 값을 기준으로 그 값에 계속해서 추가해 줌
                 setPlannedSpotList((prev) => [...prev, spotWithPlan]);
                 setOpenPlanningModal(null);
+                setOpenPlanner(true);
               }}
             >
               여행지에 추가
@@ -462,6 +484,7 @@ const PlanningModal = (props) => {
   );
 };
 
+//카카오맵
 const PrintMap = (props) => {
   const filteredSortedList = props.filteredSortedList;
   const [openOverlay, setOpenOverlay] = [
@@ -540,13 +563,7 @@ const PrintMap = (props) => {
               onClick={() => setOpenOverlay(idx)}
             />
             {openOverlay === idx && (
-              <CustomOverlayMap
-                clickable={true}
-                position={spot.contentLatLng}
-                onClick={() => {
-                  // window.kakao.maps.event.preventMap();
-                }}
-              >
+              <CustomOverlayMap clickable={true} position={spot.contentLatLng}>
                 <div className="overlay-wrap">
                   <div className="overlay-info">
                     <div className="overlay-title">

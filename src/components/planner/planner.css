@@ -134,7 +134,7 @@
 }
 
 /* 플래너(계획표) */
-.plan-window {
+.planner-wrap {
   width: 300px;
   height: 98%;
   background-color: var(--gray8);
@@ -145,8 +145,6 @@
   z-index: 1;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.08);
-}
-.plan-window {
   transform: scale(80%);
   animation: window-animation 0.3s forwards;
 }
@@ -165,7 +163,7 @@
   cursor: pointer;
   z-index: 1;
 }
-.plan-window-btn {
+.planner-close-btn {
   position: absolute;
   left: 310px;
   margin-top: 10px;
@@ -182,17 +180,17 @@
 
   transition: transform 0.3s ease;
 }
-.plan-window-btn:hover {
+.planner-close-btn:hover {
   background-color: var(--main5);
 }
-.plan-window-btn:active {
+.planner-close-btn:active {
   transform: scale(50%);
 }
-.plan-window-btn > p {
+.planner-close-btn > p {
   font-size: 10px;
   font-weight: bold;
 }
-.plan-window-content {
+.planner-content {
   margin-top: 20px;
 }
 .planned-item {
