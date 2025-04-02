@@ -13,18 +13,27 @@
 }
 .intro-wrap > .intro {
   display: flex;
-  justify-content: space-around;
 }
 
 .intro > .intro-text {
-  width: 40%;
+  width: 45%;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: center;
+  gap: 30px;
+  padding: 20px;
 }
-.intro > .intro-text > * {
+.intro > .intro-text * {
   color: #fff;
 }
+.intro-text > .intro-btn-wrap {
+  padding-top: 100px;
+  align-self: center;
+}
+.intro-btn-wrap > .btn-primary {
+  width: 200px;
+}
+
 .intro > .intro-img {
   width: 50%;
 }
