@@ -34,7 +34,9 @@ const Header = () => {
   return (
     <header className="header">
       <div className="logo">
-        <Link to="/">NADRI</Link>
+        <Link to="/">
+          <img src="/image/nadri_logo.svg" />
+        </Link>
       </div>
       <MainNavi></MainNavi>
       <div className="header-search">

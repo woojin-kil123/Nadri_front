@@ -79,6 +79,7 @@
 
 .logo {
   width: 150px;
+  margin-right: 40px;
 }
 .logo > a {
   color: var(--main2);

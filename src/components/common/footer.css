@@ -1,9 +1,22 @@
 .footer {
-  background-color: #27b778;
+  background: #00f260; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to bottom,
+    var(--gray8),
+    var(--main6) 50%,
+    var(--main2)
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to bottom,
+    var(--gray8),
+    var(--main6) 50%,
+    var(--main2)
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   color: white;
-  padding: 40px 24px;
+
   position: relative;
-  height: 300px;
+  height: 280px;
+  padding: 10px 0px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -14,22 +27,21 @@
   margin: 10px 0px;
   font-family: ns-b;
   font-size: 16px;
-  color: var(--main2);
+  color: var(--main1);
 }
 .footer a {
-  color: var(--gray8);
+  color: var(--main1);
 }
 .footer > .contact-wrap {
   width: 1200px;
+  padding-top: 60px;
   display: flex;
-  justify-content: space-between;
-  gap: 100px;
+  gap: 50px;
 }
 
 .footer-logo {
-  font-size: 32px;
-  font-weight: bold;
-  margin-bottom: 16px;
+  width: 100px;
+  align-self: center;
 }
 
 .footer-info {
@@ -38,38 +50,47 @@
   font-size: 14px;
   line-height: 1.8;
 }
-.footer-left li {
-  color: var(--gray8);
+.footer-left {
+  display: flex;
+  flex-direction: column;
+}
+.footer-text {
+  display: flex;
+  gap: 20px;
 }
 .footer-right {
-  text-align: right;
-  max-width: 400px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
-
-.footer-bubble {
-  background-color: white;
-  color: #27b778;
-  padding: 12px 16px;
-  border-radius: 16px;
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 16px;
-  display: inline-block;
-}
-
 .footer-subtitle {
   font-size: 14px;
   margin-bottom: 6px;
 }
-
 .footer-title {
   font-size: 24px;
   font-weight: 700;
   line-height: 1.4;
 }
-.footer svg {
-  fill: var(--main2);
-}
-.footer > .copyright {
+
+.footer-right > .copyright {
   text-align: center;
+}
+.social-btn-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  gap: 50px;
+}
+.footer-right > .link-wrap {
+  display: flex;
+  justify-content: space-evenly;
+  text-align: center;
+}
+.link-wrap > div > h3 {
+  padding-bottom: 10px;
+}
+.link-wrap > div > p {
+  margin: 0 7px;
 }

@@ -4,25 +4,6 @@ import ListCard from "../utils/ListCard";
 import { ArrowBackIosNew, ArrowForwardIos } from "@mui/icons-material";
 
 export default function RecommandSlider() {
-  const PrevArrow = ({ onClick, className, style }) => (
-    <div
-      className={`custom-arrow prev ${className}`}
-      style={{ ...style }}
-      onClick={onClick}
-    >
-      <ArrowBackIosNew fontSize="small" sx={{ color: "var(--main2)" }} />
-    </div>
-  );
-
-  const NextArrow = ({ onClick, className, style }) => (
-    <div
-      className={`custom-arrow next ${className}`}
-      style={{ ...style }}
-      onClick={onClick}
-    >
-      <ArrowForwardIos fontSize="small" sx={{ color: "var(--main2)" }} />
-    </div>
-  );
   const settings = {
     dots: true,
     infinite: false,
