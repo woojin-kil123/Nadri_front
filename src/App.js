@@ -27,6 +27,9 @@ import Search from "./components/review/Search";
 import ReviewView from "./components/review/ReviewView";
 import EditReview from "./components/review/EditReview";
 import ProtectedRouting from "./components/utils/ProtectedRouting";
+// 슬릭 슬라이더 css
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
@@ -69,7 +72,11 @@ function App() {
                   <Route path="/updatePw2" element={<UpdatePw2 />} />
                   <Route path="/mypage/*" element={<Mypage />} />
                   <Route path="/review/*" element={<ReviewMain />}></Route>
-                  <Route path="/search" element={<Search />}></Route>
+                  <Route
+                    path="/review/detail/:reviewNo"
+                    element={<ReviewView />}
+                  ></Route>
+                  <Route path="/review/write" element={<ReviewWrite />}></Route>
                   <Route path="/content/*" element={<ContentList />} />
                 </Routes>
               </div>
