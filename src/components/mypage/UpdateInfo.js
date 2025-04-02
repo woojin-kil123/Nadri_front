@@ -10,6 +10,12 @@ const UpdateInfo = () => {
   const [member, setMember] = useState(null); // 회원 상세 정보를 저장할 member state
   const [isFormValid, setIsFormValid] = useState(true); // 폼 유효성 상태
 
+  // 상태 관리: 프로필 이미지 URL
+  const [profileImg, setProfileImg] = useState();
+
+  // 기본 프로필 이미지 경로
+  const defaultProfileImg = "/image/profile_default_image.png";
+
   //회원 정보 가져오기
   useEffect(() => {
     axios
@@ -19,6 +25,12 @@ const UpdateInfo = () => {
       .then((res) => {
         console.log(res);
         setMember(res.data);
+        // 서버에서 프로필 이미지가 있다면 그 이미지로 설정
+        setProfileImg(
+          res.data.profileImg
+            ? `${process.env.REACT_APP_BACK_SERVER}/profile/${res.data.profileImg}`
+            : defaultProfileImg
+        );
       })
       .catch((err) => {
         console.log(err);
@@ -86,33 +98,36 @@ const UpdateInfo = () => {
     }
   };
 
-  // 상태 관리: 프로필 이미지 URL
-  const [profileImg, setProfileImg] = useState();
-
-  // 이미지 선택 후 미리보기 처리 함수
+  // 이미지 선택 후 미리보기 처리
   const handleImageChange = (event) => {
-    const file = event.target.files[0]; // 선택한 파일
+    const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setProfileImg(URL.createObjectURL(file)); // 미리보기 이미지로 설정
-        updateMemberProfileImg(file); // member.profileImg 업데이트
+        setProfileImg(URL.createObjectURL(file)); // 선택한 이미지 미리보기 설정
+        updateMemberProfileImg(file); // 프로필 이미지 상태 업데이트
       };
       reader.readAsDataURL(file); // 파일을 읽어 URL 형식으로 변환
-    } else {
-      setProfileImg("/image/profile_default_image.png");
     }
   };
 
-  // member.profileImg 업데이트하는 함수
+  // member.profileImg 업데이트
   const updateMemberProfileImg = (file) => {
-    console.log(file);
     setMember((prevState) => ({
-      ...prevState, // 이전 상태를 복사
-      profileImg: file, // profileImg만 업데이트
+      ...prevState,
+      profileImg: file, // 프로필 이미지만 업데이트
     }));
   };
-  console.log(member);
+
+  // 기본 이미지로 설정
+  const handleSetDefaultImage = () => {
+    setProfileImg(defaultProfileImg); // 기본 이미지로 변경
+    setMember((prevState) => ({
+      ...prevState,
+      profileImg: null, // 서버로 보낼 이미지도 null로 설정
+    }));
+  };
+
   // 폼 유효성 검사 호출
   useEffect(() => {
     validateForm();
@@ -171,11 +186,7 @@ const UpdateInfo = () => {
             <div className="user-profile-upload">
               {/* 이미지 클릭 시 file input을 트리거 */}
               <img
-                src={
-                  member.profileImg
-                    ? `${process.env.REACT_APP_BACK_SERVER}/profile/${member.profileImg}` // 서버에서 이미지를 가져올 때 `profileImg`를 활용
-                    : "/image/profile_default_image.png" // 기본 이미지 경로
-                }
+                src={profileImg} // 프로필 이미지 출력
                 alt="Profile"
                 onClick={() => document.getElementById("file-input").click()} // 클릭하면 파일 선택 창 열기
               />
@@ -191,6 +202,8 @@ const UpdateInfo = () => {
             <div className="user-profile-title">
               <div>프로필 사진 등록</div>
             </div>
+            {/* 기본 이미지 설정 버튼 */}
+            <button onClick={handleSetDefaultImage}>기본 프로필 설정</button>
           </div>
           <div className="user-info-content">
             <div className="join-wrap">
