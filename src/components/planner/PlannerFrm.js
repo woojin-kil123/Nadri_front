@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Circle, CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
 import "./planner.css";
 import { CancelOutlined, Close, Search } from "@mui/icons-material";
@@ -32,22 +32,12 @@ const PlannerFrm = () => {
   //필터 옵션(null:전체, 1:숙박시설, 2:음식점, 3:그외)
   const [filterOption, setFilterOption] = useState(null);
 
-  //plannedSpotList에 추가하기 전 가공 함수(미구현)
-  const handleAddSpot = (content) => {
-    const newSpot = {
-      dayDate: "",
-      startLocation: "",
-      transport: "",
-      endLocation: "",
-      order: "",
-    };
-    setPlannedSpotList([...plannedSpotList, content]);
-  };
-
-  //장소 리스트를 받아오는 함수(마커 이동 시, 검색범위 변경 시 등등)
-  const fetchContentList = () => {
-    //사용자 마커 없을 시 미실행
+  //장소 리스트를 받아오는 함수(유저 마커 이동 시, 새로고침 시)
+  //useCallback() 사용으로 함수 저장(메모리 절약)
+  const getContentList = useCallback(() => {
+    //사용자 마커 없을 시 취소
     if (!userMarker) return;
+
     //사용자 마커 좌표값 추출
     const [lat, lng] = [userMarker.lat, userMarker.lng];
 
@@ -71,7 +61,8 @@ const PlannerFrm = () => {
       }
     };
 
-    //서버 요청
+    //서버 데이터 요청
+    //유저 마커 좌표, 검색 반경, 정렬 옵션 전달
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/plan/nearby`, {
         params: {
@@ -106,11 +97,18 @@ const PlannerFrm = () => {
       .catch((err) => {
         console.log(err);
       });
-  };
+    //아래 배열 내 값이 바뀔 때 함수를 재생성함(useCallback)
+  }, [userMarker, userRadius, sortOption]);
+
+  //getContentList()를 useEffect()로 관리
   useEffect(() => {
-    fetchContentList();
+    if (!userMarker) return; //첫실행 방지
+    const delay = setTimeout(() => {
+      getContentList();
+    }, 500); //지도 광클 시 데이터 계속 받아오는 현상 수정
   }, [userMarker]);
 
+  //장소 sort 함수: useMemo()로 관리 -> filter 함수와 별도로 동작하게
   const sortedList = useMemo(() => {
     if (sortOption === 2) {
       return [...contentList].sort((a, b) => b.contentReview - a.contentReview);
@@ -119,9 +117,9 @@ const PlannerFrm = () => {
         a.contentTitle.localeCompare(b.contentTitle)
       );
     }
-    return contentList;
+    return contentList; //기본값: 그대로 반환
   }, [contentList, sortOption]);
-
+  //장소 filter 함수: sort 이후 실행됨, useMemo()로 관리
   const filteredSortedList = useMemo(() => {
     if (filterOption === 1) {
       return sortedList.filter((item) => item.contentType === "숙박시설");
@@ -133,9 +131,15 @@ const PlannerFrm = () => {
           item.contentType !== "숙박시설" && item.contentType !== "음식점"
       );
     }
-    return sortedList;
+    setOpenOverlay(null);
+    return sortedList; //기본값: sorted 상태 그대로 반환
   }, [sortedList, filterOption]);
+  //sort, filter 옵션 변경 시 오버레이 닫히게 하기(버그 수정)
+  useEffect(() => {
+    setOpenOverlay(null);
+  }, [sortOption, filterOption]);
 
+  //filter 기능 제공 값
   const filterItems = [
     { name: "숙박시설", value: 1 },
     { name: "음식점", value: 2 },
@@ -197,9 +201,10 @@ const PlannerFrm = () => {
                 key={"spot-" + idx}
                 content={content}
                 idx={idx}
-                handleAddSpot={handleAddSpot}
                 openPlanningModal={openPlanningModal}
                 setOpenPlanningModal={setOpenPlanningModal}
+                plannedSpotList={plannedSpotList}
+                setPlannedSpotList={setPlannedSpotList}
               />
             );
           })}
@@ -235,7 +240,7 @@ const PlannerFrm = () => {
             setUserRadius(parseInt(e.target.value));
           }}
         />
-        <button className="re-search" onClick={fetchContentList}>
+        <button className="re-search" onClick={getContentList}>
           새로고침
         </button>
       </div>
@@ -293,6 +298,10 @@ const PrintSpotList = (props) => {
     props.openPlanningModal,
     props.setOpenPlanningModal,
   ];
+  const [plannedSpotList, setPlannedSpotList] = [
+    props.plannedSpotList,
+    props.setPlannedSpotList,
+  ];
 
   return (
     <div className="spot-item">
@@ -322,6 +331,8 @@ const PrintSpotList = (props) => {
           openPlanningModal={openPlanningModal}
           setOpenPlanningModal={setOpenPlanningModal}
           content={content}
+          plannedSpotList={plannedSpotList}
+          setPlannedSpotList={setPlannedSpotList}
         />
       )}
     </div>
@@ -331,15 +342,15 @@ const PrintSpotList = (props) => {
 // 여행 플래너 출력 창
 const Planner = (props) => {
   const setPlanwindow = props.setPlanwindow;
-  const [plannedSpot, setPlannedSpot] = [
-    props.plannedSpot,
-    props.setPlannedSpot,
+  const [plannedSpotList, setPlannedSpotList] = [
+    props.plannedSpotList,
+    props.setPlannedSpotList,
   ];
   return (
     <div className="plan-window">
       <Close className="close-btn" onClick={() => setPlanwindow(false)} />
       <div className="plan-window-content">
-        {plannedSpot.map((content, idx) => {
+        {plannedSpotList.map((content, idx) => {
           return (
             <div className="planned-item" key={"planned-" + idx}>
               <img
@@ -373,6 +384,10 @@ const PlanningModal = (props) => {
     props.setOpenPlanningModal,
   ];
   const content = props.content;
+  const [plannedSpotList, setPlannedSpotList] = [
+    props.plannedSpotList,
+    props.setPlannedSpotList,
+  ];
 
   const now = dayjs();
   const [date, setDate] = useState(now);
@@ -424,6 +439,18 @@ const PlanningModal = (props) => {
                   window.alert("이동 수단을 선택하세요.");
                   return;
                 }
+
+                const spotWithPlan = {
+                  ...content,
+                  itineraryDate: date.format("YYYY-MM-DD"),
+                  transport: transport,
+                  order: plannedSpotList.length + 1,
+                };
+
+                //함수형 업데이트(동기형 업데이트)
+                //직전 상태 값을 기준으로 그 값에 계속해서 추가해 줌
+                setPlannedSpotList((prev) => [...prev, spotWithPlan]);
+                setOpenPlanningModal(null);
               }}
             >
               여행지에 추가
@@ -471,6 +498,8 @@ const PrintMap = (props) => {
           const lng = e.latLng.getLng();
           console.log(lat + " " + lng);
           setUserMarker({ lat, lng });
+        } else {
+          setOpenOverlay(null);
         }
       }}
       //지도 로드 완료 시
@@ -511,7 +540,13 @@ const PrintMap = (props) => {
               onClick={() => setOpenOverlay(idx)}
             />
             {openOverlay === idx && (
-              <CustomOverlayMap position={spot.contentLatLng}>
+              <CustomOverlayMap
+                clickable={true}
+                position={spot.contentLatLng}
+                onClick={() => {
+                  // window.kakao.maps.event.preventMap();
+                }}
+              >
                 <div className="overlay-wrap">
                   <div className="overlay-info">
                     <div className="overlay-title">
