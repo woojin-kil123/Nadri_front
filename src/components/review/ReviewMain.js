@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import { RecoilState, useRecoilValue } from "recoil";
 import "./review.css";
 import axios from "axios";
@@ -80,7 +80,13 @@ const ReviewMain = () => {
         </div>
       </div>
       <div className="contnent-review-list">
-        <div>{content}</div>
+        <div>
+          <ul className="posting-wrap">
+            {review.map((review, index) => {
+              return <ReviewItem key={"review-" + index} review={review} />;
+            })}
+          </ul>
+        </div>
         <div className="review-paging-wrap">
           <PageNavigation pi={pi} reqPage={reqPage} setReqPage={setReqPage} />
         </div>
@@ -88,5 +94,24 @@ const ReviewMain = () => {
     </section>
   );
 };
-
+const ReviewItem = (props) => {
+  const navigate = useNavigate();
+  const review = props.review;
+  return (
+    <li
+      className="posting-item"
+      onClick={() => {
+        //navigate(`/review/view/${review.reviewNo}`);
+      }}
+    >
+      <div className="posting-info">
+        <div className="posting-title">{review.reviewTitle}</div>
+        <div className="posting-sub-info">
+          <span>{review.memberNickname}</span>
+          <span>{review.reviewDate}</span>
+        </div>
+      </div>
+    </li>
+  );
+};
 export default ReviewMain;
