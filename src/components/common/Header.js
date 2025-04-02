@@ -23,7 +23,8 @@ import {
   isLoginState,
   isPlannerState,
   loginNicknameState,
-  memberTypeState,
+  memberLevelState,
+  memberLeveltate,
 } from "../utils/RecoilData";
 import axios from "axios";
 
@@ -68,12 +69,12 @@ const MainNavi = () => {
 const HeaderLink = (props) => {
   const [memberNickname, setMemberNickname] =
     useRecoilState(loginNicknameState);
-  const [memberType, setMemberType] = useRecoilState(memberTypeState);
+  const [memberLevel, setMemberLevel] = useRecoilState(memberLevelState);
   const isLogin = props.isLogin;
   const navigate = useNavigate();
   const logout = () => {
     setMemberNickname("");
-    setMemberType(0);
+    setMemberLevel(0);
     delete axios.defaults.headers.common["Authorization"];
     window.localStorage.removeItem("refreshToken");
   };
