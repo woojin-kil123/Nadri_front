@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Circle, CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
 import "./planner.css";
-import { Close, Search } from "@mui/icons-material";
+import { CancelOutlined, Close, Search } from "@mui/icons-material";
 import { IconButton, InputBase, Paper } from "@mui/material";
 import StarRating from "../utils/StarRating";
 import BasicDatePicker from "../utils/BasicDatePicker";
 import BasicSelect from "../utils/BasicSelect";
 import dayjs from "dayjs";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const PlannerFrm = () => {
   //마커 오버레이 여닫음 state
@@ -28,6 +29,8 @@ const PlannerFrm = () => {
   const [contentList, setContentList] = useState([]);
   //정렬 옵션(1:거리순, 2:리뷰많은순, 3:이름순)
   const [sortOption, setSortOption] = useState(1);
+  //필터 옵션(null:전체, 1:숙박시설, 2:음식점, 3:그외)
+  const [filterOption, setFilterOption] = useState(null);
 
   //plannedSpotList에 추가하기 전 가공 함수(미구현)
   const handleAddSpot = (content) => {
@@ -45,8 +48,10 @@ const PlannerFrm = () => {
   const fetchContentList = () => {
     //사용자 마커 없을 시 미실행
     if (!userMarker) return;
-
+    //사용자 마커 좌표값 추출
     const [lat, lng] = [userMarker.lat, userMarker.lng];
+
+    //contentTypeId에 네이밍 해주는 함수
     const getContentTypeName = (typeId) => {
       switch (typeId) {
         case 12:
@@ -65,15 +70,25 @@ const PlannerFrm = () => {
           return "음식점";
       }
     };
+
+    //서버 요청
     axios
-      .get(
-        `${process.env.REACT_APP_BACK_SERVER}/plan/nearby?lat=${lat}&lng=${lng}&radius=${userRadius}`
-      )
+      .get(`${process.env.REACT_APP_BACK_SERVER}/plan/nearby`, {
+        params: {
+          lat,
+          lng,
+          radius: userRadius,
+          sortOption,
+        },
+      })
       .then((res) => {
         const mappedData = res.data.map((spot) => {
           return {
             contentId: spot.contentId,
-            contentThumb: spot.contentThumb,
+            contentThumb:
+              spot.contentThumb === null
+                ? "./image/spot_default_img.png"
+                : spot.contentThumb,
             contentTitle: spot.contentTitle,
             contentType: getContentTypeName(spot.contentTypeId),
             contentAddr: spot.contentAddr,
@@ -83,6 +98,7 @@ const PlannerFrm = () => {
               lat: spot.mapLat,
               lng: spot.mapLng,
             },
+            distance: spot.distance, //userMarker에서 spot까지의 거리
           };
         });
         setContentList(mappedData);
@@ -95,28 +111,87 @@ const PlannerFrm = () => {
     fetchContentList();
   }, [userMarker]);
 
+  const sortedList = useMemo(() => {
+    if (sortOption === 2) {
+      return [...contentList].sort((a, b) => b.contentReview - a.contentReview);
+    } else if (sortOption === 3) {
+      return [...contentList].sort((a, b) =>
+        a.contentTitle.localeCompare(b.contentTitle)
+      );
+    }
+    return contentList;
+  }, [contentList, sortOption]);
+
+  const filteredSortedList = useMemo(() => {
+    if (filterOption === 1) {
+      return sortedList.filter((item) => item.contentType === "숙박시설");
+    } else if (filterOption === 2) {
+      return sortedList.filter((item) => item.contentType === "음식점");
+    } else if (filterOption === 3) {
+      return sortedList.filter(
+        (item) =>
+          item.contentType !== "숙박시설" && item.contentType !== "음식점"
+      );
+    }
+    return sortedList;
+  }, [sortedList, filterOption]);
+
+  const filterItems = [
+    { name: "숙박시설", value: 1 },
+    { name: "음식점", value: 2 },
+    { name: "즐길거리", value: 3 },
+  ];
+
   return (
     <div className="all-wrap">
       <div className="side-wrap">
         <div className="side-header">
+          <div className="logo planner-logo">
+            <Link to="/">NADRI</Link>
+          </div>
           <div className="search-wrap">
             <CustomizedInputBase />
           </div>
           <div className="filter-wrap">
-            <div>숙박시설</div>
-            <div>음식점</div>
-            <div>즐길거리</div>
+            {filterItems.map((item) => {
+              return (
+                <div
+                  className={
+                    filterOption === item.value ? "filter-pressed" : ""
+                  }
+                  onClick={() => {
+                    if (filteredSortedList.length === 0) return;
+                    setFilterOption(item.value);
+                  }}
+                >
+                  {item.name}
+                  {filterOption === item.value && (
+                    <CancelOutlined
+                      className="filter-reset-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setFilterOption(null);
+                      }}
+                    />
+                  )}
+                </div>
+              );
+            })}
           </div>
           <div className="sort-wrap">
-            <select>
-              <option>거리순</option>
-              <option>리뷰많은순</option>
-              <option>이름순</option>
+            <select
+              value={sortOption}
+              onChange={(e) => setSortOption(Number(e.target.value))}
+              disabled={contentList.length === 0}
+            >
+              <option value={1}>거리순</option>
+              <option value={2}>리뷰많은순</option>
+              <option value={3}>이름순</option>
             </select>
           </div>
         </div>
         <div className="spot-list">
-          {contentList.map((content, idx) => {
+          {filteredSortedList.map((content, idx) => {
             return (
               <PrintSpotList
                 key={"spot-" + idx}
@@ -166,7 +241,7 @@ const PlannerFrm = () => {
       </div>
       <div className="map-wrap">
         <PrintMap
-          contentList={contentList}
+          filteredSortedList={filteredSortedList}
           openOverlay={openOverlay}
           setOpenOverlay={setOpenOverlay}
           openPlanningModal={openPlanningModal}
@@ -361,7 +436,7 @@ const PlanningModal = (props) => {
 };
 
 const PrintMap = (props) => {
-  const contentList = props.contentList;
+  const filteredSortedList = props.filteredSortedList;
   const [openOverlay, setOpenOverlay] = [
     props.openOverlay,
     props.setOpenOverlay,
@@ -428,7 +503,7 @@ const PrintMap = (props) => {
           />
         </>
       )}
-      {contentList.map((spot, idx) => {
+      {filteredSortedList.map((spot, idx) => {
         return (
           <div key={"marker-" + idx}>
             <MapMarker
