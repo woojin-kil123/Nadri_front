@@ -18,3 +18,6 @@ npm install react-kakao-maps-sdk
 신종인 2025-03-31
 npm install @mui/x-date-pickers
 npm install dayjs
+
+길우진 2025-04-02
+npm install react-slick slick-carousel
