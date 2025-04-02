@@ -50,4 +50,5 @@
 .info-item > input {
   border: none;
   border-bottom: 1px solid rgb(214, 214, 214);
+  color: gray;
 }
