@@ -7,6 +7,7 @@ import "./footer.css";
 import { useState } from "react";
 import { Modal } from "@mui/material";
 import Terms from "./Terms";
+import PrivacyPolicy from "./PrivacyPolicy";
 
 export default function Footer() {
   const [open, setOpen] = useState(false);
@@ -60,7 +61,7 @@ export default function Footer() {
                 <Link
                   to="#"
                   onClick={() => {
-                    setModalContent(<Terms />);
+                    setModalContent(<PrivacyPolicy />);
                     handleOpen();
                   }}
                 >

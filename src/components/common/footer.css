@@ -1,18 +1,25 @@
+/*
+background: #00f260;
+background: -webkit-linear-gradient(
+  to bottom,
+  var(--gray8),
+  var(--main6) 50%,
+  var(--main2)
+); 
+background: linear-gradient(
+  to bottom,
+  var(--gray8),
+  var(--main6) 50%,
+  var(--main2)
+);
+W3C,
+IE 10 + / Edge,
+Firefox 16 +,
+Chrome 26 +,
+Opera 12 +,
+Safari 7 + 
+*/
 .footer {
-  background: #00f260; /* fallback for old browsers */
-  background: -webkit-linear-gradient(
-    to bottom,
-    var(--gray8),
-    var(--main6) 50%,
-    var(--main2)
-  ); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(
-    to bottom,
-    var(--gray8),
-    var(--main6) 50%,
-    var(--main2)
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  color: white;
   position: relative;
   height: 280px;
   padding: 10px 0px;
@@ -20,16 +27,16 @@
   justify-content: space-between;
   align-items: center;
   flex-direction: column;
-  background-color: var(--main1);
+  background-color: #324e02;
 }
 .footer p {
   margin: 10px 0px;
   font-family: ns-b;
   font-size: 16px;
-  color: var(--main1);
+  color: var(--main6);
 }
 .footer a {
-  color: var(--main1);
+  color: var(--main6);
 }
 .footer > .contact-wrap {
   width: 1200px;
@@ -42,7 +49,9 @@
   width: 100px;
   align-self: center;
 }
-
+.footer-info > li {
+  color: var(--main6);
+}
 .footer-info {
   list-style: none;
   padding: 0;
@@ -82,12 +91,16 @@
   padding: 20px;
   gap: 50px;
 }
+.social-btn-wrap svg {
+  fill: var(--main2);
+}
 .footer-right > .link-wrap {
   display: flex;
   justify-content: space-evenly;
   text-align: center;
 }
 .link-wrap > div > h3 {
+  color: var(--main2);
   padding-bottom: 10px;
 }
 .link-wrap > div > p {
@@ -118,9 +131,11 @@
   scrollbar-width: thin;
 }
 
+.privacy-container::-webkit-scrollbar,
 .terms-container::-webkit-scrollbar {
   width: 6px;
 }
+.privacy-container::-webkit-scrollbar-thumb,
 .terms-container::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 10px;
@@ -175,4 +190,52 @@ terms-content ul {
   color: #444;
   font-size: 1.2rem;
   line-height: 1;
+}
+.privacy-container {
+  max-height: 75vh; /* 모달창 내 적절한 높이 */
+  overflow-y: auto;
+  padding: 2rem;
+  background-color: #fff;
+  color: #333;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  word-break: keep-all;
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+  scrollbar-width: thin;
+}
+
+.privacy-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #222;
+  border-bottom: 2px solid #222;
+  padding-bottom: 8px;
+}
+
+.privacy-content p {
+  margin: 12px 0;
+  font-size: 16px;
+}
+
+.privacy-content ul {
+  list-style-type: disc;
+  margin-left: 1.5rem;
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+.privacy-content ul li {
+  margin: 6px 0;
+}
+
+.privacy-content h2 {
+  font-size: 1.25rem;
+  margin-top: 32px;
+  margin-bottom: 12px;
+  padding: 10px 16px;
+  background-color: #f9f9f9;
+  border-left: 4px solid var(--main2);
+  border-radius: 6px;
 }
