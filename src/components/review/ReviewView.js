@@ -1,13 +1,16 @@
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import "./review.css";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ReportIcon from "@mui/icons-material/Report";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+import axios from "axios";
 
 const ReviewView = () => {
+  const params = useParams();
+  const reviewNo = params.reviewNo;
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const navigate = useNavigate();
@@ -15,10 +18,10 @@ const ReviewView = () => {
   const deleteComment = (id) => {
     setComments(comments.filter((comment) => comment.id !== id));
   };
-
+  console.log(reviewNo);
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
-
+  const [review, setReview] = useState({});
   const toggleLike = () => {
     setLiked(!liked);
     setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
@@ -56,12 +59,24 @@ const ReviewView = () => {
     setReportReason("");
     setReportTarget(null);
   };
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACK_SERVER}/review/${reviewNo}`)
+      .then((res) => {
+        console.log(res);
+        setReview(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  console.log(review);
   return (
     <section className="section">
       <div className="page-title">리뷰 상세보기</div>
       <div className="review-content">
-        <h2>title</h2>
-        <p>content</p>
+        <h2>{review.reviewTitle}</h2>
+        <div>{review.reviewContent}</div>
         <button
           onClick={toggleLike}
           style={{ background: "none", border: "none" }}
