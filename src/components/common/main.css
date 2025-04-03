@@ -1,0 +1,252 @@
+.main-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+.main-wrap .intro-wrap {
+  width: 100%;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 0 auto;
+  align-items: center;
+  padding: 40px 0px;
+  gap: 10px;
+}
+.intro-wrap > .intro {
+  display: flex;
+}
+
+.intro > .intro-text {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 30px;
+  padding: 10px;
+}
+.intro-text > .intro-title {
+  text-indent: 60px;
+}
+.intro-text > .intro-description {
+  text-indent: 80px;
+}
+
+.intro-text > .intro-btn-wrap {
+  padding-top: 100px;
+  align-self: center;
+}
+.intro-btn-wrap > .btn-primary {
+  width: 200px;
+}
+.intro > .intro-img {
+  width: 40%;
+}
+.recommand-wrap > .recommand-title {
+  padding: 20px;
+}
+.recommand-wrap .recommand-content {
+  display: flex;
+  gap: 16px;
+  flex-wrap: nowrap;
+  justify-content: center;
+  padding: 16px 0;
+}
+
+.recommand-nav > .filter-nav {
+  display: flex;
+  padding: 10px 10px;
+}
+
+.filter-nav > .filter-button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  background-color: var(--gray8);
+  width: 100px;
+  color: var(--main1);
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.filter-nav > .filter-button.active {
+  background-color: var(--main2);
+  color: white;
+}
+.recommand-wrap .recommand-slider {
+  width: 100%;
+  height: 400px;
+  padding: 20px 12px;
+  box-sizing: border-box;
+  position: relative; /* 슬라이더 버튼 보이게 하려면 이거 중요 */
+  overflow: visible; /* 버튼 잘리는 현상 방지 */
+}
+
+/* slick-slide 자체는 block이기 때문에 간격을 줘야 함 */
+.slick-slide {
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+
+/* 카드가 세로로 안 쌓이게, 가운데 정렬되게 */
+.slick-track > .slick-slide > div {
+  display: flex;
+  justify-content: center;
+}
+
+/* 비활성화된 화살표 회색으로 */
+.slick-disabled:before {
+  color: #ccc;
+}
+
+/* dots 하단 정렬 및 스타일 */
+.slick-dots {
+  bottom: -24px;
+}
+
+.slick-dots li button:before {
+  color: #ccc;
+  font-size: 10px;
+}
+
+.slick-dots li.slick-active button:before {
+  color: var(--main2);
+}
+.recommand-slider {
+  position: relative;
+  overflow: visible;
+  padding: 0 24px;
+}
+
+.filter-tab-wrap {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0 20px;
+}
+
+.filter-button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  background-color: #f1f8f6;
+  color: #333;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.recommand-wrap .recommand-nav .MuiTab-root {
+  font-size: 18px;
+  font-family: ns-r;
+}
+.recommand-wrap .recommand-nav .Mui-selected {
+  font-size: 18px;
+  font-family: ns-b;
+  color: #27b778;
+}
+.filter-button.active {
+  background-color: #27b778;
+  color: white;
+}
+
+/* slick */
+.recommand-slider .slick-slide {
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+
+.slick-track > .slick-slide > div {
+  display: flex;
+  justify-content: center;
+}
+.recommand-slider .slick-prev,
+.recommand-slider .slick-next {
+  width: 36px;
+  height: 36px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  display: flex !important; /* 기본 block 덮어씀 */
+  align-items: center;
+  justify-content: center;
+  top: 40%;
+  transform: translateY(-50%);
+  transition: transform 0.2s ease;
+}
+
+/* 왼쪽 오른쪽 위치 */
+.recommand-slider .slick-prev {
+  left: -16px;
+}
+
+.recommand-slider .slick-next {
+  right: -16px;
+}
+
+/* 아이콘 색상 */
+.recommand-slider .slick-prev:before,
+.recommand-slider .slick-next:before {
+  font-size: 20px;
+  color: var(--main2);
+  opacity: 1;
+}
+
+/* 비활성화된 버튼 */
+.recommand-slider .slick-disabled:before {
+  color: #ccc;
+  opacity: 0.5;
+}
+
+/* 호버 시 살짝 확대 */
+.recommand-slider .slick-prev:hover,
+.recommand-slider .slick-next:hover {
+  transform: translateY(-50%) scale(1.1);
+}
+/* dots */
+.recommand-slider .slick-dots {
+  bottom: -50px;
+}
+
+.recommand-slider .slick-dots li button:before {
+  color: #ccc;
+  font-size: 10px;
+}
+
+.recommand-slider .slick-dots li.slick-active button:before {
+  color: #27b778;
+}
+.main-wrap .hot-review-wrap {
+  display: flex;
+  justify-content: space-between;
+}
+.main-wrap .hot-review-wrap > div {
+  width: 49%;
+}
+.main-wrap .main-review .card {
+  width: 100%;
+  height: 100%;
+}
+.other-review-wrap > .other-review {
+  display: flex;
+  gap: 10px;
+  height: 49%;
+}
+.main-review > .review-card {
+  height: 500px;
+}
+.hot-review-wrap .review-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 50px;
+  box-sizing: border-box;
+  position: relative;
+  justify-content: flex-end;
+}
+.review-card > .heart-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: white;
+  border-radius: 50%;
+  padding: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}

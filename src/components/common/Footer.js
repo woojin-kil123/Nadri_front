@@ -1,90 +1,84 @@
 import IconButton from "@mui/material/IconButton";
-import Stack from "@mui/material/Stack";
 import FacebookIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import TwitterIcon from "@mui/icons-material/X";
 import { Link } from "react-router-dom";
+import "./footer.css";
+import { useState } from "react";
+import { Modal } from "@mui/material";
+import Terms from "./Terms";
+import PrivacyPolicy from "./PrivacyPolicy";
 
 export default function Footer() {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [modalContent, setModalContent] = useState(null);
   return (
     <footer className="footer">
-      <div className="introduce">
-        <div className="link-list">
-          <div className="contact">
+      <div className="contact-wrap">
+        <div className="footer-left">
+          <div className="footer-text">
+            <div className="footer-logo">
+              <img src="/image/nadri_logo.svg" />
+            </div>
+            <ul className="footer-info">
+              <li>📍 서울특별시 영등포구 이레빌딩 19F</li>
+              <li>📞 00-0000-0000 / FAX : 00-0000-0000</li>
+              <li>🌐 https://kh-academy.co.kr</li>
+              <li>✉️ nadri53@kh.or.kr</li>
+            </ul>
+          </div>
+          <div className="social-btn-wrap">
+            <IconButton href="#" aria-label="GitHub">
+              <FacebookIcon color="inherit" sx={{ width: 50, height: 50 }} />
+            </IconButton>
+            <IconButton href="#" aria-label="X">
+              <TwitterIcon color="inherit" sx={{ width: 50, height: 50 }} />
+            </IconButton>
+            <IconButton href="#" aria-label="LinkedIn">
+              <LinkedInIcon color="inherit" sx={{ width: 50, height: 50 }} />
+            </IconButton>
+          </div>
+        </div>
+        <div className="footer-right">
+          <div className="link-wrap">
             <div>
-              <p>Product</p>
-              <ul>
-                <li>
-                  <Link to="#">Features</Link>
-                </li>
-                <li>
-                  <Link to="#">Testimonials</Link>
-                </li>
-                <li>
-                  <Link to="#">Highlights</Link>
-                </li>
-                <li>
-                  <Link to="#">Pricing</Link>
-                </li>
-                <li>
-                  <Link to="#">FAQs</Link>
-                </li>
-              </ul>
+              <h3>CONTACT</h3>
+              <p>
+                <Link to="#">이벤트 및 프로모션</Link>
+              </p>
+              <p>
+                <Link to="#">일반 문의</Link>
+              </p>
+              <p>
+                <Link to="#">제휴 문의</Link>
+              </p>
             </div>
             <div>
-              <p>Company</p>
-              <ul>
-                <li>
-                  <Link to="#">About us</Link>
-                </li>
-                <li>
-                  <Link to="#">Careers</Link>
-                </li>
-                <li>
-                  <Link to="#">Press</Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <p> Legal</p>
-              <ul>
-                <li>
-                  <Link to="#">Terms</Link>
-                </li>
-                <li>
-                  <Link to="#">Privacy</Link>
-                </li>
-                <li>
-                  <Link to="#">Contact</Link>
-                </li>
-              </ul>
-            </div>
-            <div className="terms">
-              <div>
-                <Link to="#">개인정보 취급방침 및 쿠키 정책</Link>
-              </div>
-              <div>
-                <Link to="#">이용 약관</Link>
-              </div>
-              <Stack
-                direction="row"
-                spacing={1}
-                useFlexGap
-                sx={{ justifyContent: "left", color: "text.secondary" }}
-              >
-                <IconButton href="https://github.com/mui" aria-label="GitHub">
-                  <FacebookIcon color="inherit" />
-                </IconButton>
-                <IconButton href="https://x.com/MaterialUI" aria-label="X">
-                  <TwitterIcon color="inherit" />
-                </IconButton>
-                <IconButton
-                  href="https://www.linkedin.com/company/mui/"
-                  aria-label="LinkedIn"
+              <h3>PRIVACY & TERMS </h3>
+              <p>
+                <Link
+                  to="#"
+                  onClick={() => {
+                    setModalContent(<PrivacyPolicy />);
+                    handleOpen();
+                  }}
                 >
-                  <LinkedInIcon color="inherit" />
-                </IconButton>
-              </Stack>
+                  개인정보 취급방침 및 쿠키 정책
+                </Link>
+              </p>
+              <p>
+                <Link
+                  to="#"
+                  onClick={() => {
+                    setModalContent(<Terms />);
+                    handleOpen();
+                  }}
+                >
+                  이용 약관
+                </Link>
+              </p>
             </div>
           </div>
           <div className="copyright">
@@ -96,6 +90,9 @@ export default function Footer() {
           </div>
         </div>
       </div>
+      <Modal open={open} onClose={handleClose}>
+        <div className="footer-modal">{modalContent}</div>
+      </Modal>
     </footer>
   );
 }

@@ -12,7 +12,7 @@ const ChatList = ({ ws, roomList, selectedRoom, setSelectedRoom }) => {
             onClick={() => {
               if (selectedRoom?.chatNo === room.chatNo) return;
               setSelectedRoom(room);
-              const msg = createChatMsg("UPDATE_STATUS", room.chatNo);
+              const msg = createChatMsg("SELECT_ROOM", room.chatNo);
               ws.send(msg);
             }}
             className={

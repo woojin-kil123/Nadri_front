@@ -1,4 +1,5 @@
 import "./default.css";
+import "./header.css";
 import { Link, useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useState } from "react";
@@ -17,13 +18,13 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
 import { DropdownItem } from "../utils/metaSet";
 import { Logout, Map } from "@mui/icons-material";
-
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
   isLoginState,
   isPlannerState,
   loginNicknameState,
-  memberTypeState,
+  memberLevelState,
+  memberLeveltate,
 } from "../utils/RecoilData";
 import axios from "axios";
 
@@ -32,14 +33,16 @@ const Header = () => {
   console.log(isLogin);
   return (
     <header className="header">
-      <div>
-        <div className="logo">
-          <Link to="/">NADRI</Link>
-        </div>
-        <MainNavi></MainNavi>
-
-        <HeaderLink isLogin={isLogin} />
+      <div className="logo">
+        <Link to="/">
+          <img src="/image/nadri_logo.svg" />
+        </Link>
       </div>
+      <MainNavi></MainNavi>
+      <div className="header-search">
+        <CustomizedInputBase />
+      </div>
+      <HeaderLink isLogin={isLogin} />
     </header>
   );
 };
@@ -58,9 +61,6 @@ const MainNavi = () => {
         <li>
           <Link to="/review">리뷰</Link>
         </li>
-        <li className="search">
-          <CustomizedInputBase />
-        </li>
       </ul>
     </nav>
   );
@@ -68,12 +68,12 @@ const MainNavi = () => {
 const HeaderLink = (props) => {
   const [memberNickname, setMemberNickname] =
     useRecoilState(loginNicknameState);
-  const [memberType, setMemberType] = useRecoilState(memberTypeState);
+  const [memberLevel, setMemberLevel] = useRecoilState(memberLevelState);
   const isLogin = props.isLogin;
   const navigate = useNavigate();
   const logout = () => {
     setMemberNickname("");
-    setMemberType(0);
+    setMemberLevel(0);
     delete axios.defaults.headers.common["Authorization"];
     window.localStorage.removeItem("refreshToken");
   };

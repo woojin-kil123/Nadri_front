@@ -1,0 +1,96 @@
+.header {
+  margin: 0 auto;
+  background-color: #fff;
+  width: 1400px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.header svg {
+  fill: var(--main2);
+}
+.logo > a {
+  font-family: ns-black;
+  font-size: 28px;
+}
+.nav {
+  width: 300px;
+}
+.nav > ul {
+  display: flex;
+  align-items: center;
+}
+.nav > ul > li {
+  margin: 0px 15px;
+  position: relative;
+  justify-items: center;
+}
+
+.header > .header-search {
+  flex-grow: 1;
+}
+.header .header-search form {
+  width: 600px;
+}
+.nav a,
+.user-menu a {
+  transition-duration: 0.3s;
+}
+
+.nav a:hover,
+.user-menu a:hover {
+  color: var(--main3);
+}
+
+.nav .sub-menu {
+  display: none;
+  position: absolute;
+  width: 130px;
+  background-color: #fff;
+  border: 1px solid var(--main2);
+  border-radius: 5px;
+  left: 10px;
+  z-index: 1;
+}
+
+.sub-menu > li > a {
+  color: var(--main2);
+  padding: 10px;
+  display: block;
+}
+.nav > ul > li:hover > .sub-menu {
+  display: block;
+}
+.sub-menu > li > a:hover {
+  background-color: var(--main3);
+  color: var(--main3);
+}
+.user-menu {
+  display: flex;
+  gap: 30px;
+}
+.user-menu > li {
+  margin-left: 20px;
+}
+
+.logo {
+  width: 150px;
+  margin-right: 40px;
+}
+.logo > a {
+  color: var(--main2);
+}
+.login-title {
+  text-align: center;
+  font-size: 17px;
+  font-weight: 100;
+  padding: 10px;
+}
+.login-wrap {
+  width: 600px;
+  margin: 0 auto;
+}

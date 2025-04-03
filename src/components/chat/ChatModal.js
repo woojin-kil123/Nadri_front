@@ -156,7 +156,7 @@ const ChatModal = ({
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: "80%",
+            width: "70%",
             height: "80%",
             minWidth: 800,
             minHeight: 500,
