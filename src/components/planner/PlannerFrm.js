@@ -109,6 +109,7 @@ const PlannerFrm = () => {
     }, 500); //지도 광클 시 데이터 계속 받아오는 현상 수정
   }, [userMarker]);
 
+  /* 임시 비활성화
   //정렬된 장소(의 값): useMemo()로 기억
   const sortedList = useMemo(() => {
     if (sortOption === 2) {
@@ -138,6 +139,34 @@ const PlannerFrm = () => {
     return sortedList; //기본값: sorted 상태 그대로 반환
     //정렬된 장소(의 값)가 변동되거나, 필터 옵션 바뀌면 새 값 업데이트(콜백 실행)
   }, [sortedList, filterOption]);
+  */
+
+  const filteredSortedList = useMemo(() => {
+    let sortedList = [...contentList];
+    if (sortOption === 2) {
+      sortedList.sort((a, b) => b.contentReview - a.contentReview);
+    } else if (sortOption === 3) {
+      sortedList.sort((a, b) => a.contentTitle.localeCompare(b.contentTitle));
+    }
+
+    let filteredSortedList = sortedList;
+    if (filterOption === 1) {
+      filteredSortedList = sortedList.filter(
+        (item) => item.contentType === "숙박시설"
+      );
+    } else if (filterOption === 2) {
+      filteredSortedList = sortedList.filter(
+        (item) => item.contentType === "음식점"
+      );
+    } else if (filterOption === 3) {
+      filteredSortedList = sortedList.filter(
+        (item) =>
+          item.contentType !== "숙박시설" && item.contentType !== "음식점"
+      );
+    }
+
+    return filteredSortedList;
+  }, [contentList, sortOption, filterOption]);
 
   //sort, filter 옵션 변경 시 오버레이 닫히게 하기(버그 수정)
   useEffect(() => {
@@ -201,6 +230,7 @@ const PlannerFrm = () => {
           </div>
         </div>
         <div className="spot-list">
+          <p>{filteredSortedList.length}개의 결과가 있습니다.</p>
           {filteredSortedList.map((content, idx) => {
             return (
               <PrintSpotList
