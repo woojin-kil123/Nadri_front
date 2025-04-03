@@ -83,7 +83,7 @@ const Login = () => {
       .then((res) => {
         console.log(res);
         setMemberNickname(res.data.memberNickname);
-        setMemberLevel(res.data.setMemberLevel);
+        setMemberLevel(res.data.memberLevel);
         //로그인 이후 axios를 통한 요청을 수행하는 경우 토큰값을 자동으로 axios에 추가하는 설정
         axios.defaults.headers.common["Authorization"] = res.data.accessToken;
         window.localStorage.setItem("refreshToken", res.data.refreshToken);
