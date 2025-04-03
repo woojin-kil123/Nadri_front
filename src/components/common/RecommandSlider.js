@@ -1,28 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Slider from "react-slick";
 import ListCard from "../utils/ListCard";
 import { ArrowBackIosNew, ArrowForwardIos } from "@mui/icons-material";
+import axios from "axios";
 
-export default function RecommandSlider() {
-  const PrevArrow = ({ onClick, className, style }) => (
-    <div
-      className={`custom-arrow prev ${className}`}
-      style={{ ...style }}
-      onClick={onClick}
-    >
-      <ArrowBackIosNew fontSize="small" sx={{ color: "var(--main2)" }} />
-    </div>
-  );
-
-  const NextArrow = ({ onClick, className, style }) => (
-    <div
-      className={`custom-arrow next ${className}`}
-      style={{ ...style }}
-      onClick={onClick}
-    >
-      <ArrowForwardIos fontSize="small" sx={{ color: "var(--main2)" }} />
-    </div>
-  );
+export default function RecommandSlider({ on }) {
+  const [cards, setCards] = useState([]);
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACK_SERVER}/content?reqPage=1`)
+      .then((res) => {
+        setCards(res.data.list);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [on]);
   const settings = {
     dots: true,
     infinite: false,
@@ -37,13 +30,12 @@ export default function RecommandSlider() {
   };
 
   // 나중에 selected에 따라 필터링된 데이터 가져올 수도 있음
-  const cards = Array(10).fill(null); // 임시 카드
+
   return (
     <div className="recommand-slider">
       <Slider {...settings}>
-        {cards.map((_, i) => (
-          <ListCard key={i} />
-        ))}
+        {Array.isArray(cards) &&
+          cards.map((card, i) => <ListCard key={"card-" + i} content={card} />)}
       </Slider>
     </div>
   );
