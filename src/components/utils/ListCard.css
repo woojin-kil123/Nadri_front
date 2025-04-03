@@ -1,6 +1,5 @@
 .card {
   width: 288px; /* 72px * 4 = 288px (기존 Tailwind 기준) */
-  border-radius: 16px;
   overflow: hidden;
   background-color: var(--gray8);
   padding: 0px;
@@ -10,6 +9,7 @@
   position: relative;
   width: 100%;
   height: 192px; /* 48px * 4 */
+  border-radius: 16px;
   overflow: hidden;
 }
 
@@ -46,6 +46,7 @@
   font-weight: bold;
   height: 45px;
   display: -webkit-box;
+  line-clamp: 2;
   -webkit-line-clamp: 2; /* 최대 2줄 표시 */
   -webkit-box-orient: vertical;
   overflow: hidden;

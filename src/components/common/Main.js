@@ -7,9 +7,9 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import axios from "axios";
 
 const Main = () => {
-  const [planCategory, setPlanCategory] = useState([]);
+  const [planCategory, setPlanCategory] = useState([1, 2, 3, 4, 5]);
   const [onPlanCategory, setOnPlanCategory] = useState("인기");
-  const [contentCategory, setContentCategory] = useState([]);
+  const [contentCategory, setContentCategory] = useState([1, 2, 3, 4, 5]);
   const [onContentCategory, setOnContentCategory] = useState("여행지");
   const [contentList, setContentList] = useState([]);
   useEffect(() => {}, []);
