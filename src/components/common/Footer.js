@@ -12,7 +12,7 @@ export default function Footer() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
+  const [modalContent, setModalContent] = useState(null);
   return (
     <footer className="footer">
       <div className="contact-wrap">
@@ -57,12 +57,26 @@ export default function Footer() {
             <div>
               <h3>PRIVACY & TERMS </h3>
               <p>
-                <Link to="#" onClick={handleOpen}>
+                <Link
+                  to="#"
+                  onClick={() => {
+                    setModalContent(<Terms />);
+                    handleOpen();
+                  }}
+                >
                   개인정보 취급방침 및 쿠키 정책
                 </Link>
               </p>
               <p>
-                <Link to="#">이용 약관</Link>
+                <Link
+                  to="#"
+                  onClick={() => {
+                    setModalContent(<Terms />);
+                    handleOpen();
+                  }}
+                >
+                  이용 약관
+                </Link>
               </p>
             </div>
           </div>
@@ -76,9 +90,7 @@ export default function Footer() {
         </div>
       </div>
       <Modal open={open} onClose={handleClose}>
-        <div className="footer-modal">
-          <Terms />
-        </div>
+        <div className="footer-modal">{modalContent}</div>
       </Modal>
     </footer>
   );
