@@ -47,7 +47,7 @@ export default function ListCard(props) {
                 {content.ratingCount && `(${content.ratingCount})`}
               </span>
             </div>
-            <p className="category">{content.category}</p>
+            <p className="category">{content.contentCat3}</p>
           </div>
         </div>
       )}

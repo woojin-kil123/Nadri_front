@@ -30,11 +30,14 @@
 }
 
 .card > .card-content {
+  background-color: var(--main6);
   padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
 }
 
 .card-content > .location {
-  color: #4caf50;
+  color: var(--main2);
   font-size: 14px;
   margin: 0;
 }
@@ -42,7 +45,15 @@
 .card-content > .title {
   font-size: 18px;
   font-weight: bold;
-  margin: 4px 0 6px 0;
+  height: 50px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 최대 2줄 표시 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: keep-all; /* 단어 단위로 끊기도록 */
+  letter-spacing: 2px;
+  padding: 8px;
 }
 
 .card-content > .rating {
