@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Circle, CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
 import "./planner.css";
-import { CancelOutlined, Close, Search } from "@mui/icons-material";
+import { CancelOutlined, Close, Delete, Search } from "@mui/icons-material";
 import { IconButton, InputBase, Paper } from "@mui/material";
 import StarRating from "../utils/StarRating";
 import BasicDatePicker from "../utils/BasicDatePicker";
@@ -33,7 +33,7 @@ const PlannerFrm = () => {
   const [filterOption, setFilterOption] = useState(null);
 
   /*장소 리스트를 받아오는 함수(유저 마커 이동 시, 새로고침 시)
-  useCallback() 사용으로 함수 저장(메모리 절약)
+  useCallback() 사용으로 함수 저장(필요 이상 렌더링 방지)
   useMemo(): 값 저장   <=>   useCallback(): 함수 저장 */
   const getContentList = useCallback(() => {
     //사용자 마커 없을 시 취소
@@ -104,11 +104,16 @@ const PlannerFrm = () => {
   //작성해 둔 getContentList()를 useEffect()로 관리
   useEffect(() => {
     if (!userMarker) return; //첫실행 방지
-    const delay = setTimeout(() => {
+
+    //지도 광클 시 데이터 계속 받아오는 현상 수정
+    const timer = setTimeout(() => {
       getContentList();
-    }, 500); //지도 광클 시 데이터 계속 받아오는 현상 수정
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, [userMarker]);
 
+  /* 임시 비활성화
   //정렬된 장소(의 값): useMemo()로 기억
   const sortedList = useMemo(() => {
     if (sortOption === 2) {
@@ -138,8 +143,36 @@ const PlannerFrm = () => {
     return sortedList; //기본값: sorted 상태 그대로 반환
     //정렬된 장소(의 값)가 변동되거나, 필터 옵션 바뀌면 새 값 업데이트(콜백 실행)
   }, [sortedList, filterOption]);
+  */
 
-  //sort, filter 옵션 변경 시 오버레이 닫히게 하기(버그 수정)
+  const filteredSortedList = useMemo(() => {
+    let sortedList = [...contentList];
+    if (sortOption === 2) {
+      sortedList.sort((a, b) => b.contentReview - a.contentReview);
+    } else if (sortOption === 3) {
+      sortedList.sort((a, b) => a.contentTitle.localeCompare(b.contentTitle));
+    }
+
+    let filteredSortedList = sortedList;
+    if (filterOption === 1) {
+      filteredSortedList = sortedList.filter(
+        (item) => item.contentType === "숙박시설"
+      );
+    } else if (filterOption === 2) {
+      filteredSortedList = sortedList.filter(
+        (item) => item.contentType === "음식점"
+      );
+    } else if (filterOption === 3) {
+      filteredSortedList = sortedList.filter(
+        (item) =>
+          item.contentType !== "숙박시설" && item.contentType !== "음식점"
+      );
+    }
+
+    return filteredSortedList;
+  }, [contentList, sortOption, filterOption]);
+
+  //sort, filter 옵션 변경 시 오버레이 닫히게 하기(버그 방지)
   useEffect(() => {
     setOpenOverlay(null);
   }, [sortOption, filterOption]);
@@ -201,6 +234,7 @@ const PlannerFrm = () => {
           </div>
         </div>
         <div className="spot-list">
+          <p>{filteredSortedList.length}개의 결과가 있습니다.</p>
           {filteredSortedList.map((content, idx) => {
             return (
               <PrintSpotList
@@ -277,16 +311,15 @@ const CustomizedInputBase = () => {
       component="form"
       sx={{ margin: "10px", display: "flex", alignItems: "center" }}
     >
-      <IconButton sx={{ p: "10px" }} aria-label="menu"></IconButton>
+      <IconButton sx={{ p: "10px" }} aria-label=""></IconButton>
       <InputBase
         sx={{ ml: 1, flex: 1, fontSize: "12px" }}
         placeholder="여행지, 즐길거리 등"
-        inputProps={{ "aria-label": "search google maps" }}
       />
       <IconButton
         type="button"
         sx={{ p: "10px" }}
-        aria-label="search"
+        aria-label=""
         onClick={() => {
           console.log("hi");
         }}
@@ -359,28 +392,70 @@ const Planner = (props) => {
     <div className="planner-wrap">
       <Close className="close-btn" onClick={() => setOpenPlanner(false)} />
       <div className="planner-content">
-        {plannedSpotList.map((content, idx) => {
-          return (
-            <div className="planned-item" key={"planned-" + idx}>
-              <img
-                className="planned-img"
-                src={content.contentThumb}
-                alt="테스트"
-                width="50px"
-                height="50px"
-              />
-              <div className="spot-item">
-                <div className="spot-title-wrap">
-                  <span className="spot-title">{content.contentTitle}</span>
-                  <span className="spot-type">{content.contentType}</span>
-                </div>
-                <div className="spot-addr spot-ellipsis">
-                  {content.contentAddr}
+        {[...plannedSpotList]
+          .sort((a, b) => a.order - b.order)
+          .map((content, idx) => {
+            const isDateChanged =
+              idx === 0 ||
+              content.itineraryDate !== plannedSpotList[idx - 1].itineraryDate;
+            const showTransport = idx !== 0;
+
+            return (
+              <div key={"planned-" + idx}>
+                {showTransport && (
+                  <div className="planned-transport">
+                    <span>↓</span>
+                    <span>{content.transport}(으)로 이동</span>
+                  </div>
+                )}
+                {isDateChanged && (
+                  <div className="planned-date">
+                    {dayjs(content.itineraryDate).format("YYYY년 M월 D일")}
+                  </div>
+                )}
+                <div className="planned-item">
+                  <img
+                    className="planned-img"
+                    src={content.contentThumb}
+                    alt="테스트"
+                    width="50px"
+                    height="50px"
+                  />
+                  <div className="spot-item">
+                    <div className="spot-title-wrap">
+                      <span className="spot-title">{content.contentTitle}</span>
+                      <span className="spot-type">{content.contentType}</span>
+                    </div>
+                    <div className="spot-addr spot-ellipsis">
+                      {content.contentAddr}
+                    </div>
+                  </div>
+                  <div className="planner-del-btn">
+                    <Delete
+                      onClick={() => {
+                        //1. 삭제하시겠습니까?
+                        if (window.confirm("삭제하시겠습니까?")) {
+                          //2. plannedSpot 삭제 및 order 재정렬
+                          const newList = plannedSpotList.filter(
+                            (item) => item.order !== idx
+                          );
+                          if (idx === 0) {
+                            //맨 처음 방문지를 삭제했다면
+                            newList[0].transport = "";
+                          }
+                          newList.forEach((item, i) => {
+                            item.order = i;
+                          });
+                          setPlannedSpotList(newList);
+                        }
+                        //3. DB 삭제, DB order 수정
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
       </div>
     </div>
   );
@@ -432,7 +507,16 @@ const PlanningModal = (props) => {
         <div className="planning-input">
           <div className="date-input">
             <span>계획일</span>
-            <BasicDatePicker date={date} setDate={setDate} />
+            <BasicDatePicker
+              date={
+                plannedSpotList.length === 0
+                  ? date
+                  : dayjs(
+                      plannedSpotList[plannedSpotList.length - 1].itineraryDate
+                    )
+              }
+              setDate={setDate}
+            />
           </div>
           {order !== 0 && (
             <div>
@@ -562,6 +646,7 @@ const PrintMap = (props) => {
               position={spot.contentLatLng}
               onClick={() => setOpenOverlay(idx)}
             />
+
             {openOverlay === idx && (
               <CustomOverlayMap clickable={true} position={spot.contentLatLng}>
                 <div className="overlay-wrap">

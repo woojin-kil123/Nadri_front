@@ -202,6 +202,9 @@
   object-fit: cover;
   margin-right: 10px;
 }
+.planner-del-btn > svg {
+  cursor: pointer;
+}
 
 /* 여행지에 추가하기 모달 */
 .modal-background {

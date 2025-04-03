@@ -23,10 +23,10 @@ export default function BasicSelect(props) {
         <MenuItem value="">
           <em>이동수단</em>
         </MenuItem>
-        <MenuItem value={10}>대중교통</MenuItem>
-        <MenuItem value={20}>자가용</MenuItem>
-        <MenuItem value={30}>자전거</MenuItem>
-        <MenuItem value={40}>도보</MenuItem>
+        <MenuItem value={"대중교통"}>대중교통</MenuItem>
+        <MenuItem value={"자가용"}>자가용</MenuItem>
+        <MenuItem value={"자전거"}>자전거</MenuItem>
+        <MenuItem value={"도보"}>도보</MenuItem>
       </Select>
     </FormControl>
   );
