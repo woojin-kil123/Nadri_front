@@ -96,6 +96,7 @@ const Login = () => {
         Swal.fire({
           text: "아이디 또는 비밀번호를 확인하세요.",
           icon: "warning",
+          confirmButtonColor: "var(--main2)",
         });
       });
   };
