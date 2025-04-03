@@ -1,3 +1,9 @@
+.login-logo {
+  color: var(--main2);
+  font-family: ns-black;
+  font-size: 28px;
+  text-align: center;
+}
 .mypage-wrap {
   width: 1200px;
   display: flex;
@@ -23,9 +29,29 @@
 .mypage-menu-title {
   font-size: 30px;
 }
-
+.user-profile-photo {
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto;
+}
+.user-profile-photo > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.user-profile-upload {
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto;
+}
 .user-profile-upload > img {
-  width: 340px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   cursor: pointer;
 }
 
@@ -34,6 +60,10 @@
   height: 300px;
   margin: 0 auto;
   text-align: center;
+}
+.user-profile-title {
+  width: 300px;
+  height: 50px;
 }
 .user-profile-email {
   color: rgb(156, 156, 156);
@@ -48,7 +78,7 @@
 }
 
 .user-info-title {
-  margin-top: 150px;
+  margin-top: 50px;
   margin-bottom: 50px;
 }
 .info-title > label {
@@ -110,4 +140,33 @@
 .delete-user-title > button:hover {
   font-weight: 900;
   text-decoration: underline;
+}
+
+.user-profile-title > div {
+  color: rgb(97, 97, 97);
+  font-size: 13px;
+  line-height: 25px;
+}
+.user-upload-profile-title {
+  font-size: 13px;
+  line-height: 25px;
+}
+.user-upload-profile-title > div {
+  color: rgb(97, 97, 97);
+  margin-left: 80px;
+}
+.user-upload-profile-title > div > button {
+  width: 75px;
+  height: 25px;
+  border: none;
+  border-radius: 50px;
+  background-color: var(--main2);
+  color: white;
+  font-size: 10px;
+  float: right;
+  cursor: pointer;
+  margin-left: 10px;
+}
+.user-upload-profile-title > div > button:hover {
+  background-color: #166139;
 }

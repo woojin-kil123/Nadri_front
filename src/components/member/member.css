@@ -16,7 +16,10 @@
   color: green; /* 초록색으로 오케이 메시지 표시 */
   font-size: 14px; /* 글자 크기 조정 */
 }
-
+.login-title {
+  font-size: 23px;
+  font-weight: 600;
+}
 .input-item > input {
   border-color: rgb(187, 187, 187);
 }

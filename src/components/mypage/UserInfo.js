@@ -45,8 +45,9 @@ const UserInfo = () => {
     }).then((res) => {
       if (res.isConfirmed) {
         axios
-          .delete(
-            `${process.env.REACT_APP_BACK_SERVER}/member/${loginNickname}`
+          .patch(
+            `${process.env.REACT_APP_BACK_SERVER}/member/deleteMember`,
+            member
           )
           .then((res) => {
             if (res.data === 1) {
