@@ -65,10 +65,10 @@ const ContentList = () => {
   }, [reqPage]);
 
   const [menus, setMenus] = useState([
-    { url: "/content/spot", text: "관광지" },
-    { url: "/content/todo", text: "즐길거리" },
-    { url: "/content/stay", text: "숙박" },
-    { url: "/content/food", text: "음식점" },
+    { id: "12", name: "관광지", name2: "spot" },
+    { id: "", name: "즐길거리", name2: "todo" },
+    { id: "32", name: "숙박", name2: "stay" },
+    { id: "39", name: "음식점", name2: "food" },
   ]);
   return (
     <div className="content-wrap">
@@ -80,14 +80,7 @@ const ContentList = () => {
           </section>
         </div>
         <div className="contentlist-content">
-          <ul className="tour-wrap">
-            <Routes>
-              <Route path="spot" element={<Spotlist tourList={tourList} />} />
-              <Route path="todo" />
-              <Route path="stay" />
-              <Route path="food" />
-            </Routes>
-          </ul>
+          <ul className="tour-wrap"></ul>
         </div>
       </div>
     </div>
