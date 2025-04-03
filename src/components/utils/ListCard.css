@@ -30,7 +30,6 @@
 }
 
 .card > .card-content {
-  background-color: var(--main6);
   padding: 12px 16px;
   display: flex;
   flex-direction: column;
@@ -45,7 +44,7 @@
 .card-content > .title {
   font-size: 18px;
   font-weight: bold;
-  height: 50px;
+  height: 45px;
   display: -webkit-box;
   -webkit-line-clamp: 2; /* 최대 2줄 표시 */
   -webkit-box-orient: vertical;

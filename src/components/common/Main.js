@@ -4,13 +4,15 @@ import { Box, Tab, Tabs, Typography } from "@mui/material";
 import RecommandSlider from "./RecommandSlider";
 import "./main.css";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import axios from "axios";
 
 const Main = () => {
-  const planCategory = ["인기", "최신", "혼자", "단체"];
+  const [planCategory, setPlanCategory] = useState([]);
   const [onPlanCategory, setOnPlanCategory] = useState("인기");
-  const contentCategory = ["여행지", "숙소", "음식", "쇼핑", "레저"];
+  const [contentCategory, setContentCategory] = useState([]);
   const [onContentCategory, setOnContentCategory] = useState("여행지");
   const [contentList, setContentList] = useState([]);
+  useEffect(() => {}, []);
   return (
     <section className="section main-wrap">
       <IntroSlider />
