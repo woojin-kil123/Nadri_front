@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import IntroSlider from "./IntroSlide";
 import { Box, Tab, Tabs, Typography } from "@mui/material";
 import RecommandSlider from "./RecommandSlider";
@@ -6,9 +6,11 @@ import "./main.css";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
 const Main = () => {
-  const planCategory = ["인기", "최신", , "혼자", "단체"];
+  const planCategory = ["인기", "최신", "혼자", "단체"];
+  const [onPlanCategory, setOnPlanCategory] = useState("인기");
   const contentCategory = ["여행지", "숙소", "음식", "쇼핑", "레저"];
-
+  const [onContentCategory, setOnContentCategory] = useState("여행지");
+  const [contentList, setContentList] = useState([]);
   return (
     <section className="section main-wrap">
       <IntroSlider />
@@ -17,18 +19,26 @@ const Main = () => {
           <h2>추천플랜</h2>
         </div>
         <div className="recommand-nav">
-          <FilterNavWithPanel categories={planCategory} />
+          <FilterNavWithPanel
+            categories={planCategory}
+            on={onPlanCategory}
+            setOn={setOnPlanCategory}
+          />
         </div>
-        <RecommandSlider />
+        <RecommandSlider on={onPlanCategory} />
       </div>
       <div className="recommand-wrap">
         <div className="recommand-title">
           <h2>추천 컨텐츠</h2>
         </div>
         <div className="recommand-nav">
-          <FilterNavWithPanel categories={contentCategory} />
+          <FilterNavWithPanel
+            categories={contentCategory}
+            on={onContentCategory}
+            setOn={setOnContentCategory}
+          />
         </div>
-        <RecommandSlider />
+        <RecommandSlider on={onContentCategory} />
       </div>
       <div className="recommand-wrap">
         <div className="recommand-title">
@@ -57,31 +67,28 @@ const Main = () => {
   );
 };
 
-const FilterNavWithPanel = ({ categories }) => {
-  const [value, setValue] = useState(0);
-  const handleChange = (_, newValue) => {
-    setValue(newValue);
+const FilterNavWithPanel = ({ categories, on, setOn }) => {
+  const tabIndex = categories.indexOf(on); // 문자열인 on → index 변환
+
+  const handleChange = (_, newIndex) => {
+    const selected = categories[newIndex];
+    setOn(selected); // 상위에서 내려준 setOn 함수
   };
+
   return (
-    <Box
-      sx={{
-        width: "100%",
-        bgcolor: "background.paper",
-        p: 1,
-      }}
-    >
+    <Box sx={{ width: "100%", bgcolor: "background.paper", p: 1 }}>
       <Tabs
-        value={value}
+        value={tabIndex === -1 ? 0 : tabIndex}
         onChange={handleChange}
         aria-label="category tabs"
         indicatorColor="primary"
         sx={{
           "& .MuiTabs-indicator": {
-            backgroundColor: "#27b778", // 여기에서 커스터마이징!
+            backgroundColor: "#27b778",
           },
         }}
       >
-        {categories.map((category, index) => (
+        {categories.map((category) => (
           <Tab key={category} label={category} />
         ))}
       </Tabs>
