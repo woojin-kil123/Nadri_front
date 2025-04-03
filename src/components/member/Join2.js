@@ -140,6 +140,7 @@ const Join2 = () => {
         title: "생년월일 선택 오류",
         text: "생년월일을 선택해주세요.",
         icon: "error",
+        confirmButtonColor: "var(--main2)",
       });
       return;
     }
@@ -152,6 +153,7 @@ const Join2 = () => {
           title: "회원가입 성공!",
           text: "회원가입이 완료되었습니다.",
           icon: "success",
+          confirmButtonColor: "var(--main2)",
         }).then(() => {
           navigate("/"); // 회원가입 성공 후 홈으로 리디렉션
         });
@@ -161,6 +163,7 @@ const Join2 = () => {
           title: "오류",
           text: "회원가입 중 오류가 발생했습니다. 다시 시도해주세요.",
           icon: "error",
+          confirmButtonColor: "var(--main2)",
         });
       });
   };

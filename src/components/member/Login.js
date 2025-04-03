@@ -73,6 +73,7 @@ const Login = () => {
       Swal.fire({
         text: "이메일 또는 비밀번호를 입력하세요",
         icon: "info",
+        confirmButtonColor: "var(--main2)",
       });
       return;
     }
@@ -96,15 +97,14 @@ const Login = () => {
         Swal.fire({
           text: "아이디 또는 비밀번호를 확인하세요.",
           icon: "warning",
+          confirmButtonColor: "var(--main2)",
         });
       });
   };
 
   return (
     <section className="section">
-      <div className="logo">
-        <Link to="/">NADRI</Link>
-      </div>
+      <div className="login-logo">NADRI</div>
       <div className="login-wrap">
         <h1 className="login-title">이메일 로그인</h1>
         <div className="email-login-wrap">

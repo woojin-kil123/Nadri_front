@@ -3,6 +3,7 @@ import { loginNicknameState } from "../utils/RecoilData";
 import { useRecoilState } from "recoil";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const UpdateInfo = () => {
   const navigate = useNavigate();
@@ -31,6 +32,15 @@ const UpdateInfo = () => {
             ? `${process.env.REACT_APP_BACK_SERVER}/profile/${res.data.profileImg}`
             : defaultProfileImg
         );
+        // 생년월일 분리하여 설정
+        if (res.data.memberBirth) {
+          const birthYear = res.data.memberBirth.slice(0, 4);
+          const birthMonth = res.data.memberBirth.slice(4, 6);
+          const birthDay = res.data.memberBirth.slice(6, 8);
+          setYear(birthYear);
+          setMonth(birthMonth);
+          setDay(birthDay);
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -148,6 +158,42 @@ const UpdateInfo = () => {
     setIsFormValid(isNicknameValid && isPhoneValid && isGenderValid);
   };
 
+  // 생년월일 관련 상태 변수 및 생성
+  const [year, setYear] = useState("");
+  const [month, setMonth] = useState("");
+  const [day, setDay] = useState("");
+  const currentYear = new Date().getFullYear(); // 현재 연도
+  const years = Array.from(
+    { length: currentYear - 1900 + 1 },
+    (_, i) => currentYear - i
+  ); // 연도 목록
+  const months = Array.from({ length: 12 }, (_, i) => i + 1); // 월 목록
+  const getDaysInMonth = (year, month) => {
+    const daysInMonth = new Date(year, month, 0).getDate(); // 해당 월의 일수 구하기
+    return Array.from({ length: daysInMonth }, (_, i) => i + 1); // 일수 목록
+  };
+  const [days, setDays] = useState([]);
+  useEffect(() => {
+    if (year && month) {
+      const updatedDays = getDaysInMonth(year, month);
+      setDays(updatedDays); // 월에 맞는 일 목록 업데이트
+      if (!updatedDays.includes(parseInt(day))) {
+        setDay(updatedDays[0] || "");
+      }
+    }
+  }, [year, month, day]);
+
+  // 생년월일 값이 설정되면 member 상태에 반영
+  useEffect(() => {
+    if (year !== "" && month !== "" && day !== "") {
+      const formattedMonth = String(month).padStart(2, "0");
+      const formattedDay = String(day).padStart(2, "0");
+      const birthString = `${year}${formattedMonth}${formattedDay}`; // 생년월일 문자열 형식
+
+      setMember((prevState) => ({ ...prevState, memberBirth: birthString }));
+    }
+  }, [year, month, day]);
+
   const UpdateInfo = () => {
     const form = new FormData();
     form.append("memberEmail", member.memberEmail);
@@ -172,11 +218,29 @@ const UpdateInfo = () => {
       })
       .then((res) => {
         console.log(res);
+        Swal.fire({
+          title: "정보 수정 완료!",
+          text: "회원 정보가 성공적으로 수정되었습니다.",
+          icon: "success",
+          confirmButtonText: "확인",
+          confirmButtonColor: "var(--main2)",
+        }).then(() => {
+          // 알림을 확인 버튼을 누른 후 mypage/userInfo로 이동
+          navigate("/mypage/userInfo");
+        });
       })
       .catch((err) => {
         console.log(err);
+        Swal.fire({
+          title: "오류 발생",
+          text: "정보 수정 중 오류가 발생했습니다. 다시 시도해주세요.",
+          icon: "error",
+          confirmButtonText: "확인",
+          confirmButtonColor: "var(--main2)",
+        });
       });
   };
+  console.log("test", year, month, day, days);
   return (
     <div>
       <h1 className="mypage-menu-title">회원 정보 수정</h1>
@@ -199,11 +263,17 @@ const UpdateInfo = () => {
                 onChange={handleImageChange} // 이미지 선택 시 처리
               />
             </div>
-            <div className="user-profile-title">
-              <div>프로필 사진 등록</div>
+            <div className="user-upload-profile-title">
+              <div>
+                프로필 사진 등록
+                <button
+                  className="default-image"
+                  onClick={handleSetDefaultImage}
+                >
+                  기본 프로필
+                </button>
+              </div>
             </div>
-            {/* 기본 이미지 설정 버튼 */}
-            <button onClick={handleSetDefaultImage}>기본 프로필 설정</button>
           </div>
           <div className="user-info-content">
             <div className="join-wrap">
@@ -224,6 +294,7 @@ const UpdateInfo = () => {
                       id="memberEmail"
                       value={member.memberEmail}
                       disabled
+                      style={{ color: "rgb(160, 160, 160)" }}
                     />
                   </div>
                 </div>
@@ -242,6 +313,7 @@ const UpdateInfo = () => {
                       onChange={inputMemberData}
                       onBlur={checkNickname} // 닉네임이 입력되면 유효성 및 중복 체크
                       placeholder="자신을 표현할 수 있는 이름을 지어주세요."
+                      style={{ color: "rgb(160, 160, 160)" }}
                     />
                   </div>
                   <p
@@ -299,6 +371,69 @@ const UpdateInfo = () => {
                       ? ""
                       : "휴대폰 번호는 010-0000-0000 형식으로 입력해주세요."}
                   </p>
+                </div>
+
+                {/* 생년월일 입력 */}
+                <div className="input-wrap">
+                  <div className="input-title">
+                    <label htmlFor="memberBirth">생년월일</label>
+                  </div>
+                  <div className="select-wrap">
+                    <div className="year">
+                      <select
+                        name="year"
+                        id="year"
+                        value={year}
+                        onChange={(e) => setYear(e.target.value)}
+                      >
+                        <option value="">년도</option>
+                        {years.map((yearOption) => (
+                          <option
+                            key={yearOption}
+                            value={yearOption}
+                            selected={yearOption === year}
+                          >
+                            {yearOption}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="month">
+                      <select
+                        name="month"
+                        id="month"
+                        value={Number(month)}
+                        onChange={(e) => setMonth(e.target.value)}
+                      >
+                        <option value="">월</option>
+                        {months.map((monthOption) => {
+                          console.log(Number(month), monthOption, "asdf");
+                          return (
+                            <option key={monthOption} value={monthOption}>
+                              {monthOption}월
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                    <div className="day">
+                      <select
+                        name="day"
+                        id="day"
+                        value={Number(day)}
+                        onChange={(e) => setDay(e.target.value)}
+                      >
+                        <option value="">일</option>
+                        {days.map((dayOption) => {
+                          return (
+                            <option key={dayOption} value={dayOption}>
+                              {dayOption}일
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                  </div>
                 </div>
 
                 {/* 성별 선택 */}

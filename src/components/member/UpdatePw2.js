@@ -17,6 +17,7 @@ const UpdatePw2 = () => {
         title: "코드 누락",
         text: "인증 코드가 누락되었습니다. 메인 페이지로 이동합니다.",
         icon: "error",
+        confirmButtonColor: "var(--main2)",
       }).then(() => {
         navigate("/"); // 메인 페이지로 이동
       });
@@ -91,6 +92,7 @@ const UpdatePw2 = () => {
           title: "비밀번호 변경 완료",
           text: "비밀번호가 성공적으로 변경되었습니다.",
           icon: "success",
+          confirmButtonColor: "var(--main2)",
         }).then(() => {
           navigate("/"); // 비밀번호 변경 완료 후 홈 페이지로 이동
         });
@@ -100,6 +102,7 @@ const UpdatePw2 = () => {
           title: "오류",
           text: "비밀번호 변경 중 오류가 발생했습니다. 다시 시도해주세요.",
           icon: "error",
+          confirmButtonColor: "var(--main2)",
         });
       });
   };
