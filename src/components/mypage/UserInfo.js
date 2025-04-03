@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./mypage.css";
+import Swal from "sweetalert2";
 
 const UserInfo = () => {
   const navigate = useNavigate();
@@ -32,6 +33,42 @@ const UserInfo = () => {
     return `${year}년 ${month}월 ${day}일`; // 원하는 형식으로 반환
   };
 
+  const deleteUser = () => {
+    Swal.fire({
+      title: "회원 탈퇴",
+      icon: "warning",
+      text: "회원을 탈퇴하시겠습니까?",
+      showCancelButton: true,
+      confirmButtonText: "탈퇴하기",
+      cancelButtonText: "취소",
+      confirmButtonColor: "var(--main2)",
+    }).then((res) => {
+      if (res.isConfirmed) {
+        axios
+          .patch(
+            `${process.env.REACT_APP_BACK_SERVER}/member/deleteMember`,
+            member
+          )
+          .then((res) => {
+            if (res.data === 1) {
+              Swal.fire({
+                title: "회원 탈퇴 완료",
+                icon: "info",
+              }).then(() => {
+                setLoginNickname("");
+                delete axios.defaults.headers.common["Authorization"];
+                window.localStorage.removeItem("refreshToken");
+                navigate("/");
+              });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    });
+  };
+
   return (
     <div>
       <h1 className="mypage-menu-title">내 정보 관리</h1>
@@ -57,8 +94,8 @@ const UserInfo = () => {
           </div>
           <div className="user-info-content">
             <h2 className="user-info-title">회원 정보</h2>
-            <div className="input-wrap">
-              <div className="input-title">
+            <div className="info-wrap">
+              <div className="info-title">
                 <label htmlFor="memberPw">이메일</label>
               </div>
               <div className="info-item">
@@ -69,8 +106,8 @@ const UserInfo = () => {
                 ></input>
               </div>
             </div>
-            <div className="input-wrap">
-              <div className="input-title">
+            <div className="info-wrap">
+              <div className="info-title">
                 <label htmlFor="memberPw">닉네임</label>
               </div>
               <div className="info-item">
@@ -81,8 +118,8 @@ const UserInfo = () => {
                 ></input>
               </div>
             </div>
-            <div className="input-wrap">
-              <div className="input-title">
+            <div className="info-wrap">
+              <div className="info-title">
                 <label htmlFor="memberPw">휴대폰번호</label>
               </div>
               <div className="info-item">
@@ -93,8 +130,8 @@ const UserInfo = () => {
                 ></input>
               </div>
             </div>
-            <div className="input-wrap">
-              <div className="input-title">
+            <div className="info-wrap">
+              <div className="info-title">
                 <label htmlFor="memberPw">생년월일</label>
               </div>
               <div className="info-item">
@@ -105,8 +142,8 @@ const UserInfo = () => {
                 ></input>
               </div>
             </div>
-            <div className="input-wrap">
-              <div className="input-title">
+            <div className="info-wrap">
+              <div className="info-title">
                 <label htmlFor="memberPw">성별</label>
               </div>
               <div className="info-item">
@@ -124,8 +161,25 @@ const UserInfo = () => {
               </div>
             </div>
           </div>
-
-          <div className="button-zone">
+          <div className="info-wrap">
+            <div className="info-title">
+              <label htmlFor="memberLevel">회원레벨</label>
+            </div>
+            <div className="info-item">
+              <input
+                className="left"
+                value={
+                  member.memberLevel === 1
+                    ? "일반회원"
+                    : member.memberLevel === 2
+                    ? "관리자"
+                    : ""
+                }
+                disabled
+              ></input>
+            </div>
+          </div>
+          <div className="info-button-zone">
             <form
               onSubmit={(e) => {
                 e.preventDefault(); // 폼 제출 시 기본 동작 방지
@@ -137,6 +191,21 @@ const UserInfo = () => {
               </button>
             </form>
           </div>
+          <div className="info-item2">
+            <input disabled></input>
+          </div>
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault(); // 폼 제출 시 기본 동작 방지
+              deleteUser();
+            }}
+          >
+            <div className="delete-user-title">
+              더 이상 나드리 이용을 원하지 않으신가요?
+              <button type="submit">회원탈퇴</button>
+            </div>
+          </form>
         </>
       )}
     </div>

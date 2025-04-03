@@ -11,6 +11,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import DirectionsIcon from "@mui/icons-material/Directions";
 import Box from "@mui/material/Box";
 import AccountCircle from "@mui/icons-material/AccountCircle";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import InfoIcon from "@mui/icons-material/Info";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import Dropdown from "../utils/Dropdown";
@@ -79,16 +80,17 @@ const HeaderLink = (props) => {
   };
 
   const accountMenu = [
-    new DropdownItem(<InfoIcon />, memberNickname + "님의 정보", () => {
-      navigate("/mypage");
-    }),
+    memberLevel == 1 &&
+      new DropdownItem(<InfoIcon />, memberNickname + "님의 정보", () => {
+        navigate("/mypage");
+      }),
     memberLevel == 1 &&
       new DropdownItem(<CalendarTodayIcon />, "나의 일정", () => {
         navigate("/myplan");
       }),
     memberLevel == 2 &&
-      new DropdownItem(<CalendarTodayIcon />, "관리자 페이지", () => {
-        navigate("/myplan");
+      new DropdownItem(<AdminPanelSettingsIcon />, "관리자 페이지", () => {
+        navigate("/admin");
       }),
     new DropdownItem(<Logout />, "로그아웃", logout),
   ].filter(Boolean);

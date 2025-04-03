@@ -104,6 +104,7 @@ const UpdatePw = () => {
       Swal.fire({
         text: "인증이 완료되었습니다!",
         icon: "success",
+        confirmButtonColor: "var(--main2)",
       }).then((result) => {
         if (result.isConfirmed) {
           // 인증 완료 후 회원 가입 2단계로 이동
@@ -116,6 +117,7 @@ const UpdatePw = () => {
       Swal.fire({
         text: "인증 코드가 일치하지 않습니다. 다시 확인해 주세요",
         icon: "info",
+        confirmButtonColor: "var(--main2)",
       });
     }
   };

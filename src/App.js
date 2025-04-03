@@ -18,7 +18,7 @@ import ReviewMain from "./components/review/ReviewMain";
 // 상태 관리
 import { useRecoilState, useRecoilValue } from "recoil";
 import { isLoginState, isPlannerState } from "./components/utils/RecoilData";
-// 리액트 훅
+// 컴포넌트
 import { useEffect, useState } from "react";
 import ChatMenu from "./components/chat/ChatMenu";
 import Mypage from "./components/mypage/Mypage";
@@ -26,10 +26,13 @@ import ReviewWrite from "./components/review/ReviewWrite";
 import Search from "./components/review/Search";
 import ReviewView from "./components/review/ReviewView";
 import EditReview from "./components/review/EditReview";
-import ProtectedRouting from "./components/utils/ProtectedRouting";
+import LoginRouting from "./components/utils/LoginRouting";
+import AdminRouting from "./components/utils/AdminRouting";
 // 슬릭 슬라이더 css
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import Admin from "./components/admin/Admin";
+import Terms from "./components/common/Terms";
 
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
@@ -53,7 +56,7 @@ function App() {
       <Routes>
         <Route
           path="/planner"
-          element={<ProtectedRouting element={<PlannerFrm />} />}
+          element={<LoginRouting element={<PlannerFrm />} />}
         />
 
         <Route
@@ -72,6 +75,17 @@ function App() {
                   <Route path="/updatePw2" element={<UpdatePw2 />} />
                   <Route path="/mypage/*" element={<Mypage />} />
                   <Route path="/review/*" element={<ReviewMain />}></Route>
+                  <Route
+                    path="/admin/*"
+                    element={<AdminRouting element={<Admin />} />}
+                  >
+                    <Route path="event" element={<Terms />} />
+                    <Route path="partner" element={<Terms />} />
+                    <Route path="review" element={<Terms />} />
+                    <Route path="member" element={<Terms />} />
+                    <Route path="inquiry" element={<Terms />} />
+                    <Route path="contents" element={<Terms />} />
+                  </Route>
                   <Route
                     path="/review/detail/:reviewNo"
                     element={<ReviewView />}
