@@ -48,8 +48,13 @@ const VerticalTabs = ({ menus }) => {
         orientation="vertical"
         value={value}
         onChange={(_, newValue) => {
+          const nextPath = `/admin/${menus[newValue].path}`;
+          const currentPath = location.pathname;
+
+          if (currentPath !== nextPath) {
+            navigate(nextPath);
+          }
           setValue(newValue);
-          navigate(menus[newValue], { replace: true });
         }}
         sx={{ borderRight: 1, borderColor: "divider" }}
       >
