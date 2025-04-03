@@ -80,9 +80,10 @@ const HeaderLink = (props) => {
   };
 
   const accountMenu = [
-    new DropdownItem(<InfoIcon />, memberNickname + "님의 정보", () => {
-      navigate("/mypage");
-    }),
+    memberLevel == 1 &&
+      new DropdownItem(<InfoIcon />, memberNickname + "님의 정보", () => {
+        navigate("/mypage");
+      }),
     memberLevel == 1 &&
       new DropdownItem(<CalendarTodayIcon />, "나의 일정", () => {
         navigate("/myplan");

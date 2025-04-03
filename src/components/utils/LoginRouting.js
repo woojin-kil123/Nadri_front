@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
 
 //비로그인 처리 시 사용하세요
-const ProtectedRouting = ({ element }) => {
+const LoginRouting = ({ element }) => {
   const isLogin = useRecoilValue(isLoginState);
   const [interception, setInterCeption] = useState(false);
 
@@ -25,9 +25,9 @@ const ProtectedRouting = ({ element }) => {
   if (!isLogin && !interception) return null;
 
   //replace: 로그인 페이지로 이동한 뒤 뒤로가기를 눌러도 진입을 시도했던 페이지로 다시 돌아가지 않게 해 줌
-  if (interception) return <Navigate to="/login" replace />;
+  if (!interception) return <Navigate to="/login" replace />;
 
   return element;
 };
 
-export default ProtectedRouting;
+export default LoginRouting;
