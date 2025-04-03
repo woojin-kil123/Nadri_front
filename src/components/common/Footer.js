@@ -76,7 +76,7 @@ export default function Footer() {
                     handleOpen();
                   }}
                 >
-                  이용 약관
+                  서비스 이용 약관
                 </Link>
               </p>
             </div>

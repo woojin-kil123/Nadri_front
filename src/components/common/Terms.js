@@ -1,7 +1,7 @@
 const Terms = () => {
   return (
     <div className="terms-container">
-      <h2 className="terms-title">Nadri Terms of Service</h2>
+      <h2 className="terms-title">Nadri 서비스 이용약관</h2>
       <div className="terms-content">
         <h3>당사의 법적 약관에 대한 동의</h3>
 

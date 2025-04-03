@@ -77,15 +77,21 @@ const HeaderLink = (props) => {
     delete axios.defaults.headers.common["Authorization"];
     window.localStorage.removeItem("refreshToken");
   };
+
   const accountMenu = [
     new DropdownItem(<InfoIcon />, memberNickname + "님의 정보", () => {
       navigate("/mypage");
     }),
-    new DropdownItem(<CalendarTodayIcon />, "나의 일정", () => {
-      navigate("/myplan");
-    }),
+    memberLevel == 1 &&
+      new DropdownItem(<CalendarTodayIcon />, "나의 일정", () => {
+        navigate("/myplan");
+      }),
+    memberLevel == 2 &&
+      new DropdownItem(<CalendarTodayIcon />, "관리자 페이지", () => {
+        navigate("/myplan");
+      }),
     new DropdownItem(<Logout />, "로그아웃", logout),
-  ];
+  ].filter(Boolean);
   const alarmMenu = [
     new DropdownItem(<TagFacesIcon />, "안녕하세요", null),
     new DropdownItem(<TagFacesIcon />, "잘가요", null),

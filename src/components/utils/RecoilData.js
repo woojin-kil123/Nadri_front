@@ -17,7 +17,7 @@ const loginNicknameState = atom({
 });
 //로그인한 회원의 타입을 저장하는 저장소(atom)
 const memberLevelState = atom({
-  key: "memberTypeState",
+  key: "memberLevelState",
   default: 0,
   effects_UNSTABLE: [persistAtom],
 });

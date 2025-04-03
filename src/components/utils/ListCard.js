@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 export default function ListCard(props) {
   const navigate = useNavigate();
   const content = props.content;
-  console.log(content);
   return (
     <>
       {!content ? (
