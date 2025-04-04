@@ -78,7 +78,7 @@ function App() {
                   {/*<Route path="/mypage/*" element={<Mypage />} /> */}
                   <Route
                     path="/mypage/*"
-                    element={<ProtectedRouting element={<Mypage />} />}
+                    element={<LoginRouting element={<Mypage />} />}
                   />
                   <Route path="/review/*" element={<ReviewMain />}></Route>
                   <Route
