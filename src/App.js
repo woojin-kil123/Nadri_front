@@ -14,12 +14,12 @@ import UpdatePw from "./components/member/UpdatePw";
 import UpdatePw2 from "./components/member/UpdatePw2";
 import PlannerFrm from "./components/planner/PlannerFrm";
 // 콘텐츠 및 리뷰
-import ContentList from "./components/content/ContentList";
+import PlaceList from "./components/place/PlaceList";
 import ReviewMain from "./components/review/ReviewMain";
 // 상태 관리
 import { useRecoilState, useRecoilValue } from "recoil";
 import { isLoginState, isPlannerState } from "./components/utils/RecoilData";
-// 리액트 훅
+// 컴포넌트
 import { useEffect, useState } from "react";
 import ChatMenu from "./components/chat/ChatMenu";
 import Mypage from "./components/mypage/Mypage";
@@ -27,10 +27,13 @@ import ReviewWrite from "./components/review/ReviewWrite";
 import Search from "./components/review/Search";
 import ReviewView from "./components/review/ReviewView";
 import EditReview from "./components/review/EditReview";
-import ProtectedRouting from "./components/utils/ProtectedRouting";
+import LoginRouting from "./components/utils/LoginRouting";
+import AdminRouting from "./components/utils/AdminRouting";
 // 슬릭 슬라이더 css
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import Admin from "./components/admin/Admin";
+import Event from "./components/admin/Event";
 
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
@@ -54,7 +57,7 @@ function App() {
       <Routes>
         <Route
           path="/planner"
-          element={<ProtectedRouting element={<PlannerFrm />} />}
+          element={<LoginRouting element={<PlannerFrm />} />}
         />
 
         <Route
@@ -75,15 +78,26 @@ function App() {
                   {/*<Route path="/mypage/*" element={<Mypage />} /> */}
                   <Route
                     path="/mypage/*"
-                    element={<ProtectedRouting element={<Mypage />} />}
+                    element={<LoginRouting element={<Mypage />} />}
                   />
                   <Route path="/review/*" element={<ReviewMain />}></Route>
+                  <Route
+                    path="/admin/*"
+                    element={<AdminRouting element={<Admin />} />}
+                  >
+                    <Route path="event" element={<Event />} />
+                    <Route path="partner" element={<Event />} />
+                    <Route path="review" element={<Event />} />
+                    <Route path="member" element={<Event />} />
+                    <Route path="inquiry" element={<Event />} />
+                    <Route path="contents" element={<Event />} />
+                  </Route>
                   <Route
                     path="/review/detail/:reviewNo"
                     element={<ReviewView />}
                   ></Route>
                   <Route path="/review/write" element={<ReviewWrite />}></Route>
-                  <Route path="/content/*" element={<ContentList />} />
+                  <Route path="/place/*" element={<PlaceList />} />
                 </Routes>
               </div>
               <Footer />

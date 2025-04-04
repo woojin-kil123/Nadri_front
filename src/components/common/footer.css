@@ -18,8 +18,10 @@ Firefox 16 +,
 Chrome 26 +,
 Opera 12 +,
 Safari 7 + 
+
 */
 .footer {
+  background-color: var(--main2);
   position: relative;
   height: 280px;
   padding: 10px 0px;
@@ -27,14 +29,14 @@ Safari 7 +
   justify-content: space-between;
   align-items: center;
   flex-direction: column;
-  background-color: #324e02;
 }
 .footer p {
   margin: 10px 0px;
   font-family: ns-b;
   font-size: 16px;
-  color: var(--main6);
+  color: var(--main1);
 }
+
 .footer a {
   color: var(--main6);
 }
@@ -49,7 +51,7 @@ Safari 7 +
   width: 100px;
   align-self: center;
 }
-.footer-info > li {
+.footer li {
   color: var(--main6);
 }
 .footer-info {
@@ -92,15 +94,15 @@ Safari 7 +
   gap: 50px;
 }
 .social-btn-wrap svg {
-  fill: var(--main2);
+  fill: var(--main6);
 }
 .footer-right > .link-wrap {
   display: flex;
   justify-content: space-evenly;
   text-align: center;
 }
-.link-wrap > div > h3 {
-  color: var(--main2);
+.link-wrap h3 {
+  color: var(--main1);
   padding-bottom: 10px;
 }
 .link-wrap > div > p {

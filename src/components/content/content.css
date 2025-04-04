@@ -1,9 +1,0 @@
-/*ContentList*/
-.contentlist-side {
-  width: 20%;
-}
-.page-content {
-  width: 1200px;
-  display: flex;
-  gap: 10px;
-}

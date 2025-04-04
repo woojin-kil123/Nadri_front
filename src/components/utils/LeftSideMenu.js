@@ -3,6 +3,9 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 const LeftSideMenu = (props) => {
   const menus = props.menus;
+  const setSelectedMenu = props.setSelectedMenu;
+  const selectedMenu = props.selectedMenu;
+  const currentMenu = props.currentMenu;
   return (
     <div className="side-menu">
       <ul>
@@ -10,10 +13,14 @@ const LeftSideMenu = (props) => {
           return (
             <li key={"menu-" + index}>
               <NavLink
-                to={`/content/${menu.id}`}
+                to={`/spot/${menu.name2}`}
                 className={({ isActive }) => (isActive ? "active-link" : "")}
+                onClick={() => {
+                  setSelectedMenu(currentMenu);
+                  console.log(selectedMenu);
+                }}
               >
-                <span>{menu.text}</span>
+                <span>{menu.name}</span>
                 <ChevronRightIcon />
               </NavLink>
             </li>
