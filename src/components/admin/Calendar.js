@@ -4,11 +4,12 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import koLocale from "@fullcalendar/core/locales/ko";
 import "./calendar.css";
-import { Modal } from "@mui/material";
+import axios from "axios";
 
 export default function Calendar() {
   const [events, setEvents] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [insertOpen, setInsertOpen] = useState(false);
   const holiday = {
     "2025-01-01": "신정",
     "2025-03-01": "삼일절",
@@ -23,10 +24,6 @@ export default function Calendar() {
     ...holiday,
     // 여기에 사용자 등록 이벤트도 포함
   });
-
-  const handleDateClick = () => {
-    setModalOpen(true);
-  };
 
   const handleEventClick = () => {
     setModalOpen(true);
@@ -44,7 +41,9 @@ export default function Calendar() {
         customButtons={{
           insert: {
             text: "일정 추가",
-            click: () => {},
+            click: () => {
+              setInsertOpen(true);
+            },
           },
         }}
         headerToolbar={{
@@ -52,7 +51,6 @@ export default function Calendar() {
           right: "prev,next",
         }}
         events={events}
-        dateClick={handleDateClick}
         eventClick={handleEventClick}
         eventDrop={handleEventDrop}
         dayCellContent={(arg) => {
@@ -70,20 +68,143 @@ export default function Calendar() {
           );
         }}
       />
-
+      {insertOpen && <InsertModal onClose={() => setInsertOpen(false)} />}
       {modalOpen && <CalendarModal onClose={() => setModalOpen(false)} />}
     </div>
   );
 }
-const CalendarModal = ({ onClose, isEditing }) => {
+const CalendarModal = ({ modalInner, onClose, isEditing }) => {
   return (
     <div className="modal">
       <div className="modal-content">
-        <h3>{isEditing ? "이벤트 수정" : "새 이벤트 등록"}</h3>
-        <input type="text" placeholder="이벤트 제목" />
+        {modalInner}
         <div className="modal-buttons">
           <button onClick={onClose}>닫기</button>
         </div>
+      </div>
+    </div>
+  );
+};
+
+const InsertModal = ({ onSave, onClose }) => {
+  const [formData, setFormData] = useState({
+    title: "",
+    type: "",
+    description: "",
+    start: "",
+    end: "",
+    image: File,
+  });
+  const [thumb, setThumb] = useState();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+  const changeThumb = (e) => {
+    const file = e.target.files[0];
+    setThumb(file);
+  };
+  return (
+    <div className="modal-form-wrapper">
+      <div className="modal-form-content">
+        <form
+          className="modal-form-layout-column"
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSave();
+          }}
+        >
+          <div className="modal-form-top">
+            <div className="form-column image-side">
+              <div className="image-upload">
+                <label htmlFor="imageUpload" className="upload-text">
+                  <div className="image-preview">
+                    <img
+                      src="/image/dora.png"
+                      style={{ objectFit: "contain" }}
+                    ></img>
+                  </div>
+                </label>
+                <input
+                  type="file"
+                  id="imageUpload"
+                  name="image"
+                  style={{ display: "none" }}
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+
+                    setFormData((prev) => ({ ...prev, image: file }));
+                  }}
+                />
+              </div>
+            </div>
+
+            <div className="form-column input-side">
+              <div className="form-grid">
+                <label>
+                  제목
+                  <input
+                    type="text"
+                    name="title"
+                    value={formData.title || ""}
+                    onChange={handleChange}
+                    required
+                  />
+                </label>
+                <label>
+                  종류
+                  <select
+                    name="type"
+                    value={formData.type || ""}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">선택</option>
+                    <option value="회의">회의</option>
+                    <option value="일정">일정</option>
+                    <option value="기념일">기념일</option>
+                  </select>
+                </label>
+                <label className="full-width">
+                  내용
+                  <textarea
+                    type="text"
+                    name="description"
+                    value={formData.description || ""}
+                    onChange={handleChange}
+                  />
+                </label>
+                <label>
+                  시작일
+                  <input
+                    type="date"
+                    name="start"
+                    value={formData.start || ""}
+                    onChange={handleChange}
+                    required
+                  />
+                </label>
+                <label>
+                  종료일
+                  <input
+                    type="date"
+                    name="end"
+                    value={formData.end || ""}
+                    onChange={handleChange}
+                    required
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div className="modal-form-buttons center">
+            <button type="submit">등록하기</button>
+            <button type="button" onClick={onClose}>
+              닫기
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
