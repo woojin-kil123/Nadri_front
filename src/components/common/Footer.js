@@ -43,43 +43,31 @@ export default function Footer() {
         </div>
         <div className="footer-right">
           <div className="link-wrap">
-            <div>
+            <ul>
               <h3>CONTACT</h3>
-              <p>
-                <Link to="#">이벤트 및 프로모션</Link>
-              </p>
-              <p>
-                <Link to="#">일반 문의</Link>
-              </p>
-              <p>
-                <Link to="#">제휴 문의</Link>
-              </p>
-            </div>
-            <div>
+              <li>이벤트 및 프로모션</li>
+              <li>일반 문의</li>
+              <li>제휴 문의</li>
+            </ul>
+            <ul>
               <h3>PRIVACY & TERMS </h3>
-              <p>
-                <Link
-                  to="#"
-                  onClick={() => {
-                    setModalContent(<PrivacyPolicy />);
-                    handleOpen();
-                  }}
-                >
-                  개인정보 취급방침 및 쿠키 정책
-                </Link>
-              </p>
-              <p>
-                <Link
-                  to="#"
-                  onClick={() => {
-                    setModalContent(<Terms />);
-                    handleOpen();
-                  }}
-                >
-                  서비스 이용 약관
-                </Link>
-              </p>
-            </div>
+              <li
+                onClick={() => {
+                  setModalContent(<PrivacyPolicy />);
+                  handleOpen();
+                }}
+              >
+                개인정보 취급방침 및 쿠키 정책
+              </li>
+              <li
+                onClick={() => {
+                  setModalContent(<Terms />);
+                  handleOpen();
+                }}
+              >
+                서비스 이용 약관
+              </li>
+            </ul>
           </div>
           <div className="copyright">
             <p> © 2025 나드리 All rights reserved</p>
