@@ -199,6 +199,7 @@ const UpdateInfo = () => {
     form.append("memberEmail", member.memberEmail);
     form.append("memberNickname", member.memberNickname);
     form.append("memberPhone", member.memberPhone);
+    form.append("memberBirth", member.memberBirth);
     form.append("memberGender", member.memberGender);
     if (member.profileImg) {
       form.append("uploadProfile", member.profileImg); // 실제 이미지 파일 객체를 추가
@@ -207,6 +208,7 @@ const UpdateInfo = () => {
     console.log(member.memberNickname);
     console.log(member.memberPhone);
     console.log(member.memberGender);
+    console.log(member.memberBirth);
     console.log(member.profileImg);
     console.log(form);
     axios
@@ -310,6 +312,7 @@ const UpdateInfo = () => {
                       name="memberNickname"
                       id="memberNickname"
                       value={member.memberNickname}
+                      disabled
                       onChange={inputMemberData}
                       onBlur={checkNickname} // 닉네임이 입력되면 유효성 및 중복 체크
                       placeholder="자신을 표현할 수 있는 이름을 지어주세요."
@@ -407,7 +410,6 @@ const UpdateInfo = () => {
                       >
                         <option value="">월</option>
                         {months.map((monthOption) => {
-                          console.log(Number(month), monthOption, "asdf");
                           return (
                             <option key={monthOption} value={monthOption}>
                               {monthOption}월

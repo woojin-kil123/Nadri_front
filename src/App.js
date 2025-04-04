@@ -8,6 +8,7 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Login from "./components/member/Login";
 import Join from "./components/member/Join";
 import Join2 from "./components/member/Join2";
+import Join3 from "./components/member/Join3";
 // 여행 계획 관련
 import UpdatePw from "./components/member/UpdatePw";
 import UpdatePw2 from "./components/member/UpdatePw2";
@@ -71,9 +72,14 @@ function App() {
                   <Route path="/login" element={<Login />} />
                   <Route path="/join" element={<Join />} />
                   <Route path="/join2" element={<Join2 />} />
+                  <Route path="/join3" element={<Join3 />} />
                   <Route path="/updatePw" element={<UpdatePw />} />
                   <Route path="/updatePw2" element={<UpdatePw2 />} />
-                  <Route path="/mypage/*" element={<Mypage />} />
+                  {/*<Route path="/mypage/*" element={<Mypage />} /> */}
+                  <Route
+                    path="/mypage/*"
+                    element={<ProtectedRouting element={<Mypage />} />}
+                  />
                   <Route path="/review/*" element={<ReviewMain />}></Route>
                   <Route
                     path="/admin/*"

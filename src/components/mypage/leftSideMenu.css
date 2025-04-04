@@ -11,3 +11,7 @@
 .side-menu .active-link > svg {
   fill: var(--main2);
 }
+
+.join-chevron-icon {
+  float: right;
+}

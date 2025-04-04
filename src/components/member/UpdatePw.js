@@ -17,7 +17,7 @@ const UpdatePw = () => {
   const [emailCheckMessage, setEmailCheckMessage] = useState(""); // 이메일 중복 검사 메시지
   const [emailCheckColor, setEmailCheckColor] = useState(""); // 이메일 중복 검사 메시지 색상 (유효/오류)
   const [isEmailVerified, setIsEmailVerified] = useState(false); // 이메일 인증 버튼 표시 여부
-  const [timeLeft, setTimeLeft] = useState(180); // 카운트다운 타이머 변수 10분 (600초) 설정
+  const [timeLeft, setTimeLeft] = useState(180); // 카운트다운 타이머 변수 3분 (180초) 설정
 
   // 입력값 변경 처리 함수
   const inputMemberData = (e) => {
@@ -84,6 +84,7 @@ const UpdatePw = () => {
         setCode(res.data); // 서버에서 받은 인증 코드 저장
         setCodeSentTime(Date.now()); // 인증 코드가 전송된 시간 저장
         setIsVerificationSent(true); // 인증 코드 발송 상태로 변경
+        setTimeLeft(180); // 카운트다운 타이머 변수 3분 (180초) 설정
       })
       .catch((error) => {});
   };
