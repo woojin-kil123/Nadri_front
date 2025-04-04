@@ -8,7 +8,7 @@ export default function RecommandSlider({ on }) {
   const [cards, setCards] = useState([]);
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACK_SERVER}/content?reqPage=1`)
+      .get(`${process.env.REACT_APP_BACK_SERVER}/place?reqPage=1`)
       .then((res) => {
         setCards(res.data.list);
       })
@@ -35,7 +35,7 @@ export default function RecommandSlider({ on }) {
     <div className="recommand-slider">
       <Slider {...settings}>
         {Array.isArray(cards) &&
-          cards.map((card, i) => <ListCard key={"card-" + i} content={card} />)}
+          cards.map((card, i) => <ListCard key={"card-" + i} place={card} />)}
       </Slider>
     </div>
   );
