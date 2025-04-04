@@ -50,7 +50,7 @@ const UserInfo = () => {
             member
           )
           .then((res) => {
-            if (res.data === 1) {
+            if (res.data === 2) {
               Swal.fire({
                 title: "회원 탈퇴 완료",
                 icon: "info",

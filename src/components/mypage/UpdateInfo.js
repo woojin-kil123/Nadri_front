@@ -108,7 +108,6 @@ const UpdateInfo = () => {
     }
   };
 
-  // 이미지 선택 후 미리보기 처리
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -118,6 +117,8 @@ const UpdateInfo = () => {
         updateMemberProfileImg(file); // 프로필 이미지 상태 업데이트
       };
       reader.readAsDataURL(file); // 파일을 읽어 URL 형식으로 변환
+    } else {
+      updateMemberProfileImg(null); // 이미지를 수정하지 않으면 null로 설정
     }
   };
 
@@ -199,6 +200,7 @@ const UpdateInfo = () => {
     form.append("memberEmail", member.memberEmail);
     form.append("memberNickname", member.memberNickname);
     form.append("memberPhone", member.memberPhone);
+    form.append("memberBirth", member.memberBirth);
     form.append("memberGender", member.memberGender);
     if (member.profileImg) {
       form.append("uploadProfile", member.profileImg); // 실제 이미지 파일 객체를 추가
@@ -207,6 +209,7 @@ const UpdateInfo = () => {
     console.log(member.memberNickname);
     console.log(member.memberPhone);
     console.log(member.memberGender);
+    console.log(member.memberBirth);
     console.log(member.profileImg);
     console.log(form);
     axios
@@ -407,7 +410,6 @@ const UpdateInfo = () => {
                       >
                         <option value="">월</option>
                         {months.map((monthOption) => {
-                          console.log(Number(month), monthOption, "asdf");
                           return (
                             <option key={monthOption} value={monthOption}>
                               {monthOption}월
