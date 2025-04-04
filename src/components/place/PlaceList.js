@@ -2,15 +2,17 @@ import { useEffect, useState } from "react";
 import LeftSideMenu from "../utils/LeftSideMenu";
 import { Route, Routes, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
-import ContentListFrm from "./ContentListFrm"; // ← 변경된 이름
-import "./content.css";
+import PlaceListFrm from "./PlaceListFrm"; // ← 이름 반영 완료
+import "./place.css"; // ← CSS 파일명도 일치시키는 걸 추천
+import ListCard from "../utils/ListCard";
 
-const ContentList = () => {
+const PlaceList = () => {
   const backServer = process.env.REACT_APP_BACK_SERVER;
   const { menuType } = useParams();
   const location = useLocation();
+  const [cards, setCards] = useState([]);
 
-  const [contentList, setContentList] = useState([]);
+  const [placeList, setPlaceList] = useState([]);
   const [pi, setPi] = useState({});
   const [reqPage, setReqPage] = useState(1);
 
@@ -25,14 +27,11 @@ const ContentList = () => {
 
   useEffect(() => {
     if (!currentMenu) return;
-
     axios
-      .get(
-        `${backServer}/content?reqPage=${reqPage}&contentTypeId=${currentMenu.id}`
-      )
+      .get(`${backServer}/place/spot?reqPage=1`)
       .then((res) => {
         console.log(res);
-        setContentList(res.data.list);
+        setCards(res.data.list);
         setPi(res.data.pi);
       })
       .catch((err) => {
@@ -41,33 +40,39 @@ const ContentList = () => {
   }, [reqPage, menuType]);
 
   return (
-    <div className="content-wrap">
-      <div className="page-title">여기서 여행컨텐츠 조회</div>
+    <div className="place-wrap">
+      <div className="page-title">여기서 여행지 조회</div>
       <div className="page-content">
-        <div className="contentlist-side">
+        <div className="placelist-side">
           <section className="section menu-box">
             <LeftSideMenu menus={menus} />
-          </section>
-        </div>
-        <div className="contentlist-content">
-          <ul className="tour-wrap">
             <Routes>
               <Route
                 path=":menuType"
                 element={
-                  <ContentListFrm
-                    contentTypeId={currentMenu.id}
-                    contentList={contentList}
+                  <PlaceListFrm
+                    placeTypeId={currentMenu.id}
+                    placeList={placeList}
                     pi={pi}
                   />
                 }
               />
             </Routes>
-          </ul>
+          </section>
+        </div>
+        <div className="placelist-content">
+          <div className="place-wrap">
+            <div className="card-grid">
+              {Array.isArray(cards) &&
+                cards.map((card, i) => (
+                  <ListCard key={"card-" + i} place={card} />
+                ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default ContentList;
+export default PlaceList;
