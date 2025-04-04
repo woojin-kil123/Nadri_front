@@ -25,7 +25,7 @@ const LoginRouting = ({ element }) => {
   if (!isLogin && !interception) return null;
 
   //replace: 로그인 페이지로 이동한 뒤 뒤로가기를 눌러도 진입을 시도했던 페이지로 다시 돌아가지 않게 해 줌
-  if (!interception) return <Navigate to="/login" replace />;
+  if (interception) return <Navigate to="/login" replace />;
 
   return element;
 };

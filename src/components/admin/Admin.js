@@ -19,7 +19,6 @@ const Admin = () => {
       </div>
       <div className="content-wrap">
         <section className="section">
-          <h3>관리자페이지</h3>
           <Outlet />
         </section>
       </div>

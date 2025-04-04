@@ -32,7 +32,7 @@ import AdminRouting from "./components/utils/AdminRouting";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Admin from "./components/admin/Admin";
-import Terms from "./components/common/Terms";
+import Event from "./components/admin/Event";
 
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
@@ -79,12 +79,12 @@ function App() {
                     path="/admin/*"
                     element={<AdminRouting element={<Admin />} />}
                   >
-                    <Route path="event" element={<Terms />} />
-                    <Route path="partner" element={<Terms />} />
-                    <Route path="review" element={<Terms />} />
-                    <Route path="member" element={<Terms />} />
-                    <Route path="inquiry" element={<Terms />} />
-                    <Route path="contents" element={<Terms />} />
+                    <Route path="event" element={<Event />} />
+                    <Route path="partner" element={<Event />} />
+                    <Route path="review" element={<Event />} />
+                    <Route path="member" element={<Event />} />
+                    <Route path="inquiry" element={<Event />} />
+                    <Route path="contents" element={<Event />} />
                   </Route>
                   <Route
                     path="/review/detail/:reviewNo"
