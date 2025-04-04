@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
 
 //비로그인 처리 시 사용하세요
-const ProtectedRouting = ({ element }) => {
+const LoginRouting = ({ element }) => {
   const isLogin = useRecoilValue(isLoginState);
   const [interception, setInterCeption] = useState(false);
 
@@ -30,4 +30,4 @@ const ProtectedRouting = ({ element }) => {
   return element;
 };
 
-export default ProtectedRouting;
+export default LoginRouting;

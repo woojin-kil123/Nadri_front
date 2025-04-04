@@ -1,0 +1,38 @@
+/*관리자 페이지 기본*/
+.admin-wrap {
+  display: flex;
+  gap: 10px;
+}
+.admin-wrap .content-wrap {
+  width: 75%;
+}
+
+.admin-menu button {
+  padding: 0px 20px;
+  font-family: ns-r;
+  font-size: 20px;
+}
+.admin-menu .MuiTabs-list {
+  gap: 20px;
+}
+.admin-wrap .admin-menu .Mui-selected {
+  background-color: var(--gray8);
+  color: var(--main2);
+}
+.admin-menu .MuiTabs-indicator {
+  background-color: var(--main2);
+  width: 5px;
+}
+/*이벤트페이지*/
+.event-page {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+.event-page section > h2 {
+  padding-bottom: 40px;
+}
+.event-list {
+  display: flex;
+  justify-content: space-evenly;
+}
