@@ -169,3 +169,63 @@
 .user-upload-profile-title > div > button:hover {
   background-color: #166139;
 }
+
+/*이용약관*/
+.join-agree-wrap {
+  width: 600px;
+  margin: 0 auto;
+  height: 30px;
+  margin-bottom: 30px;
+}
+.join-agree-first {
+  margin-top: 60px;
+  margin-bottom: 40px;
+}
+.join-agree-first > input {
+  margin-right: 15px;
+}
+.join-agree-first > label {
+  font-size: 25px;
+  font-weight: 600;
+  display: inline-block;
+}
+.join-agree-first p {
+  font-size: 15px;
+  font-weight: 100;
+  color: #777;
+  display: inline-block;
+}
+.join-agree-first input[type="checkbox"] {
+  transform: scale(1.6);
+}
+.join-agree-table li {
+  margin-top: 40px;
+}
+.join-agree-table li > input {
+  margin-right: 15px;
+}
+.join-agree-table li > label {
+  font-size: 18px;
+}
+.join-agree-table li > input[type="checkbox"] {
+  transform: scale(1.2);
+}
+
+.agree-content {
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 10px;
+  border-left: 1px solid rgb(201, 201, 201);
+  border-right: 1px solid rgb(201, 201, 201);
+  margin-top: 30px;
+}
+
+label[for="check2"] {
+  height: 70px; /* 원하는 height 값 */
+}
+.join-chevron-icon {
+}
+.agree-content2 > h3 {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}

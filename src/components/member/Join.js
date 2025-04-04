@@ -18,7 +18,7 @@ const Join = () => {
   const [emailCheckMessage, setEmailCheckMessage] = useState(""); // 이메일 중복 검사 메시지
   const [emailCheckColor, setEmailCheckColor] = useState(""); // 이메일 중복 검사 메시지 색상
   const [isEmailVerified, setIsEmailVerified] = useState(false); // 이메일 인증 버튼 표시 여부
-  const [timeLeft, setTimeLeft] = useState(""); // 카운트다운 타이머 변수 3분 (180초) 설정
+  const [timeLeft, setTimeLeft] = useState(180); // 카운트다운 타이머 변수 3분 (180초) 설정
 
   // 입력값을 처리하는 함수
   const inputMemberData = (e) => {
@@ -113,7 +113,7 @@ const Join = () => {
       }).then((result) => {
         if (result.isConfirmed) {
           // 인증 완료 후 회원 가입 2단계로 이동
-          navigate("/join2", {
+          navigate("/join3", {
             state: { email: member.memberEmail, code: member.memberCode },
           });
         }
