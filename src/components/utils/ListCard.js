@@ -5,48 +5,46 @@ import { useNavigate } from "react-router-dom";
 
 export default function ListCard(props) {
   const navigate = useNavigate();
-  const content = props.content;
+  const place = props.place;
   return (
     <>
-      {!content ? (
+      {!place ? (
         <div>내용 없음</div>
       ) : (
         <div
           className="card"
           onClick={() => {
-            content.route && navigate(content.route);
+            place.route && navigate(place.route);
           }}
         >
           <div className="image-container">
             <img
-              src={
-                content.contentThumb ? content.contentThumb : "/image/dora.png"
-              }
+              src={place.placeThumb ? place.placeThumb : "/image/dora.png"}
               className="card-image"
             />
             <div className="heart-icon">
               <FavoriteIcon
                 style={{ color: "#4CAF50" }}
-                onClick={content.favorFunc}
+                onClick={place.favorFunc}
               />
             </div>
           </div>
           <div className="card-content">
             <p className="location">
-              {content.areaName} &nbsp;
-              {content.sigunguName}
+              {place.areaName} &nbsp;
+              {place.sigunguName}
             </p>
-            <h3 className="title">{content.contentTitle}</h3>
+            <h3 className="title">{place.placeTitle}</h3>
             <div className="rating">
               <span className="stars">
-                <StarRating rating={content.rating} />
+                <StarRating rating={place.rating} />
               </span>
               <span className="score">
-                {content.rating}
-                {content.ratingCount && `(${content.ratingCount})`}
+                {place.rating}
+                {place.ratingCount && `(${place.ratingCount})`}
               </span>
             </div>
-            <p className="category">{content.contentCat3}</p>
+            <p className="category">{place.placeCat3}</p>
           </div>
         </div>
       )}
