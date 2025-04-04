@@ -70,7 +70,11 @@ function App() {
                   <Route path="/join2" element={<Join2 />} />
                   <Route path="/updatePw" element={<UpdatePw />} />
                   <Route path="/updatePw2" element={<UpdatePw2 />} />
-                  <Route path="/mypage/*" element={<Mypage />} />
+                  {/*<Route path="/mypage/*" element={<Mypage />} /> */}
+                  <Route
+                    path="/mypage/*"
+                    element={<ProtectedRouting element={<Mypage />} />}
+                  />
                   <Route path="/review/*" element={<ReviewMain />}></Route>
                   <Route
                     path="/review/detail/:reviewNo"

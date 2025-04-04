@@ -108,6 +108,7 @@ const UpdateInfo = () => {
     }
   };
 
+  // 이미지 선택 후 미리보기 처리
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -117,8 +118,6 @@ const UpdateInfo = () => {
         updateMemberProfileImg(file); // 프로필 이미지 상태 업데이트
       };
       reader.readAsDataURL(file); // 파일을 읽어 URL 형식으로 변환
-    } else {
-      updateMemberProfileImg(null); // 이미지를 수정하지 않으면 null로 설정
     }
   };
 
@@ -313,6 +312,7 @@ const UpdateInfo = () => {
                       name="memberNickname"
                       id="memberNickname"
                       value={member.memberNickname}
+                      disabled
                       onChange={inputMemberData}
                       onBlur={checkNickname} // 닉네임이 입력되면 유효성 및 중복 체크
                       placeholder="자신을 표현할 수 있는 이름을 지어주세요."

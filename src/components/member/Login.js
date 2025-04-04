@@ -126,7 +126,7 @@ const Login = () => {
                   id="memberEmail"
                   value={member.memberEmail}
                   onChange={changeMember} // 입력값 변경 시 상태 업데이트
-                  onBlur={handleEmailBlur} // 포커스를 떴을 때 이메일 검사
+                  //onBlur={handleEmailBlur} // 포커스를 떴을 때 이메일 검사
                 />
               </div>
               {/* 이메일 오류 메시지 표시 */}
@@ -145,7 +145,7 @@ const Login = () => {
                   id="memberPw"
                   value={member.memberPw}
                   onChange={changeMember} // 입력값 변경 시 상태 업데이트
-                  onBlur={handlePasswordBlur} // 포커스를 떴을 때 비밀번호 검사
+                  //onBlur={handlePasswordBlur} // 포커스를 떴을 때 비밀번호 검사
                 />
               </div>
               {/* 비밀번호 오류 메시지 표시 */}
