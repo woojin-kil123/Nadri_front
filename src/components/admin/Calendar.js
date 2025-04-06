@@ -14,6 +14,10 @@ export default function Calendar({ placeType, setIsUpdate }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [insertOpen, setInsertOpen] = useState(false);
   const [month, setMonth] = useState(today.slice(0, 7));
+  const [tooltipEvent, setTooltipEvent] = useState(null);
+  const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
+  const tooltipTimeoutRef = useRef(null);
+
   const holiday = {
     "2025-01-01": "신정",
     "2025-03-01": "삼일절",
@@ -24,19 +28,24 @@ export default function Calendar({ placeType, setIsUpdate }) {
     "2025-10-09": "한글날",
     "2025-12-25": "성탄절",
   };
-  const [holidays, setHolidays] = useState({
-    ...holiday,
-    // 여기에 사용자 등록 이벤트도 포함
-  });
+  const [holidays, setHolidays] = useState({ ...holiday });
+
+  const addOneDay = (dateStr) => {
+    const date = new Date(dateStr);
+    date.setDate(date.getDate() + 1);
+    return date.toISOString().slice(0, 10);
+  };
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/event/${month}`)
       .then((res) => {
-        const mappedEvents = res.data.map((event) => ({
+        const mappedEvents = res.data.map((event, i) => ({
           title: event.eventTitle,
           start: event.startDate,
-          end: event.endDate,
-          allDay: true, // 하루 종일 일정이면 true
+          end: addOneDay(event.endDate),
+          allDay: true,
+          classNames: [`event-type-${(i % 5) + 1}`],
           extendedProps: {
             placeTypeId: placeType.find((type) => type.id === event.placeTypeId)
               ?.name,
@@ -47,9 +56,7 @@ export default function Calendar({ placeType, setIsUpdate }) {
       });
   }, [month]);
 
-  const handleEventClick = () => {
-    setModalOpen(true);
-  };
+  const handleEventClick = () => setModalOpen(true);
   const handleEventDrop = () => {};
 
   return (
@@ -62,48 +69,69 @@ export default function Calendar({ placeType, setIsUpdate }) {
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         locale={koLocale}
-        selectable={true}
-        editable={true}
         datesSet={(arg) => {
-          const currentStart = arg.view.currentStart;
-          const year = currentStart.getFullYear();
-          const monthNum = String(currentStart.getMonth() + 1).padStart(2, "0");
-          setMonth(`${year}-${monthNum}`);
+          const start = arg.view.currentStart;
+          setMonth(
+            `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(
+              2,
+              "0"
+            )}`
+          );
         }}
         customButtons={{
           insert: {
             text: "일정 추가",
-            click: () => {
-              setInsertOpen(true);
-            },
+            click: () => setInsertOpen(true),
           },
         }}
-        headerToolbar={{
-          left: "insert",
-          center: "title",
-          right: "prev,next",
-        }}
-        events={events.map((e, i) => ({
-          ...e,
-          classNames: ["event-type-" + (i + 1)],
-        }))}
+        headerToolbar={{ left: "insert", center: "title", right: "prev,next" }}
+        eventContent={() => ({ html: "" })}
+        events={events}
         eventClick={handleEventClick}
-        eventDrop={handleEventDrop}
+        eventDidMount={(info) => {
+          info.el.setAttribute("data-title", info.event.title);
+        }}
+        eventMouseEnter={(info) => {
+          // 1. 기존 타이머 클리어
+          if (tooltipTimeoutRef.current) {
+            clearTimeout(tooltipTimeoutRef.current);
+            tooltipTimeoutRef.current = null;
+          }
+
+          // 2. 위치와 이벤트 설정
+          const rect = info.el.getBoundingClientRect();
+          setTooltipPosition({
+            top: rect.top + window.scrollY,
+            left: rect.left + window.scrollX,
+          });
+          setTooltipEvent(info.event);
+        }}
+        eventMouseLeave={() => {
+          // 3. 툴팁 닫기를 딜레이
+          tooltipTimeoutRef.current = setTimeout(() => {
+            setTooltipEvent(null);
+          }, 300);
+        }}
         dayCellContent={(arg) => {
           const dateStr = arg.date.toISOString().slice(0, 10);
           const isHoliday = holidays[dateStr];
-          const dayNum = arg.date.getDate();
-
           return (
             <div className="calendar-cell-content">
               <div className={isHoliday ? "holiday-number" : "day-number"}>
-                {dayNum}
+                {arg.date.getDate()}
               </div>
               {isHoliday && <div className="holiday-label">{isHoliday}</div>}
             </div>
           );
         }}
       />
+      {tooltipEvent && (
+        <EventTooltip
+          event={tooltipEvent}
+          position={tooltipPosition}
+          onMouseLeave={() => setTooltipEvent(null)}
+        />
+      )}
       {insertOpen && (
         <InsertModal
           onClose={() => setInsertOpen(false)}
@@ -115,6 +143,31 @@ export default function Calendar({ placeType, setIsUpdate }) {
     </div>
   );
 }
+
+const EventTooltip = ({ event, position, onMouseLeave }) => {
+  if (!event) return null;
+  const eventImg = event.extendedProps?.eventImg;
+  return (
+    <div
+      className="tooltip-card"
+      style={{ top: position.top + 30, left: position.left + 20 }}
+      onMouseLeave={onMouseLeave}
+    >
+      <img
+        src={
+          eventImg
+            ? `${process.env.REACT_APP_BACK_SERVER}/event/thumb/${eventImg}`
+            : "/image/default_img.png"
+        }
+      />
+      <div className="tooltip-title">{event.title}</div>
+      <div className="tooltip-sub">
+        {event.startStr} ~ {event.endStr}
+      </div>
+    </div>
+  );
+};
+
 const CalendarModal = ({ modalInner, onClose, isEditing }) => {
   return (
     <div className="modal">
