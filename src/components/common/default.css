@@ -182,7 +182,8 @@ section.section.bg-section {
   text-align: left;
 }
 .tbl th {
-  background-color: rgba(101, 146, 254, 0.2);
+  background-color: var(--main2);
+  color: var(--gray8);
 }
 .tbl.tbl-hover tbody > tr:hover {
   cursor: pointer;

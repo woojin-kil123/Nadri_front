@@ -20,16 +20,68 @@ const Event = () => {
         setOnGoing(res.data);
       });
   }, [isUpdate]);
-
+  const [end, setEnd] = useState([]);
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACK_SERVER}/event/end?date=${today}`)
+      .then((res) => {
+        setEnd(res.data);
+      });
+  }, [isUpdate]);
   return (
     <div className="event-page">
-      <section className="upcoming-events">
+      <section className="ongoing-event">
         <h2>진행 중인 이벤트</h2>
         <EventSlide onGoing={onGoing} placeType={placeType} />
       </section>
       <section className="calendar-section">
         <h2>일정 관리</h2>
-        <Calendar placeType={placeType} setIsUpdate={setIsUpdate} />
+        <Calendar
+          placeType={placeType}
+          setIsUpdate={setIsUpdate}
+          isUpdate={isUpdate}
+        />
+      </section>
+      <section className="end-event">
+        <h2>종료된 이벤트</h2>
+        <table className="tbl">
+          <thead>
+            <tr>
+              <th>이벤트 제목</th>
+              <th>이벤트 내용</th>
+              <th>이벤트 종료일</th>
+              <th>삭제</th>
+            </tr>
+          </thead>
+          <tbody>
+            {end.map((event, i) => (
+              <tr key={"end-" + i}>
+                <td>{event.eventTitle}</td>
+                <td style={{ width: "50%" }}>{event.eventContent}</td>
+                <td>{event.endDate}</td>
+                <td>
+                  <button
+                    className="btn-primary"
+                    onClick={() => {
+                      const eventNo = event.eventNo;
+                      axios
+                        .delete(
+                          `${process.env.REACT_APP_BACK_SERVER}/event/${eventNo}`
+                        )
+                        .then((res) => {
+                          if (res.data > 0) {
+                            setIsUpdate((prev) => !prev);
+                          }
+                        });
+                    }}
+                  >
+                    삭제
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
     </div>
   );
@@ -92,7 +144,7 @@ const EventSlide = ({ onGoing, placeType }) => {
               <div className="event-card" key={index}>
                 <div className="event-thumbnail">
                   <img
-                    src={`${process.env.REACT_APP_BACK_SERVER}/event/${event.eventImg}`}
+                    src={`${process.env.REACT_APP_BACK_SERVER}/event/thumb/${event.eventImg}`}
                     style={{
                       width: "100%",
                       height: "100%",

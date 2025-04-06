@@ -24,6 +24,3 @@ npm install react-slick slick-carousel
 
 길우진 2025-04-04
 npm install @fullcalendar/react @fullcalendar/daygrid @fullcalendar/interaction
-
-길우진 2025-04-06
-npm install date-fns date-fns-tz

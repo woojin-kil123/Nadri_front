@@ -7,12 +7,14 @@ import "./calendar.css";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { getKoreanToday } from "../utils/metaSet";
+import UpdateModal from "./UpdateModal";
 
-export default function Calendar({ placeType, setIsUpdate }) {
+export default function Calendar({ placeType, setIsUpdate, isUpdate }) {
   const today = getKoreanToday();
   const [events, setEvents] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [updateEvent, setUpdateEvent] = useState({});
   const [insertOpen, setInsertOpen] = useState(false);
+  const [updateOpen, setUpdateOpen] = useState(false);
   const [month, setMonth] = useState(today.slice(0, 7));
   const [tooltipEvent, setTooltipEvent] = useState(null);
   const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
@@ -41,23 +43,17 @@ export default function Calendar({ placeType, setIsUpdate }) {
       .get(`${process.env.REACT_APP_BACK_SERVER}/event/${month}`)
       .then((res) => {
         const mappedEvents = res.data.map((event, i) => ({
-          title: event.eventTitle,
           start: event.startDate,
           end: addOneDay(event.endDate),
           allDay: true,
           classNames: [`event-type-${(i % 5) + 1}`],
           extendedProps: {
-            placeTypeId: placeType.find((type) => type.id === event.placeTypeId)
-              ?.name,
-            eventImg: event.eventImg,
+            ...res.data[i],
           },
         }));
         setEvents(mappedEvents);
       });
-  }, [month]);
-
-  const handleEventClick = () => setModalOpen(true);
-  const handleEventDrop = () => {};
+  }, [month, isUpdate]);
 
   return (
     <div className="calendar-wrapper">
@@ -87,7 +83,10 @@ export default function Calendar({ placeType, setIsUpdate }) {
         headerToolbar={{ left: "insert", center: "title", right: "prev,next" }}
         eventContent={() => ({ html: "" })}
         events={events}
-        eventClick={handleEventClick}
+        eventClick={(info) => {
+          setUpdateEvent(info.event);
+          setUpdateOpen(true);
+        }}
         eventDidMount={(info) => {
           info.el.setAttribute("data-title", info.event.title);
         }}
@@ -133,20 +132,29 @@ export default function Calendar({ placeType, setIsUpdate }) {
         />
       )}
       {insertOpen && (
-        <InsertModal
+        <UpdateModal
           onClose={() => setInsertOpen(false)}
           placeType={placeType}
           setIsUpdate={setIsUpdate}
         />
       )}
-      {modalOpen && <CalendarModal onClose={() => setModalOpen(false)} />}
+      {updateOpen && (
+        <UpdateModal
+          onClose={() => setUpdateOpen(false)}
+          placeType={placeType}
+          setIsUpdate={setIsUpdate}
+          event={updateEvent}
+        />
+      )}
     </div>
   );
 }
 
 const EventTooltip = ({ event, position, onMouseLeave }) => {
   if (!event) return null;
-  const eventImg = event.extendedProps?.eventImg;
+
+  const data = event.extendedProps;
+  const eventImg = data.eventImg;
   return (
     <div
       className="tooltip-card"
@@ -160,207 +168,9 @@ const EventTooltip = ({ event, position, onMouseLeave }) => {
             : "/image/default_img.png"
         }
       />
-      <div className="tooltip-title">{event.title}</div>
+      <div className="tooltip-title">{data.eventTitle}</div>
       <div className="tooltip-sub">
         {event.startStr} ~ {event.endStr}
-      </div>
-    </div>
-  );
-};
-
-const CalendarModal = ({ modalInner, onClose, isEditing }) => {
-  return (
-    <div className="modal">
-      <div className="modal-content">
-        {modalInner}
-        <div className="modal-buttons">
-          <button onClick={onClose}>닫기</button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const InsertModal = ({ onClose, placeType, setIsUpdate }) => {
-  const [formData, setFormData] = useState({
-    eventTitle: "",
-    placeTypeId: "",
-    eventContent: "",
-    startDate: "",
-    endDate: "",
-    eventImg: "",
-  });
-  const [thumb, setThumb] = useState();
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-  const changeThumb = (file) => {
-    if (file) {
-      const thumbUrl = URL.createObjectURL(file);
-      setThumb(thumbUrl);
-    }
-  };
-  //언마운트시 자원반환
-  useEffect(() => {
-    return () => {
-      if (thumb) {
-        URL.revokeObjectURL(thumb);
-      }
-    };
-  }, [thumb]);
-  const onSave = () => {
-    if (!thumb) {
-      Swal.fire({
-        icon: "warning",
-        title: "이미지가 없습니다.",
-        text: "이벤트 이미지를 확인해주세요",
-        scrollbarPadding: false,
-        willOpen: () => {
-          // ✅ body 직접 초기화
-          document.body.style.overflow = "unset";
-          document.body.style.paddingRight = "0px";
-        },
-        didClose: () => {
-          // ✅ alert 닫힐 때도 복원 (중요!)
-          document.body.style.overflow = "unset";
-          document.body.style.paddingRight = "0px";
-        },
-      });
-      return;
-    }
-    console.log(formData);
-    const form = new FormData();
-    form.append("eventTitle", formData.eventTitle);
-    form.append("placeTypeId", formData.placeTypeId);
-    form.append("eventContent", formData.eventContent);
-    form.append("startDate", formData.startDate);
-    form.append("endDate", formData.endDate);
-    form.append("img", formData.eventImg);
-    axios
-      .post(`${process.env.REACT_APP_BACK_SERVER}/event`, form, {
-        headers: {
-          contentType: "multipart/form-data",
-          processData: false,
-        },
-      })
-      .then((res) => {
-        if (res.data > 0) {
-          setFormData({
-            eventTitle: "",
-            placeTypeId: "",
-            eventContent: "",
-            startDate: "",
-            endDate: "",
-            eventImg: "",
-          });
-          setIsUpdate((prev) => !prev);
-          onClose();
-        }
-      });
-  };
-  return (
-    <div className="modal-form-wrapper">
-      <div className="modal-form-content">
-        <form
-          className="modal-form-layout-column"
-          onSubmit={(e) => {
-            e.preventDefault();
-            onSave();
-          }}
-        >
-          <div className="form-column image-side">
-            <label htmlFor="imageUpload" className="image-label">
-              <div className="image-preview">
-                <img
-                  src={thumb ? thumb : "/image/default_img.png"}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "contain",
-                    cursor: "pointer",
-                  }}
-                ></img>
-              </div>
-            </label>
-            <input
-              type="file"
-              id="imageUpload"
-              name="image"
-              accept="image/*"
-              style={{ display: "none" }}
-              onChange={(e) => {
-                const file = e.target.files[0];
-                changeThumb(file);
-                setFormData((prev) => ({ ...prev, eventImg: file })); // 프로필 이미지 상태 업데이트
-              }}
-            />
-          </div>
-          <div className="modal-form-top">
-            <div className="form-column input-side">
-              <div className="form-grid">
-                <label>
-                  제목
-                  <input
-                    type="text"
-                    name="eventTitle"
-                    value={formData.eventTitle || ""}
-                    onChange={handleChange}
-                    required
-                  />
-                </label>
-                <label>
-                  종류
-                  <select name="placeTypeId" onChange={handleChange} required>
-                    <option value="">선택</option>
-                    {placeType.map((type, i) => (
-                      <option key={"eventType" + i} value={type.id}>
-                        {type.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="full-width">
-                  내용
-                  <textarea
-                    type="text"
-                    name="eventContent"
-                    value={formData.eventContent || ""}
-                    onChange={handleChange}
-                  />
-                </label>
-                <label>
-                  시작일
-                  <input
-                    type="date"
-                    name="startDate"
-                    value={formData.startDate || ""}
-                    onChange={handleChange}
-                    required
-                  />
-                </label>
-                <label>
-                  종료일
-                  <input
-                    type="date"
-                    name="endDate"
-                    value={formData.endDate || ""}
-                    onChange={handleChange}
-                    min={formData.startDate}
-                    required
-                  />
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div className="modal-form-buttons center">
-            <button type="submit">등록하기</button>
-            <button type="button" onClick={onClose}>
-              닫기
-            </button>
-          </div>
-        </form>
       </div>
     </div>
   );
