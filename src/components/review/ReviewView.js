@@ -99,7 +99,7 @@ const ReviewView = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [comments]);
+  }, []);
   return (
     <section className="section">
       <div className="page-title">리뷰 상세보기</div>
@@ -140,6 +140,7 @@ const ReviewView = () => {
                 form.append("reviewNo", reviewNo);
                 form.append("commContent", newComment);
                 form.append("memberNickname", memberNickname);
+                console.log(form);
                 axios
                   .post(`${process.env.REACT_APP_BACK_SERVER}/comm`, form)
                   .then((res) => {
