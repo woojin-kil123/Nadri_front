@@ -7,15 +7,33 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import axios from "axios";
 
 const Main = () => {
-  const [planCategory, setPlanCategory] = useState([1, 2, 3, 4, 5]);
-  const [onPlanCategory, setOnPlanCategory] = useState("인기");
+  const [planCategory, setPlanCategory] = useState([
+    {
+      name: "인기",
+      id: 1,
+    },
+    {
+      name: "최신",
+      id: 2,
+    },
+    {
+      name: "혼자",
+      id: 3,
+    },
+    {
+      name: "여럿이",
+      id: 4,
+    },
+  ]);
+  const [onPlan, setOnPlan] = useState("인기");
+  //placeType 별 조회
   const [placeType, setPlaceType] = useState([]);
-  const [onPlaceType, setOnPlaceType] = useState("");
-  const [contentList, setContentList] = useState([]);
+  const [onPlace, setOnPlace] = useState("");
+  const [onReview, setOnReview] = useState("");
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BACK_SERVER}/place/type`).then((res) => {
       setPlaceType(res.data);
-      setOnPlaceType(res.data[0].name);
+      setOnPlace(res.data[0].name);
     });
   }, []);
   return (
@@ -28,11 +46,11 @@ const Main = () => {
         <div className="recommand-nav">
           <FilterNavWithPanel
             categories={planCategory}
-            on={onPlanCategory}
-            setOn={setOnPlanCategory}
+            on={onPlan}
+            setOn={setOnPlan}
           />
         </div>
-        <RecommandSlider on={onPlanCategory} />
+        <RecommandSlider on={onPlan} />
       </div>
       <div className="recommand-wrap">
         <div className="recommand-title">
@@ -41,18 +59,22 @@ const Main = () => {
         <div className="recommand-nav">
           <FilterNavWithPanel
             categories={placeType}
-            on={onPlaceType}
-            setOn={setOnPlaceType}
+            on={onPlace}
+            setOn={setOnPlace}
           />
         </div>
-        <RecommandSlider on={onPlaceType} />
+        <RecommandSlider on={onPlace} />
       </div>
       <div className="recommand-wrap">
         <div className="recommand-title">
           <h2>인기 리뷰</h2>
         </div>
         <div className="recommand-nav">
-          <FilterNavWithPanel categories={placeType} />
+          <FilterNavWithPanel
+            categories={placeType}
+            on={onReview}
+            setOn={setOnReview}
+          />
         </div>
         <div className="hot-review-wrap">
           <div className="main-review">
