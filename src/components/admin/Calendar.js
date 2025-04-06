@@ -1,13 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import koLocale from "@fullcalendar/core/locales/ko";
 import "./calendar.css";
 import axios from "axios";
+import Swal from "sweetalert2";
+import { Warning } from "@mui/icons-material";
 
 export default function Calendar() {
   const [events, setEvents] = useState([]);
+  const [placeType, setPlaceType] = useState([]);
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_BACK_SERVER}/place/type`).then((res) => {
+      setPlaceType(res.data);
+    });
+  }, []);
   const [modalOpen, setModalOpen] = useState(false);
   const [insertOpen, setInsertOpen] = useState(false);
   const holiday = {
@@ -68,7 +76,12 @@ export default function Calendar() {
           );
         }}
       />
-      {insertOpen && <InsertModal onClose={() => setInsertOpen(false)} />}
+      {insertOpen && (
+        <InsertModal
+          onClose={() => setInsertOpen(false)}
+          placeType={placeType}
+        />
+      )}
       {modalOpen && <CalendarModal onClose={() => setModalOpen(false)} />}
     </div>
   );
@@ -86,23 +99,82 @@ const CalendarModal = ({ modalInner, onClose, isEditing }) => {
   );
 };
 
-const InsertModal = ({ onSave, onClose }) => {
+const InsertModal = ({ onClose, placeType }) => {
   const [formData, setFormData] = useState({
-    title: "",
-    type: "",
-    description: "",
-    start: "",
-    end: "",
-    image: File,
+    eventTitle: "",
+    placeTypeId: "",
+    eventContent: "",
+    startDate: "",
+    endDate: "",
+    eventImg: "",
   });
   const [thumb, setThumb] = useState();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-  const changeThumb = (e) => {
-    const file = e.target.files[0];
-    setThumb(file);
+  const changeThumb = (file) => {
+    if (file) {
+      const thumbUrl = URL.createObjectURL(file);
+      setThumb(thumbUrl);
+    }
+  };
+  //언마운트시 자원반환
+  useEffect(() => {
+    return () => {
+      if (thumb) {
+        URL.revokeObjectURL(thumb);
+      }
+    };
+  }, [thumb]);
+  const onSave = () => {
+    if (!thumb) {
+      Swal.fire({
+        icon: "warning",
+        title: "이미지가 없습니다.",
+        text: "이벤트 이미지를 확인해주세요",
+        scrollbarPadding: false,
+        willOpen: () => {
+          // ✅ body 직접 초기화
+          document.body.style.overflow = "unset";
+          document.body.style.paddingRight = "0px";
+        },
+        didClose: () => {
+          // ✅ alert 닫힐 때도 복원 (중요!)
+          document.body.style.overflow = "unset";
+          document.body.style.paddingRight = "0px";
+        },
+      });
+      return;
+    }
+    console.log(formData);
+    const form = new FormData();
+    form.append("eventTitle", formData.eventTitle);
+    form.append("placeTypeId", formData.placeTypeId);
+    form.append("eventContent", formData.eventContent);
+    form.append("startDate", formData.startDate);
+    form.append("endDate", formData.endDate);
+    form.append("img", formData.eventImg);
+    axios
+      .post(`${process.env.REACT_APP_BACK_SERVER}/event`, form, {
+        headers: {
+          contentType: "multipart/form-data",
+          processData: false,
+        },
+      })
+      .then((res) => {
+        if (res.data > 0) {
+          setFormData({
+            eventTitle: "",
+            placeTypeId: "",
+            eventContent: "",
+            startDate: "",
+            endDate: "",
+            eventImg: "",
+          });
+          onClose();
+        }
+      });
   };
   return (
     <div className="modal-form-wrapper">
@@ -114,63 +186,63 @@ const InsertModal = ({ onSave, onClose }) => {
             onSave();
           }}
         >
-          <div className="modal-form-top">
-            <div className="form-column image-side">
-              <div className="image-upload">
-                <label htmlFor="imageUpload" className="upload-text">
-                  <div className="image-preview">
-                    <img
-                      src="/image/dora.png"
-                      style={{ objectFit: "contain" }}
-                    ></img>
-                  </div>
-                </label>
-                <input
-                  type="file"
-                  id="imageUpload"
-                  name="image"
-                  style={{ display: "none" }}
-                  onChange={(e) => {
-                    const file = e.target.files[0];
-
-                    setFormData((prev) => ({ ...prev, image: file }));
+          <div className="form-column image-side">
+            <label htmlFor="imageUpload" className="image-label">
+              <div className="image-preview">
+                <img
+                  src={thumb ? thumb : "/image/default_img.png"}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                    cursor: "pointer",
                   }}
-                />
+                ></img>
               </div>
-            </div>
-
+            </label>
+            <input
+              type="file"
+              id="imageUpload"
+              name="image"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={(e) => {
+                const file = e.target.files[0];
+                changeThumb(file);
+                setFormData((prev) => ({ ...prev, eventImg: file })); // 프로필 이미지 상태 업데이트
+              }}
+            />
+          </div>
+          <div className="modal-form-top">
             <div className="form-column input-side">
               <div className="form-grid">
                 <label>
                   제목
                   <input
                     type="text"
-                    name="title"
-                    value={formData.title || ""}
+                    name="eventTitle"
+                    value={formData.eventTitle || ""}
                     onChange={handleChange}
                     required
                   />
                 </label>
                 <label>
                   종류
-                  <select
-                    name="type"
-                    value={formData.type || ""}
-                    onChange={handleChange}
-                    required
-                  >
+                  <select name="placeTypeId" onChange={handleChange} required>
                     <option value="">선택</option>
-                    <option value="회의">회의</option>
-                    <option value="일정">일정</option>
-                    <option value="기념일">기념일</option>
+                    {placeType.map((type, i) => (
+                      <option key={"eventType" + i} value={type.id}>
+                        {type.name}
+                      </option>
+                    ))}
                   </select>
                 </label>
                 <label className="full-width">
                   내용
                   <textarea
                     type="text"
-                    name="description"
-                    value={formData.description || ""}
+                    name="eventContent"
+                    value={formData.eventContent || ""}
                     onChange={handleChange}
                   />
                 </label>
@@ -178,8 +250,8 @@ const InsertModal = ({ onSave, onClose }) => {
                   시작일
                   <input
                     type="date"
-                    name="start"
-                    value={formData.start || ""}
+                    name="startDate"
+                    value={formData.startDate || ""}
                     onChange={handleChange}
                     required
                   />
@@ -188,9 +260,10 @@ const InsertModal = ({ onSave, onClose }) => {
                   종료일
                   <input
                     type="date"
-                    name="end"
-                    value={formData.end || ""}
+                    name="endDate"
+                    value={formData.endDate || ""}
                     onChange={handleChange}
+                    min={formData.startDate}
                     required
                   />
                 </label>
