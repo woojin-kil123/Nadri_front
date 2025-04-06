@@ -24,6 +24,7 @@
   box-sizing: border-box;
   color: var(--gray8);
 }
+
 .fc .fc-button-primary * {
   color: var(--gray8);
 }
@@ -113,19 +114,42 @@
 
 /* 이벤트 카드 */
 .fc-event {
-  background-color: #00c471;
-  color: white;
+  margin: 2px 0;
+  background-color: #27b778; /* ✅ 기본 초록 */
   border: none;
-  padding: 2px 6px;
   border-radius: 6px;
-  font-size: 0.8rem;
+  padding: 2px 6px;
+  font-size: 13px;
+  line-height: 1.4;
+  white-space: nowrap; /* ✅ 한 줄 유지 */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-
+.fc-daygrid-event {
+  width: 100% !important; /* ✅ 가로 너비 전체 */
+  display: block;
+}
+.fc-daygrid-event-harness {
+  overflow: visible !important;
+  margin-bottom: 4px; /* ✅ 이벤트 간격 */
+}
+.event-type-1 {
+  background-color: #27b778;
+}
+.event-type-2 {
+  background-color: #f48fb1;
+}
+.event-type-3 {
+  background-color: #90caf9;
+}
 .fc-event:hover {
-  background-color: #00995e;
   cursor: pointer;
 }
-
+/* 이벤트 텍스트 색상 */
+.fc-event-title {
+  color: white;
+  font-weight: 500;
+}
 .fc-event.korean-holiday {
   background-color: #dc143c;
   color: white;

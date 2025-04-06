@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -6,18 +6,14 @@ import koLocale from "@fullcalendar/core/locales/ko";
 import "./calendar.css";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { Warning } from "@mui/icons-material";
+import { getKoreanToday } from "../utils/metaSet";
 
-export default function Calendar() {
+export default function Calendar({ placeType, setIsUpdate }) {
+  const today = getKoreanToday();
   const [events, setEvents] = useState([]);
-  const [placeType, setPlaceType] = useState([]);
-  useEffect(() => {
-    axios.get(`${process.env.REACT_APP_BACK_SERVER}/place/type`).then((res) => {
-      setPlaceType(res.data);
-    });
-  }, []);
   const [modalOpen, setModalOpen] = useState(false);
   const [insertOpen, setInsertOpen] = useState(false);
+  const [month, setMonth] = useState(today.slice(0, 7));
   const holiday = {
     "2025-01-01": "신정",
     "2025-03-01": "삼일절",
@@ -32,6 +28,24 @@ export default function Calendar() {
     ...holiday,
     // 여기에 사용자 등록 이벤트도 포함
   });
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACK_SERVER}/event/${month}`)
+      .then((res) => {
+        const mappedEvents = res.data.map((event) => ({
+          title: event.eventTitle,
+          start: event.startDate,
+          end: event.endDate,
+          allDay: true, // 하루 종일 일정이면 true
+          extendedProps: {
+            placeTypeId: placeType.find((type) => type.id === event.placeTypeId)
+              ?.name,
+            eventImg: event.eventImg,
+          },
+        }));
+        setEvents(mappedEvents);
+      });
+  }, [month]);
 
   const handleEventClick = () => {
     setModalOpen(true);
@@ -41,11 +55,21 @@ export default function Calendar() {
   return (
     <div className="calendar-wrapper">
       <FullCalendar
+        height="auto"
+        contentHeight="auto"
+        dayMaxEventRows={false}
+        timeZone="Asia/Seoul"
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         locale={koLocale}
         selectable={true}
         editable={true}
+        datesSet={(arg) => {
+          const currentStart = arg.view.currentStart;
+          const year = currentStart.getFullYear();
+          const monthNum = String(currentStart.getMonth() + 1).padStart(2, "0");
+          setMonth(`${year}-${monthNum}`);
+        }}
         customButtons={{
           insert: {
             text: "일정 추가",
@@ -56,9 +80,13 @@ export default function Calendar() {
         }}
         headerToolbar={{
           left: "insert",
+          center: "title",
           right: "prev,next",
         }}
-        events={events}
+        events={events.map((e, i) => ({
+          ...e,
+          classNames: ["event-type-" + (i + 1)],
+        }))}
         eventClick={handleEventClick}
         eventDrop={handleEventDrop}
         dayCellContent={(arg) => {
@@ -80,6 +108,7 @@ export default function Calendar() {
         <InsertModal
           onClose={() => setInsertOpen(false)}
           placeType={placeType}
+          setIsUpdate={setIsUpdate}
         />
       )}
       {modalOpen && <CalendarModal onClose={() => setModalOpen(false)} />}
@@ -99,7 +128,7 @@ const CalendarModal = ({ modalInner, onClose, isEditing }) => {
   );
 };
 
-const InsertModal = ({ onClose, placeType }) => {
+const InsertModal = ({ onClose, placeType, setIsUpdate }) => {
   const [formData, setFormData] = useState({
     eventTitle: "",
     placeTypeId: "",
@@ -172,6 +201,7 @@ const InsertModal = ({ onClose, placeType }) => {
             endDate: "",
             eventImg: "",
           });
+          setIsUpdate((prev) => !prev);
           onClose();
         }
       });
