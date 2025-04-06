@@ -7,7 +7,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ReportIcon from "@mui/icons-material/Report";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import axios from "axios";
-
+import Swal from "sweetalert2";
 const ReviewView = () => {
   const params = useParams();
   const reviewNo = params.reviewNo;
@@ -15,10 +15,27 @@ const ReviewView = () => {
   const [newComment, setNewComment] = useState("");
   const navigate = useNavigate();
   const [isCommenting, setIsCommenting] = useState(false);
-  const deleteComment = (id) => {
-    setComments(comments.filter((comment) => comment.id !== id));
+  const deleteComment = (commNo) => {
+    Swal.fire({
+      title: "댓글 삭제",
+      text: "삭제하시겠습니까",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "삭제하기",
+      cancelButtonText: "취소",
+    }).then((res) => {
+      if (res.isConfirmed) {
+        axios
+          .delete(`${process.env.REACT_APP_BACK_SERVER}/comm/${commNo}`)
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    });
   };
-  console.log(reviewNo);
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [review, setReview] = useState({});
@@ -33,10 +50,7 @@ const ReviewView = () => {
     "부적절한 이미지 – 폭력적이거나 선정적인 이미지가 포함된 경우",
     "리뷰와 무관한 내용 – 여행지와 관련 없는 내용이 포함된 경우",
   ];
-  const ReviewDetail = ({ reviewData, onEdit }) => {
-    const [comments, setComments] = useState(reviewData.comments);
-    const [newComment, setNewComment] = useState("");
-  };
+
   // 신고 모달 상태
   const [isReporting, setIsReporting] = useState(false);
   const [reportReason, setReportReason] = useState("");
@@ -70,7 +84,18 @@ const ReviewView = () => {
         console.log(err);
       });
   }, []);
-  console.log(review);
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACK_SERVER}/comm/${reviewNo}`)
+      .then((res) => {
+        console.log(res);
+        setComments(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [comments]);
   return (
     <section className="section">
       <div className="page-title">리뷰 상세보기</div>
@@ -89,12 +114,11 @@ const ReviewView = () => {
         <h3>댓글</h3>
         <ul>
           {comments.map((comment) => (
-            <li key={comment.id}>
-              {comment.text}
-              <DeleteIcon onClick={() => deleteComment(comment.id)}>
-                삭제
-              </DeleteIcon>
-            </li>
+            <CommentItem
+              key={comment.commNo}
+              comment={comment}
+              onDelete={deleteComment}
+            />
           ))}
         </ul>
         {!isCommenting ? (
@@ -141,6 +165,18 @@ const ReviewView = () => {
         )}
       </div>
     </section>
+  );
+};
+const CommentItem = ({ comment, onDelete }) => {
+  return (
+    <li>
+      {comment.memberNickname}
+      {comment.commContent}
+      <DeleteIcon
+        style={{ cursor: "pointer", marginLeft: "8px" }}
+        onClick={() => onDelete(comment.commNo)}
+      />
+    </li>
   );
 };
 export default ReviewView;
