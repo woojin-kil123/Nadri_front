@@ -2,12 +2,11 @@ import IconButton from "@mui/material/IconButton";
 import FacebookIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import TwitterIcon from "@mui/icons-material/X";
-import { Link } from "react-router-dom";
 import "./footer.css";
 import { useState } from "react";
 import { Modal } from "@mui/material";
-import Terms from "./Terms";
-import PrivacyPolicy from "./PrivacyPolicy";
+import Terms from "../static/Terms";
+import PrivacyPolicy from "../static/PrivacyPolicy";
 
 export default function Footer() {
   const [open, setOpen] = useState(false);
