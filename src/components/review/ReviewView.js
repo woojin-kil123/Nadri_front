@@ -8,6 +8,8 @@ import ReportIcon from "@mui/icons-material/Report";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useRecoilState } from "recoil";
+import { loginNicknameState } from "../utils/RecoilData";
 const ReviewView = () => {
   const params = useParams();
   const reviewNo = params.reviewNo;
@@ -15,6 +17,8 @@ const ReviewView = () => {
   const [newComment, setNewComment] = useState("");
   const navigate = useNavigate();
   const [isCommenting, setIsCommenting] = useState(false);
+  const [memberNickname, setMemberNickname] =
+    useRecoilState(loginNicknameState);
   const deleteComment = (commNo) => {
     Swal.fire({
       title: "댓글 삭제",
@@ -132,10 +136,18 @@ const ReviewView = () => {
             />
             <button
               onClick={() => {
-                setComments([
-                  ...comments,
-                  { id: Date.now(), text: newComment },
-                ]);
+                const form = new FormData();
+                form.append("reviewNo", reviewNo);
+                form.append("commContent", newComment);
+                form.append("memberNickname", memberNickname);
+                axios
+                  .post(`${process.env.REACT_APP_BACK_SERVER}/comm`, form)
+                  .then((res) => {
+                    console.log(res);
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
                 setNewComment(""); // 입력 필드 초기화
                 setIsCommenting(false); // 입력 필드 숨김
               }}
