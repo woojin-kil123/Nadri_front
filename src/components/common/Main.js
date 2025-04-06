@@ -9,10 +9,15 @@ import axios from "axios";
 const Main = () => {
   const [planCategory, setPlanCategory] = useState([1, 2, 3, 4, 5]);
   const [onPlanCategory, setOnPlanCategory] = useState("인기");
-  const [contentCategory, setContentCategory] = useState([1, 2, 3, 4, 5]);
-  const [onContentCategory, setOnContentCategory] = useState("여행지");
+  const [placeType, setPlaceType] = useState([]);
+  const [onPlaceType, setOnPlaceType] = useState("");
   const [contentList, setContentList] = useState([]);
-  useEffect(() => {}, []);
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_BACK_SERVER}/place/type`).then((res) => {
+      setPlaceType(res.data);
+      setOnPlaceType(res.data[0].name);
+    });
+  }, []);
   return (
     <section className="section main-wrap">
       <IntroSlider />
@@ -35,19 +40,19 @@ const Main = () => {
         </div>
         <div className="recommand-nav">
           <FilterNavWithPanel
-            categories={contentCategory}
-            on={onContentCategory}
-            setOn={setOnContentCategory}
+            categories={placeType}
+            on={onPlaceType}
+            setOn={setOnPlaceType}
           />
         </div>
-        <RecommandSlider on={onContentCategory} />
+        <RecommandSlider on={onPlaceType} />
       </div>
       <div className="recommand-wrap">
         <div className="recommand-title">
           <h2>인기 리뷰</h2>
         </div>
         <div className="recommand-nav">
-          <FilterNavWithPanel categories={contentCategory} />
+          <FilterNavWithPanel categories={placeType} />
         </div>
         <div className="hot-review-wrap">
           <div className="main-review">
@@ -70,11 +75,11 @@ const Main = () => {
 };
 
 const FilterNavWithPanel = ({ categories, on, setOn }) => {
-  const tabIndex = categories.indexOf(on); // 문자열인 on → index 변환
+  const tabIndex = categories.findIndex((type) => type.name === on); // 문자열인 on → index 변환
 
   const handleChange = (_, newIndex) => {
-    const selected = categories[newIndex];
-    setOn(selected); // 상위에서 내려준 setOn 함수
+    const selected = categories[newIndex].name;
+    setOn(selected);
   };
 
   return (
@@ -90,8 +95,8 @@ const FilterNavWithPanel = ({ categories, on, setOn }) => {
           },
         }}
       >
-        {categories.map((category) => (
-          <Tab key={category} label={category} />
+        {categories.map((category, i) => (
+          <Tab key={category.id + "-" + i} label={category.name} />
         ))}
       </Tabs>
     </Box>
