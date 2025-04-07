@@ -65,6 +65,34 @@ const ReviewView = () => {
       });
   }, []);
   const toggleLike = () => {
+    if (!memberNickname) {
+      alert("로그인 후 좋아요를 누를 수 있습니다.");
+      return;
+    }
+    if (liked === true) {
+      axios
+        .delete(`${process.env.REACT_APP_BACK_SERVER}/likes/${reviewNo}`, {
+          data: { memberNickname }, // DELETE 요청에 데이터 포함할 경우
+        })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      const form = new FormData();
+      form.append("reviewNo", reviewNo);
+      form.append("memberNickname", memberNickname);
+      axios
+        .post(`${process.env.REACT_APP_BACK_SERVER}/likes`, form)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
     setLiked(!liked);
     setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
   };
