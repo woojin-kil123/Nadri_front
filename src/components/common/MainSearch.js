@@ -18,6 +18,7 @@ import MenuList from "@mui/material/MenuList";
 import Stack from "@mui/material/Stack";
 import { useRecoilValue } from "recoil";
 import { placeTypeState } from "../utils/RecoilData";
+import axios from "axios";
 
 const MainSearch = () => {
   const [open, setOpen] = useState(false);
@@ -25,7 +26,7 @@ const MainSearch = () => {
   const placeType = useRecoilValue(placeTypeState);
   const [selectedTags, setSelectedTags] = useState([]);
   const [inputValue, setInputValue] = useState("");
-  const [option, setOption] = useState([
+  const [keyword, setKeyword] = useState([
     { title: "2박3일 여행", location: "부산" },
   ]);
 
@@ -60,7 +61,34 @@ const MainSearch = () => {
     }
     prevOpen.current = open;
   }, [open]);
+  //필터가 바뀌거나 검색어 입력시 조회하는 함수
+  const selectKeyword = (newInputValue) => {
+    const query = newInputValue ? newInputValue : "";
+    const arr = placeType.filter((type, _) =>
+      selectedTags.find((tag, _) => type.name === tag.title)
+    );
+    const type = arr.map((type, _) => `&type=${type.id}`);
 
+    axios
+      .get(
+        `${
+          process.env.REACT_APP_BACK_SERVER
+        }/search/keyword?query=${query}${type.join("")}`
+      )
+      .then((res) => {
+        console.log(res.data);
+        const newKeyword = res.data.map((keyword, _) => {
+          return {
+            title: keyword,
+          };
+        });
+        setKeyword(newKeyword);
+      });
+  };
+  //tag 가 바뀌면 조회
+  useEffect(() => {
+    selectKeyword();
+  }, [selectedTags]);
   return (
     <div className="main-search">
       <Stack direction="row" spacing={2}>
@@ -122,14 +150,21 @@ const MainSearch = () => {
         multiple
         id="tags-standard"
         disableCloseOnSelect
-        options={option}
-        getOptionLabel={(option) => option.title}
+        options={keyword}
+        getOptionLabel={(keyword) => (keyword?.title ? keyword.title : "")}
         value={selectedTags}
         inputValue={inputValue}
         onInputChange={(event, newInputValue, reason) => {
-          if (reason === "input") {
-            setInputValue(newInputValue);
-          }
+          if (reason !== "input") return;
+          setInputValue(newInputValue);
+          // 한글 한 글자 완성됐을 때만 (예: ㅇ+ㅏ → 아)
+          const lastChar = newInputValue.slice(-1);
+          const isKoreanSyllable =
+            lastChar &&
+            lastChar.charCodeAt(0) >= 0xac00 &&
+            lastChar.charCodeAt(0) <= 0xd7a3;
+          if (!isKoreanSyllable) return;
+          selectKeyword(newInputValue);
         }}
         onChange={(event, newValue, reason, details) => {
           if (reason === "selectOption" && details?.option) {
@@ -150,7 +185,7 @@ const MainSearch = () => {
               console.log("검색창 클릭됨!");
               setInputValue(e.target.value);
               // 필요하면 드롭다운 열기 강제
-              params.inputProps.onClick?.(e); // 기존 동작도 유지
+              //              params.inputProps.onClick?.(e); // 기존 동작도 유지
             }}
             onFocus={(e) => {
               console.log("검색창 포커스됨!");
