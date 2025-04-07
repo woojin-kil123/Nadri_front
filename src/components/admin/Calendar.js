@@ -1,15 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import koLocale from "@fullcalendar/core/locales/ko";
 import "./calendar.css";
 import axios from "axios";
+import Swal from "sweetalert2";
+import { getKoreanToday } from "../utils/metaSet";
+import UpdateModal from "./UpdateModal";
 
-export default function Calendar() {
+export default function Calendar({ placeType, setIsUpdate, isUpdate }) {
+  const today = getKoreanToday();
   const [events, setEvents] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [updateEvent, setUpdateEvent] = useState({});
   const [insertOpen, setInsertOpen] = useState(false);
+  const [updateOpen, setUpdateOpen] = useState(false);
+  const [month, setMonth] = useState(today.slice(0, 7));
+  const [tooltipEvent, setTooltipEvent] = useState(null);
+  const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
+  const tooltipTimeoutRef = useRef(null);
+
   const holiday = {
     "2025-01-01": "신정",
     "2025-03-01": "삼일절",
@@ -20,191 +30,147 @@ export default function Calendar() {
     "2025-10-09": "한글날",
     "2025-12-25": "성탄절",
   };
-  const [holidays, setHolidays] = useState({
-    ...holiday,
-    // 여기에 사용자 등록 이벤트도 포함
-  });
+  const [holidays, setHolidays] = useState({ ...holiday });
 
-  const handleEventClick = () => {
-    setModalOpen(true);
+  const addOneDay = (dateStr) => {
+    const date = new Date(dateStr);
+    date.setDate(date.getDate() + 1);
+    return date.toISOString().slice(0, 10);
   };
-  const handleEventDrop = () => {};
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACK_SERVER}/event/${month}`)
+      .then((res) => {
+        const mappedEvents = res.data.map((event, i) => ({
+          start: event.startDate,
+          end: addOneDay(event.endDate),
+          allDay: true,
+          classNames: [`event-type-${(i % 5) + 1}`],
+          extendedProps: {
+            ...res.data[i],
+          },
+        }));
+        setEvents(mappedEvents);
+      });
+  }, [month, isUpdate]);
 
   return (
     <div className="calendar-wrapper">
       <FullCalendar
+        height="auto"
+        contentHeight="auto"
+        dayMaxEventRows={false}
+        timeZone="Asia/Seoul"
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         locale={koLocale}
-        selectable={true}
-        editable={true}
+        datesSet={(arg) => {
+          const start = arg.view.currentStart;
+          setMonth(
+            `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(
+              2,
+              "0"
+            )}`
+          );
+        }}
         customButtons={{
           insert: {
             text: "일정 추가",
-            click: () => {
-              setInsertOpen(true);
-            },
+            click: () => setInsertOpen(true),
           },
         }}
-        headerToolbar={{
-          left: "insert",
-          right: "prev,next",
-        }}
+        headerToolbar={{ left: "insert", center: "title", right: "prev,next" }}
+        eventContent={() => ({ html: "" })}
         events={events}
-        eventClick={handleEventClick}
-        eventDrop={handleEventDrop}
+        eventClick={(info) => {
+          setUpdateEvent(info.event);
+          setUpdateOpen(true);
+        }}
+        eventDidMount={(info) => {
+          info.el.setAttribute("data-title", info.event.title);
+        }}
+        eventMouseEnter={(info) => {
+          // 1. 기존 타이머 클리어
+          if (tooltipTimeoutRef.current) {
+            clearTimeout(tooltipTimeoutRef.current);
+            tooltipTimeoutRef.current = null;
+          }
+
+          // 2. 위치와 이벤트 설정
+          const rect = info.el.getBoundingClientRect();
+          setTooltipPosition({
+            top: rect.top + window.scrollY,
+            left: rect.left + window.scrollX,
+          });
+          setTooltipEvent(info.event);
+        }}
+        eventMouseLeave={() => {
+          // 3. 툴팁 닫기를 딜레이
+          tooltipTimeoutRef.current = setTimeout(() => {
+            setTooltipEvent(null);
+          }, 300);
+        }}
         dayCellContent={(arg) => {
           const dateStr = arg.date.toISOString().slice(0, 10);
           const isHoliday = holidays[dateStr];
-          const dayNum = arg.date.getDate();
-
           return (
             <div className="calendar-cell-content">
               <div className={isHoliday ? "holiday-number" : "day-number"}>
-                {dayNum}
+                {arg.date.getDate()}
               </div>
               {isHoliday && <div className="holiday-label">{isHoliday}</div>}
             </div>
           );
         }}
       />
-      {insertOpen && <InsertModal onClose={() => setInsertOpen(false)} />}
-      {modalOpen && <CalendarModal onClose={() => setModalOpen(false)} />}
+      {tooltipEvent && (
+        <EventTooltip
+          event={tooltipEvent}
+          position={tooltipPosition}
+          onMouseLeave={() => setTooltipEvent(null)}
+        />
+      )}
+      {insertOpen && (
+        <UpdateModal
+          onClose={() => setInsertOpen(false)}
+          placeType={placeType}
+          setIsUpdate={setIsUpdate}
+        />
+      )}
+      {updateOpen && (
+        <UpdateModal
+          onClose={() => setUpdateOpen(false)}
+          placeType={placeType}
+          setIsUpdate={setIsUpdate}
+          event={updateEvent}
+        />
+      )}
     </div>
   );
 }
-const CalendarModal = ({ modalInner, onClose, isEditing }) => {
+
+const EventTooltip = ({ event, position, onMouseLeave }) => {
+  if (!event) return null;
+
+  const data = event.extendedProps;
+  const eventImg = data.eventImg;
   return (
-    <div className="modal">
-      <div className="modal-content">
-        {modalInner}
-        <div className="modal-buttons">
-          <button onClick={onClose}>닫기</button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const InsertModal = ({ onSave, onClose }) => {
-  const [formData, setFormData] = useState({
-    title: "",
-    type: "",
-    description: "",
-    start: "",
-    end: "",
-    image: File,
-  });
-  const [thumb, setThumb] = useState();
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-  const changeThumb = (e) => {
-    const file = e.target.files[0];
-    setThumb(file);
-  };
-  return (
-    <div className="modal-form-wrapper">
-      <div className="modal-form-content">
-        <form
-          className="modal-form-layout-column"
-          onSubmit={(e) => {
-            e.preventDefault();
-            onSave();
-          }}
-        >
-          <div className="modal-form-top">
-            <div className="form-column image-side">
-              <div className="image-upload">
-                <label htmlFor="imageUpload" className="upload-text">
-                  <div className="image-preview">
-                    <img
-                      src="/image/dora.png"
-                      style={{ objectFit: "contain" }}
-                    ></img>
-                  </div>
-                </label>
-                <input
-                  type="file"
-                  id="imageUpload"
-                  name="image"
-                  style={{ display: "none" }}
-                  onChange={(e) => {
-                    const file = e.target.files[0];
-
-                    setFormData((prev) => ({ ...prev, image: file }));
-                  }}
-                />
-              </div>
-            </div>
-
-            <div className="form-column input-side">
-              <div className="form-grid">
-                <label>
-                  제목
-                  <input
-                    type="text"
-                    name="title"
-                    value={formData.title || ""}
-                    onChange={handleChange}
-                    required
-                  />
-                </label>
-                <label>
-                  종류
-                  <select
-                    name="type"
-                    value={formData.type || ""}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="">선택</option>
-                    <option value="회의">회의</option>
-                    <option value="일정">일정</option>
-                    <option value="기념일">기념일</option>
-                  </select>
-                </label>
-                <label className="full-width">
-                  내용
-                  <textarea
-                    type="text"
-                    name="description"
-                    value={formData.description || ""}
-                    onChange={handleChange}
-                  />
-                </label>
-                <label>
-                  시작일
-                  <input
-                    type="date"
-                    name="start"
-                    value={formData.start || ""}
-                    onChange={handleChange}
-                    required
-                  />
-                </label>
-                <label>
-                  종료일
-                  <input
-                    type="date"
-                    name="end"
-                    value={formData.end || ""}
-                    onChange={handleChange}
-                    required
-                  />
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div className="modal-form-buttons center">
-            <button type="submit">등록하기</button>
-            <button type="button" onClick={onClose}>
-              닫기
-            </button>
-          </div>
-        </form>
+    <div
+      className="tooltip-card"
+      style={{ top: position.top + 30, left: position.left + 20 }}
+      onMouseLeave={onMouseLeave}
+    >
+      <img
+        src={
+          eventImg
+            ? `${process.env.REACT_APP_BACK_SERVER}/event/thumb/${eventImg}`
+            : "/image/default_img.png"
+        }
+      />
+      <div className="tooltip-title">{data.eventTitle}</div>
+      <div className="tooltip-sub">
+        {event.startStr} ~ {event.endStr}
       </div>
     </div>
   );
