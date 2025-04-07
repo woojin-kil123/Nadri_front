@@ -1,5 +1,5 @@
 /*PlaceList*/
-.contentlist-side {
+.PlaceList-side {
   width: 20%;
 }
 .page-content {
@@ -8,13 +8,29 @@
   gap: 10px;
 }
 
-.card-grid .card {
+.section {
+  width: 200px;
+}
+
+.option-box {
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+}
+.option-box > div {
+  cursor: pointer;
+}
+
+.place-wrap .card {
   background: white;
   border-radius: 16px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  /* transition: transform 0.2s ease, box-shadow 0.2s ease; */
+}
+
+.place-wrap .card:hover {
+  box-shadow: #888;
 }
 
 .card-grid .card > .image-container {
