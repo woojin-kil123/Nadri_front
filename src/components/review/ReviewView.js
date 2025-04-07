@@ -50,6 +50,20 @@ const ReviewView = () => {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [review, setReview] = useState({});
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACK_SERVER}/likes/${reviewNo}`)
+      .then((res) => {
+        console.log(res);
+        setLikeCount(res.data.likes);
+        if (res.data.likeMember.memberNickname === memberNickname) {
+          setLiked(true);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
   const toggleLike = () => {
     setLiked(!liked);
     setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
