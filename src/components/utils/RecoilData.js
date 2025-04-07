@@ -34,5 +34,16 @@ const isPlannerState = atom({
   default: false,
   effects_UNSTABLE: [persistAtom],
 });
+const placeTypeState = atom({
+  key: "placeTypeState",
+  default: [],
+  effects_UNSTABLE: [persistAtom],
+});
 
-export { loginNicknameState, memberLevelState, isLoginState, isPlannerState };
+export {
+  loginNicknameState,
+  memberLevelState,
+  isLoginState,
+  isPlannerState,
+  placeTypeState,
+};
