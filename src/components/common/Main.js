@@ -5,6 +5,8 @@ import RecommandSlider from "./RecommandSlider";
 import "./main.css";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import axios from "axios";
+import { useRecoilValue } from "recoil";
+import { placeTypeState } from "../utils/RecoilData";
 
 const Main = () => {
   const [planCategory, setPlanCategory] = useState([
@@ -27,15 +29,14 @@ const Main = () => {
   ]);
   const [onPlan, setOnPlan] = useState("인기");
   //placeType 별 조회
-  const [placeType, setPlaceType] = useState([]);
+  const placeType = useRecoilValue(placeTypeState);
   const [onPlace, setOnPlace] = useState("");
-  const [onReview, setOnReview] = useState("");
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_BACK_SERVER}/place/type`).then((res) => {
-      setPlaceType(res.data);
-      setOnPlace(res.data[0].name);
-    });
+    setOnPlace(placeType[0].name);
   }, []);
+
+  const [onReview, setOnReview] = useState("");
+
   return (
     <section className="section main-wrap">
       <IntroSlider />
