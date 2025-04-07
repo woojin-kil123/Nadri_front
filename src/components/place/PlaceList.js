@@ -5,33 +5,35 @@ import axios from "axios";
 import PlaceListFrm from "./PlaceListFrm"; // ← 이름 반영 완료
 import "./place.css"; // ← CSS 파일명도 일치시키는 걸 추천
 import ListCard from "../utils/ListCard";
+import PageNavigation from "../utils/PageNavigtion";
 
 const PlaceList = () => {
   const backServer = process.env.REACT_APP_BACK_SERVER;
   const { menuType } = useParams();
   const location = useLocation();
+
   const [cards, setCards] = useState([]);
 
   const [placeList, setPlaceList] = useState([]);
   const [pi, setPi] = useState({});
   const [reqPage, setReqPage] = useState(1);
-
   const menus = [
     { id: "12", name: "관광지", name2: "spot" },
     { id: "14", name: "즐길거리", name2: "todo" },
     { id: "32", name: "숙박", name2: "stay" },
     { id: "39", name: "음식점", name2: "food" },
   ];
+  const [selectedMenu, setSelectedMenu] = useState(menus[0]);
 
   const currentMenu = menus.find((m) => m.name2 === menuType) || menus[0];
 
   useEffect(() => {
     if (!currentMenu) return;
     axios
-      .get(`${backServer}/place/spot?reqPage=1`)
+      .get(`${backServer}/place/${currentMenu.name2}?reqPage=${reqPage}`)
       .then((res) => {
         console.log(res);
-        setCards(res.data.list);
+        setPlaceList(res.data.list);
         setPi(res.data.pi);
       })
       .catch((err) => {
@@ -45,8 +47,13 @@ const PlaceList = () => {
       <div className="page-content">
         <div className="placelist-side">
           <section className="section menu-box">
-            <LeftSideMenu menus={menus} />
-            <Routes>
+            <LeftSideMenu
+              menus={menus}
+              selectedMenu={selectedMenu}
+              setSelectedMenu={setSelectedMenu}
+              currentMenu={currentMenu}
+            />
+            {/* <Routes>
               <Route
                 path=":menuType"
                 element={
@@ -57,17 +64,22 @@ const PlaceList = () => {
                   />
                 }
               />
-            </Routes>
+            </Routes> */}
           </section>
         </div>
         <div className="placelist-content">
+          <div className="placelist option-box">
+            <div>총 0000개</div>
+            <div>리뷰 많은 순</div>
+          </div>
           <div className="place-wrap">
-            <div className="card-grid">
-              {Array.isArray(cards) &&
-                cards.map((card, i) => (
-                  <ListCard key={"card-" + i} place={card} />
-                ))}
-            </div>
+            {Array.isArray(cards) &&
+              placeList.map((card, i) => (
+                <ListCard key={"card-" + i} place={card} />
+              ))}
+          </div>
+          <div className="pageNavi-box">
+            <PageNavigation pi={pi} reqPage={reqPage} setReqPage={setReqPage} />
           </div>
         </div>
       </div>

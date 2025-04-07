@@ -13,7 +13,7 @@ const LeftSideMenu = (props) => {
           return (
             <li key={"menu-" + index}>
               <NavLink
-                to={`/spot/${menu.name2}`}
+                to={`/place/${menu.name2}`}
                 className={({ isActive }) => (isActive ? "active-link" : "")}
                 onClick={() => {
                   setSelectedMenu(currentMenu);

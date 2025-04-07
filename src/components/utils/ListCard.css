@@ -78,3 +78,14 @@
   color: #777;
   margin: 0;
 }
+
+.place-wrap {
+  overflow: hidden;
+}
+
+.place-wrap > .card {
+  width: calc(100% / 3);
+  float: left;
+  padding: 20px;
+  box-sizing: border-box;
+}
