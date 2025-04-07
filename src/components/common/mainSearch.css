@@ -1,9 +1,18 @@
+.header .main-search {
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+}
+
 .main-search
   .css-6h9cc6-MuiInputBase-root-MuiInput-root:hover:not(
     .Mui-disabled,
     .Mui-error
   ):before {
   border-bottom: 2px solid var(--main2);
+}
+.main-search .css-6h9cc6-MuiInputBase-root-MuiInput-root {
+  border-bottom: none;
 }
 .main-search .css-6h9cc6-MuiInputBase-root-MuiInput-root::after {
   border-bottom: 2px solid var(--main2);
