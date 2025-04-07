@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Circle, CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
+import {
+  Circle,
+  CustomOverlayMap,
+  Map,
+  MapMarker,
+  Polyline,
+} from "react-kakao-maps-sdk";
 import "./planner.css";
 import { CancelOutlined, Close, Delete, Search } from "@mui/icons-material";
 import { IconButton, InputBase, Paper } from "@mui/material";
@@ -9,8 +15,7 @@ import BasicSelect from "../utils/BasicSelect";
 import dayjs from "dayjs";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { loginNicknameState } from "../utils/RecoilData";
+import MarkerWithOverlay from "./MarkerWithOverlay";
 
 const PlannerFrm = () => {
   //마커 오버레이 여닫음 state
@@ -109,7 +114,6 @@ const PlannerFrm = () => {
 
     //서버 데이터 요청; 전달값: 유저마커 좌표, 검색반경
     axios
-      // .get(`${process.env.REACT_APP_BACK_SERVER}/plan/nearby?lat=${lat}&lng=${lng}&radius=${userRadius}`)
       .get(`${process.env.REACT_APP_BACK_SERVER}/plan/nearby`, {
         params: {
           lat,
@@ -145,6 +149,7 @@ const PlannerFrm = () => {
     //아래 배열 내 값이 바뀔 때 함수를 재생성함(useCallback)
   }, [userMarker, userRadius, sortOption]);
 
+  //placeList가 정렬 및 필터링 된 결과값
   //useMemo 사용으로 "값" 기억
   const filteredSortedList = useMemo(() => {
     let sortedList = [...placeList];
@@ -165,19 +170,51 @@ const PlannerFrm = () => {
       );
     } else if (filterOption === 3) {
       filteredSortedList = sortedList.filter(
-        (item) => item.placeType !== "숙박시설" && item.placeType !== "음식점"
+        (item) => item.placeType === "관광지"
+      );
+    } else if (filterOption === 4) {
+      filteredSortedList = sortedList.filter(
+        (item) =>
+          item.placeType !== "숙박시설" &&
+          item.placeType !== "음식점" &&
+          item.placeType !== "관광지"
       );
     }
 
     return filteredSortedList;
   }, [placeList, sortOption, filterOption]);
 
+  const markableList = useMemo(() => {
+    return filteredSortedList.filter(
+      (item) => !plannedPlaceList.find((p) => p.placeId === item.placeId)
+    );
+  }, [filteredSortedList, plannedPlaceList]);
+
   //filter 기능 제공 값
   const filterItems = [
     { name: "숙박시설", value: 1 },
     { name: "음식점", value: 2 },
-    { name: "즐길거리", value: 3 },
+    { name: "관광지", value: 3 },
+    { name: "즐길거리", value: 4 },
   ];
+
+  const deletePlan = (odr) => {
+    //1. 삭제하시겠습니까?
+    if (window.confirm("삭제하시겠습니까?")) {
+      //2. plannedPlace 삭제 및 order 재정렬
+      const newList = plannedPlaceList.filter((item) => item.order !== odr);
+      if (odr === 0) {
+        //맨 처음 방문지를 삭제했다면
+        newList[0].transport = "";
+      }
+      newList.forEach((item, i) => {
+        item.order = i;
+      });
+      setPlannedPlaceList(newList);
+    }
+    //3. DB 삭제, DB order 수정
+    //예정
+  };
 
   //메인 리턴부
   return (
@@ -198,7 +235,7 @@ const PlannerFrm = () => {
                     filterOption === item.value ? "filter-pressed" : ""
                   }
                   onClick={() => {
-                    if (filteredSortedList.length === 0) return;
+                    // if (filteredSortedList.length === 0) return;
                     setFilterOption(item.value);
                   }}
                 >
@@ -241,6 +278,7 @@ const PlannerFrm = () => {
                 plannedPlaceList={plannedPlaceList}
                 setPlannedPlaceList={setPlannedPlaceList}
                 setOpenPlanner={setOpenPlanner}
+                markableList={markableList}
               />
             );
           })}
@@ -251,6 +289,7 @@ const PlannerFrm = () => {
           setOpenPlanner={setOpenPlanner}
           plannedPlaceList={plannedPlaceList}
           setPlannedPlaceList={setPlannedPlaceList}
+          deletePlan={deletePlan}
         />
       ) : (
         <div
@@ -293,6 +332,9 @@ const PlannerFrm = () => {
           setUserMarker={setUserMarker}
           userRadius={userRadius}
           setUserRadius={setUserRadius}
+          plannedPlaceList={plannedPlaceList}
+          deletePlan={deletePlan}
+          markableList={markableList}
         />
       </div>
     </div>
@@ -338,6 +380,7 @@ const PrintPlaceList = (props) => {
     props.setPlannedPlaceList,
   ];
   const setOpenPlanner = props.setOpenPlanner;
+  const markableList = props.markableList;
 
   return (
     <div className="place-item">
@@ -360,9 +403,9 @@ const PrintPlaceList = (props) => {
         </div>
       </div>
       <div className="place-btn">
-        <button onClick={() => setOpenPlanningModal(idx)}>추가</button>
+        <button onClick={() => setOpenPlanningModal(p.placeId)}>추가</button>
       </div>
-      {openPlanningModal === idx && (
+      {openPlanningModal === p.placeId && (
         <PlanningModal
           openPlanningModal={openPlanningModal}
           setOpenPlanningModal={setOpenPlanningModal}
@@ -383,6 +426,7 @@ const Planner = (props) => {
     props.plannedPlaceList,
     props.setPlannedPlaceList,
   ];
+  const deletePlan = props.deletePlan;
   return (
     <div className="planner-wrap">
       <Close className="close-btn" onClick={() => setOpenPlanner(false)} />
@@ -418,7 +462,10 @@ const Planner = (props) => {
                   />
                   <div className="place-item">
                     <div className="place-title-wrap">
-                      <span className="place-title">{p.placeTitle}</span>
+                      <span className="place-title">
+                        {p.placeTitle}
+                        {p.order}
+                      </span>
                       <span className="place-type">{p.placeType}</span>
                     </div>
                     <div className="place-addr place-ellipsis">
@@ -426,26 +473,7 @@ const Planner = (props) => {
                     </div>
                   </div>
                   <div className="planner-del-btn">
-                    <Delete
-                      onClick={() => {
-                        //1. 삭제하시겠습니까?
-                        if (window.confirm("삭제하시겠습니까?")) {
-                          //2. plannedPlace 삭제 및 order 재정렬
-                          const newList = plannedPlaceList.filter(
-                            (item) => item.order !== idx
-                          );
-                          if (idx === 0) {
-                            //맨 처음 방문지를 삭제했다면
-                            newList[0].transport = "";
-                          }
-                          newList.forEach((item, i) => {
-                            item.order = i;
-                          });
-                          setPlannedPlaceList(newList);
-                        }
-                        //3. DB 삭제, DB order 수정
-                      }}
-                    />
+                    <Delete onClick={() => deletePlan(p.order)} />
                   </div>
                 </div>
               </div>
@@ -578,6 +606,9 @@ const PrintMap = (props) => {
   const [mapBounds, setMapBounds] = [props.mapBounds, props.setMapBounds];
   const [userMarker, setUserMarker] = [props.userMarker, props.setUserMarker];
   const [userRadius, setUserRadius] = [props.userRadius, props.setUserRadius];
+  const plannedPlaceList = props.plannedPlaceList;
+  const deletePlan = props.deletePlan;
+  const markableList = props.markableList;
 
   return (
     <Map // 지도를 표시할 Container
@@ -615,12 +646,51 @@ const PrintMap = (props) => {
         setMapBounds(map.getBounds());
       }}
     >
+      {plannedPlaceList.length > 1 && (
+        <Polyline //저장된 장소 간 직선 그리기
+          path={plannedPlaceList
+            .sort((a, b) => a.order - b.order)
+            .map((p) => ({
+              lat: p.placeLatLng.lat,
+              lng: p.placeLatLng.lng,
+            }))}
+          strokeWeight={4}
+          strokeColor={"tomato"}
+          strokeOpacity={0.9}
+          strokeStyle={"solid"}
+        />
+      )}
+      {plannedPlaceList.length > 1 &&
+        plannedPlaceList.slice(0, -1).map((p, idx) => {
+          const next = plannedPlaceList[idx + 1];
+          const midLat = (p.placeLatLng.lat + next.placeLatLng.lat) / 2;
+          const midLng = (p.placeLatLng.lng + next.placeLatLng.lng) / 2;
+          const rad = Math.atan2(
+            next.placeLatLng.lat - p.placeLatLng.lat,
+            next.placeLatLng.lng - p.placeLatLng.lng
+          );
+          const deg = (rad * 180) / Math.PI;
+
+          return (
+            <CustomOverlayMap
+              key={"arrow-" + idx}
+              position={{ lat: midLat, lng: midLng }}
+            >
+              <div
+                className="arrow-marker"
+                style={{ transform: `rotate(${-deg}deg)` }}
+              >
+                ➡
+              </div>
+            </CustomOverlayMap>
+          );
+        })}
       {userMarker && (
         <>
           <MapMarker
             position={userMarker}
             image={{
-              src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png", // 예시용 커스텀 마커
+              src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png",
               size: { width: 24, height: 35 },
             }}
           />
@@ -630,82 +700,34 @@ const PrintMap = (props) => {
             strokeWeight={2}
             strokeColor={"var(--main2)"}
             strokeStyle={"solid"}
-            fillColor={"#0055ff"}
-            fillOpacity={0.15}
+            fillColor={"var(--main4)"}
+            fillOpacity={0.2}
           />
         </>
       )}
-      {filteredSortedList.map((p, idx) => {
+      {markableList.map((p, idx) => {
         return (
-          <div key={"marker-" + idx}>
-            <MapMarker
-              position={p.placeLatLng}
-              onClick={() => setOpenOverlay(idx)}
-            />
-
-            {openOverlay === idx && (
-              <CustomOverlayMap clickable={true} position={p.placeLatLng}>
-                <div className="overlay-wrap">
-                  <div className="overlay-info">
-                    <div className="overlay-title">
-                      <div className="overlay-title-name">
-                        {p.placeTitle}
-                        <span className="overlay-class">{p.placeType}</span>
-                      </div>
-                      <div
-                        className="overlay-close"
-                        onClick={() => setOpenOverlay(null)}
-                        title="닫기"
-                      >
-                        <Close />
-                      </div>
-                    </div>
-                    <div className="overlay-body">
-                      <div className="overlay-img">
-                        <img
-                          // src="https://t1.daumcdn.net/thumb/C84x76/?fname=http://t1.daumcdn.net/localfiy/D30EC4B18F484C6F9F4AA23D421DDF30"
-                          src={p.placeThumb}
-                          width="85"
-                          height="80"
-                          alt={p.placeTitle}
-                        />
-                      </div>
-                      <div className="overlay-desc">
-                        <div className="overlay-addr">{p.placeAddr}</div>
-                        <div className="overlay-rating">
-                          <StarRating rating={p.placeRating} />
-                          <span>
-                            ( {p.placeReview > 999 ? "999+" : p.placeReview} )
-                          </span>
-                        </div>
-                        <div className="overlay-below">
-                          <div
-                            className="overlay-link"
-                            // href="#"
-                            // target="_blank"
-                            // rel="noreferrer"
-                          >
-                            상세보기
-                          </div>
-                          <div className="place-btn">
-                            <button
-                              onClick={() => {
-                                setOpenPlanningModal(idx);
-                              }}
-                            >
-                              추가
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CustomOverlayMap>
-            )}
-          </div>
+          <MarkerWithOverlay
+            key={"marker-" + p.placeId}
+            place={p}
+            idx={idx}
+            openOverlay={openOverlay}
+            setOpenOverlay={setOpenOverlay}
+            setOpenPlanningModal={setOpenPlanningModal}
+          />
         );
       })}
+      {plannedPlaceList.map((p, idx) => (
+        <MarkerWithOverlay
+          key={"planned-" + p.placeId}
+          place={p}
+          idx={markableList.length + idx}
+          openOverlay={openOverlay}
+          setOpenOverlay={setOpenOverlay}
+          isPlanned={true}
+          deletePlan={deletePlan}
+        />
+      ))}
     </Map>
   );
 };
