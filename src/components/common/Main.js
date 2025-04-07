@@ -7,12 +7,35 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import axios from "axios";
 
 const Main = () => {
-  const [planCategory, setPlanCategory] = useState([1, 2, 3, 4, 5]);
-  const [onPlanCategory, setOnPlanCategory] = useState("인기");
-  const [contentCategory, setContentCategory] = useState([1, 2, 3, 4, 5]);
-  const [onContentCategory, setOnContentCategory] = useState("여행지");
-  const [contentList, setContentList] = useState([]);
-  useEffect(() => {}, []);
+  const [planCategory, setPlanCategory] = useState([
+    {
+      name: "인기",
+      id: 1,
+    },
+    {
+      name: "최신",
+      id: 2,
+    },
+    {
+      name: "혼자",
+      id: 3,
+    },
+    {
+      name: "여럿이",
+      id: 4,
+    },
+  ]);
+  const [onPlan, setOnPlan] = useState("인기");
+  //placeType 별 조회
+  const [placeType, setPlaceType] = useState([]);
+  const [onPlace, setOnPlace] = useState("");
+  const [onReview, setOnReview] = useState("");
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_BACK_SERVER}/place/type`).then((res) => {
+      setPlaceType(res.data);
+      setOnPlace(res.data[0].name);
+    });
+  }, []);
   return (
     <section className="section main-wrap">
       <IntroSlider />
@@ -23,11 +46,11 @@ const Main = () => {
         <div className="recommand-nav">
           <FilterNavWithPanel
             categories={planCategory}
-            on={onPlanCategory}
-            setOn={setOnPlanCategory}
+            on={onPlan}
+            setOn={setOnPlan}
           />
         </div>
-        <RecommandSlider on={onPlanCategory} />
+        <RecommandSlider on={onPlan} />
       </div>
       <div className="recommand-wrap">
         <div className="recommand-title">
@@ -35,19 +58,23 @@ const Main = () => {
         </div>
         <div className="recommand-nav">
           <FilterNavWithPanel
-            categories={contentCategory}
-            on={onContentCategory}
-            setOn={setOnContentCategory}
+            categories={placeType}
+            on={onPlace}
+            setOn={setOnPlace}
           />
         </div>
-        <RecommandSlider on={onContentCategory} />
+        <RecommandSlider on={onPlace} />
       </div>
       <div className="recommand-wrap">
         <div className="recommand-title">
           <h2>인기 리뷰</h2>
         </div>
         <div className="recommand-nav">
-          <FilterNavWithPanel categories={contentCategory} />
+          <FilterNavWithPanel
+            categories={placeType}
+            on={onReview}
+            setOn={setOnReview}
+          />
         </div>
         <div className="hot-review-wrap">
           <div className="main-review">
@@ -70,11 +97,11 @@ const Main = () => {
 };
 
 const FilterNavWithPanel = ({ categories, on, setOn }) => {
-  const tabIndex = categories.indexOf(on); // 문자열인 on → index 변환
+  const tabIndex = categories.findIndex((type) => type.name === on); // 문자열인 on → index 변환
 
   const handleChange = (_, newIndex) => {
-    const selected = categories[newIndex];
-    setOn(selected); // 상위에서 내려준 setOn 함수
+    const selected = categories[newIndex].name;
+    setOn(selected);
   };
 
   return (
@@ -90,8 +117,8 @@ const FilterNavWithPanel = ({ categories, on, setOn }) => {
           },
         }}
       >
-        {categories.map((category) => (
-          <Tab key={category} label={category} />
+        {categories.map((category, i) => (
+          <Tab key={category.id + "-" + i} label={category.name} />
         ))}
       </Tabs>
     </Box>

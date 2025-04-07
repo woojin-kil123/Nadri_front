@@ -36,3 +36,9 @@
   display: flex;
   justify-content: space-evenly;
 }
+.event-list .event-thumbnail {
+  height: 200px;
+}
+.event-list .event-card {
+  width: 30%;
+}

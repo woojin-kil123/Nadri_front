@@ -229,6 +229,355 @@ const Join3 = () => {
               <li>
                 <input
                   type="checkbox"
+                  id="check2"
+                  checked={check2}
+                  onChange={(e) => {
+                    setCheck2(e.target.checked);
+                    handleIndividualChange();
+                  }}
+                />
+                <label htmlFor="check2">(필수) 이용약관</label>
+                <ChevronRightIcon
+                  className="join-chevron-icon"
+                  onClick={handleToggle}
+                  style={{
+                    transition: "transform 0.3s ease",
+                    transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
+                    marginLeft: "auto",
+                    cursor: "pointer",
+                  }}
+                />
+                <div
+                  className={`agree-details ${isOpen ? "open" : ""}`}
+                  style={{
+                    maxHeight: isOpen ? "200px" : "0", // 펼쳐지거나 접힐 때의 높이
+                    transform: isOpen ? "translateY(0)" : "translateY(-20px)", // 아래로 떨어지는 효과
+                    transition:
+                      "max-height 0.5s ease, transform 0.3s ease, opacity 0.5s ease", // 부드러운 애니메이션
+                    overflow: "hidden", // 내용이 넘치지 않도록 숨김 처리
+                  }}
+                >
+                  <div className="agree-content">
+                    <div
+                      className="agree-content2"
+                      style={{ marginTop: "0px", marginLeft: "15px" }}
+                    >
+                      <h3>제 1조 (목적)</h3>
+                      <p>
+                        이 약관은 주식회사 여기어때컴퍼니(이하 "회사"라 함)가
+                        운영하는 종합 여행·여가 플랫폼(이하 "플랫폼"이라
+                        한다)에서 제공하는 예약 관련 서비스(이하 "서비스"라
+                        한다)를 이용함에 있어 "회사"와 "이용자"의 권리․의무 및
+                        책임사항을 규정함을 목적으로 합니다.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </li>
+
+              <li>
+                <input
+                  type="checkbox"
+                  id="check3"
+                  checked={check3}
+                  onChange={(e) => {
+                    setCheck2(e.target.checked);
+                    handleIndividualChange();
+                  }}
+                />
+                <label htmlFor="check3">(필수) 만 14세 이상 확인</label>
+                <ChevronRightIcon
+                  className="join-chevron-icon"
+                  onClick={handleToggle}
+                  style={{
+                    transition: "transform 0.3s ease",
+                    transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
+                    marginLeft: "auto",
+                    cursor: "pointer",
+                  }}
+                />
+                <div
+                  className={`agree-details ${isOpen ? "open" : ""}`}
+                  style={{
+                    maxHeight: isOpen ? "200px" : "0", // 펼쳐지거나 접힐 때의 높이
+                    transform: isOpen ? "translateY(0)" : "translateY(-20px)", // 아래로 떨어지는 효과
+                    transition:
+                      "max-height 0.5s ease, transform 0.3s ease, opacity 0.5s ease", // 부드러운 애니메이션
+                    overflow: "hidden", // 내용이 넘치지 않도록 숨김 처리
+                  }}
+                >
+                  <div className="agree-content">
+                    <div
+                      className="agree-content2"
+                      style={{ marginTop: "0px", marginLeft: "15px" }}
+                    >
+                      <h3>제 1조 (목적)</h3>
+                      <p>
+                        이 약관은 주식회사 여기어때컴퍼니(이하 "회사"라 함)가
+                        운영하는 종합 여행·여가 플랫폼(이하 "플랫폼"이라
+                        한다)에서 제공하는 예약 관련 서비스(이하 "서비스"라
+                        한다)를 이용함에 있어 "회사"와 "이용자"의 권리․의무 및
+                        책임사항을 규정함을 목적으로 합니다.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </li>
+
+              <li>
+                <input
+                  type="checkbox"
+                  id="check4"
+                  checked={check4}
+                  onChange={(e) => {
+                    setCheck2(e.target.checked);
+                    handleIndividualChange();
+                  }}
+                />
+                <label htmlFor="check4">
+                  (필수) 개인정보 수집 및 이용 동의
+                </label>
+                <ChevronRightIcon
+                  className="join-chevron-icon"
+                  onClick={handleToggle}
+                  style={{
+                    transition: "transform 0.3s ease",
+                    transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
+                    marginLeft: "auto",
+                    cursor: "pointer",
+                  }}
+                />
+                <div
+                  className={`agree-details ${isOpen ? "open" : ""}`}
+                  style={{
+                    maxHeight: isOpen ? "200px" : "0", // 펼쳐지거나 접힐 때의 높이
+                    transform: isOpen ? "translateY(0)" : "translateY(-20px)", // 아래로 떨어지는 효과
+                    transition:
+                      "max-height 0.5s ease, transform 0.3s ease, opacity 0.5s ease", // 부드러운 애니메이션
+                    overflow: "hidden", // 내용이 넘치지 않도록 숨김 처리
+                  }}
+                >
+                  <div className="agree-content">
+                    <div
+                      className="agree-content2"
+                      style={{ marginTop: "0px", marginLeft: "15px" }}
+                    >
+                      <h3>제 1조 (목적)</h3>
+                      <p>
+                        이 약관은 주식회사 여기어때컴퍼니(이하 "회사"라 함)가
+                        운영하는 종합 여행·여가 플랫폼(이하 "플랫폼"이라
+                        한다)에서 제공하는 예약 관련 서비스(이하 "서비스"라
+                        한다)를 이용함에 있어 "회사"와 "이용자"의 권리․의무 및
+                        책임사항을 규정함을 목적으로 합니다.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </li>
+
+              <li>
+                <input
+                  type="checkbox"
+                  id="check5"
+                  checked={check5}
+                  onChange={(e) => {
+                    setCheck2(e.target.checked);
+                    handleIndividualChange();
+                  }}
+                />
+                <label htmlFor="check5">
+                  (선택) 개인정보 수집 및 이용 동의
+                </label>
+                <ChevronRightIcon
+                  className="join-chevron-icon"
+                  onClick={handleToggle}
+                  style={{
+                    transition: "transform 0.3s ease",
+                    transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
+                    marginLeft: "auto",
+                    cursor: "pointer",
+                  }}
+                />
+                <div
+                  className={`agree-details ${isOpen ? "open" : ""}`}
+                  style={{
+                    maxHeight: isOpen ? "200px" : "0", // 펼쳐지거나 접힐 때의 높이
+                    transform: isOpen ? "translateY(0)" : "translateY(-20px)", // 아래로 떨어지는 효과
+                    transition:
+                      "max-height 0.5s ease, transform 0.3s ease, opacity 0.5s ease", // 부드러운 애니메이션
+                    overflow: "hidden", // 내용이 넘치지 않도록 숨김 처리
+                  }}
+                >
+                  <div className="agree-content">
+                    <div
+                      className="agree-content2"
+                      style={{ marginTop: "0px", marginLeft: "15px" }}
+                    >
+                      <h3>제 1조 (목적)</h3>
+                      <p>
+                        이 약관은 주식회사 여기어때컴퍼니(이하 "회사"라 함)가
+                        운영하는 종합 여행·여가 플랫폼(이하 "플랫폼"이라
+                        한다)에서 제공하는 예약 관련 서비스(이하 "서비스"라
+                        한다)를 이용함에 있어 "회사"와 "이용자"의 권리․의무 및
+                        책임사항을 규정함을 목적으로 합니다.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </li>
+
+              <li>
+                <input
+                  type="checkbox"
+                  id="check6"
+                  checked={check6}
+                  onChange={(e) => {
+                    setCheck2(e.target.checked);
+                    handleIndividualChange();
+                  }}
+                />
+                <label htmlFor="check6">(선택) 마케팅 알림 수신 동의</label>
+                <ChevronRightIcon
+                  className="join-chevron-icon"
+                  onClick={handleToggle}
+                  style={{
+                    transition: "transform 0.3s ease",
+                    transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
+                    marginLeft: "auto",
+                    cursor: "pointer",
+                  }}
+                />
+                <div
+                  className={`agree-details ${isOpen ? "open" : ""}`}
+                  style={{
+                    maxHeight: isOpen ? "200px" : "0", // 펼쳐지거나 접힐 때의 높이
+                    transform: isOpen ? "translateY(0)" : "translateY(-20px)", // 아래로 떨어지는 효과
+                    transition:
+                      "max-height 0.5s ease, transform 0.3s ease, opacity 0.5s ease", // 부드러운 애니메이션
+                    overflow: "hidden", // 내용이 넘치지 않도록 숨김 처리
+                  }}
+                >
+                  <div className="agree-content">
+                    <div
+                      className="agree-content2"
+                      style={{ marginTop: "0px", marginLeft: "15px" }}
+                    >
+                      <h3>제 1조 (목적)</h3>
+                      <p>
+                        이 약관은 주식회사 여기어때컴퍼니(이하 "회사"라 함)가
+                        운영하는 종합 여행·여가 플랫폼(이하 "플랫폼"이라
+                        한다)에서 제공하는 예약 관련 서비스(이하 "서비스"라
+                        한다)를 이용함에 있어 "회사"와 "이용자"의 권리․의무 및
+                        책임사항을 규정함을 목적으로 합니다.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </li>
+
+              <li>
+                <input
+                  type="checkbox"
+                  id="check7"
+                  checked={check7}
+                  onChange={(e) => {
+                    setCheck2(e.target.checked);
+                    handleIndividualChange();
+                  }}
+                />
+                <label htmlFor="check7">
+                  (선택) 위치기반 서비스 이용약관 동의
+                </label>
+                <ChevronRightIcon
+                  className="join-chevron-icon"
+                  onClick={handleToggle}
+                  style={{
+                    transition: "transform 0.3s ease",
+                    transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
+                    marginLeft: "auto",
+                    cursor: "pointer",
+                  }}
+                />
+                <div
+                  className={`agree-details ${isOpen ? "open" : ""}`}
+                  style={{
+                    maxHeight: isOpen ? "200px" : "0", // 펼쳐지거나 접힐 때의 높이
+                    transform: isOpen ? "translateY(0)" : "translateY(-20px)", // 아래로 떨어지는 효과
+                    transition:
+                      "max-height 0.5s ease, transform 0.3s ease, opacity 0.5s ease", // 부드러운 애니메이션
+                    overflow: "hidden", // 내용이 넘치지 않도록 숨김 처리
+                  }}
+                >
+                  <div className="agree-content">
+                    <div
+                      className="agree-content2"
+                      style={{ marginTop: "0px", marginLeft: "15px" }}
+                    >
+                      <h3>제 1조 (목적)</h3>
+                      <p>
+                        이 약관은 주식회사 여기어때컴퍼니(이하 "회사"라 함)가
+                        운영하는 종합 여행·여가 플랫폼(이하 "플랫폼"이라
+                        한다)에서 제공하는 예약 관련 서비스(이하 "서비스"라
+                        한다)를 이용함에 있어 "회사"와 "이용자"의 권리․의무 및
+                        책임사항을 규정함을 목적으로 합니다.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </li>
+
+              <li>
+                <input
+                  type="checkbox"
+                  id="check2"
+                  checked={check2}
+                  onChange={(e) => {
+                    setCheck2(e.target.checked);
+                    handleIndividualChange();
+                  }}
+                />
+                <label htmlFor="check2">(필수) 이용약관</label>
+                <ChevronRightIcon
+                  className="join-chevron-icon"
+                  onClick={handleToggle}
+                  style={{
+                    transition: "transform 0.3s ease",
+                    transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
+                    marginLeft: "auto",
+                    cursor: "pointer",
+                  }}
+                />
+                <div
+                  className={`agree-details ${isOpen ? "open" : ""}`}
+                  style={{
+                    maxHeight: isOpen ? "200px" : "0", // 펼쳐지거나 접힐 때의 높이
+                    transform: isOpen ? "translateY(0)" : "translateY(-20px)", // 아래로 떨어지는 효과
+                    transition:
+                      "max-height 0.5s ease, transform 0.3s ease, opacity 0.5s ease", // 부드러운 애니메이션
+                    overflow: "hidden", // 내용이 넘치지 않도록 숨김 처리
+                  }}
+                >
+                  <div className="agree-content">
+                    <div
+                      className="agree-content2"
+                      style={{ marginTop: "0px", marginLeft: "15px" }}
+                    >
+                      <h3>제 1조 (목적)</h3>
+                      <p>
+                        이 약관은 주식회사 여기어때컴퍼니(이하 "회사"라 함)가
+                        운영하는 종합 여행·여가 플랫폼(이하 "플랫폼"이라
+                        한다)에서 제공하는 예약 관련 서비스(이하 "서비스"라
+                        한다)를 이용함에 있어 "회사"와 "이용자"의 권리․의무 및
+                        책임사항을 규정함을 목적으로 합니다.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </li>
+
+              <li>
+                <input
+                  type="checkbox"
                   id="check3"
                   checked={check3}
                   onChange={(e) => {

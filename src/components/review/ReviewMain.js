@@ -27,7 +27,7 @@ const ReviewMain = () => {
         console.log(err);
       });
   }, []);
-  const chaneContnent = (value) => {
+  const changeContnent = (value) => {
     setContnet(value);
     axios
       .get(
@@ -51,7 +51,7 @@ const ReviewMain = () => {
             <li
               style={{ width: "15%" }}
               onClick={() => {
-                chaneContnent("room");
+                changeContnent("room");
               }}
             >
               숙소
@@ -59,7 +59,7 @@ const ReviewMain = () => {
             <li
               style={{ width: "15%" }}
               onClick={() => {
-                chaneContnent("spot");
+                changeContnent("spot");
               }}
             >
               관광지
@@ -67,7 +67,7 @@ const ReviewMain = () => {
             <li
               style={{ width: "15%" }}
               onClick={() => {
-                chaneContnent("food");
+                changeContnent("food");
               }}
             >
               음식
@@ -75,7 +75,7 @@ const ReviewMain = () => {
             <li
               style={{ width: "15%" }}
               onClick={() => {
-                chaneContnent("todo");
+                changeContnent("todo");
               }}
             >
               즐길거리
@@ -83,7 +83,7 @@ const ReviewMain = () => {
             <li
               style={{ width: "15%" }}
               onClick={() => {
-                chaneContnent("plan");
+                changeContnent("plan");
               }}
             >
               플래너

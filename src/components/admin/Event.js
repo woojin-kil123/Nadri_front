@@ -1,59 +1,172 @@
+import { useEffect, useState } from "react";
 import Calendar from "./Calendar";
+import axios from "axios";
+import { getKoreanToday } from "../utils/metaSet";
 
 const Event = () => {
-  const upcomingEvents = [
-    {
-      title: "Glastonbury Festival",
-      date: "26 April 2025 - 12:00 PM",
-      location: "62 Winder Road Apt. 521",
-      host: "Tara and Cassie Hudson",
-    },
-    {
-      title: "Ultra Europe 2019",
-      date: "19 October 2025 - 9:00 PM",
-      location: "325 Scudder Tunnel Apt. 943",
-      host: "Sara Nestor",
-    },
-  ];
-  const calendarEvents = [
-    {
-      date: "2025-04-02",
-      title: "Design Conference",
-      location: "706 Division Maison Suite 157",
-      organizer: "Total Design Agency",
-    },
-    {
-      date: "2025-04-15",
-      title: "Weekend Festival",
-    },
-    {
-      date: "2025-04-25",
-      title: "Summer Festival",
-    },
-  ];
+  const today = getKoreanToday();
+  const [placeType, setPlaceType] = useState([]);
+  const [isUpdate, setIsUpdate] = useState(false);
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_BACK_SERVER}/place/type`).then((res) => {
+      setPlaceType(res.data);
+    });
+  }, []);
+  const [onGoing, setOnGoing] = useState([]);
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACK_SERVER}/event/onGoing?date=${today}`)
+      .then((res) => {
+        setOnGoing(res.data);
+      });
+  }, [isUpdate]);
+  const [end, setEnd] = useState([]);
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACK_SERVER}/event/end?date=${today}`)
+      .then((res) => {
+        setEnd(res.data);
+      });
+  }, [isUpdate]);
   return (
     <div className="event-page">
-      <section className="upcoming-events">
-        <h2>다가오는 일정</h2>
-        <div className="event-list">
-          {upcomingEvents.map((event, index) => (
-            <div className="event-card" key={index}>
-              <div className="event-thumbnail"></div>
-              <div className="event-info">
-                <h3>{event.title}</h3>
-                <p>{event.date}</p>
-                <p>{event.location}</p>
-                <p>{event.host}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+      <section className="ongoing-event">
+        <h2>진행 중인 이벤트</h2>
+        <EventSlide onGoing={onGoing} placeType={placeType} />
       </section>
       <section className="calendar-section">
         <h2>일정 관리</h2>
-        <Calendar />
+        <Calendar
+          placeType={placeType}
+          setIsUpdate={setIsUpdate}
+          isUpdate={isUpdate}
+        />
+      </section>
+      <section className="end-event">
+        <h2>종료된 이벤트</h2>
+        <table className="tbl">
+          <thead>
+            <tr>
+              <th>이벤트 제목</th>
+              <th>이벤트 내용</th>
+              <th>이벤트 종료일</th>
+              <th>삭제</th>
+            </tr>
+          </thead>
+          <tbody>
+            {end.map((event, i) => (
+              <tr key={"end-" + i}>
+                <td>{event.eventTitle}</td>
+                <td style={{ width: "50%" }}>{event.eventContent}</td>
+                <td>{event.endDate}</td>
+                <td>
+                  <button
+                    className="btn-primary"
+                    onClick={() => {
+                      const eventNo = event.eventNo;
+                      axios
+                        .delete(
+                          `${process.env.REACT_APP_BACK_SERVER}/event/${eventNo}`
+                        )
+                        .then((res) => {
+                          if (res.data > 0) {
+                            setIsUpdate((prev) => !prev);
+                          }
+                        });
+                    }}
+                  >
+                    삭제
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
     </div>
   );
 };
 export default Event;
+
+const EventSlide = ({ onGoing, placeType }) => {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const isSlideMode = onGoing.length > 3;
+
+  // 3개씩 슬라이드 묶음 만들기
+  const slides = [];
+  for (let i = 0; i < onGoing.length; i += 3) {
+    slides.push(onGoing.slice(i, i + 3));
+  }
+
+  useEffect(() => {
+    if (!isSlideMode) return;
+
+    const interval = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % slides.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [slides.length, isSlideMode]);
+
+  if (onGoing.length === 0) return null;
+
+  return (
+    <div className="intro-wrap">
+      <div className="event-list">
+        {isSlideMode
+          ? slides[activeSlide].map((event, index) => (
+              <div className="event-card" key={index}>
+                <div className="event-thumbnail">
+                  <img
+                    src={`${process.env.REACT_APP_BACK_SERVER}/event/thumb/${event.eventImg}`}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
+                </div>
+                <div className="event-info">
+                  <h3>{event.eventTitle}</h3>
+                  <p>
+                    {
+                      placeType.find((type) => type.id === event.placeTypeId)
+                        ?.name
+                    }
+                  </p>
+                  <p>
+                    {event.startDate} ~ {event.endDate}
+                  </p>
+                </div>
+              </div>
+            ))
+          : onGoing.map((event, index) => (
+              <div className="event-card" key={index}>
+                <div className="event-thumbnail">
+                  <img
+                    src={`${process.env.REACT_APP_BACK_SERVER}/event/thumb/${event.eventImg}`}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </div>
+                <div className="event-info">
+                  <h3>{event.eventTitle}</h3>
+                  <p>
+                    {
+                      placeType.find((type) => type.id === event.placeTypeId)
+                        ?.name
+                    }
+                  </p>
+                  <p>
+                    {event.startDate} ~ {event.endDate}
+                  </p>
+                </div>
+              </div>
+            ))}
+      </div>
+    </div>
+  );
+};

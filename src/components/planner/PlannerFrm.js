@@ -62,8 +62,8 @@ const PlannerFrm = () => {
   }, [sortOption, filterOption]);
 
   //기존에 작성 중인 플래너 받아오는 함수
-  const refreshToken = window.localStorage.getItem("refreshToken");
   const getPlanData = useCallback(() => {
+    const refreshToken = window.localStorage.getItem("refreshToken");
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/plan/verify/${planNo}`, {
         headers: {
