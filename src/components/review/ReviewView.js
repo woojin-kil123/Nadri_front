@@ -132,39 +132,43 @@ const ReviewView = () => {
             />
           ))}
         </ul>
-        {!isCommenting ? (
-          <button onClick={() => setIsCommenting(true)}>댓글 작성</button>
-        ) : (
-          <div>
-            <input
-              type="text"
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-            />
-            <button
-              onClick={() => {
-                const form = new FormData();
-                form.append("reviewNo", reviewNo);
-                form.append("commContent", newComment);
-                form.append("memberNickname", memberNickname);
-                console.log(form);
-                axios
-                  .post(`${process.env.REACT_APP_BACK_SERVER}/comm`, form)
-                  .then((res) => {
-                    console.log(res);
-                    setComments([...comments, res.data]);
-                  })
-                  .catch((err) => {
-                    console.log(err);
-                  });
-                setNewComment(""); // 입력 필드 초기화
-                setIsCommenting(false); // 입력 필드 숨김
-              }}
-            >
-              등록
-            </button>
-            <button onClick={() => setIsCommenting(false)}>취소</button>
-          </div>
+        {memberNickname && (
+          <>
+            {!isCommenting ? (
+              <button onClick={() => setIsCommenting(true)}>댓글 작성</button>
+            ) : (
+              <div>
+                <input
+                  type="text"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                />
+                <button
+                  onClick={() => {
+                    const form = new FormData();
+                    form.append("reviewNo", reviewNo);
+                    form.append("commContent", newComment);
+                    form.append("memberNickname", memberNickname);
+                    console.log(form);
+                    axios
+                      .post(`${process.env.REACT_APP_BACK_SERVER}/comm`, form)
+                      .then((res) => {
+                        console.log(res);
+                        setComments([...comments, res.data]);
+                      })
+                      .catch((err) => {
+                        console.log(err);
+                      });
+                    setNewComment(""); // 입력 필드 초기화
+                    setIsCommenting(false); // 입력 필드 숨김
+                  }}
+                >
+                  등록
+                </button>
+                <button onClick={() => setIsCommenting(false)}>취소</button>
+              </div>
+            )}
+          </>
         )}
         {isReporting && (
           <div className="modal">
