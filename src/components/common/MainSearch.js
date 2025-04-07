@@ -87,7 +87,7 @@ const MainSearch = () => {
   };
   //tag 가 바뀌면 조회
   useEffect(() => {
-    selectKeyword();
+    selectedTags.length > 0 && selectKeyword();
   }, [selectedTags]);
   return (
     <div className="main-search">
