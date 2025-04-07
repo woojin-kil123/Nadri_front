@@ -68,25 +68,27 @@ const UpdateModal = ({ onClose, placeType, setIsUpdate, event }) => {
     if (isImageUpdated) {
       form.append("img", formData.eventImg);
     }
-
-    const eventNo = event.extendedProps.eventNo;
-    const request = event
-      ? axios.patch(
-          `${process.env.REACT_APP_BACK_SERVER}/event/${eventNo}`,
-          form,
-          {
-            headers: {
-              contentType: "multipart/form-data",
-              processData: false,
-            },
-          }
-        )
-      : axios.post(`${process.env.REACT_APP_BACK_SERVER}/event`, form, {
+    let request = "";
+    if (event) {
+      const eventNo = event.extendedProps.eventNo;
+      request = axios.patch(
+        `${process.env.REACT_APP_BACK_SERVER}/event/${eventNo}`,
+        form,
+        {
           headers: {
             contentType: "multipart/form-data",
             processData: false,
           },
-        });
+        }
+      );
+    } else {
+      request = axios.post(`${process.env.REACT_APP_BACK_SERVER}/event`, form, {
+        headers: {
+          contentType: "multipart/form-data",
+          processData: false,
+        },
+      });
+    }
 
     request.then((res) => {
       if (res.data > 0) {
