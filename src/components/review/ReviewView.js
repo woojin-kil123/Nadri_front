@@ -145,6 +145,7 @@ const ReviewView = () => {
                   .post(`${process.env.REACT_APP_BACK_SERVER}/comm`, form)
                   .then((res) => {
                     console.log(res);
+                    setComments([...comments, res.data]);
                   })
                   .catch((err) => {
                     console.log(err);
