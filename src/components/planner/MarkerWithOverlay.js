@@ -17,7 +17,7 @@ const MarkerWithOverlay = (props) => {
     <>
       <MapMarker
         position={p.placeLatLng}
-        onClick={() => setOpenOverlay(idx)}
+        onClick={() => setOpenOverlay(p.placeId)}
         image={
           isPlanned
             ? {
@@ -34,8 +34,8 @@ const MarkerWithOverlay = (props) => {
           </div>
         </CustomOverlayMap>
       )}
-      {openOverlay === idx && (
-        <CustomOverlayMap clickable={true} position={p.placeLatLng}>
+      {openOverlay === p.placeId && (
+        <CustomOverlayMap clickable={true} position={p.placeLatLng} zIndex={2}>
           <div className="overlay-wrap">
             <div className="overlay-info">
               <div className="overlay-title">
@@ -79,11 +79,19 @@ const MarkerWithOverlay = (props) => {
                     </div>
                     <div className="place-btn">
                       {isPlanned ? (
-                        <button onClick={deletePlan}>삭제</button>
+                        <button
+                          onClick={() => {
+                            setOpenOverlay(null);
+                            deletePlan(p.order);
+                          }}
+                        >
+                          삭제
+                        </button>
                       ) : (
                         <button
                           onClick={() => {
-                            setOpenPlanningModal(idx);
+                            // setOpenOverlay(null);
+                            setOpenPlanningModal(p.placeId);
                           }}
                         >
                           추가
