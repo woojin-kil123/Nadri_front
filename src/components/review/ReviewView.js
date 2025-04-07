@@ -61,7 +61,29 @@ const ReviewView = () => {
     "부적절한 이미지 – 폭력적이거나 선정적인 이미지가 포함된 경우",
     "리뷰와 무관한 내용 – 여행지와 관련 없는 내용이 포함된 경우",
   ];
+  const deleteReview = () => {
+    Swal.fire({
+      title: "리뷰 삭제",
+      text: "삭제하시겠습니까",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "삭제하기",
+      cancelButtonText: "취소",
+    }).then((res) => {
+      if (res.isConfirmed) {
+        axios
+          .delete(`${process.env.REACT_APP_BACK_SERVER}/review/${reviewNo}`)
+          .then((res) => {
+            console.log(res);
 
+            navigate("/review");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    });
+  };
   // 신고 모달 상태
   const [isReporting, setIsReporting] = useState(false);
   const [reportReason, setReportReason] = useState("");
@@ -120,7 +142,17 @@ const ReviewView = () => {
           {liked ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
         </button>
         <span>{likeCount}</span>
-        <EditNoteIcon onClick={editReview}>리뷰 수정</EditNoteIcon>
+        {memberNickname === review.memberNickname && (
+          <>
+            <EditNoteIcon onClick={editReview}>리뷰 수정</EditNoteIcon>
+            <DeleteIcon
+              onClick={deleteReview}
+              style={{ cursor: "pointer", marginLeft: "10px" }}
+            >
+              리뷰 삭제
+            </DeleteIcon>
+          </>
+        )}
         <ReportIcon onClick={reportClick}>리뷰 신고</ReportIcon>
         <h3>댓글</h3>
         <ul>
