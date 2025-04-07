@@ -10,30 +10,40 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useRef, useState } from "react";
-import Menu from "@mui/material/Menu";
 import "./mainSearch.css";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import Grow from "@mui/material/Grow";
 import Popper from "@mui/material/Popper";
 import MenuList from "@mui/material/MenuList";
 import Stack from "@mui/material/Stack";
+import { useRecoilValue } from "recoil";
+import { placeTypeState } from "../utils/RecoilData";
 
 const MainSearch = () => {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
+  const placeType = useRecoilValue(placeTypeState);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [inputValue, setInputValue] = useState("");
+  const [option, setOption] = useState([
+    { title: "2박3일 여행", location: "부산" },
+  ]);
 
+  const handleMenuClick = (typeName) => {
+    const newTag = { title: typeName };
+    if (!selectedTags.some((tag) => tag.title === newTag.title)) {
+      setSelectedTags((prev) => [...prev, newTag]);
+    }
+  };
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
-
   const handleClose = (event) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
-
     setOpen(false);
   };
-
   function handleListKeyDown(event) {
     if (event.key === "Tab") {
       event.preventDefault();
@@ -42,14 +52,12 @@ const MainSearch = () => {
       setOpen(false);
     }
   }
-
   // return focus to the button when we transitioned from !open -> open
   const prevOpen = useRef(open);
   useEffect(() => {
     if (prevOpen.current === true && open === false) {
       anchorRef.current.focus();
     }
-
     prevOpen.current = open;
   }, [open]);
 
@@ -80,9 +88,14 @@ const MainSearch = () => {
                     aria-labelledby="composition-button"
                     onKeyDown={handleListKeyDown}
                   >
-                    <MenuItem onClick={handleClose}>Profile</MenuItem>
-                    <MenuItem onClick={handleClose}>My account</MenuItem>
-                    <MenuItem onClick={handleClose}>Logout</MenuItem>
+                    {placeType.map((type, i) => (
+                      <MenuItem
+                        key={"cat-" + i}
+                        onClick={() => handleMenuClick(type.name)}
+                      >
+                        {type.name}
+                      </MenuItem>
+                    ))}
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
@@ -108,13 +121,41 @@ const MainSearch = () => {
         }}
         multiple
         id="tags-standard"
-        options={top100Films}
+        disableCloseOnSelect
+        options={option}
         getOptionLabel={(option) => option.title}
+        value={selectedTags}
+        inputValue={inputValue}
+        onInputChange={(event, newInputValue, reason) => {
+          if (reason === "input") {
+            setInputValue(newInputValue);
+          }
+        }}
+        onChange={(event, newValue, reason, details) => {
+          if (reason === "selectOption" && details?.option) {
+            // 드롭다운에서 선택 시 텍스트만 채움
+            setInputValue(details.option.title);
+          } else if (reason === "removeOption") {
+            // X 버튼 클릭 시 태그 삭제
+            setSelectedTags(newValue);
+          }
+        }}
         renderInput={(params) => (
           <TextField
             {...params}
             variant="outlined"
             placeholder="검색"
+            onClick={(e) => {
+              // 사용자 정의 함수 호출
+              console.log("검색창 클릭됨!");
+              setInputValue(e.target.value);
+              // 필요하면 드롭다운 열기 강제
+              params.inputProps.onClick?.(e); // 기존 동작도 유지
+            }}
+            onFocus={(e) => {
+              console.log("검색창 포커스됨!");
+              // 포커스 시 동작 커스터마이징 가능
+            }}
             sx={{
               "& .MuiOutlinedInput-root": {
                 borderRadius: "12px", // 둥근 테두리
@@ -142,27 +183,3 @@ const MainSearch = () => {
   );
 };
 export default MainSearch;
-
-const top100Films = [
-  { title: "The Shawshank Redemption", year: 1994 },
-  { title: "The Godfather", year: 1972 },
-  { title: "The Godfather: Part II", year: 1974 },
-  { title: "The Dark Knight", year: 2008 },
-  { title: "12 Angry Men", year: 1957 },
-  { title: "Schindler's List", year: 1993 },
-  { title: "Pulp Fiction", year: 1994 },
-  {
-    title: "The Lord of the Rings: The Return of the King",
-    year: 2003,
-  },
-  { title: "The Good, the Bad and the Ugly", year: 1966 },
-  { title: "Fight Club", year: 1999 },
-  {
-    title: "The Lord of the Rings: The Fellowship of the Ring",
-    year: 2001,
-  },
-  { title: "Inglourious Basterds", year: 2009 },
-  { title: "Snatch", year: 2000 },
-  { title: "3 Idiots", year: 2009 },
-  { title: "Monty Python and the Holy Grail", year: 1975 },
-];
