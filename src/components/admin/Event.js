@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Calendar from "./Calendar";
 import axios from "axios";
 import { getKoreanToday } from "../utils/metaSet";
+import dayjs from "dayjs";
 
 const Event = () => {
   const today = getKoreanToday();
