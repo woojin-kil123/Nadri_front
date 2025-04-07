@@ -33,6 +33,13 @@ const ReviewView = () => {
           .delete(`${process.env.REACT_APP_BACK_SERVER}/comm/${commNo}`)
           .then((res) => {
             console.log(res);
+            if (res.data === 1) {
+              const newComments = comments.filter((comment) => {
+                return comment.commNo !== commNo;
+              });
+
+              setComments(newComments);
+            }
           })
           .catch((err) => {
             console.log(err);
@@ -185,7 +192,7 @@ const CommentItem = ({ comment, onDelete }) => {
   const [memberNickname, setMemberNickname] =
     useRecoilState(loginNicknameState);
   return (
-    <li>
+    <li key={"comment" + comment.commNo}>
       {comment.memberNickname}
       {comment.commContent}
       {comment.memberNickname === memberNickname && (
