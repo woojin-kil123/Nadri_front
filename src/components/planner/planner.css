@@ -35,10 +35,14 @@
 .filter-pressed {
   background-color: var(--gray6);
   font-weight: bold;
+  position: relative;
 }
 .filter-reset-btn {
   cursor: pointer;
   position: absolute;
+  right: 0;
+  width: 16px !important;
+  height: 16px !important;
 }
 .filter-reset-btn:hover > :first-child {
   color: tomato;
@@ -367,4 +371,22 @@
   color: #5085bb;
   cursor: pointer;
   font-size: 13px;
+}
+
+.arrow-marker {
+  font-size: 20px;
+  display: inline-block;
+  transform-origin: center;
+}
+.numbered-marker {
+  background-color: tomato;
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+}
+.marker-circle {
+  line-height: 15px;
+  font-size: 15px;
+  color: white;
+  text-align: center;
 }
