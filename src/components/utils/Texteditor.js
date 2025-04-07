@@ -59,15 +59,7 @@ const TextEditor = (props) => {
             { indent: "+1" },
             { align: [] },
           ],
-          ["image"],
         ],
-        handlers: {
-          image: imageHandler,
-        },
-      },
-      ImageResize: {
-        parchment: Quill.import("parchment"),
-        modules: ["Resize", "DisplaySize", "Toolbar"],
       },
     };
   }, []);
