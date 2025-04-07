@@ -56,7 +56,7 @@ function App() {
 
       <Routes>
         <Route
-          path="/planner/*"
+          path="/planner/:planNo?"
           element={<LoginRouting element={<PlannerFrm />} />}
         />
 
