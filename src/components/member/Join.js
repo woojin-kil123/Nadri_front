@@ -113,7 +113,7 @@ const Join = () => {
       }).then((result) => {
         if (result.isConfirmed) {
           // 인증 완료 후 회원 가입 2단계로 이동
-          navigate("/join3", {
+          navigate("/join2", {
             state: { email: member.memberEmail, code: member.memberCode },
           });
         }
