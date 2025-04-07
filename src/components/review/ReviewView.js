@@ -144,6 +144,18 @@ const ReviewView = () => {
       return;
     }
     alert(`"${reportReason}" 사유로 신고되었습니다.`);
+    const form = new FormData();
+    form.append("reviewNo", reviewNo);
+    form.append("memberNickname", memberNickname);
+    form.append("reportReason", reportReason);
+    axios
+      .post(`${process.env.REACT_APP_BACK_SERVER}/report/`, form)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     setIsReporting(false);
     setReportReason("");
     setReportTarget(null);
