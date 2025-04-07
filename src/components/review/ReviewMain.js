@@ -26,9 +26,10 @@ const ReviewMain = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [reqPage]);
   const changeContnent = (value) => {
     setContnet(value);
+    setReqPage(1);
     axios
       .get(
         `${process.env.REACT_APP_BACK_SERVER}/review?reqPage=${reqPage}&value=${value}`
