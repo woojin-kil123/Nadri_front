@@ -182,14 +182,18 @@ const ReviewView = () => {
   );
 };
 const CommentItem = ({ comment, onDelete }) => {
+  const [memberNickname, setMemberNickname] =
+    useRecoilState(loginNicknameState);
   return (
     <li>
       {comment.memberNickname}
       {comment.commContent}
-      <DeleteIcon
-        style={{ cursor: "pointer", marginLeft: "8px" }}
-        onClick={() => onDelete(comment.commNo)}
-      />
+      {comment.memberNickname === memberNickname && (
+        <DeleteIcon
+          style={{ cursor: "pointer", marginLeft: "8px" }}
+          onClick={() => onDelete(comment.commNo)}
+        />
+      )}
     </li>
   );
 };
