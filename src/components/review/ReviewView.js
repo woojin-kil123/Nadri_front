@@ -195,7 +195,9 @@ const ReviewView = () => {
             </DeleteIcon>
           </>
         )}
-        <ReportIcon onClick={reportClick}>리뷰 신고</ReportIcon>
+        {review.memberNickname !== memberNickname && (
+          <ReportIcon onClick={reportClick}>리뷰 신고</ReportIcon>
+        )}
         <h3>댓글</h3>
         <ul>
           {comments.map((comment) => (
