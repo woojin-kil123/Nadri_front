@@ -22,7 +22,7 @@ import {
   memberLeveltate,
 } from "../utils/RecoilData";
 import axios from "axios";
-import MainSearch from "./MainSearch";
+import MainSearch from "../search/MainSearch";
 
 const Header = () => {
   const isLogin = useRecoilValue(isLoginState);

@@ -39,6 +39,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Admin from "./components/admin/Admin";
 import Event from "./components/admin/Event";
 import axios from "axios";
+import SearchResult from "./components/search/SearchResult";
 
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
@@ -109,6 +110,7 @@ function App() {
                   ></Route>
                   <Route path="/review/write" element={<ReviewWrite />}></Route>
                   <Route path="/place/*" element={<PlaceList />} />
+                  <Route path="/search" element={<SearchResult />} />
                 </Routes>
               </div>
               <Footer />

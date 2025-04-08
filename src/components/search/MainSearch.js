@@ -19,6 +19,7 @@ import Stack from "@mui/material/Stack";
 import { useRecoilValue } from "recoil";
 import { placeTypeState } from "../utils/RecoilData";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const MainSearch = () => {
   const [open, setOpen] = useState(false);
@@ -29,6 +30,7 @@ const MainSearch = () => {
   const [keyword, setKeyword] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const inputRef = useRef(null);
+  const navigate = useNavigate();
   const handleMenuClick = (typeName) => {
     const newTag = { title: typeName };
     if (!selectedTags.some((tag) => tag.title === newTag.title)) {
@@ -97,8 +99,22 @@ const MainSearch = () => {
   useEffect(() => {
     selectedTags.length > 0 && selectKeyword();
   }, [selectedTags]);
+  const doSearch = () => {
+    const arr = placeType.filter((type, _) =>
+      selectedTags.find((tag, _) => type.name === tag.title)
+    );
+    const type = arr.map((type, _) => `&type=${type.id}`);
+
+    navigate(`/search?query=${inputValue}${type.join("")}`);
+  };
   return (
-    <div className="main-search">
+    <form
+      className="main-search"
+      onSubmit={(e) => {
+        e.preventDefault();
+        doSearch();
+      }}
+    >
       <Stack direction="row" spacing={2}>
         <Popper
           open={open}
@@ -196,8 +212,6 @@ const MainSearch = () => {
             inputRef={inputRef}
             variant="outlined"
             placeholder="검색"
-            onClick={(e) => {}}
-            onFocus={(e) => {}}
             sx={{
               "& .MuiOutlinedInput-root": {
                 borderRadius: "12px", // 둥근 테두리
@@ -218,10 +232,15 @@ const MainSearch = () => {
           />
         )}
       />
-      <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+      <IconButton
+        type="button"
+        sx={{ p: "10px" }}
+        aria-label="search"
+        onClick={doSearch}
+      >
         <SearchIcon sx={{ width: "30px", height: "30px" }} />
       </IconButton>
-    </div>
+    </form>
   );
 };
 export default MainSearch;
