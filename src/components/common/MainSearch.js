@@ -26,14 +26,22 @@ const MainSearch = () => {
   const placeType = useRecoilValue(placeTypeState);
   const [selectedTags, setSelectedTags] = useState([]);
   const [inputValue, setInputValue] = useState("");
-  const [keyword, setKeyword] = useState([
-    { title: "2박3일 여행", location: "부산" },
-  ]);
-
+  const [keyword, setKeyword] = useState([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const inputRef = useRef(null);
   const handleMenuClick = (typeName) => {
     const newTag = { title: typeName };
     if (!selectedTags.some((tag) => tag.title === newTag.title)) {
       setSelectedTags((prev) => [...prev, newTag]);
+      // DOM이 다시 렌더링된 다음에 input에 포커스
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
+
+      // 다음 렌더 프레임에서 드롭다운 열기 → MUI의 내부 close() 이후
+      requestAnimationFrame(() => {
+        setDropdownOpen(true);
+      });
     }
   };
   const handleToggle = () => {
@@ -144,6 +152,9 @@ const MainSearch = () => {
         <MenuIcon />
       </IconButton>
       <Autocomplete
+        open={dropdownOpen}
+        onOpen={() => {}}
+        onClose={() => setDropdownOpen(false)}
         sx={{
           flexGrow: "1",
         }}
@@ -151,9 +162,14 @@ const MainSearch = () => {
         id="tags-standard"
         disableCloseOnSelect
         options={keyword}
-        getOptionLabel={(keyword) => (keyword?.title ? keyword.title : "")}
+        getOptionLabel={(keyword) => {
+          if (typeof keyword === "string") return keyword;
+          if (!keyword || typeof keyword.title !== "string") return "";
+          return keyword.title;
+        }}
         value={selectedTags}
         inputValue={inputValue}
+        noOptionsText="추천 키워드가 없습니다"
         onInputChange={(event, newInputValue, reason) => {
           if (reason !== "input") return;
           setInputValue(newInputValue);
@@ -164,33 +180,24 @@ const MainSearch = () => {
             lastChar.charCodeAt(0) >= 0xac00 &&
             lastChar.charCodeAt(0) <= 0xd7a3;
           if (!isKoreanSyllable) return;
+          setDropdownOpen(true);
           selectKeyword(newInputValue);
         }}
         onChange={(event, newValue, reason, details) => {
           if (reason === "selectOption" && details?.option) {
-            // 드롭다운에서 선택 시 텍스트만 채움
             setInputValue(details.option.title);
           } else if (reason === "removeOption") {
-            // X 버튼 클릭 시 태그 삭제
             setSelectedTags(newValue);
           }
         }}
         renderInput={(params) => (
           <TextField
             {...params}
+            inputRef={inputRef}
             variant="outlined"
             placeholder="검색"
-            onClick={(e) => {
-              // 사용자 정의 함수 호출
-              console.log("검색창 클릭됨!");
-              setInputValue(e.target.value);
-              // 필요하면 드롭다운 열기 강제
-              //              params.inputProps.onClick?.(e); // 기존 동작도 유지
-            }}
-            onFocus={(e) => {
-              console.log("검색창 포커스됨!");
-              // 포커스 시 동작 커스터마이징 가능
-            }}
+            onClick={(e) => {}}
+            onFocus={(e) => {}}
             sx={{
               "& .MuiOutlinedInput-root": {
                 borderRadius: "12px", // 둥근 테두리
