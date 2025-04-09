@@ -11,35 +11,37 @@ import { CancelOutlined, Close, Delete, Search } from "@mui/icons-material";
 import { IconButton, InputBase, Paper } from "@mui/material";
 import StarRating from "../utils/StarRating";
 import BasicDatePicker from "../utils/BasicDatePicker";
-import BasicSelect from "../utils/BasicSelect";
 import dayjs from "dayjs";
 import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import MarkerWithOverlay from "./MarkerWithOverlay";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
+import BasicSelect from "../utils/BasicSelect";
 
 const PlannerFrm = () => {
-  //마커 오버레이 여닫음 state
+  //마커 오버레이 여닫음
   const [openOverlay, setOpenOverlay] = useState(null);
-  //플래너 창 여닫음 state
+  //플래너 창 여닫음
   const [openPlanner, setOpenPlanner] = useState(false);
-  //"플래너에 추가하기" 창 여닫음 state
+  //"플래너에 추가하기" 창 여닫음
   const [openPlanningModal, setOpenPlanningModal] = useState(null);
-  //플래너에 추가한 장소 리스트 state
+  //플래너에 추가한 장소 리스트
   const [plannedPlaceList, setPlannedPlaceList] = useState([]);
   //플래너 제목
-  const [planName, setPlanName] = useState(null);
-  //플래너 저장 창 여닫음 state
+  const [planName, setPlanName] = useState("");
+  //플래너 공개 여부
+  const [planStatus, setPlanStatus] = useState("");
+  //플래너 저장 창 여닫음
   const [openSaveModal, setOpenSaveModal] = useState(false);
-  //현재 보이는 지도 화면 state
+  //현재 보이는 지도 화면
   const [mapBounds, setMapBounds] = useState(null);
-  //지도 중심좌표 state(화면 이동 시 사용)
+  //지도 중심좌표(화면 이동 시 사용)
   const [mapCenter, setMapCenter] = useState({
     lat: 37.5341338,
     lng: 126.897333254,
   });
-  //유저가 클릭한 지도 위치 state
+  //유저가 클릭한 지도 위치
   const [userMarker, setUserMarker] = useState(null);
   //유저 클릭 위치를 중심으로 하는 반경 범위
   const [userRadius, setUserRadius] = useState(1000);
@@ -51,7 +53,7 @@ const PlannerFrm = () => {
   const [filterOption, setFilterOption] = useState(null);
   //네비게이션
   const navigate = useNavigate();
-  //유저
+  //유저닉네임
   const [loginNickname, setLoginNickname] = useRecoilState(loginNicknameState);
 
   //↓ 작성된 useEffect 목록
@@ -86,7 +88,6 @@ const PlannerFrm = () => {
   //작성 중(이었던) 임시 플래너를 불러오기
   useEffect(() => {
     const saved = window.localStorage.getItem(`${loginNickname}_cache_planner`);
-    console.log(saved);
     if (saved !== "[]") {
       if (window.confirm("작성 중인 플래너가 있습니다. 불러오시겠습니까?")) {
         const savedList = JSON.parse(saved);
@@ -104,7 +105,6 @@ const PlannerFrm = () => {
       `${loginNickname}_cache_planner`,
       JSON.stringify(plannedPlaceList)
     );
-    const saved = localStorage.getItem(`${loginNickname}_cache_planner`);
   }, [plannedPlaceList]);
 
   //↓ 함수 및 값
@@ -242,7 +242,7 @@ const PlannerFrm = () => {
     { name: "즐길거리", value: 4 },
   ];
 
-  const deletePlan = (odr) => {
+  const handleDeletePlace = (odr) => {
     //1. 삭제하시겠습니까?
     if (window.confirm("삭제하시겠습니까?")) {
       //2. plannedPlace 삭제 및 order 재정렬
@@ -335,7 +335,7 @@ const PlannerFrm = () => {
           setOpenPlanner={setOpenPlanner}
           plannedPlaceList={plannedPlaceList}
           setPlannedPlaceList={setPlannedPlaceList}
-          deletePlan={deletePlan}
+          handleDeletePlace={handleDeletePlace}
           planName={planName}
           setPlanName={setPlanName}
         />
@@ -368,37 +368,24 @@ const PlannerFrm = () => {
         </button>
       </div>
       <div className="save-plan-btn">
-        <button
-          onClick={() => {
-            setOpenSaveModal(true);
-          }}
-        >
-          저장
-        </button>
+        {plannedPlaceList.length !== 0 && (
+          <button
+            onClick={() => {
+              setOpenSaveModal(true);
+            }}
+          >
+            저장
+          </button>
+        )}
       </div>
       {openSaveModal && (
-        <div className="modal-background">
-          <div className="planning-modal">
-            <div className="page-title">플래너 저장하기</div>
-            <Close
-              onClick={() => setOpenSaveModal(false)}
-              className="close-btn"
-            />
-            <div className="planning-input">
-              <div className="place-btn">
-                <button
-                  style={{ width: "100px", height: "30px" }}
-                  onClick={() => {
-                    //1. 플래너 정보 DB에 insert하고
-                    //2. navigate(-1);
-                  }}
-                >
-                  플래너 저장
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <SavePlanModal
+          planName={planName}
+          setPlanName={setPlanName}
+          setOpenSaveModal={setOpenSaveModal}
+          loginNickname={loginNickname}
+          plannedPlaceList={plannedPlaceList}
+        />
       )}
       <div className="map-wrap">
         <PrintMap
@@ -414,7 +401,7 @@ const PlannerFrm = () => {
           userRadius={userRadius}
           setUserRadius={setUserRadius}
           plannedPlaceList={plannedPlaceList}
-          deletePlan={deletePlan}
+          handleDeletePlace={handleDeletePlace}
           markableList={markableList}
           mapCenter={mapCenter}
         />
@@ -521,7 +508,7 @@ const Planner = (props) => {
     props.plannedPlaceList,
     props.setPlannedPlaceList,
   ];
-  const deletePlan = props.deletePlan;
+  const handleDeletePlace = props.handleDeletePlace;
   const [planName, setPlanName] = [props.planName, props.setPlanName];
   const handlePlanName = (e) => {
     setPlanName(e.target.value);
@@ -536,12 +523,12 @@ const Planner = (props) => {
       <div className="plan-name">
         <input
           type="text"
-          placeholder="플래너 이름을 작성해보세요"
+          placeholder="플래너 이름을 작성하세요"
           value={planName}
-          onChange={handlePlanName}
+          onChange={(e) => setPlanName(e.target.value)}
         />
       </div>
-      {[...plannedPlaceList]
+      {plannedPlaceList
         .sort((a, b) => a.order - b.order)
         .map((p, idx) => {
           const isDateChanged =
@@ -581,7 +568,7 @@ const Planner = (props) => {
                   <div className="place-addr">{p.placeAddr}</div>
                 </div>
                 <div className="planner-del-btn">
-                  <Delete onClick={() => deletePlan(p.order)} />
+                  <Delete onClick={() => handleDeletePlace(p.order)} />
                 </div>
               </div>
             </div>
@@ -681,7 +668,12 @@ const PlanningModal = (props) => {
           {order !== 0 && (
             <div>
               <span>어떻게 가실 건가요?</span>
-              <BasicSelect transport={transport} setTransport={setTransport} />
+              <BasicSelect
+                type={"이동수단"}
+                list={["대중교통", "자가용", "자전거", "도보"]}
+                data={transport}
+                setData={setTransport}
+              />
             </div>
           )}
           <div className="place-btn">
@@ -690,6 +682,81 @@ const PlanningModal = (props) => {
               onClick={handleAddPlace}
             >
               여행지에 추가
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+//플래너 저장 모달
+const SavePlanModal = (props) => {
+  const loginNickname = props.loginNickname;
+  const [planStatus, setPlanStatus] = useState("공개");
+  const [planName, setPlanName] = [props.planName, props.setPlanName];
+  const setOpenSaveModal = props.setOpenSaveModal;
+  const plannedPlaceList = props.plannedPlaceList;
+
+  const handleSavePlanner = () => {
+    if (planStatus === "") {
+      window.alert("공개 여부를 선택하세요.");
+    }
+    const tripPlanData = {
+      memberNickname: loginNickname,
+      planName: planName.trim() === "" ? "untitled" : planName,
+      planStatus: planStatus === "공개" ? 1 : 2, //2: 비공개
+      startDate: plannedPlaceList[0].itineraryDate,
+      endDate: plannedPlaceList[plannedPlaceList.length - 1].itineraryDate,
+      itineraryList: plannedPlaceList.map((item) => {
+        return {
+          itineraryDate: item.itineraryDate,
+          startLocation:
+            item.order === 0 ? null : plannedPlaceList[item.order - 1].placeId,
+          transport: item.transport,
+          endLocation: item.placeId,
+          itineraryOrder: item.order,
+        };
+      }),
+    };
+  };
+
+  return (
+    <div className="modal-background">
+      <div className="planning-modal save-modal">
+        <div className="page-title">플래너 저장하기</div>
+        <Close onClick={() => setOpenSaveModal(false)} className="close-btn" />
+        <div className="save-readme">
+          <div>저장하기에 앞서</div>
+          <div>마지막으로 확인해주세요.</div>
+        </div>
+        <div className="planning-input">
+          <div className="plan-name-box">
+            <label style={{ color: "var(--main2)" }}>플래너 이름</label>
+            <input
+              style={{ fontSize: 14 }}
+              type="text"
+              placeholder="기본값은 untitled입니다"
+              value={planName}
+              onChange={(e) => setPlanName(e.target.value)}
+            />
+          </div>
+          <div>
+            <span>이 플래너를</span>
+            <BasicSelect
+              type={"공개여부"}
+              list={["공개", "비공개"]}
+              data={planStatus}
+              setData={setPlanStatus}
+            />
+            <span>합니다.</span>
+          </div>
+          <div className="place-btn">
+            <button
+              style={{ width: "100px", height: "30px" }}
+              onClick={handleSavePlanner}
+            >
+              플래너 저장
             </button>
           </div>
         </div>
@@ -713,7 +780,7 @@ const PrintMap = (props) => {
   const [userMarker, setUserMarker] = [props.userMarker, props.setUserMarker];
   const [userRadius, setUserRadius] = [props.userRadius, props.setUserRadius];
   const plannedPlaceList = props.plannedPlaceList;
-  const deletePlan = props.deletePlan;
+  const handleDeletePlace = props.handleDeletePlace;
   const markableList = props.markableList;
   const mapCenter = props.mapCenter;
 
@@ -828,7 +895,7 @@ const PrintMap = (props) => {
           openOverlay={openOverlay}
           setOpenOverlay={setOpenOverlay}
           isPlanned={true}
-          deletePlan={deletePlan}
+          handleDeletePlace={handleDeletePlace}
         />
       ))}
     </Map>

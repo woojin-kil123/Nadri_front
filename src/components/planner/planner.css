@@ -238,6 +238,32 @@
   left: 25%;
 }
 
+/* 저장 모달 */
+.save-modal {
+  width: 350px !important;
+}
+.save-readme {
+  width: 80%;
+  margin-bottom: 8px;
+}
+.save-readme :first-child {
+  font-size: 13px;
+  color: var(--gray5);
+}
+.save-modal .planning-input {
+  width: 80%;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.plan-name-box input {
+  border: none;
+  border-bottom: 1px solid var(--gray5);
+  padding-left: 7px;
+  margin-left: 7px;
+}
+
 /* 여행지에 추가하기 모달 */
 .modal-background {
   position: fixed;
