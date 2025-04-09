@@ -3,16 +3,13 @@ import Calendar from "./Calendar";
 import axios from "axios";
 import { getKoreanToday } from "../utils/metaSet";
 import dayjs from "dayjs";
+import { useRecoilValue } from "recoil";
+import { placeTypeState } from "../utils/RecoilData";
 
 const Event = () => {
   const today = getKoreanToday();
-  const [placeType, setPlaceType] = useState([]);
+  const placeType = useRecoilValue(placeTypeState);
   const [isUpdate, setIsUpdate] = useState(false);
-  useEffect(() => {
-    axios.get(`${process.env.REACT_APP_BACK_SERVER}/place/type`).then((res) => {
-      setPlaceType(res.data);
-    });
-  }, []);
   const [onGoing, setOnGoing] = useState([]);
   useEffect(() => {
     axios
