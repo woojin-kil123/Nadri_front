@@ -30,7 +30,7 @@ const Main = () => {
   const [onPlan, setOnPlan] = useState("인기");
   //placeType 별 조회
   const placeType = useRecoilValue(placeTypeState);
-  const [onPlace, setOnPlace] = useState("");
+  const [onPlace, setOnPlace] = useState(placeType[0].id);
   useEffect(() => {
     setOnPlace(placeType[0].name);
   }, []);
@@ -98,10 +98,11 @@ const Main = () => {
 };
 
 const FilterNavWithPanel = ({ categories, on, setOn }) => {
-  const tabIndex = categories.findIndex((type) => type.name === on); // 문자열인 on → index 변환
+  const placeType = useRecoilValue(placeTypeState);
+  const tabIndex = categories.findIndex((type) => type.id === on); // 문자열인 on → index 변환
 
   const handleChange = (_, newIndex) => {
-    const selected = categories[newIndex].name;
+    const selected = categories[newIndex].id;
     setOn(selected);
   };
 

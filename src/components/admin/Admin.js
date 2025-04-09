@@ -1,10 +1,8 @@
 import "./admin.css";
 import { Tab, Tabs } from "@mui/material";
-import axios from "axios";
+
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useRecoilValue } from "recoil";
-import { placeTypeState } from "../utils/RecoilData";
 
 const Admin = () => {
   const menus = [

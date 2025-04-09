@@ -24,16 +24,8 @@
   width: 5px;
 }
 /*관리자 메인*/
-.review-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-.review-stats > .stat td {
-  border: 1px solid var(--gray6);
-}
 
-/*이벤트페이지*/
+/*이벤트관리*/
 .event-page {
   display: flex;
   flex-direction: column;
@@ -51,4 +43,7 @@
 }
 .event-list .event-card {
   width: 30%;
+}
+/*리뷰 관리*/
+.admin-wrap > .content-wrap .hot-review {
 }
