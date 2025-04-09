@@ -11,7 +11,7 @@ const MarkerWithOverlay = (props) => {
   ];
   const setOpenPlanningModal = props.setOpenPlanningModal;
   const isPlanned = props.isPlanned;
-  const deletePlan = props.deletePlan;
+  const handleDeletePlace = props.handleDeletePlace;
 
   return (
     <>
@@ -82,7 +82,7 @@ const MarkerWithOverlay = (props) => {
                         <button
                           onClick={() => {
                             setOpenOverlay(null);
-                            deletePlan(p.order);
+                            handleDeletePlace(p.order);
                           }}
                         >
                           삭제
