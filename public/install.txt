@@ -24,3 +24,6 @@ npm install react-slick slick-carousel
 
 길우진 2025-04-04
 npm install @fullcalendar/react @fullcalendar/daygrid @fullcalendar/interaction
+
+신종인 2025-04-09
+npm instll html2canvas
