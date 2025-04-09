@@ -46,7 +46,14 @@ const AdminMain = () => {
       <div className="review-stats">
         <div className="total">
           <h2>총 통계</h2>
-          <p> 내용</p>
+          <div>
+            <h4>리뷰</h4>
+            {reviewStat.map((review, i) => (
+              <div>
+                {review.placeTypeId}/{review.reviewCount}개
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       {company && (
