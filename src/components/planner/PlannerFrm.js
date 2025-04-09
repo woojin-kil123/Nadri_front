@@ -16,6 +16,8 @@ import dayjs from "dayjs";
 import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import MarkerWithOverlay from "./MarkerWithOverlay";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { loginNicknameState } from "../utils/RecoilData";
 
 const PlannerFrm = () => {
   //마커 오버레이 여닫음 state
@@ -26,6 +28,10 @@ const PlannerFrm = () => {
   const [openPlanningModal, setOpenPlanningModal] = useState(null);
   //플래너에 추가한 장소 리스트 state
   const [plannedPlaceList, setPlannedPlaceList] = useState([]);
+  //플래너 제목
+  const [planName, setPlanName] = useState(null);
+  //플래너 저장 창 여닫음 state
+  const [openSaveModal, setOpenSaveModal] = useState(false);
   //현재 보이는 지도 화면 state
   const [mapBounds, setMapBounds] = useState(null);
   //지도 중심좌표 state(화면 이동 시 사용)
@@ -43,8 +49,12 @@ const PlannerFrm = () => {
   const [sortOption, setSortOption] = useState(1);
   //필터 옵션(null:전체, 1:숙박시설, 2:음식점, 3:그외)
   const [filterOption, setFilterOption] = useState(null);
-
+  //네비게이션
   const navigate = useNavigate();
+  //유저
+  const [loginNickname, setLoginNickname] = useRecoilState(loginNicknameState);
+
+  //↓ 작성된 useEffect 목록
 
   //플래너 진입 시 "새 플래너" 진입인지, "기존 플래너" 진입인지 판단
   const { planNo } = useParams();
@@ -73,7 +83,33 @@ const PlannerFrm = () => {
     setOpenOverlay(null);
   }, [sortOption, filterOption]);
 
-  //기존에 작성 중인 플래너 받아오는 함수
+  //작성 중(이었던) 임시 플래너를 불러오기
+  useEffect(() => {
+    const saved = window.localStorage.getItem(`${loginNickname}_cache_planner`);
+    console.log(saved);
+    if (saved !== "[]") {
+      if (window.confirm("작성 중인 플래너가 있습니다. 불러오시겠습니까?")) {
+        const savedList = JSON.parse(saved);
+        setPlannedPlaceList(savedList);
+        setMapCenter(savedList[0].placeLatLng);
+        setOpenPlanner(true);
+      } else {
+        window.localStorage.removeItem(`${loginNickname}_cache_planner`);
+      }
+    }
+  }, []);
+  //작성 중인 플래너를 임시 데이터로 저장
+  useEffect(() => {
+    window.localStorage.setItem(
+      `${loginNickname}_cache_planner`,
+      JSON.stringify(plannedPlaceList)
+    );
+    const saved = localStorage.getItem(`${loginNickname}_cache_planner`);
+  }, [plannedPlaceList]);
+
+  //↓ 함수 및 값
+
+  //작성 완료된 플래너 조회 시
   const getPlanData = useCallback(() => {
     const refreshToken = window.localStorage.getItem("refreshToken");
     axios
@@ -300,6 +336,8 @@ const PlannerFrm = () => {
           plannedPlaceList={plannedPlaceList}
           setPlannedPlaceList={setPlannedPlaceList}
           deletePlan={deletePlan}
+          planName={planName}
+          setPlanName={setPlanName}
         />
       ) : (
         <div
@@ -332,12 +370,36 @@ const PlannerFrm = () => {
       <div className="save-plan-btn">
         <button
           onClick={() => {
-            navigate(-1);
+            setOpenSaveModal(true);
           }}
         >
           저장
         </button>
       </div>
+      {openSaveModal && (
+        <div className="modal-background">
+          <div className="planning-modal">
+            <div className="page-title">플래너 저장하기</div>
+            <Close
+              onClick={() => setOpenSaveModal(false)}
+              className="close-btn"
+            />
+            <div className="planning-input">
+              <div className="place-btn">
+                <button
+                  style={{ width: "100px", height: "30px" }}
+                  onClick={() => {
+                    //1. 플래너 정보 DB에 insert하고
+                    //2. navigate(-1);
+                  }}
+                >
+                  플래너 저장
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="map-wrap">
         <PrintMap
           filteredSortedList={filteredSortedList}
@@ -366,7 +428,11 @@ const CustomizedInputBase = () => {
   return (
     <Paper
       component="form"
-      sx={{ margin: "10px", display: "flex", alignItems: "center" }}
+      sx={{
+        margin: "10px",
+        display: "flex",
+        alignItems: "center",
+      }}
     >
       <IconButton sx={{ p: "10px" }} aria-label=""></IconButton>
       <InputBase
@@ -456,57 +522,71 @@ const Planner = (props) => {
     props.setPlannedPlaceList,
   ];
   const deletePlan = props.deletePlan;
+  const [planName, setPlanName] = [props.planName, props.setPlanName];
+  const handlePlanName = (e) => {
+    setPlanName(e.target.value);
+  };
+
   return (
     <div className="planner-wrap">
       <Close className="close-btn" onClick={() => setOpenPlanner(false)} />
-      <div className="planner-place">
-        {[...plannedPlaceList]
-          .sort((a, b) => a.order - b.order)
-          .map((p, idx) => {
-            const isDateChanged =
-              idx === 0 ||
-              p.itineraryDate !== plannedPlaceList[idx - 1].itineraryDate;
-            const showTransport = idx !== 0;
+      {plannedPlaceList.length === 0 && (
+        <div className="empty-plan">플래너가 비어 있습니다...</div>
+      )}
+      <div className="plan-name">
+        <input
+          type="text"
+          placeholder="플래너 이름을 작성해보세요"
+          value={planName}
+          onChange={handlePlanName}
+        />
+      </div>
+      {[...plannedPlaceList]
+        .sort((a, b) => a.order - b.order)
+        .map((p, idx) => {
+          const isDateChanged =
+            idx === 0 ||
+            p.itineraryDate !== plannedPlaceList[idx - 1].itineraryDate;
+          const showTransport = idx !== 0;
 
-            return (
-              <div key={"planned-" + idx}>
-                {showTransport && (
-                  <div className="planned-transport">
-                    <span>↓</span>
-                    <span>{p.transport}(으)로 이동</span>
+          return (
+            <div key={"planned-" + idx}>
+              {showTransport && (
+                <div className="planned-transport">
+                  <span>↓</span>
+                  <span>{p.transport}(으)로 이동</span>
+                </div>
+              )}
+              {isDateChanged && (
+                <div className="planned-date">
+                  ㅡ {dayjs(p.itineraryDate).format("YYYY년 M월 D일")} ㅡ
+                </div>
+              )}
+              <div className="planned-item">
+                <img
+                  className="planned-img"
+                  src={p.placeThumb}
+                  alt="테스트"
+                  width="50px"
+                  height="50px"
+                />
+                <div className="place-item">
+                  <div className="place-title-wrap">
+                    <span className="place-title">
+                      {p.placeTitle}
+                      {p.order}
+                    </span>
+                    <span className="place-type">{p.placeType}</span>
                   </div>
-                )}
-                {isDateChanged && (
-                  <div className="planned-date">
-                    {dayjs(p.itineraryDate).format("YYYY년 M월 D일")}
-                  </div>
-                )}
-                <div className="planned-item">
-                  <img
-                    className="planned-img"
-                    src={p.placeThumb}
-                    alt="테스트"
-                    width="50px"
-                    height="50px"
-                  />
-                  <div className="place-item">
-                    <div className="place-title-wrap">
-                      <span className="place-title">
-                        {p.placeTitle}
-                        {p.order}
-                      </span>
-                      <span className="place-type">{p.placeType}</span>
-                    </div>
-                    <div className="place-addr">{p.placeAddr}</div>
-                  </div>
-                  <div className="planner-del-btn">
-                    <Delete onClick={() => deletePlan(p.order)} />
-                  </div>
+                  <div className="place-addr">{p.placeAddr}</div>
+                </div>
+                <div className="planner-del-btn">
+                  <Delete onClick={() => deletePlan(p.order)} />
                 </div>
               </div>
-            );
-          })}
-      </div>
+            </div>
+          );
+        })}
     </div>
   );
 };
@@ -554,17 +634,8 @@ const PlanningModal = (props) => {
     };
 
     setPlannedPlaceList([...plannedPlaceList, placeWithPlan]);
-
-    insertItinerary(placeWithPlan);
-
     setOpenPlanningModal(null);
     setOpenPlanner(true);
-  };
-
-  const insertItinerary = (placeWithPlan) => {
-    axios.post(`${process.env.REACT_APP_BACK_SERVER}/plan/add/initiate`, {
-      itinerary: placeWithPlan,
-    });
   };
 
   const setOpenPlanner = props.setOpenPlanner;
