@@ -18,6 +18,7 @@ import MarkerWithOverlay from "./MarkerWithOverlay";
 import { useRecoilState } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
 import BasicSelect from "../utils/BasicSelect";
+import html2canvas from "html2canvas";
 
 const PlannerFrm = () => {
   //마커 오버레이 여닫음
@@ -698,27 +699,33 @@ const SavePlanModal = (props) => {
   const setOpenSaveModal = props.setOpenSaveModal;
   const plannedPlaceList = props.plannedPlaceList;
 
+  const tripPlanData = {
+    memberNickname: loginNickname,
+    planName: planName.trim() === "" ? "untitled" : planName,
+    planStatus: planStatus === "공개" ? 1 : 2, //2: 비공개
+    startDate: plannedPlaceList[0].itineraryDate,
+    endDate: plannedPlaceList[plannedPlaceList.length - 1].itineraryDate,
+    itineraryList: plannedPlaceList.map((item) => {
+      return {
+        itineraryDate: item.itineraryDate,
+        startLocation:
+          item.order === 0 ? null : plannedPlaceList[item.order - 1].placeId,
+        transport: item.transport,
+        endLocation: item.placeId,
+        itineraryOrder: item.order,
+      };
+    }),
+  };
+
   const handleSavePlanner = () => {
     if (planStatus === "") {
       window.alert("공개 여부를 선택하세요.");
+      return;
     }
-    const tripPlanData = {
-      memberNickname: loginNickname,
-      planName: planName.trim() === "" ? "untitled" : planName,
-      planStatus: planStatus === "공개" ? 1 : 2, //2: 비공개
-      startDate: plannedPlaceList[0].itineraryDate,
-      endDate: plannedPlaceList[plannedPlaceList.length - 1].itineraryDate,
-      itineraryList: plannedPlaceList.map((item) => {
-        return {
-          itineraryDate: item.itineraryDate,
-          startLocation:
-            item.order === 0 ? null : plannedPlaceList[item.order - 1].placeId,
-          transport: item.transport,
-          endLocation: item.placeId,
-          itineraryOrder: item.order,
-        };
-      }),
-    };
+
+    // html2canvas(mapRef).then((canvas) => {
+    //   const thumb = canvas.toDataURL("image/jpeg");
+    // })
   };
 
   return (
