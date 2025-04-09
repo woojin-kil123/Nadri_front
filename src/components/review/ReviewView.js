@@ -19,6 +19,7 @@ const ReviewView = () => {
   const [isCommenting, setIsCommenting] = useState(false);
   const [memberNickname, setMemberNickname] =
     useRecoilState(loginNicknameState);
+
   const deleteComment = (commNo) => {
     Swal.fire({
       title: "댓글 삭제",
@@ -189,8 +190,18 @@ const ReviewView = () => {
     <section className="section">
       <div className="page-title">리뷰 상세보기</div>
       <div className="review-content">
-        <h2>{review.reviewTitle}</h2>
-        <div>{review.reviewContent}</div>
+        <table className="tbl">
+          <tr>
+            <td colSpan={4}>{review.reviewTitle}</td>
+          </tr>
+          <tr>
+            <th style={{ width: "20%" }}>작성자</th>
+            <td style={{ width: "20%" }}>{review.memberNickname}</td>
+            <th style={{ width: "20%" }}>작성일</th>
+            <td style={{ width: "40%" }}> {review.reviewDate}</td>
+          </tr>
+        </table>
+
         <button
           onClick={toggleLike}
           style={{ background: "none", border: "none" }}
@@ -285,9 +296,27 @@ const ReviewView = () => {
 const CommentItem = ({ comment, onDelete }) => {
   const [memberNickname, setMemberNickname] =
     useRecoilState(loginNicknameState);
+  const [member, setMember] = useState(null);
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_BACK_SERVER}/member/memberInfo?memberNickname=${memberNickname}`
+      )
+      .then((res) => {
+        console.log(res);
+        setMember(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
     <li key={"comment" + comment.commNo}>
-      {comment.memberNickname}
+      <img
+        src={"/image/profile_default_image.png"}
+        style={{ width: "15px", height: "15px" }}
+      />
       {comment.commContent}
       {comment.memberNickname === memberNickname && (
         <DeleteIcon
