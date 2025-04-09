@@ -31,10 +31,10 @@ const PlaceList = () => {
     // if (!currentMenu) return;
     console.log(
       selectedMenu,
-      `${backServer}/place?reqPage=${reqPage}&placeCat=${selectedMenu}`
+      `${backServer}/place?reqPage=${reqPage}&placeTypeId=${selectedMenu}`
     );
     axios
-      .get(`${backServer}/place?reqPage=${reqPage}&placeCat=${selectedMenu}`)
+      .get(`${backServer}/place?reqPage=${reqPage}&placeTypeId=${selectedMenu}`)
       .then((res) => {
         console.log(res);
         setPlaceList(res.data.list);
