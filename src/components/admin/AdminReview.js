@@ -8,6 +8,8 @@ const AdminReview = () => {
   const placeType = useRecoilValue(placeTypeState);
   const [selectedType, setSelectedType] = useState(placeType[0].id);
   const [hotReview, setHotReview] = useState(null);
+  const [reportedReview, setReportedReview] = useState(null);
+  const [isUpdate, setIsUpdate] = useState(false);
   useEffect(() => {
     axios
       .get(
@@ -18,6 +20,14 @@ const AdminReview = () => {
         setHotReview(res.data);
       });
   }, [selectedType]);
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACK_SERVER}/admin/report`)
+      .then((res) => {
+        console.log(res.data);
+        setReportedReview(res.data);
+      });
+  }, [isUpdate]);
   return (
     <>
       <FilterNavWithPanel
@@ -26,7 +36,7 @@ const AdminReview = () => {
         setOn={setSelectedType}
       />
       <div className="hot-review-wrap">
-        <h3>인기리뷰</h3>
+        <h3>인기 리뷰</h3>
         <table className="hot-review tbl">
           <thead>
             <tr>
@@ -39,6 +49,30 @@ const AdminReview = () => {
           <tbody>
             {hotReview &&
               hotReview.map((review, i) => (
+                <tr key={"review" + i}>
+                  <td>{review.reviewNo}</td>
+                  <td>{review.reviewTitle}</td>
+                  <td>{review.memberNickname}</td>
+                  <td>{review.reviewDate}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="reported-review warp">
+        <h3>신고 리뷰</h3>
+        <table className="hot-review tbl">
+          <thead>
+            <tr>
+              <th style={{ width: "10%" }}>리뷰 번호</th>
+              <th style={{ width: "30%" }}>제목</th>
+              <th style={{ width: "20%" }}>작성자</th>
+              <th style={{ width: "20%" }}>작성일</th>
+            </tr>
+          </thead>
+          <tbody>
+            {reportedReview &&
+              reportedReview.map((review, i) => (
                 <tr key={"review" + i}>
                   <td>{review.reviewNo}</td>
                   <td>{review.reviewTitle}</td>

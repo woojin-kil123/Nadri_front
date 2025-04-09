@@ -11,7 +11,6 @@ const Admin = () => {
     { name: "제휴 관리", path: "partner" },
     { name: "리뷰 관리", path: "review" },
     { name: "회원 관리", path: "member" },
-    { name: "문의 관리", path: "inquiry" },
     { name: "컨텐츠 관리", path: "contents" },
   ];
 

@@ -40,7 +40,7 @@ export default function Calendar({ placeType, setIsUpdate, isUpdate }) {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACK_SERVER}/event/${month}`)
+      .get(`${process.env.REACT_APP_BACK_SERVER}/admin/event/${month}`)
       .then((res) => {
         const mappedEvents = res.data.map((event, i) => ({
           start: event.startDate,

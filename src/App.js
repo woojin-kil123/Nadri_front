@@ -106,7 +106,6 @@ function App() {
                     <Route path="partner" element={<AdminMain />} />
                     <Route path="review" element={<AdminReview />} />
                     <Route path="member" element={<AdminMain />} />
-                    <Route path="inquiry" element={<AdminMain />} />
                     <Route path="contents" element={<AdminMain />} />
                     <Route path="main" element={<AdminMain />} />
                   </Route>
