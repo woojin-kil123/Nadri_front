@@ -1,10 +1,14 @@
 import "./admin.css";
 import { Tab, Tabs } from "@mui/material";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { placeTypeState } from "../utils/RecoilData";
 
 const Admin = () => {
   const menus = [
+    { name: "메인", path: "main" },
     { name: "이벤트 관리", path: "event" },
     { name: "제휴 관리", path: "partner" },
     { name: "리뷰 관리", path: "review" },
@@ -12,6 +16,7 @@ const Admin = () => {
     { name: "문의 관리", path: "inquiry" },
     { name: "컨텐츠 관리", path: "contents" },
   ];
+
   return (
     <section className="section admin-wrap">
       <div className="left-menu-wrap">

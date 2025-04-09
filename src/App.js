@@ -41,6 +41,7 @@ import Admin from "./components/admin/Admin";
 import Event from "./components/admin/Event";
 import axios from "axios";
 import SearchResult from "./components/search/SearchResult";
+import AdminMain from "./components/admin/AdminMain";
 
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
@@ -99,12 +100,14 @@ function App() {
                     path="/admin/*"
                     element={<AdminRouting element={<Admin />} />}
                   >
+                    <Route index element={<AdminMain />} />
                     <Route path="event" element={<Event />} />
                     <Route path="partner" element={<Event />} />
                     <Route path="review" element={<Event />} />
                     <Route path="member" element={<Event />} />
                     <Route path="inquiry" element={<Event />} />
                     <Route path="contents" element={<Event />} />
+                    <Route path="main" element={<AdminMain />} />
                   </Route>
                   <Route
                     path="/review/detail/:reviewNo"

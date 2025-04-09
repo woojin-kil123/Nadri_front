@@ -23,6 +23,16 @@
   background-color: var(--main2);
   width: 5px;
 }
+/*관리자 메인*/
+.review-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.review-stats > .stat td {
+  border: 1px solid var(--gray6);
+}
+
 /*이벤트페이지*/
 .event-page {
   display: flex;
