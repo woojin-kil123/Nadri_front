@@ -143,15 +143,17 @@ const ReviewView = () => {
       alert("신고 사유를 선택해주세요.");
       return;
     }
-    alert(`"${reportReason}" 사유로 신고되었습니다.`);
-    const form = new FormData();
-    form.append("reviewNo", reviewNo);
-    form.append("memberNickname", memberNickname);
-    form.append("reportReason", reportReason);
+
+    const reportData = {
+      reviewNo: reviewNo,
+      reportNickname: memberNickname, // 로그인한 유저 닉네임
+      reportReason: reportReason, // 신고 사유
+    };
     axios
-      .post(`${process.env.REACT_APP_BACK_SERVER}/report/`, form)
+      .post(`${process.env.REACT_APP_BACK_SERVER}/report/`, reportData)
       .then((res) => {
         console.log(res);
+        alert(`"${reportReason}" 사유로 신고되었습니다.`);
       })
       .catch((err) => {
         console.log(err);
