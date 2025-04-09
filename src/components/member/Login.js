@@ -1,6 +1,6 @@
 import "./member.css";
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useRecoilState } from "recoil";
@@ -190,8 +190,13 @@ const Login = () => {
           {/* 카카오톡 로그인 버튼 */}
           <div className="kakao-login-join">
             <Link>
-              <img src="/image/kakao_login.png" alt="Kakao Login" />
+              <img
+                src="/image/kakao_login.png"
+                alt="Kakao Login"
+                onClick={handleKakaoLogin}
+              />
             </Link>
+            <div></div>
           </div>
           {/* 네이버 로그인 버튼 */}
           <div className="naver-login-join">
@@ -203,6 +208,14 @@ const Login = () => {
       </div>
     </section>
   );
+};
+
+const REST_API_KEY = process.env.REACT_APP_REST_API_KEY;
+const REDIRECT_URL = process.env.REACT_APP_REDIRECT_URL;
+const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URL}&response_type=code`;
+
+const handleKakaoLogin = () => {
+  window.location.href = kakaoURL; //kakaoURL로 이동
 };
 
 export default Login;
