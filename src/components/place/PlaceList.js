@@ -9,7 +9,6 @@ import PageNavigation from "../utils/PageNavigtion";
 
 const PlaceList = () => {
   const backServer = process.env.REACT_APP_BACK_SERVER;
-  const { menuType } = useParams();
   const [totalCount, setTotalCount] = useState();
 
   const [cards, setCards] = useState([]);
@@ -28,15 +27,9 @@ const PlaceList = () => {
   // const currentMenu = menus.find((m) => m.name2 === menuType) || menus[0];
 
   useEffect(() => {
-    // if (!currentMenu) return;
-    console.log(
-      selectedMenu,
-      `${backServer}/place?reqPage=${reqPage}&placeCat=${selectedMenu}`
-    );
     axios
-      .get(`${backServer}/place?reqPage=${reqPage}&placeCat=${selectedMenu}`)
+      .get(`${backServer}/place?reqPage=${reqPage}&placeTypeId=${selectedMenu}`)
       .then((res) => {
-        console.log(res);
         setPlaceList(res.data.list);
         setPi(res.data.pi);
         setTotalCount(res.data.totalCount);
@@ -44,7 +37,7 @@ const PlaceList = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [reqPage, menuType, selectedMenu]);
+  }, [reqPage, selectedMenu]);
 
   return (
     <div className="place-wrap">

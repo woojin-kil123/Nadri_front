@@ -14,7 +14,8 @@ export default function ListCard(props) {
         <div
           className="card"
           onClick={() => {
-            place.route && navigate(place.route);
+            // place.route && navigate("/place/:" + place.placeId);
+            navigate(`/place/detail/${place.placeId}`);
           }}
         >
           <div className="image-container">
