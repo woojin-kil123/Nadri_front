@@ -6,6 +6,7 @@ import { placeTypeState } from "../utils/RecoilData";
 const AdminMain = () => {
   const placeType = useRecoilValue(placeTypeState);
   const [reviewStat, setReviewStat] = useState(null);
+  const [company, setCompany] = useState(null);
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/review/stats`)
@@ -22,6 +23,14 @@ const AdminMain = () => {
           <p> 내용</p>
         </div>
       </div>
+      {company && (
+        <div className="update-info">
+          <h1>회사 정보</h1>
+          <div>대표전화</div>
+          <div>FAX</div>
+          <div>이메일</div>
+        </div>
+      )}
     </>
   );
 };

@@ -3,16 +3,25 @@ import FacebookIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import TwitterIcon from "@mui/icons-material/X";
 import "./footer.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal } from "@mui/material";
 import Terms from "../static/Terms";
 import PrivacyPolicy from "../static/PrivacyPolicy";
+import axios from "axios";
 
 export default function Footer() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [modalContent, setModalContent] = useState(null);
+  const [company, setCompany] = useState(null);
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACK_SERVER}/admin/company`)
+      .then((res) => {
+        setCompany(res.data);
+      });
+  }, []);
   return (
     <footer className="footer">
       <div className="contact-wrap">
@@ -22,10 +31,15 @@ export default function Footer() {
               <img src="/image/nadri_logo.svg" />
             </div>
             <ul className="footer-info">
-              <li>📍 서울특별시 영등포구 이레빌딩 19F</li>
-              <li>📞 00-0000-0000 / FAX : 00-0000-0000</li>
-              <li>🌐 https://kh-academy.co.kr</li>
-              <li>✉️ nadri53@kh.or.kr</li>
+              {company && (
+                <>
+                  <li>📍 {company.addr}</li>
+                  <li>
+                    📞 {company.tel} / FAX : {company.fax}
+                  </li>
+                  <li>✉️ {company.email}</li>
+                </>
+              )}
             </ul>
           </div>
           <div className="social-btn-wrap">
@@ -45,8 +59,7 @@ export default function Footer() {
             <ul>
               <h3>CONTACT</h3>
               <li>이벤트 및 프로모션</li>
-              <li>일반 문의</li>
-              <li>제휴 문의</li>
+              <li>문의하기</li>
             </ul>
             <ul>
               <h3>PRIVACY & TERMS </h3>
