@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 import { useRecoilState } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
 import EditIcon from "@mui/icons-material/Edit";
+
 const ReviewView = () => {
   const params = useParams();
   const reviewNo = params.reviewNo;
@@ -22,7 +23,52 @@ const ReviewView = () => {
   const [isCommenting, setIsCommenting] = useState(false);
   const [memberNickname, setMemberNickname] =
     useRecoilState(loginNicknameState);
-  const editComment = (commNo) => {};
+
+  const editComment = (commNo) => {
+    const targetComment = comments.find((comment) => comment.commNo === commNo);
+    if (!targetComment) return;
+
+    Swal.fire({
+      title: "댓글 수정",
+      input: "text",
+      inputLabel: "수정할 내용을 입력하세요",
+      inputPlaceholder: "댓글 내용을 입력하세요",
+      inputValue: targetComment.commContent,
+      showCancelButton: true,
+      confirmButtonText: "수정하기",
+      cancelButtonText: "취소",
+      inputValidator: (value) => {
+        if (!value) {
+          return "수정할 내용을 입력해주세요.";
+        }
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const editedContent = result.value;
+        console.log(commNo);
+        axios
+          .patch(`${process.env.REACT_APP_BACK_SERVER}/comm/${commNo}`, {
+            commContent: editedContent,
+          })
+          .then((res) => {
+            console.log(res);
+            if (res.data === 1) {
+              const updatedComments = comments.map((comment) =>
+                comment.commNo === commNo
+                  ? { ...comment, commContent: editedContent }
+                  : comment
+              );
+
+              setComments(updatedComments);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    });
+  };
+
   const deleteComment = (commNo) => {
     Swal.fire({
       title: "댓글 삭제",
@@ -36,12 +82,10 @@ const ReviewView = () => {
         axios
           .delete(`${process.env.REACT_APP_BACK_SERVER}/comm/${commNo}`)
           .then((res) => {
-            console.log(res);
             if (res.data === 1) {
-              const newComments = comments.filter((comment) => {
-                return comment.commNo !== commNo;
-              });
-
+              const newComments = comments.filter(
+                (comment) => comment.commNo !== commNo
+              );
               setComments(newComments);
             }
           })
@@ -51,14 +95,15 @@ const ReviewView = () => {
       }
     });
   };
+
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [review, setReview] = useState({});
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/likes/${reviewNo}`)
       .then((res) => {
-        console.log(res);
         setLikeCount(res.data.likes);
         if (res.data.likeMember.memberNickname === memberNickname) {
           setLiked(true);
@@ -68,38 +113,30 @@ const ReviewView = () => {
         console.log(err);
       });
   }, []);
+
   const toggleLike = () => {
     if (!memberNickname) {
       alert("로그인 후 좋아요를 누를 수 있습니다.");
       return;
     }
-    if (liked === true) {
+    if (liked) {
       axios
         .delete(`${process.env.REACT_APP_BACK_SERVER}/likes/${reviewNo}`, {
-          data: { memberNickname }, // DELETE 요청에 데이터 포함할 경우
+          data: { memberNickname },
         })
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => console.log(err));
     } else {
       const form = new FormData();
       form.append("reviewNo", reviewNo);
       form.append("memberNickname", memberNickname);
       axios
         .post(`${process.env.REACT_APP_BACK_SERVER}/likes`, form)
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => console.log(err));
     }
     setLiked(!liked);
     setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
   };
+
   const REPORT_REASONS = [
     "부적절한 콘텐츠 – 욕설, 비방, 혐오 발언 등이 포함된 리뷰",
     "허위 정보 – 실제 방문하지 않았거나, 거짓 정보를 포함한 리뷰",
@@ -120,29 +157,25 @@ const ReviewView = () => {
       if (res.isConfirmed) {
         axios
           .delete(`${process.env.REACT_APP_BACK_SERVER}/review/${reviewNo}`)
-          .then((res) => {
-            console.log(res);
-
-            navigate("/review");
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+          .then(() => navigate("/review"))
+          .catch((err) => console.log(err));
       }
     });
   };
-  // 신고 모달 상태
+
   const [isReporting, setIsReporting] = useState(false);
   const [reportReason, setReportReason] = useState("");
-  const [reportTarget, setReportTarget] = useState(null); // 리뷰 또는 댓글 ID
+  const [reportTarget, setReportTarget] = useState(null);
+
   const editReview = () => {
     navigate("/editreview");
   };
-  // 신고 버튼 클릭 시
+
   const reportClick = (target) => {
     setReportTarget(target);
     setIsReporting(true);
   };
+
   const reportSubmit = () => {
     if (!reportReason) {
       alert("신고 사유를 선택해주세요.");
@@ -151,59 +184,51 @@ const ReviewView = () => {
 
     const reportData = {
       reviewNo: reviewNo,
-      reportNickname: memberNickname, // 로그인한 유저 닉네임
-      reportReason: reportReason, // 신고 사유
+      reportNickname: memberNickname,
+      reportReason: reportReason,
     };
+
     axios
       .post(`${process.env.REACT_APP_BACK_SERVER}/report/`, reportData)
-      .then((res) => {
-        console.log(res);
+      .then(() => {
         alert(`"${reportReason}" 사유로 신고되었습니다.`);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => console.log(err));
+
     setIsReporting(false);
     setReportReason("");
     setReportTarget(null);
   };
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/review/${reviewNo}`)
       .then((res) => {
-        console.log(res);
         setReview(res.data);
         setPlaceId(res.data.placeId);
         setPlanNo(res.data.planNo);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => console.log(err));
   }, []);
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/review/${placeId}`)
       .then((res) => {
-        console.log(res);
         setReview(res.data);
         setPlaceId(res.data.placeId);
         setPlanNo(res.data.planNo);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => console.log(err));
   }, []);
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/comm/${reviewNo}`)
-      .then((res) => {
-        console.log(res);
-        setComments(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      .then((res) => setComments(res.data))
+      .catch((err) => console.log(err));
   }, []);
+
   return (
     <section className="section">
       <div className="page-title">리뷰 상세보기</div>
@@ -216,7 +241,7 @@ const ReviewView = () => {
             <th style={{ width: "20%" }}>작성자</th>
             <td style={{ width: "20%" }}>{review.memberNickname}</td>
             <th style={{ width: "20%" }}>작성일</th>
-            <td style={{ width: "40%" }}> {review.reviewDate}</td>
+            <td style={{ width: "40%" }}>{review.reviewDate}</td>
           </tr>
         </table>
 
@@ -227,6 +252,7 @@ const ReviewView = () => {
           {liked ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
         </button>
         <span>{likeCount}</span>
+
         {memberNickname === review.memberNickname && (
           <>
             <EditNoteIcon onClick={editReview}>리뷰 수정</EditNoteIcon>
@@ -238,9 +264,11 @@ const ReviewView = () => {
             </DeleteIcon>
           </>
         )}
+
         {review.memberNickname !== memberNickname && (
           <ReportIcon onClick={reportClick}>리뷰 신고</ReportIcon>
         )}
+
         <h3>댓글</h3>
         <ul>
           {comments.map((comment) => (
@@ -252,6 +280,7 @@ const ReviewView = () => {
             />
           ))}
         </ul>
+
         {memberNickname && (
           <>
             {!isCommenting ? (
@@ -269,18 +298,14 @@ const ReviewView = () => {
                     form.append("reviewNo", reviewNo);
                     form.append("commContent", newComment);
                     form.append("memberNickname", memberNickname);
-                    console.log(form);
                     axios
                       .post(`${process.env.REACT_APP_BACK_SERVER}/comm`, form)
                       .then((res) => {
-                        console.log(res);
                         setComments([...comments, res.data]);
                       })
-                      .catch((err) => {
-                        console.log(err);
-                      });
-                    setNewComment(""); // 입력 필드 초기화
-                    setIsCommenting(false); // 입력 필드 숨김
+                      .catch((err) => console.log(err));
+                    setNewComment("");
+                    setIsCommenting(false);
                   }}
                 >
                   등록
@@ -290,6 +315,7 @@ const ReviewView = () => {
             )}
           </>
         )}
+
         {isReporting && (
           <div className="modal">
             <h3>신고 사유 선택</h3>
@@ -312,22 +338,19 @@ const ReviewView = () => {
     </section>
   );
 };
+
 const CommentItem = ({ comment, onDelete, onEdit }) => {
   const [memberNickname, setMemberNickname] =
     useRecoilState(loginNicknameState);
   const [member, setMember] = useState(null);
+
   useEffect(() => {
     axios
       .get(
         `${process.env.REACT_APP_BACK_SERVER}/member/memberInfo?memberNickname=${memberNickname}`
       )
-      .then((res) => {
-        console.log(res);
-        setMember(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      .then((res) => setMember(res.data))
+      .catch((err) => console.log(err));
   }, []);
 
   return (
@@ -352,4 +375,5 @@ const CommentItem = ({ comment, onDelete, onEdit }) => {
     </li>
   );
 };
+
 export default ReviewView;
