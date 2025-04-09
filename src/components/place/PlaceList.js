@@ -10,7 +10,7 @@ import PageNavigation from "../utils/PageNavigtion";
 const PlaceList = () => {
   const backServer = process.env.REACT_APP_BACK_SERVER;
   const { menuType } = useParams();
-  const location = useLocation();
+  const [totalCount, setTotalCount] = useState();
 
   const [cards, setCards] = useState([]);
 
@@ -18,28 +18,33 @@ const PlaceList = () => {
   const [pi, setPi] = useState({});
   const [reqPage, setReqPage] = useState(1);
   const menus = [
-    { id: "12", name: "관광지", name2: "spot" },
-    { id: "14", name: "즐길거리", name2: "todo" },
-    { id: "32", name: "숙박", name2: "stay" },
-    { id: "39", name: "음식점", name2: "food" },
+    { id: 12, name: "관광지", name2: "spot" },
+    { id: 14, name: "즐길거리", name2: "todo" },
+    { id: 32, name: "숙박", name2: "stay" },
+    { id: 39, name: "음식점", name2: "food" },
   ];
-  const [selectedMenu, setSelectedMenu] = useState(menus[0]);
+  const [selectedMenu, setSelectedMenu] = useState(0); // 0: 전체, 12:관광지, 14:즐길거리, 32:숙박, 39:음식점
 
-  const currentMenu = menus.find((m) => m.name2 === menuType) || menus[0];
+  // const currentMenu = menus.find((m) => m.name2 === menuType) || menus[0];
 
   useEffect(() => {
-    if (!currentMenu) return;
+    // if (!currentMenu) return;
+    console.log(
+      selectedMenu,
+      `${backServer}/place?reqPage=${reqPage}&placeCat=${selectedMenu}`
+    );
     axios
-      .get(`${backServer}/place/${currentMenu.name2}?reqPage=${reqPage}`)
+      .get(`${backServer}/place?reqPage=${reqPage}&placeCat=${selectedMenu}`)
       .then((res) => {
         console.log(res);
         setPlaceList(res.data.list);
         setPi(res.data.pi);
+        setTotalCount(res.data.totalCount);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [reqPage, menuType]);
+  }, [reqPage, menuType, selectedMenu]);
 
   return (
     <div className="place-wrap">
@@ -51,7 +56,7 @@ const PlaceList = () => {
               menus={menus}
               selectedMenu={selectedMenu}
               setSelectedMenu={setSelectedMenu}
-              currentMenu={currentMenu}
+              // currentMenu={currentMenu}
             />
             {/* <Routes>
               <Route
@@ -69,7 +74,7 @@ const PlaceList = () => {
         </div>
         <div className="placelist-content">
           <div className="placelist option-box">
-            <div>총 0000개</div>
+            {totalCount && <div>총 {totalCount.toLocaleString()}개</div>}
             <div>리뷰 많은 순</div>
           </div>
           <div className="place-wrap">
