@@ -14,7 +14,7 @@ import BasicDatePicker from "../utils/BasicDatePicker";
 import BasicSelect from "../utils/BasicSelect";
 import dayjs from "dayjs";
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import MarkerWithOverlay from "./MarkerWithOverlay";
 
 const PlannerFrm = () => {
@@ -28,6 +28,11 @@ const PlannerFrm = () => {
   const [plannedPlaceList, setPlannedPlaceList] = useState([]);
   //현재 보이는 지도 화면 state
   const [mapBounds, setMapBounds] = useState(null);
+  //지도 중심좌표 state(화면 이동 시 사용)
+  const [mapCenter, setMapCenter] = useState({
+    lat: 37.5341338,
+    lng: 126.897333254,
+  });
   //유저가 클릭한 지도 위치 state
   const [userMarker, setUserMarker] = useState(null);
   //유저 클릭 위치를 중심으로 하는 반경 범위
@@ -38,6 +43,8 @@ const PlannerFrm = () => {
   const [sortOption, setSortOption] = useState(1);
   //필터 옵션(null:전체, 1:숙박시설, 2:음식점, 3:그외)
   const [filterOption, setFilterOption] = useState(null);
+
+  const navigate = useNavigate();
 
   //플래너 진입 시 "새 플래너" 진입인지, "기존 플래너" 진입인지 판단
   const { planNo } = useParams();
@@ -76,6 +83,7 @@ const PlannerFrm = () => {
         },
       })
       .then((res) => {
+        //플랜정보 + 플랜 내 방문지들 + 소유자 여부 반환
         console.log(res.data);
       })
       .catch((err) => {
@@ -203,8 +211,8 @@ const PlannerFrm = () => {
     if (window.confirm("삭제하시겠습니까?")) {
       //2. plannedPlace 삭제 및 order 재정렬
       const newList = plannedPlaceList.filter((item) => item.order !== odr);
-      if (odr === 0) {
-        //맨 처음 방문지를 삭제했다면
+      if (odr === 0 && newList.length > 0) {
+        //삭제할 방문지가 맨 처음 것이라면
         newList[0].transport = "";
       }
       newList.forEach((item, i) => {
@@ -279,6 +287,8 @@ const PlannerFrm = () => {
                 setPlannedPlaceList={setPlannedPlaceList}
                 setOpenPlanner={setOpenPlanner}
                 markableList={markableList}
+                setOpenOverlay={setOpenOverlay}
+                setMapCenter={setMapCenter}
               />
             );
           })}
@@ -319,6 +329,15 @@ const PlannerFrm = () => {
           새로고침
         </button>
       </div>
+      <div className="save-plan-btn">
+        <button
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
+          저장
+        </button>
+      </div>
       <div className="map-wrap">
         <PrintMap
           filteredSortedList={filteredSortedList}
@@ -335,6 +354,7 @@ const PlannerFrm = () => {
           plannedPlaceList={plannedPlaceList}
           deletePlan={deletePlan}
           markableList={markableList}
+          mapCenter={mapCenter}
         />
       </div>
     </div>
@@ -381,6 +401,8 @@ const PrintPlaceList = (props) => {
   ];
   const setOpenPlanner = props.setOpenPlanner;
   const markableList = props.markableList;
+  const setOpenOverlay = props.setOpenOverlay;
+  const setMapCenter = props.setMapCenter;
 
   return (
     <div className="place-item">
@@ -403,7 +425,14 @@ const PrintPlaceList = (props) => {
         </div>
       </div>
       <div className="place-btn">
-        <button onClick={() => setOpenPlanningModal(p.placeId)}>추가</button>
+        <button
+          onClick={() => {
+            setOpenOverlay(p.placeId);
+            setMapCenter(p.placeLatLng);
+          }}
+        >
+          보기
+        </button>
       </div>
       {openPlanningModal === p.placeId && (
         <PlanningModal
@@ -468,9 +497,7 @@ const Planner = (props) => {
                       </span>
                       <span className="place-type">{p.placeType}</span>
                     </div>
-                    <div className="place-addr place-ellipsis">
-                      {p.placeAddr}
-                    </div>
+                    <div className="place-addr">{p.placeAddr}</div>
                   </div>
                   <div className="planner-del-btn">
                     <Delete onClick={() => deletePlan(p.order)} />
@@ -502,6 +529,44 @@ const PlanningModal = (props) => {
   const [transport, setTransport] = useState("");
   const [order, setOrder] = useState(plannedPlaceList.length);
 
+  const handleAddPlace = () => {
+    if (date.format("YYYY-MM-DD") < dayjs().format("YYYY-MM-DD")) {
+      window.alert("오늘보다 이른 날짜를 고를 수 없습니다.");
+      return;
+    }
+    if (
+      order > 0 &&
+      date.format("YYYY-MM-DD") < plannedPlaceList[order - 1].itineraryDate
+    ) {
+      window.alert("이전 일정보다 이른 날짜를 고를 수 없습니다.");
+      return;
+    }
+    if (order !== 0 && transport === "") {
+      window.alert("이동 수단을 선택하세요.");
+      return;
+    }
+
+    const placeWithPlan = {
+      ...p,
+      itineraryDate: date.format("YYYY-MM-DD"),
+      transport: transport,
+      order,
+    };
+
+    setPlannedPlaceList([...plannedPlaceList, placeWithPlan]);
+
+    insertItinerary(placeWithPlan);
+
+    setOpenPlanningModal(null);
+    setOpenPlanner(true);
+  };
+
+  const insertItinerary = (placeWithPlan) => {
+    axios.post(`${process.env.REACT_APP_BACK_SERVER}/plan/add/initiate`, {
+      itinerary: placeWithPlan,
+    });
+  };
+
   const setOpenPlanner = props.setOpenPlanner;
   return (
     <div className="modal-background">
@@ -521,8 +586,8 @@ const PlanningModal = (props) => {
           />
           <div className="place-item">
             <div className="place-title-wrap">
-              <span className="place-title">{p.placeTitle}</span>
-              <span className="place-type">{p.placeType}</span>
+              <div className="place-title">{p.placeTitle}</div>
+              <div className="place-type">{p.placeType}</div>
             </div>
             <div className="place-addr">{p.placeAddr}</div>
           </div>
@@ -551,37 +616,7 @@ const PlanningModal = (props) => {
           <div className="place-btn">
             <button
               style={{ width: "100px", height: "30px" }}
-              onClick={() => {
-                if (date.format("YYYY-MM-DD") < dayjs().format("YYYY-MM-DD")) {
-                  window.alert("오늘보다 이른 날짜를 고를 수 없습니다.");
-                  return;
-                }
-                if (
-                  order > 0 &&
-                  date.format("YYYY-MM-DD") <
-                    plannedPlaceList[order - 1].itineraryDate
-                ) {
-                  window.alert("이전 일정보다 이른 날짜를 고를 수 없습니다.");
-                  return;
-                }
-                if (order !== 0 && transport === "") {
-                  window.alert("이동 수단을 선택하세요.");
-                  return;
-                }
-
-                const placeWithPlan = {
-                  ...p,
-                  itineraryDate: date.format("YYYY-MM-DD"),
-                  transport: transport,
-                  order,
-                };
-
-                //함수형 업데이트(동기형 업데이트)
-                //직전 상태 값을 기준으로 그 값에 계속해서 추가해 줌
-                setPlannedPlaceList((prev) => [...prev, placeWithPlan]);
-                setOpenPlanningModal(null);
-                setOpenPlanner(true);
-              }}
+              onClick={handleAddPlace}
             >
               여행지에 추가
             </button>
@@ -609,15 +644,12 @@ const PrintMap = (props) => {
   const plannedPlaceList = props.plannedPlaceList;
   const deletePlan = props.deletePlan;
   const markableList = props.markableList;
+  const mapCenter = props.mapCenter;
 
   return (
     <Map // 지도를 표시할 Container
       id={`kakaomap`}
-      center={{
-        // 지도의 중심좌표
-        lat: 37.5341338,
-        lng: 126.897333254,
-      }}
+      center={mapCenter}
       style={{
         // 지도의 크기
         width: "100%",
