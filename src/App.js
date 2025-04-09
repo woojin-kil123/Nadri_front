@@ -6,6 +6,7 @@ import Main from "./components/common/Main";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 // 멤버 관련 페이지
 import Login from "./components/member/Login";
+import LoginKakao from "./components/member/LoginKakao";
 import Join from "./components/member/Join";
 import Join2 from "./components/member/Join2";
 import Join3 from "./components/member/Join3";
@@ -18,7 +19,11 @@ import PlaceList from "./components/place/PlaceList";
 import ReviewMain from "./components/review/ReviewMain";
 // 상태 관리
 import { useRecoilState, useRecoilValue } from "recoil";
-import { isLoginState, isPlannerState } from "./components/utils/RecoilData";
+import {
+  isLoginState,
+  isPlannerState,
+  placeTypeState,
+} from "./components/utils/RecoilData";
 // 컴포넌트
 import { useEffect, useState } from "react";
 import ChatMenu from "./components/chat/ChatMenu";
@@ -34,9 +39,17 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Admin from "./components/admin/Admin";
 import Event from "./components/admin/Event";
+import axios from "axios";
+import SearchResult from "./components/search/SearchResult";
 
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
+  const [placeType, setPlaceType] = useRecoilState(placeTypeState);
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_BACK_SERVER}/place/type`).then((res) => {
+      setPlaceType(res.data);
+    });
+  }, []);
   const isLogin = useRecoilValue(isLoginState);
 
   const loc = useLocation();
@@ -56,7 +69,7 @@ function App() {
 
       <Routes>
         <Route
-          path="/planner/*"
+          path="/planner/:planNo?"
           element={<LoginRouting element={<PlannerFrm />} />}
         />
 
@@ -70,6 +83,7 @@ function App() {
                   {/* <Route path="/planner" element={<PlannerFrm />} /> */}
                   <Route path="/" element={<Main />} />
                   <Route path="/login" element={<Login />} />
+                  <Route path="/login/kakao" element={<LoginKakao />} />
                   <Route path="/join" element={<Join />} />
                   <Route path="/join2" element={<Join2 />} />
                   <Route path="/join3" element={<Join3 />} />
@@ -98,6 +112,7 @@ function App() {
                   ></Route>
                   <Route path="/review/write" element={<ReviewWrite />}></Route>
                   <Route path="/place/*" element={<PlaceList />} />
+                  <Route path="/search" element={<SearchResult />} />
                 </Routes>
               </div>
               <Footer />

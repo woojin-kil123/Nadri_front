@@ -148,9 +148,7 @@ input[type="radio"] {
   height: 16px;
   margin-right: 10px;
 }
-.join-button-box2 {
-  text-align: center;
-}
+
 .join-button-box2 > button {
   width: 100%;
   border: none;
@@ -192,4 +190,8 @@ input[type="radio"] {
 }
 .naver-login-join > a > img {
   width: 350px;
+}
+
+.footer {
+  margin-top: 100px; /* "다음" 버튼과 100px 간격을 둡니다 */
 }
