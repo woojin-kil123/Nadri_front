@@ -13,9 +13,10 @@ const LoginKakao = () => {
   useEffect(() => {
     axios
       .post(`${process.env.REACT_APP_BACK_SERVER}/kakao/login`, { code })
-      .then((response) => {
-        console.log(response.data.result.user_id);
-        console.log(response.data.result.jwt);
+      .then((res) => {
+        console.log(res.data);
+        console.log(res.data.result.user_id);
+        console.log(res.data.result.jwt);
       })
       .catch((err) => {
         console.log(err);
