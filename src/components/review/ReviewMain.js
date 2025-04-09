@@ -11,6 +11,8 @@ const ReviewMain = () => {
   const [pi, setPi] = useState([]);
   const [reqPage, setReqPage] = useState(1);
   const [content, setContnet] = useState(null);
+  const [placeList, setPlaceList] = useState([]);
+
   useEffect(() => {
     axios
       .get(
@@ -43,6 +45,7 @@ const ReviewMain = () => {
         console.log(err);
       });
   };
+
   return (
     <section className="section">
       <div className="page-title">최신리뷰</div>
@@ -50,6 +53,7 @@ const ReviewMain = () => {
         <nav className="review-nav">
           <ul>
             <li
+              className={content === "room" ? "active" : ""}
               style={{ width: "15%" }}
               onClick={() => {
                 changeContnent("room");
@@ -58,6 +62,7 @@ const ReviewMain = () => {
               숙소
             </li>
             <li
+              className={content === "spot" ? "active" : ""}
               style={{ width: "15%" }}
               onClick={() => {
                 changeContnent("spot");
@@ -66,6 +71,7 @@ const ReviewMain = () => {
               관광지
             </li>
             <li
+              className={content === "food" ? "active" : ""}
               style={{ width: "15%" }}
               onClick={() => {
                 changeContnent("food");
@@ -74,6 +80,7 @@ const ReviewMain = () => {
               음식
             </li>
             <li
+              className={content === "todo" ? "active" : ""}
               style={{ width: "15%" }}
               onClick={() => {
                 changeContnent("todo");
@@ -82,6 +89,7 @@ const ReviewMain = () => {
               즐길거리
             </li>
             <li
+              className={content === "plan" ? "active" : ""}
               style={{ width: "15%" }}
               onClick={() => {
                 changeContnent("plan");
@@ -91,11 +99,6 @@ const ReviewMain = () => {
             </li>
           </ul>
         </nav>
-        <div>
-          <Link to="/review/write" className="btn-primary green">
-            글쓰기
-          </Link>
-        </div>
       </div>
       <div className="contnent-review-list">
         <div>

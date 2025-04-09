@@ -10,6 +10,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useRecoilState } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
+import EditIcon from "@mui/icons-material/Edit";
 const ReviewView = () => {
   const params = useParams();
   const reviewNo = params.reviewNo;
@@ -19,7 +20,7 @@ const ReviewView = () => {
   const [isCommenting, setIsCommenting] = useState(false);
   const [memberNickname, setMemberNickname] =
     useRecoilState(loginNicknameState);
-
+  const editComment = (commNo) => {};
   const deleteComment = (commNo) => {
     Swal.fire({
       title: "댓글 삭제",
@@ -104,6 +105,7 @@ const ReviewView = () => {
     "부적절한 이미지 – 폭력적이거나 선정적인 이미지가 포함된 경우",
     "리뷰와 무관한 내용 – 여행지와 관련 없는 내용이 포함된 경우",
   ];
+
   const deleteReview = () => {
     Swal.fire({
       title: "리뷰 삭제",
@@ -230,6 +232,7 @@ const ReviewView = () => {
               key={comment.commNo}
               comment={comment}
               onDelete={deleteComment}
+              onEdit={editComment}
             />
           ))}
         </ul>
@@ -293,7 +296,7 @@ const ReviewView = () => {
     </section>
   );
 };
-const CommentItem = ({ comment, onDelete }) => {
+const CommentItem = ({ comment, onDelete, onEdit }) => {
   const [memberNickname, setMemberNickname] =
     useRecoilState(loginNicknameState);
   const [member, setMember] = useState(null);
@@ -319,10 +322,16 @@ const CommentItem = ({ comment, onDelete }) => {
       />
       {comment.commContent}
       {comment.memberNickname === memberNickname && (
-        <DeleteIcon
-          style={{ cursor: "pointer", marginLeft: "8px" }}
-          onClick={() => onDelete(comment.commNo)}
-        />
+        <>
+          <DeleteIcon
+            style={{ cursor: "pointer", marginLeft: "8px" }}
+            onClick={() => onDelete(comment.commNo)}
+          />
+          <EditIcon
+            style={{ cursor: "pointer", marginLeft: "8px" }}
+            onClick={() => onEdit(comment.commNo)}
+          />
+        </>
       )}
     </li>
   );

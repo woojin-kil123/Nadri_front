@@ -71,3 +71,6 @@
   width: 90%;
   justify-items: center;
 }
+.review-nav > ul > li.active {
+  color: var(--main2);
+}
