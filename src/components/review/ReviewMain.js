@@ -56,7 +56,7 @@ const ReviewMain = () => {
               className={content === "room" ? "active" : ""}
               style={{ width: "15%" }}
               onClick={() => {
-                changeContnent("room");
+                changeContnent("stay");
               }}
             >
               숙소
@@ -77,7 +77,7 @@ const ReviewMain = () => {
                 changeContnent("food");
               }}
             >
-              음식
+              음식점
             </li>
             <li
               className={content === "todo" ? "active" : ""}

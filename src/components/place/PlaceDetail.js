@@ -2,20 +2,22 @@ import { useEffect, useState } from "react";
 import "./place.css";
 import axios from "axios";
 import StarRating from "../utils/StarRating";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 const PlaceDetail = () => {
   const backServer = process.env.REACT_APP_BACK_SERVER;
   const [review, setReview] = useState([]);
   const [pi, setPi] = useState([]);
   const [reqPage, setReqPage] = useState(1);
+  const placeId = useParams().placeId;
+  const navigate = useNavigate();
+  console.log(placeId);
   useEffect(() => {
     axios
-      .get(`${backServer}/review?reqPage=${reqPage}&value=${"all"}`)
+      .get(`${backServer}/review/detail/${placeId}`)
       .then((res) => {
         console.log(res);
-        setReview(res.data.list);
-        setPi(res.data.pi);
+        setReview(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -64,9 +66,14 @@ const PlaceDetail = () => {
       </div>
       <div className="place-detail page-title">
         <h2>리뷰</h2>
-        <Link to="/review/write" className="btn-primary green">
+        <div
+          className="review-write btn-primary green"
+          onClick={() => {
+            navigate(`/review/write/${placeId}`);
+          }}
+        >
           글쓰기
-        </Link>
+        </div>
       </div>
       <div className="place-detail review-wap">
         <div>

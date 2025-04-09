@@ -95,7 +95,7 @@ function App() {
                     path="/mypage/*"
                     element={<LoginRouting element={<Mypage />} />}
                   />
-                  <Route path="/review/*" element={<ReviewMain />}></Route>
+                  <Route path="/review" element={<ReviewMain />}></Route>
                   <Route
                     path="/admin/*"
                     element={<AdminRouting element={<Admin />} />}
@@ -111,7 +111,10 @@ function App() {
                     path="/review/detail/:reviewNo"
                     element={<ReviewView />}
                   ></Route>
-                  <Route path="/review/write" element={<ReviewWrite />}></Route>
+                  <Route
+                    path="/review/write/:placeId"
+                    element={<ReviewWrite />}
+                  ></Route>
                   <Route path="/place" element={<PlaceList />} />
                   <Route
                     path="/place/detail/:placeId"

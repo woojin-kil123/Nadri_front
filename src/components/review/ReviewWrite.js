@@ -90,6 +90,7 @@ const ReviewWrite = () => {
           </div>
         </div>
       </div>
+      <button className="btn-primary">작성</button>
     </section>
   );
 };
