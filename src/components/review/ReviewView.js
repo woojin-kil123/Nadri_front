@@ -16,6 +16,8 @@ const ReviewView = () => {
   const reviewNo = params.reviewNo;
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
+  const [placeId, setPlaceId] = useState();
+  const [planNo, setPlanNo] = useState();
   const navigate = useNavigate();
   const [isCommenting, setIsCommenting] = useState(false);
   const [memberNickname, setMemberNickname] =
@@ -171,12 +173,26 @@ const ReviewView = () => {
       .then((res) => {
         console.log(res);
         setReview(res.data);
+        setPlaceId(res.data.placeId);
+        setPlanNo(res.data.planNo);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
-
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACK_SERVER}/review/${placeId}`)
+      .then((res) => {
+        console.log(res);
+        setReview(res.data);
+        setPlaceId(res.data.placeId);
+        setPlanNo(res.data.planNo);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/comm/${reviewNo}`)
