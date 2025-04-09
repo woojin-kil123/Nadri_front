@@ -29,9 +29,7 @@ import { useEffect, useState } from "react";
 import ChatMenu from "./components/chat/ChatMenu";
 import Mypage from "./components/mypage/Mypage";
 import ReviewWrite from "./components/review/ReviewWrite";
-import Search from "./components/review/Search";
 import ReviewView from "./components/review/ReviewView";
-import EditReview from "./components/review/EditReview";
 import LoginRouting from "./components/utils/LoginRouting";
 import AdminRouting from "./components/utils/AdminRouting";
 // 슬릭 슬라이더 css

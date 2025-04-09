@@ -24,6 +24,49 @@
   width: 5px;
 }
 /*관리자 메인*/
+.admin-wrap .section {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.update-info .info-title {
+  display: flex;
+  padding: 10px 0px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px 40px;
+}
+
+.info-block {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 8px;
+}
+
+.info-block label {
+  font-size: 18px;
+  color: var(--gray2);
+  margin-bottom: 6px;
+}
+.info-block input {
+  padding: 10px;
+  border: 1px solid var(--main2);
+  border-radius: 5px;
+  font-family: ns-r;
+  margin: 0;
+}
+.info-block input:not(:read-only):focus {
+  border: 2px solid var(--main2);
+}
 
 /*이벤트관리*/
 .event-page {
