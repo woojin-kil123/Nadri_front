@@ -45,6 +45,7 @@ const MainSearch = () => {
         setDropdownOpen(true);
       });
     }
+    setOpen(false);
   };
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);

@@ -16,7 +16,7 @@ const SearchResult = () => {
   }, [location]);
   useEffect(() => {
     axios.get(
-      `${process.env.REACT_APP_BACK_SERVER}/search?query=${queryParams}&type=${placeType[0].id}`
+      `${process.env.REACT_APP_BACK_SERVER}/search?query=${query}&type=${placeType[0].id}`
     );
   }, [query, typeId]);
   return (
