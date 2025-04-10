@@ -9,7 +9,6 @@ import PageNavigation from "../utils/PageNavigtion";
 
 const PlaceList = () => {
   const backServer = process.env.REACT_APP_BACK_SERVER;
-  const { menuType } = useParams();
   const [totalCount, setTotalCount] = useState();
 
   const [cards, setCards] = useState([]);
@@ -28,15 +27,10 @@ const PlaceList = () => {
   // const currentMenu = menus.find((m) => m.name2 === menuType) || menus[0];
 
   useEffect(() => {
-    // if (!currentMenu) return;
-    console.log(
-      selectedMenu,
-      `${backServer}/place?reqPage=${reqPage}&placeCat=${selectedMenu}`
-    );
     axios
-      .get(`${backServer}/place?reqPage=${reqPage}&placeCat=${selectedMenu}`)
+      .get(`${backServer}/place?reqPage=${reqPage}&placeTypeId=${selectedMenu}`)
       .then((res) => {
-        console.log(res);
+        console.log(res.data);
         setPlaceList(res.data.list);
         setPi(res.data.pi);
         setTotalCount(res.data.totalCount);
@@ -44,7 +38,7 @@ const PlaceList = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [reqPage, menuType, selectedMenu]);
+  }, [reqPage, selectedMenu]);
 
   return (
     <div className="place-wrap">
@@ -56,26 +50,19 @@ const PlaceList = () => {
               menus={menus}
               selectedMenu={selectedMenu}
               setSelectedMenu={setSelectedMenu}
-              // currentMenu={currentMenu}
             />
-            {/* <Routes>
-              <Route
-                path=":menuType"
-                element={
-                  <PlaceListFrm
-                    placeTypeId={currentMenu.id}
-                    placeList={placeList}
-                    pi={pi}
-                  />
-                }
-              />
-            </Routes> */}
           </section>
         </div>
         <div className="placelist-content">
           <div className="placelist option-box">
             {totalCount && <div>총 {totalCount.toLocaleString()}개</div>}
-            <div>리뷰 많은 순</div>
+            <div>
+              <select>
+                <option value={1}>리뷰 많은순</option>
+                <option value={2}>별점 높은순</option>
+                <option value={3}>좋아요 많은순</option>
+              </select>
+            </div>
           </div>
           <div className="place-wrap">
             {Array.isArray(cards) &&

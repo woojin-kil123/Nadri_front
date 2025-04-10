@@ -78,15 +78,35 @@ const UpdatePw = () => {
   const sendEmailVerification = () => {
     axios
       .get(
-        `${process.env.REACT_APP_BACK_SERVER}/api/sendCode?email=${member.memberEmail}`
+        `${process.env.REACT_APP_BACK_SERVER}/member/isSocial?email=${member.memberEmail}`
       )
       .then((res) => {
-        setCode(res.data); // 서버에서 받은 인증 코드 저장
-        setCodeSentTime(Date.now()); // 인증 코드가 전송된 시간 저장
-        setIsVerificationSent(true); // 인증 코드 발송 상태로 변경
-        setTimeLeft(180); // 카운트다운 타이머 변수 3분 (180초) 설정
+        console.log(res);
+        if (res.data === 1) {
+          axios
+            .get(
+              `${process.env.REACT_APP_BACK_SERVER}/api/sendCode?email=${member.memberEmail}`
+            )
+            .then((res) => {
+              setCode(res.data); // 서버에서 받은 인증 코드 저장
+              setCodeSentTime(Date.now()); // 인증 코드가 전송된 시간 저장
+              setIsVerificationSent(true); // 인증 코드 발송 상태로 변경
+              setTimeLeft(180); // 카운트다운 타이머 변수 3분 (180초) 설정
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else {
+          console.log("소셜 회원인 이메일입니다.");
+          Swal.fire({
+            text: "소셜 회원인 이메일입니다.",
+            icon: "error",
+          });
+        }
       })
-      .catch((error) => {});
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const verifyEmailCode = () => {

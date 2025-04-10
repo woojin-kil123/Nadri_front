@@ -7,6 +7,8 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 // 멤버 관련 페이지
 import Login from "./components/member/Login";
 import LoginKakao from "./components/member/LoginKakao";
+import SocialJoin from "./components/member/SocialJoin";
+import SocialJoin2 from "./components/member/SocialJoin2";
 import Join from "./components/member/Join";
 import Join2 from "./components/member/Join2";
 import Join3 from "./components/member/Join3";
@@ -42,6 +44,8 @@ import SearchResult from "./components/search/SearchResult";
 import AdminMain from "./components/admin/AdminMain";
 import AdminReview from "./components/admin/AdminReview";
 import AdminPartner from "./components/admin/AdminPartner";
+import PlaceDetail from "./components/place/PlaceDetail";
+
 
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
@@ -85,6 +89,8 @@ function App() {
                   <Route path="/" element={<Main />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/login/kakao" element={<LoginKakao />} />
+                  <Route path="/socialJoin" element={<SocialJoin />} />
+                  <Route path="/socialJoin2" element={<SocialJoin2 />} />
                   <Route path="/join" element={<Join />} />
                   <Route path="/join2" element={<Join2 />} />
                   <Route path="/join3" element={<Join3 />} />
@@ -95,7 +101,7 @@ function App() {
                     path="/mypage/*"
                     element={<LoginRouting element={<Mypage />} />}
                   />
-                  <Route path="/review/*" element={<ReviewMain />}></Route>
+                  <Route path="/review" element={<ReviewMain />}></Route>
                   <Route
                     path="/admin/*"
                     element={<AdminRouting element={<Admin />} />}
@@ -112,8 +118,15 @@ function App() {
                     path="/review/detail/:reviewNo"
                     element={<ReviewView />}
                   ></Route>
-                  <Route path="/review/write" element={<ReviewWrite />}></Route>
-                  <Route path="/place/*" element={<PlaceList />} />
+                  <Route
+                    path="/review/write/:placeId"
+                    element={<ReviewWrite />}
+                  ></Route>
+                  <Route path="/place" element={<PlaceList />} />
+                  <Route
+                    path="/place/detail/:placeId"
+                    element={<PlaceDetail />}
+                  />
                   <Route path="/search" element={<SearchResult />} />
                 </Routes>
               </div>
