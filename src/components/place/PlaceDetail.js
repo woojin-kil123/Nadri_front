@@ -4,13 +4,13 @@ import axios from "axios";
 import StarRating from "../utils/StarRating";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Place } from "@mui/icons-material";
-
 const PlaceDetail = () => {
   const backServer = process.env.REACT_APP_BACK_SERVER;
   const [review, setReview] = useState([]);
   const [reqPage, setReqPage] = useState(1);
   const placeId = useParams().placeId;
   const [place, setPlace] = useState();
+  const navigate = useNavigate();
   useEffect(() => {
     axios
       .get(`${backServer}/place/detail?placeId=${placeId}`)
@@ -21,7 +21,8 @@ const PlaceDetail = () => {
       .catch((err) => {
         console.log(err);
       });
-
+  }, []);
+  useEffect(() => {
     axios
       .get(`${backServer}/review/detail/${placeId}`)
       .then((res) => {
@@ -31,7 +32,7 @@ const PlaceDetail = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [reqPage]);
+  }, []);
   return (
     <div className="place-detail-wrap">
       <div className="place-detail-header">
@@ -66,7 +67,6 @@ const PlaceDetail = () => {
             돌아볼 수 있는 넓은 길로 설계되어 있다...
           </p>
         </div>
-
         <div className="info-box">
           <div className="info-item">
             <strong>주소</strong>
@@ -80,9 +80,14 @@ const PlaceDetail = () => {
       </div>
       <div className="place-detail page-title">
         <h2>리뷰</h2>
-        <Link to="/review/write" className="btn-primary green">
-          리뷰쓰기
-        </Link>
+        <div
+          className="review-write btn-primary green"
+          onClick={() => {
+            navigate(`/review/write/${placeId}`);
+          }}
+        >
+          글쓰기
+        </div>
       </div>
       <div className="place-detail review-wap">
         <div>
@@ -96,7 +101,6 @@ const PlaceDetail = () => {
     </div>
   );
 };
-
 const ReviewItem = (props) => {
   const navigate = useNavigate();
   const review = props.review;
@@ -112,7 +116,11 @@ const ReviewItem = (props) => {
           <StarRating rating={review.starRate} />
         </div>
         <div className="posting-title">{review.reviewTitle}</div>
-        <div>{review.reviewContent}</div>
+        <div
+          dangerouslySetInnerHTML={{
+            __html: review.reviewContent, // p 태그 제거
+          }}
+        />
         <div className="posting-sub-info">
           <span>{review.memberNickname}</span>
           <span>{review.reviewDate}</span>
@@ -121,5 +129,4 @@ const ReviewItem = (props) => {
     </li>
   );
 };
-
 export default PlaceDetail;
