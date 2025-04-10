@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import Slider from "react-slick";
 import ListCard from "../utils/ListCard";
-import { ArrowBackIosNew, ArrowForwardIos } from "@mui/icons-material";
 import axios from "axios";
 
 export default function RecommandSlider({ on }) {
   const [cards, setCards] = useState([]);
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACK_SERVER}/place?reqPage=1`)
+      .get(
+        `${process.env.REACT_APP_BACK_SERVER}/place?reqPage=1&placeCat=${on}`
+      )
       .then((res) => {
         setCards(res.data.list);
       })

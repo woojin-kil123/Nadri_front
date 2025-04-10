@@ -1,9 +1,9 @@
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import "./ListCard.css"; // CSS는 따로 작성
+import "./mypageListCard.css"; // CSS는 따로 작성
 import StarRating from "./StarRating";
 import { useNavigate } from "react-router-dom";
 
-export default function ListCard(props) {
+export default function MypageListCard(props) {
   const navigate = useNavigate();
   const place = props.place;
   return (
@@ -12,10 +12,9 @@ export default function ListCard(props) {
         <div>내용 없음</div>
       ) : (
         <div
-          className="card"
+          className="card2"
           onClick={() => {
-            // place.route && navigate("/place/detail:" + place.placeId);
-            navigate(`/place/detail/${place.placeId}`);
+            place.route && navigate(place.route);
           }}
         >
           <div className="image-container">
@@ -30,7 +29,7 @@ export default function ListCard(props) {
               />
             </div>
           </div>
-          <div className="card-content">
+          <div className="card2-content">
             <p className="location">
               {place.areaName} &nbsp;
               {place.sigunguName}

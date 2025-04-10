@@ -7,6 +7,8 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 // 멤버 관련 페이지
 import Login from "./components/member/Login";
 import LoginKakao from "./components/member/LoginKakao";
+import SocialJoin from "./components/member/SocialJoin";
+import SocialJoin2 from "./components/member/SocialJoin2";
 import Join from "./components/member/Join";
 import Join2 from "./components/member/Join2";
 import Join3 from "./components/member/Join3";
@@ -29,9 +31,7 @@ import { useEffect, useState } from "react";
 import ChatMenu from "./components/chat/ChatMenu";
 import Mypage from "./components/mypage/Mypage";
 import ReviewWrite from "./components/review/ReviewWrite";
-import Search from "./components/review/Search";
 import ReviewView from "./components/review/ReviewView";
-import EditReview from "./components/review/EditReview";
 import LoginRouting from "./components/utils/LoginRouting";
 import AdminRouting from "./components/utils/AdminRouting";
 // 슬릭 슬라이더 css
@@ -41,7 +41,11 @@ import Admin from "./components/admin/Admin";
 import Event from "./components/admin/Event";
 import axios from "axios";
 import SearchResult from "./components/search/SearchResult";
+import AdminMain from "./components/admin/AdminMain";
+import AdminReview from "./components/admin/AdminReview";
+import AdminPartner from "./components/admin/AdminPartner";
 import PlaceDetail from "./components/place/PlaceDetail";
+
 
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
@@ -85,6 +89,8 @@ function App() {
                   <Route path="/" element={<Main />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/login/kakao" element={<LoginKakao />} />
+                  <Route path="/socialJoin" element={<SocialJoin />} />
+                  <Route path="/socialJoin2" element={<SocialJoin2 />} />
                   <Route path="/join" element={<Join />} />
                   <Route path="/join2" element={<Join2 />} />
                   <Route path="/join3" element={<Join3 />} />
@@ -95,23 +101,27 @@ function App() {
                     path="/mypage/*"
                     element={<LoginRouting element={<Mypage />} />}
                   />
-                  <Route path="/review/*" element={<ReviewMain />}></Route>
+                  <Route path="/review" element={<ReviewMain />}></Route>
                   <Route
                     path="/admin/*"
                     element={<AdminRouting element={<Admin />} />}
                   >
+                    <Route index element={<AdminMain />} />
                     <Route path="event" element={<Event />} />
-                    <Route path="partner" element={<Event />} />
-                    <Route path="review" element={<Event />} />
-                    <Route path="member" element={<Event />} />
-                    <Route path="inquiry" element={<Event />} />
-                    <Route path="contents" element={<Event />} />
+                    <Route path="partner" element={<AdminPartner />} />
+                    <Route path="review" element={<AdminReview />} />
+                    <Route path="member" element={<AdminMain />} />
+                    <Route path="contents" element={<AdminMain />} />
+                    <Route path="main" element={<AdminMain />} />
                   </Route>
                   <Route
                     path="/review/detail/:reviewNo"
                     element={<ReviewView />}
                   ></Route>
-                  <Route path="/review/write" element={<ReviewWrite />}></Route>
+                  <Route
+                    path="/review/write/:placeId"
+                    element={<ReviewWrite />}
+                  ></Route>
                   <Route path="/place" element={<PlaceList />} />
                   <Route
                     path="/place/detail/:placeId"

@@ -5,11 +5,11 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
-const Join3 = () => {
+const SocialJoin = () => {
+  const location = useLocation(); // useLocation 훅으로 location 객체를 가져옴
   const navigate = useNavigate(); // 페이지 이동을 위한 navigate 훅
-  const location = useLocation(); // 현재 위치에서 전달된 데이터를 가져오는 훅
   const [isFormValid, setIsFormValid] = useState(false); // 폼 유효성 상태
-  const { email, code } = location.state || {}; // 이메일과 코드 데이터를 가져옴 (없으면 기본값으로 빈 객체 설정)
+  const { email } = location.state || {}; // 이메일과 코드 데이터를 가져옴 (없으면 기본값으로 빈 객체 설정)
   const [isOpen1, setIsOpen1] = useState(false);
   const [isOpen2, setIsOpen2] = useState(false);
   const [isOpen3, setIsOpen3] = useState(false);
@@ -18,7 +18,6 @@ const Join3 = () => {
   const [isOpen6, setIsOpen6] = useState(false);
 
   console.log(email);
-  console.log(code);
 
   const [check1, setCheck1] = useState(false); // '약관 전체 동의' 상태
   const [check2, setCheck2] = useState(false);
@@ -109,7 +108,7 @@ const Join3 = () => {
   const handleButtonClick = () => {
     if (isFormValid) {
       // 클릭 시 navigate로 이동
-      navigate("/join3", {
+      navigate("/socialJoin2", {
         state: {
           email: email,
         },
@@ -119,7 +118,7 @@ const Join3 = () => {
 
   return (
     <section className="join2-section">
-      {code ? (
+      {email ? (
         <>
           <div className="join-title">
             <h2>이용약관</h2>
@@ -645,4 +644,4 @@ const Join3 = () => {
   );
 };
 
-export default Join3;
+export default SocialJoin;
