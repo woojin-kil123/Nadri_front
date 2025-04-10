@@ -2,11 +2,16 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const UpdatePw2 = () => {
   const navigate = useNavigate(); // 페이지 이동을 위한 navigate 훅
   const location = useLocation(); // 현재 위치에서 전달된 데이터를 가져오는 훅
   const { email, code } = location.state || {}; // 이메일과 코드 데이터를 가져옴 (없으면 기본값으로 빈 객체 설정)
+  // 비밀번호 보이기/숨기기 상태
+  const [isPasswordVisible1, setIsPasswordVisible1] = useState(false);
+  const [isPasswordVisible2, setIsPasswordVisible2] = useState(false);
 
   console.log(email);
   console.log(code);
@@ -40,6 +45,16 @@ const UpdatePw2 = () => {
   // 비밀번호 확인 입력 값 상태 관리
   const [memberPwRe, setMemberPwRe] = useState("");
   const [isFormValid, setIsFormValid] = useState(false); // 폼 유효성 상태
+
+  // 비밀번호 보이기/숨기기 토글 핸들러
+  const togglePasswordVisibility1 = () => {
+    setIsPasswordVisible1(!isPasswordVisible1);
+  };
+
+  // 비밀번호 보이기/숨기기 토글 핸들러
+  const togglePasswordVisibility2 = () => {
+    setIsPasswordVisible2(!isPasswordVisible2);
+  };
 
   // 비밀번호 확인 입력값 업데이트 핸들러
   const inputMemberPwRe = (e) => {
@@ -127,15 +142,36 @@ const UpdatePw2 = () => {
                 <div className="input-title">
                   <label htmlFor="memberPw">비밀번호</label>
                 </div>
-                <div className="input-item">
+                <div className="input-item" style={{ position: "relative" }}>
                   <input
-                    type="password" // 비밀번호 필드 (숨김 처리)
+                    type={isPasswordVisible1 ? "text" : "password"} // 비밀번호가 보일 때는 text로, 숨길 때는 password로 설정
                     name="memberPw" // 입력 필드의 name 속성
                     id="memberPw" // 입력 필드의 id 속성
                     value={member.memberPw} // 상태에서 비밀번호 값 가져오기
                     onChange={inputMemberData} // 비밀번호 값이 변경될 때마다 상태 업데이트
                     onBlur={checkPw} // 포커스를 벗어날 때 비밀번호 일치 여부 확인
+                    style={{
+                      paddingRight: "40px", // 오른쪽에 아이콘을 배치하기 위한 패딩 추가
+                    }}
                   />
+                  <span
+                    className="password-toggle-icon"
+                    onClick={togglePasswordVisibility1} // 아이콘 클릭 시 비밀번호 표시 토글
+                    style={{
+                      position: "absolute",
+                      right: "10px", // 오른쪽에 배치
+                      top: "50%", // 수직 중앙 정렬
+                      transform: "translateY(-50%)", // 정확히 중앙 정렬
+                      cursor: "pointer",
+                      zIndex: "1", // 아이콘이 input 위에 오도록 설정
+                    }}
+                  >
+                    {isPasswordVisible1 ? (
+                      <VisibilityOffIcon />
+                    ) : (
+                      <VisibilityIcon />
+                    )}
+                  </span>
                 </div>
               </div>
 
@@ -144,15 +180,37 @@ const UpdatePw2 = () => {
                 <div className="input-title">
                   <label htmlFor="memberPwRe">비밀번호 확인</label>
                 </div>
-                <div className="input-item">
+                <div className="input-item" style={{ position: "relative" }}>
                   <input
-                    type="password" // 비밀번호 확인 필드 (숨김 처리)
+                    type={isPasswordVisible2 ? "text" : "password"} // 비밀번호가 보일 때는 text로, 숨길 때는 password로 설정
                     name="memberPwRe" // 입력 필드의 name 속성
                     id="memberPwRe" // 입력 필드의 id 속성
                     value={memberPwRe} // 비밀번호 확인 값 상태
                     onChange={inputMemberPwRe} // 비밀번호 확인 값 변경 시 상태 업데이트
                     onBlur={checkPw} // 포커스를 벗어날 때 비밀번호 일치 여부 확인
+                    placeholder="위 비밀번호와 동일하게 입력"
+                    style={{
+                      paddingRight: "40px", // 오른쪽에 아이콘을 배치하기 위한 패딩 추가
+                    }}
                   />
+                  <span
+                    className="password-toggle-icon"
+                    onClick={togglePasswordVisibility2} // 아이콘 클릭 시 비밀번호 표시 토글
+                    style={{
+                      position: "absolute",
+                      right: "10px", // 오른쪽에 배치
+                      top: "50%", // 수직 중앙 정렬
+                      transform: "translateY(-50%)", // 정확히 중앙 정렬
+                      cursor: "pointer",
+                      zIndex: "1", // 아이콘이 input 위에 오도록 설정
+                    }}
+                  >
+                    {isPasswordVisible2 ? (
+                      <VisibilityOffIcon />
+                    ) : (
+                      <VisibilityIcon />
+                    )}
+                  </span>
                 </div>
                 {/* 비밀번호 일치 여부 메시지 표시 */}
                 <p ref={pwMsgRef}></p>

@@ -22,6 +22,7 @@
 }
 .input-item > input {
   border-color: rgb(187, 187, 187);
+  width: 600px;
 }
 .input-item > input:focus {
   border-color: rgb(54, 54, 54);

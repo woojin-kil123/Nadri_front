@@ -6,6 +6,8 @@ import Swal from "sweetalert2";
 import { useRecoilState } from "recoil";
 import { loginNicknameState, memberLevelState } from "../utils/RecoilData";
 import TextField from "@mui/material/TextField";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -20,6 +22,14 @@ const Login = () => {
   // emailError와 passwordError: 각각 이메일과 비밀번호 입력란의 오류 메시지를 관리하는 상태
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+
+  // 비밀번호 보이기/숨기기 상태
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  // 비밀번호 보이기/숨기기 토글 핸들러
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
 
   // 이메일에 @가 포함되어 있는지 확인하는 함수
   const validateEmail = (email) => {
@@ -138,16 +148,34 @@ const Login = () => {
               <div className="input-title">
                 <label htmlFor="memberPw">비밀번호</label>
               </div>
-              <div className="input-item">
+              <div className="input-item" style={{ position: "relative" }}>
                 <input
-                  type="password"
+                  type={isPasswordVisible ? "text" : "password"} // 비밀번호가 보일 때는 text로, 숨길 때는 password로 설정
                   name="memberPw"
                   id="memberPw"
                   value={member.memberPw}
                   onChange={changeMember} // 입력값 변경 시 상태 업데이트
-                  //onBlur={handlePasswordBlur} // 포커스를 떴을 때 비밀번호 검사
                 />
+                <span
+                  className="password-toggle-icon"
+                  onClick={togglePasswordVisibility}
+                  style={{
+                    position: "absolute",
+                    right: "10px", // 오른쪽에 배치
+                    top: "50%", // 수직 중앙 정렬
+                    transform: "translateY(-50%)",
+                    cursor: "pointer",
+                    zIndex: "1", // 아이콘이 input 위에 오도록 설정
+                  }}
+                >
+                  {isPasswordVisible ? (
+                    <VisibilityIcon />
+                  ) : (
+                    <VisibilityOffIcon />
+                  )}
+                </span>
               </div>
+
               {/* 비밀번호 오류 메시지 표시 */}
               {passwordError && <p className="input-error">{passwordError}</p>}
             </div>

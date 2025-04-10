@@ -2,11 +2,16 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const Join3 = () => {
   const navigate = useNavigate(); // 페이지 이동을 위한 navigate 훅
   const location = useLocation(); // 현재 위치에서 전달된 데이터를 가져오는 훅
   const { email } = location.state || {}; // 이메일과 코드 데이터를 가져옴 (없으면 기본값으로 빈 객체 설정)
+  // 비밀번호 보이기/숨기기 상태
+  const [isPasswordVisible1, setIsPasswordVisible1] = useState(false);
+  const [isPasswordVisible2, setIsPasswordVisible2] = useState(false);
 
   console.log(email);
 
@@ -42,6 +47,16 @@ const Join3 = () => {
   // 비밀번호 확인 입력 값 상태 관리
   const [memberPwRe, setMemberPwRe] = useState("");
   const [isFormValid, setIsFormValid] = useState(false); // 폼 유효성 상태
+
+  // 비밀번호 보이기/숨기기 토글 핸들러
+  const togglePasswordVisibility1 = () => {
+    setIsPasswordVisible1(!isPasswordVisible1);
+  };
+
+  // 비밀번호 보이기/숨기기 토글 핸들러
+  const togglePasswordVisibility2 = () => {
+    setIsPasswordVisible2(!isPasswordVisible2);
+  };
 
   // 비밀번호 확인 입력값 업데이트 핸들러
   const inputMemberPwRe = (e) => {
@@ -247,16 +262,37 @@ const Join3 = () => {
                 <div className="input-title">
                   <label htmlFor="memberPw">비밀번호</label>
                 </div>
-                <div className="input-item">
+                <div className="input-item" style={{ position: "relative" }}>
                   <input
-                    type="password"
+                    type={isPasswordVisible1 ? "text" : "password"} // 비밀번호가 보일 때는 text로, 숨길 때는 password로 설정
                     name="memberPw"
                     id="memberPw"
                     value={member.memberPw}
                     onChange={inputMemberData}
                     onBlur={checkPw} // 입력이 끝나면 비밀번호 일치 여부 확인
                     placeholder="최소 8자 이상"
+                    style={{
+                      paddingRight: "40px", // 오른쪽에 아이콘을 배치하기 위해 오른쪽 패딩 추가
+                    }}
                   />
+                  <span
+                    className="password-toggle-icon"
+                    onClick={togglePasswordVisibility1}
+                    style={{
+                      position: "absolute",
+                      right: "10px", // 오른쪽에 배치
+                      top: "50%", // 수직 중앙 정렬
+                      transform: "translateY(-50%)", // 정확히 중앙 정렬
+                      cursor: "pointer",
+                      zIndex: "1", // 아이콘이 input 위에 오도록 설정
+                    }}
+                  >
+                    {isPasswordVisible1 ? (
+                      <VisibilityIcon />
+                    ) : (
+                      <VisibilityOffIcon />
+                    )}
+                  </span>
                 </div>
               </div>
 
@@ -265,16 +301,37 @@ const Join3 = () => {
                 <div className="input-title">
                   <label htmlFor="memberPwRe">비밀번호 확인</label>
                 </div>
-                <div className="input-item">
+                <div className="input-item" style={{ position: "relative" }}>
                   <input
-                    type="password"
+                    type={isPasswordVisible2 ? "text" : "password"} // 비밀번호가 보일 때는 text로, 숨길 때는 password로 설정
                     name="memberPwRe"
                     id="memberPwRe"
                     value={memberPwRe}
                     onChange={inputMemberPwRe}
                     onBlur={checkPw} // 입력이 끝나면 비밀번호 일치 여부 확인
                     placeholder="위 비밀번호와 동일하게 입력"
+                    style={{
+                      paddingRight: "40px", // 오른쪽에 아이콘을 배치하기 위해 오른쪽 패딩 추가
+                    }}
                   />
+                  <span
+                    className="password-toggle-icon"
+                    onClick={togglePasswordVisibility2}
+                    style={{
+                      position: "absolute",
+                      right: "10px", // 오른쪽에 배치
+                      top: "50%", // 수직 중앙 정렬
+                      transform: "translateY(-50%)", // 정확히 중앙 정렬
+                      cursor: "pointer",
+                      zIndex: "1", // 아이콘이 input 위에 오도록 설정
+                    }}
+                  >
+                    {isPasswordVisible2 ? (
+                      <VisibilityIcon />
+                    ) : (
+                      <VisibilityOffIcon />
+                    )}
+                  </span>
                 </div>
                 <p ref={pwMsgRef}></p>
               </div>
@@ -284,7 +341,7 @@ const Join3 = () => {
                 <div className="input-title">
                   <label htmlFor="memberNickname">닉네임</label>
                 </div>
-                <div className="input-item">
+                <div className="input-item" style={{ position: "relative" }}>
                   <input
                     type="text"
                     name="memberNickname"
