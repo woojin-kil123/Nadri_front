@@ -7,6 +7,8 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import axios from "axios";
 import { useRecoilValue } from "recoil";
 import { placeTypeState } from "../utils/RecoilData";
+import { getKoreanToday } from "../utils/metaSet";
+import EventPopup from "../utils/EventPopup";
 
 const Main = () => {
   const [planCategory, setPlanCategory] = useState([
@@ -34,11 +36,32 @@ const Main = () => {
   useEffect(() => {
     setOnPlace(placeType[0].name);
   }, []);
-
   const [onReview, setOnReview] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+
+  useEffect(() => {
+    const today = getKoreanToday(); // ex) "2025-04-10"
+    const hiddenDate = localStorage.getItem("hidePopupDate");
+    if (hiddenDate !== today) {
+      setShowPopup(true);
+    }
+  }, []);
+  const dailyClose = () => {
+    const today = getKoreanToday();
+    localStorage.setItem("hidePopupDate", today);
+    setShowPopup(false);
+  };
 
   return (
     <section className="section main-wrap">
+      {showPopup && (
+        <EventPopup
+          onClose={() => {
+            setShowPopup(false);
+          }}
+          dailyClose={dailyClose}
+        />
+      )}
       <IntroSlider />
       <div className="recommand-wrap">
         <div className="recommand-title">

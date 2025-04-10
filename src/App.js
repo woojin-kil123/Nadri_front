@@ -41,6 +41,7 @@ import axios from "axios";
 import SearchResult from "./components/search/SearchResult";
 import AdminMain from "./components/admin/AdminMain";
 import AdminReview from "./components/admin/AdminReview";
+import AdminPartner from "./components/admin/AdminPartner";
 
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
@@ -101,7 +102,7 @@ function App() {
                   >
                     <Route index element={<AdminMain />} />
                     <Route path="event" element={<Event />} />
-                    <Route path="partner" element={<AdminMain />} />
+                    <Route path="partner" element={<AdminPartner />} />
                     <Route path="review" element={<AdminReview />} />
                     <Route path="member" element={<AdminMain />} />
                     <Route path="contents" element={<AdminMain />} />
