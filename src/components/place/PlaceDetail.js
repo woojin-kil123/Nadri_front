@@ -8,7 +8,7 @@ const PlaceDetail = () => {
   const backServer = process.env.REACT_APP_BACK_SERVER;
   const [review, setReview] = useState([]);
   const [pi, setPi] = useState([]);
-  const [reqPage, setReqPage] = useState(1);
+
   const placeId = useParams().placeId;
   const navigate = useNavigate();
   console.log(placeId);
@@ -22,7 +22,7 @@ const PlaceDetail = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [reqPage]);
+  }, []);
   return (
     <div className="container">
       <div className="header">

@@ -130,7 +130,11 @@ const ReviewItem = (props) => {
           <StarRating rating={review.starRate} />
         </div>
         <div className="posting-title">{review.reviewTitle}</div>
-        <div>{review.reviewContent}</div>
+        <div
+          dangerouslySetInnerHTML={{
+            __html: review.reviewContent, // p 태그 제거
+          }}
+        />
         <div className="posting-sub-info">
           <span>{review.memberNickname}</span>
           <span>{review.reviewDate}</span>
