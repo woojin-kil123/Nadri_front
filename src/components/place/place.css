@@ -89,12 +89,6 @@
   margin: 0;
 }
 
-.content {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-}
-
 .main-description {
   flex: 2;
   min-width: 300px;
