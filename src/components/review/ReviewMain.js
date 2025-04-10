@@ -12,7 +12,7 @@ const ReviewMain = () => {
   const [reqPage, setReqPage] = useState(1);
   const [content, setContnet] = useState(null);
   const [placeList, setPlaceList] = useState([]);
-
+  //전체 리뷰 데이터
   useEffect(() => {
     axios
       .get(
@@ -29,6 +29,7 @@ const ReviewMain = () => {
         console.log(err);
       });
   }, [reqPage]);
+  //타입에 따른 데이터
   const changeContnent = (value) => {
     setContnet(value);
     setReqPage(1);
