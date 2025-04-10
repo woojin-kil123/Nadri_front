@@ -6,12 +6,16 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import ShareIcon from "@mui/icons-material/Share";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import { useRecoilValue } from "recoil";
 
 const PlaceDetail = () => {
   const backServer = process.env.REACT_APP_BACK_SERVER;
   const [review, setReview] = useState([]);
-
   const placeId = useParams().placeId;
+
+  const user = useRecoilValue(isLoginState); // 로그인 유저 정보를 가져와야 함
+  const memberNo = user?.memberNo;
+
   const [place, setPlace] = useState();
   const navigate = useNavigate();
 
