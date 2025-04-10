@@ -265,7 +265,7 @@ const ReviewView = () => {
   }, [review]);
 
   return (
-    <section className="section">
+    <section className="section review-list-section">
       <div className="page-title">리뷰 상세보기</div>
 
       <div className="review-card">
@@ -336,53 +336,53 @@ const ReviewView = () => {
           )}
         </div>
       </div>
-
-      <h3>댓글</h3>
-      <ul>
-        {comments.map((comment) => (
-          <CommentItem
-            key={comment.commNo}
-            comment={comment}
-            onDelete={deleteComment}
-            onEdit={editComment}
-          />
-        ))}
-      </ul>
-
-      {memberNickname && (
-        <>
-          {!isCommenting ? (
-            <button onClick={() => setIsCommenting(true)}>댓글 작성</button>
-          ) : (
-            <div>
-              <input
-                type="text"
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-              />
-              <button
-                onClick={() => {
-                  const form = new FormData();
-                  form.append("reviewNo", reviewNo);
-                  form.append("commContent", newComment);
-                  form.append("memberNickname", memberNickname);
-                  axios
-                    .post(`${process.env.REACT_APP_BACK_SERVER}/comm`, form)
-                    .then((res) => {
-                      setComments([...comments, res.data]);
-                    })
-                    .catch((err) => console.log(err));
-                  setNewComment("");
-                  setIsCommenting(false);
-                }}
-              >
-                등록
-              </button>
-              <button onClick={() => setIsCommenting(false)}>취소</button>
-            </div>
-          )}
-        </>
-      )}
+      <div className="comment-wrap">
+        <h3>댓글</h3>
+        <ul>
+          {comments.map((comment) => (
+            <CommentItem
+              key={comment.commNo}
+              comment={comment}
+              onDelete={deleteComment}
+              onEdit={editComment}
+            />
+          ))}
+        </ul>
+        {memberNickname && (
+          <>
+            {!isCommenting ? (
+              <button onClick={() => setIsCommenting(true)}>댓글 작성</button>
+            ) : (
+              <div>
+                <input
+                  type="text"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                />
+                <button
+                  onClick={() => {
+                    const form = new FormData();
+                    form.append("reviewNo", reviewNo);
+                    form.append("commContent", newComment);
+                    form.append("memberNickname", memberNickname);
+                    axios
+                      .post(`${process.env.REACT_APP_BACK_SERVER}/comm`, form)
+                      .then((res) => {
+                        setComments([...comments, res.data]);
+                      })
+                      .catch((err) => console.log(err));
+                    setNewComment("");
+                    setIsCommenting(false);
+                  }}
+                >
+                  등록
+                </button>
+                <button onClick={() => setIsCommenting(false)}>취소</button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
 
       {isReporting && (
         <div className="modal">

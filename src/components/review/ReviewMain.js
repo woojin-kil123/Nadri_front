@@ -48,7 +48,7 @@ const ReviewMain = () => {
   };
 
   return (
-    <section className="section">
+    <section className="section review-list-section">
       <div className="page-title">최신리뷰</div>
       <div className="review-nav-wrap">
         <nav className="review-nav">

@@ -78,7 +78,7 @@ const ReviewWrite = () => {
       });
   };
   return (
-    <section className="section">
+    <section className="section review-list-section">
       <div className="review-container">
         {/* 여행지 정보 */}
         <aside className="place-info">
