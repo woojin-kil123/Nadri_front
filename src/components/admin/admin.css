@@ -29,6 +29,15 @@
   flex-direction: column;
   gap: 40px;
 }
+.stats > .total-title {
+  padding: 10px;
+}
+.stats > .total-content {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 20px;
+}
 .update-info .info-title {
   display: flex;
   padding: 10px 0px;
