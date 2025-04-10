@@ -11,8 +11,8 @@ const ReviewMain = () => {
   const [pi, setPi] = useState([]);
   const [reqPage, setReqPage] = useState(1);
   const [content, setContnet] = useState(null);
-  const [placeList, setPlaceList] = useState([]);
 
+  //전체 리뷰 데이터
   useEffect(() => {
     axios
       .get(
@@ -29,6 +29,7 @@ const ReviewMain = () => {
         console.log(err);
       });
   }, [reqPage]);
+  //타입에 따른 데이터
   const changeContnent = (value) => {
     setContnet(value);
     setReqPage(1);
@@ -47,7 +48,7 @@ const ReviewMain = () => {
   };
 
   return (
-    <section className="section">
+    <section className="section review-list-section">
       <div className="page-title">최신리뷰</div>
       <div className="review-nav-wrap">
         <nav className="review-nav">
@@ -125,11 +126,20 @@ const ReviewItem = (props) => {
         navigate(`/review/detail/${review.reviewNo}`);
       }}
     >
+      <div className="posting-thumb">
+        <img
+          src={review.placeThumb || "/image/default_img.png"}
+          className="place-image"
+          alt=""
+        />
+      </div>
       <div className="posting-info">
         <div>
           <StarRating rating={review.starRate} />
         </div>
         <div className="posting-title">{review.reviewTitle}</div>
+        <div className="place-title">{review.placeTitle}</div>
+        <div className="place-addr">{review.placeAddr}</div>
         <div
           dangerouslySetInnerHTML={{
             __html: review.reviewContent, // p 태그 제거

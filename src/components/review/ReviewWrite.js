@@ -31,7 +31,19 @@ const ReviewWrite = () => {
     setFilePreviews((prev) => prev.filter((_, idx) => idx !== indexToRemove));
   };
   //여행지 정보
-
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_BACK_SERVER}/place/detail?placeId=${placeId}`
+      )
+      .then((res) => {
+        console.log(res);
+        setPlaceInfo(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
   //폼 재출
   const submitReview = () => {
     if (!title || !content) {
@@ -66,7 +78,7 @@ const ReviewWrite = () => {
       });
   };
   return (
-    <section className="section">
+    <section className="section review-list-section">
       <div className="review-container">
         {/* 여행지 정보 */}
         <aside className="place-info">
@@ -75,7 +87,7 @@ const ReviewWrite = () => {
           <img
             src={placeInfo.placeThumb || "/image/default_img.png"}
             className="place-image"
-            alt="place"
+            alt=""
           />
           <div className="place-details">
             <h3>{placeInfo.placeTitle || "이름 없음"}</h3>

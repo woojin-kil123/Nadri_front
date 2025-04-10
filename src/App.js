@@ -120,7 +120,7 @@ function App() {
                   ></Route>
                   <Route
                     path="/review/write/:placeId"
-                    element={<ReviewWrite />}
+                    element={<LoginRouting element={<ReviewWrite />} />}
                   ></Route>
                   <Route path="/place" element={<PlaceList />} />
                   <Route

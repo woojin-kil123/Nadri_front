@@ -11,6 +11,7 @@ const PlaceDetail = () => {
   const [reqPage, setReqPage] = useState(1);
   const placeId = useParams().placeId;
   const [place, setPlace] = useState();
+  const navigate = useNavigate();
   useEffect(() => {
     axios
       .get(`${backServer}/place/detail?placeId=${placeId}`)
@@ -21,15 +22,7 @@ const PlaceDetail = () => {
       .catch((err) => {
         console.log(err);
       });
-
-    axios
-      .get(`${backServer}/review/detail/${placeId}`)
-      .then((res) => {
-        console.log(res);
-  const [pi, setPi] = useState([]);
-  const placeId = useParams().placeId;
-  const navigate = useNavigate();
-  console.log(placeId);
+  }, []);
   useEffect(() => {
     axios
       .get(`${backServer}/review/detail/${placeId}`)
@@ -89,9 +82,7 @@ const PlaceDetail = () => {
       </div>
       <div className="place-detail page-title">
         <h2>리뷰</h2>
-        <Link to="/review/write" className="btn-primary green">
-          리뷰쓰기
-        </Link>
+
         <div
           className="review-write btn-primary green"
           onClick={() => {
@@ -129,7 +120,11 @@ const ReviewItem = (props) => {
           <StarRating rating={review.starRate} />
         </div>
         <div className="posting-title">{review.reviewTitle}</div>
-        <div>{review.reviewContent}</div>
+        <div
+          dangerouslySetInnerHTML={{
+            __html: review.reviewContent, // p 태그 제거
+          }}
+        />
         <div className="posting-sub-info">
           <span>{review.memberNickname}</span>
           <span>{review.reviewDate}</span>

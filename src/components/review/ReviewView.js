@@ -17,13 +17,22 @@ const ReviewView = () => {
   const reviewNo = params.reviewNo;
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
-  const [placeId, setPlaceId] = useState();
-  const [planNo, setPlanNo] = useState();
+  const [placeId, setPlaceId] = useState(0);
+  const [reviewImages, setReviewImages] = useState([]);
   const navigate = useNavigate();
   const [isCommenting, setIsCommenting] = useState(false);
+  const REPORT_REASONS = [
+    "부적절한 콘텐츠 – 욕설, 비방, 혐오 발언 등이 포함된 리뷰",
+    "허위 정보 – 실제 방문하지 않았거나, 거짓 정보를 포함한 리뷰",
+    "광고/스팸 – 특정 업체 홍보나 광고 목적으로 작성된 리뷰",
+    "부적절한 이미지 – 폭력적이거나 선정적인 이미지가 포함된 경우",
+    "리뷰와 무관한 내용 – 여행지와 관련 없는 내용이 포함된 경우",
+  ];
   const [memberNickname, setMemberNickname] =
     useRecoilState(loginNicknameState);
+  const [placeInfo, setPlaceInfo] = useState({});
   const [member, setMember] = useState(null);
+  //개인정보 저장
   useEffect(() => {
     axios
       .get(
@@ -37,6 +46,7 @@ const ReviewView = () => {
         console.log(err);
       });
   }, [memberNickname]);
+  //댓글 수정
   const editComment = (commNo) => {
     const targetComment = comments.find((comment) => comment.commNo === commNo);
     if (!targetComment) return;
@@ -81,7 +91,7 @@ const ReviewView = () => {
       }
     });
   };
-
+  //댓글 삭제
   const deleteComment = (commNo) => {
     Swal.fire({
       title: "댓글 삭제",
@@ -108,11 +118,10 @@ const ReviewView = () => {
       }
     });
   };
-
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [review, setReview] = useState({});
-
+  //좋아요 불러오기
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/likes/${reviewNo}`)
@@ -126,7 +135,7 @@ const ReviewView = () => {
         console.log(err);
       });
   }, []);
-
+  //좋아요 기능 구현
   const toggleLike = () => {
     if (!memberNickname) {
       alert("로그인 후 좋아요를 누를 수 있습니다.");
@@ -149,15 +158,8 @@ const ReviewView = () => {
     setLiked(!liked);
     setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
   };
-
-  const REPORT_REASONS = [
-    "부적절한 콘텐츠 – 욕설, 비방, 혐오 발언 등이 포함된 리뷰",
-    "허위 정보 – 실제 방문하지 않았거나, 거짓 정보를 포함한 리뷰",
-    "광고/스팸 – 특정 업체 홍보나 광고 목적으로 작성된 리뷰",
-    "부적절한 이미지 – 폭력적이거나 선정적인 이미지가 포함된 경우",
-    "리뷰와 무관한 내용 – 여행지와 관련 없는 내용이 포함된 경우",
-  ];
-
+  //
+  //리뷰 삭제
   const deleteReview = () => {
     Swal.fire({
       title: "리뷰 삭제",
@@ -219,21 +221,26 @@ const ReviewView = () => {
       .then((res) => {
         setReview(res.data);
         setPlaceId(res.data.placeId);
-        setPlanNo(res.data.planNo);
       })
       .catch((err) => console.log(err));
   }, []);
 
+  //여행지 정보
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_BACK_SERVER}/review/${placeId}`)
-      .then((res) => {
-        setReview(res.data);
-        setPlaceId(res.data.placeId);
-        setPlanNo(res.data.planNo);
-      })
-      .catch((err) => console.log(err));
-  }, []);
+    if (placeId !== 0) {
+      axios
+        .get(
+          `${process.env.REACT_APP_BACK_SERVER}/place/detail?placeId=${placeId}`
+        )
+        .then((res) => {
+          console.log(res);
+          setPlaceInfo(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [placeId]);
 
   useEffect(() => {
     axios
@@ -241,47 +248,95 @@ const ReviewView = () => {
       .then((res) => setComments(res.data))
       .catch((err) => console.log(err));
   }, []);
+  // 사진 있으면 불러오기
+  useEffect(() => {
+    if (review.reviewNo) {
+      axios
+        .get(
+          `${process.env.REACT_APP_BACK_SERVER}/review/reviewImage?reviewNo=${review.reviewNo}`
+        )
+        .then((res) => {
+          setReviewImages(res.data); // res.data는 PlaceImgDTO 리스트여야 함
+        })
+        .catch((err) => {
+          console.log("리뷰 이미지 불러오기 실패:", err);
+        });
+    }
+  }, [review]);
 
   return (
-    <section className="section">
+    <section className="section review-list-section">
       <div className="page-title">리뷰 상세보기</div>
-      <div className="review-content">
-        <table className="tbl">
-          <tr>
-            <td colSpan={4}>{review.reviewTitle}</td>
-          </tr>
-          <tr>
-            <th style={{ width: "20%" }}>작성자</th>
-            <td style={{ width: "20%" }}>{review.memberNickname}</td>
-            <th style={{ width: "20%" }}>작성일</th>
-            <td style={{ width: "40%" }}>{review.reviewDate}</td>
-          </tr>
-        </table>
 
-        <button
-          onClick={toggleLike}
-          style={{ background: "none", border: "none" }}
-        >
-          {liked ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
-        </button>
-        <span>{likeCount}</span>
+      <div className="review-card">
+        {/* 장소 정보 */}
+        <div className="place-info">
+          <h2>{placeInfo.placeTitle}</h2>
+          <p>{placeInfo.placeAddr}</p>
+        </div>
 
-        {memberNickname === review.memberNickname && (
-          <>
-            <EditNoteIcon onClick={editReview}>리뷰 수정</EditNoteIcon>
-            <DeleteIcon
-              onClick={deleteReview}
+        {/* 리뷰 정보 */}
+        <div className="review-header">
+          <h3 className="review-title">{review.reviewTitle}</h3>
+          <div className="review-meta">
+            <span className="author">{review.memberNickname}</span>
+            <span className="date">{review.reviewDate}</span>
+          </div>
+        </div>
+
+        {/* 본문 내용 */}
+
+        <div
+          className="review-body"
+          dangerouslySetInnerHTML={{
+            __html: review.reviewContent, // p 태그 제거
+          }}
+        />
+        {/* 첨부 이미지 표시 */}
+        {reviewImages.length > 0 && (
+          <div className="review-images">
+            {reviewImages.map((img, index) => (
+              <img
+                key={index}
+                src={`${process.env.REACT_APP_BACK_SERVER}/place/${img.filepath}`}
+                alt=""
+                className="review-image"
+              />
+            ))}
+          </div>
+        )}
+        {/* 좋아요, 수정, 삭제, 신고 */}
+        <div className="review-actions">
+          <button
+            onClick={toggleLike}
+            className="like-button"
+            style={{ background: "none", border: "none" }}
+          >
+            {liked ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
+          </button>
+          <span>{likeCount}</span>
+
+          {memberNickname === review.memberNickname && (
+            <>
+              <EditNoteIcon
+                onClick={editReview}
+                style={{ cursor: "pointer" }}
+              />
+              <DeleteIcon
+                onClick={deleteReview}
+                style={{ cursor: "pointer", marginLeft: "10px" }}
+              />
+            </>
+          )}
+          {review.memberNickname !== memberNickname && (
+            <ReportIcon
+              onClick={reportClick}
               style={{ cursor: "pointer", marginLeft: "10px" }}
-            >
-              리뷰 삭제
-            </DeleteIcon>
-          </>
-        )}
-
-        {review.memberNickname !== memberNickname && (
-          <ReportIcon onClick={reportClick}>리뷰 신고</ReportIcon>
-        )}
-
+            />
+          )}
+        </div>
+      </div>
+      <div className="comment-wrap">
         <h3>댓글</h3>
         <ul>
           {comments.map((comment) => (
@@ -293,7 +348,6 @@ const ReviewView = () => {
             />
           ))}
         </ul>
-
         {memberNickname && (
           <>
             {!isCommenting ? (
@@ -328,26 +382,26 @@ const ReviewView = () => {
             )}
           </>
         )}
-
-        {isReporting && (
-          <div className="modal">
-            <h3>신고 사유 선택</h3>
-            <select
-              onChange={(e) => setReportReason(e.target.value)}
-              value={reportReason}
-            >
-              <option value="">-- 신고 사유 선택 --</option>
-              {REPORT_REASONS.map((reason, index) => (
-                <option key={index} value={reason}>
-                  {reason}
-                </option>
-              ))}
-            </select>
-            <button onClick={reportSubmit}>신고 접수</button>
-            <button onClick={() => setIsReporting(false)}>취소</button>
-          </div>
-        )}
       </div>
+
+      {isReporting && (
+        <div className="modal">
+          <h3>신고 사유 선택</h3>
+          <select
+            onChange={(e) => setReportReason(e.target.value)}
+            value={reportReason}
+          >
+            <option value="">-- 신고 사유 선택 --</option>
+            {REPORT_REASONS.map((reason, index) => (
+              <option key={index} value={reason}>
+                {reason}
+              </option>
+            ))}
+          </select>
+          <button onClick={reportSubmit}>신고 접수</button>
+          <button onClick={() => setIsReporting(false)}>취소</button>
+        </div>
+      )}
     </section>
   );
 };
@@ -367,24 +421,30 @@ const CommentItem = ({ comment, onDelete, onEdit }) => {
   }, []);
 
   return (
-    <li key={"comment" + comment.commNo}>
+    <li className="comment-item">
       <img
-        src={"/image/profile_default_image.png"}
-        style={{ width: "15px", height: "15px" }}
+        src="/image/profile_default_image.png"
+        alt=""
+        className="comment-profile-image"
       />
-      {comment.commContent}
-      {comment.memberNickname === memberNickname && (
-        <>
-          <DeleteIcon
-            style={{ cursor: "pointer", marginLeft: "8px" }}
-            onClick={() => onDelete(comment.commNo)}
-          />
-          <EditIcon
-            style={{ cursor: "pointer", marginLeft: "8px" }}
-            onClick={() => onEdit(comment.commNo)}
-          />
-        </>
-      )}
+      <div className="comment-content-wrapper">
+        <div className="comment-header">
+          <span className="comment-nickname">{comment.memberNickname}</span>
+          {comment.memberNickname === memberNickname && (
+            <div className="comment-action-buttons">
+              <DeleteIcon
+                className="comment-action-icon"
+                onClick={() => onDelete(comment.commNo)}
+              />
+              <EditIcon
+                className="comment-action-icon"
+                onClick={() => onEdit(comment.commNo)}
+              />
+            </div>
+          )}
+        </div>
+        <p className="comment-text">{comment.commContent}</p>
+      </div>
     </li>
   );
 };
