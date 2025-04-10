@@ -125,7 +125,7 @@ function App() {
                   <Route path="/place" element={<PlaceList />} />
                   <Route
                     path="/place/detail/:placeId"
-                    element={<PlaceDetail />}
+                    element={<LoginRouting element={<PlaceDetail />} />}
                   />
                   <Route path="/search" element={<SearchResult />} />
                 </Routes>

@@ -3,15 +3,22 @@ import "./place.css";
 import axios from "axios";
 import StarRating from "../utils/StarRating";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Place } from "@mui/icons-material";
+import ShareIcon from "@mui/icons-material/Share";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import { useRecoilValue } from "recoil";
 
 const PlaceDetail = () => {
   const backServer = process.env.REACT_APP_BACK_SERVER;
   const [review, setReview] = useState([]);
-  const [reqPage, setReqPage] = useState(1);
   const placeId = useParams().placeId;
+
+  // const user = useRecoilValue(isLoginState); // 로그인 유저 정보를 가져와야 함
+  // const memberNo = user?.memberNo;
+
   const [place, setPlace] = useState();
   const navigate = useNavigate();
+
   useEffect(() => {
     axios
       .get(`${backServer}/place/detail?placeId=${placeId}`)
@@ -26,14 +33,18 @@ const PlaceDetail = () => {
   useEffect(() => {
     axios
       .get(`${backServer}/review/detail/${placeId}`)
-      .then((res) => {
-        console.log(res);
-        setReview(res.data);
-      })
+      .then((res) => {})
       .catch((err) => {
         console.log(err);
       });
   }, []);
+
+  const [liked, setLiked] = useState(false);
+
+  const handleClick = () => {
+    setLiked((prev) => !prev);
+  };
+
   return (
     <div className="place-detail-wrap">
       <div className="place-detail-header">
@@ -41,12 +52,24 @@ const PlaceDetail = () => {
           {place && <div>{place.cat2Name}</div>}
           {place && <div>{place.cat3Name}</div>}
         </div>
+
         <div className="detail-header-title">
           {place && <h1 className="detail-title">{place.placeTitle}</h1>}
         </div>
         <div className="detail-header-info">
-          {place && <a>{place.areaName},</a>}
-          {place && <a> {place.sigunguName}</a>}
+          <div className="review-score">
+            {place && <StarRating rating={place.placeRating} />}
+            {place?.placeRating}
+            {place?.placeReview && ` (${place.placeReview})`}
+            {place && <a> {place.areaName},</a>}
+            {place && <a> {place.sigunguName}</a>}
+          </div>
+          <div className="share-like-box">
+            <ShareIcon className="share-icon" />
+            <div onClick={handleClick} style={{ cursor: "pointer" }}>
+              {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+            </div>
+          </div>
         </div>
       </div>
       <div className="place-detail-image">
@@ -63,22 +86,30 @@ const PlaceDetail = () => {
       <div className="place-detail-content">
         <div className="main-description">
           <p>
-            도시 한복판에 우뚝 솟은 남산은 서울의 랜드마크이자 세계적 시민들의
-            휴식처로 사랑받는다. 남산둘레길은 서울타워를 기점으로 남산을 한 바퀴
-            돌아볼 수 있는 넓은 길로 설계되어 있다...
+            경복궁은 조선 왕조 제일의 법궁이다. 북으로 북악산을 기대어 자리
+            잡았고 정문인 광화문 앞으로는 넓은 육조거리(지금의 세종로)가 펼쳐져,
+            왕도인 한양(서울) 도시 계획의 중심이기도 하다. 1395년 태조 이성계가
+            창건하였고, 1592년 임진 왜란으로 불타 없어졌다가, 고종 때인 1867년
+            중건 되었다. 흥선대원군이 주도한 중건 경복궁은 500여 동의 건물들이
+            미로같이 빼곡히 들어선 웅장한 모습 이었다.
           </p>
         </div>
-
-        <div className="info-box">
-          <div className="info-item">
-            <strong>주소</strong>
-            <p>서울특별시 중구 남산공원길 609 (예장동)</p>
+        {(place?.placeAddr || place?.placeTel) && (
+          <div className="info-box">
+            {place?.placeAddr && (
+              <div className="info-item">
+                <strong>주소</strong>
+                <p>{place.placeAddr}</p>
+              </div>
+            )}
+            {place?.placeTel && (
+              <div className="info-item">
+                <strong>문의 및 안내</strong>
+                <p>{place.placeTel}</p>
+              </div>
+            )}
           </div>
-          <div className="info-item">
-            <strong>문의 및 안내</strong>
-            <p>02-3783-5900</p>
-          </div>
-        </div>
+        )}
       </div>
       <div className="place-detail page-title">
         <h2>리뷰</h2>
@@ -104,7 +135,6 @@ const PlaceDetail = () => {
     </div>
   );
 };
-
 const ReviewItem = (props) => {
   const navigate = useNavigate();
   const review = props.review;
@@ -133,5 +163,4 @@ const ReviewItem = (props) => {
     </li>
   );
 };
-
 export default PlaceDetail;

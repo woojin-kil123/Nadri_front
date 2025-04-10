@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import LeftSideMenu from "../utils/LeftSideMenu";
 import { Route, Routes, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
-import PlaceListFrm from "./PlaceListFrm"; // ← 이름 반영 완료
-import "./place.css"; // ← CSS 파일명도 일치시키는 걸 추천
+
+import "./place.css";
 import ListCard from "../utils/ListCard";
 import PageNavigation from "../utils/PageNavigtion";
 
@@ -23,8 +23,6 @@ const PlaceList = () => {
     { id: 39, name: "음식점", name2: "food" },
   ];
   const [selectedMenu, setSelectedMenu] = useState(0); // 0: 전체, 12:관광지, 14:즐길거리, 32:숙박, 39:음식점
-
-  // const currentMenu = menus.find((m) => m.name2 === menuType) || menus[0];
 
   useEffect(() => {
     axios
