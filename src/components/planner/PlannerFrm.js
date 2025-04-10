@@ -52,8 +52,6 @@ const PlannerFrm = () => {
   const [sortOption, setSortOption] = useState(1);
   //필터 옵션(null:전체, 1:숙박시설, 2:음식점, 3:그외)
   const [filterOption, setFilterOption] = useState(null);
-  //네비게이션
-  const navigate = useNavigate();
   //유저닉네임
   const [loginNickname, setLoginNickname] = useRecoilState(loginNicknameState);
 
@@ -89,7 +87,7 @@ const PlannerFrm = () => {
   //작성 중(이었던) 임시 플래너를 불러오기
   useEffect(() => {
     const saved = window.localStorage.getItem(`${loginNickname}_cache_planner`);
-    if (saved !== "[]") {
+    if (saved && saved !== "[]") {
       if (window.confirm("작성 중인 플래너가 있습니다. 불러오시겠습니까?")) {
         const savedList = JSON.parse(saved);
         setPlannedPlaceList(savedList);
@@ -560,10 +558,7 @@ const Planner = (props) => {
                 />
                 <div className="place-item">
                   <div className="place-title-wrap">
-                    <span className="place-title">
-                      {p.placeTitle}
-                      {p.order}
-                    </span>
+                    <span className="place-title">{p.placeTitle}</span>
                     <span className="place-type">{p.placeType}</span>
                   </div>
                   <div className="place-addr">{p.placeAddr}</div>
@@ -698,13 +693,17 @@ const SavePlanModal = (props) => {
   const [planName, setPlanName] = [props.planName, props.setPlanName];
   const setOpenSaveModal = props.setOpenSaveModal;
   const plannedPlaceList = props.plannedPlaceList;
+  const navigate = useNavigate();
 
-  const tripPlanData = {
-    memberNickname: loginNickname,
-    planName: planName.trim() === "" ? "untitled" : planName,
-    planStatus: planStatus === "공개" ? 1 : 2, //2: 비공개
-    startDate: plannedPlaceList[0].itineraryDate,
-    endDate: plannedPlaceList[plannedPlaceList.length - 1].itineraryDate,
+  const planData = {
+    tripPlanData: {
+      planName: planName.trim() === "" ? "untitled" : planName,
+      startDate: plannedPlaceList[0].itineraryDate,
+      endDate: plannedPlaceList[plannedPlaceList.length - 1].itineraryDate,
+      // planThumb
+      planStatus: planStatus === "공개" ? 1 : 2, //2: 비공개
+      memberNickname: loginNickname,
+    },
     itineraryList: plannedPlaceList.map((item) => {
       return {
         itineraryDate: item.itineraryDate,
@@ -726,6 +725,20 @@ const SavePlanModal = (props) => {
     // html2canvas(mapRef).then((canvas) => {
     //   const thumb = canvas.toDataURL("image/jpeg");
     // })
+
+    axios
+      .post(`${process.env.REACT_APP_BACK_SERVER}/plan/save`, planData)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data) {
+          window.localStorage.removeItem(`${loginNickname}_cache_planner`);
+          setOpenSaveModal(false);
+          navigate("/mypage/planners");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
