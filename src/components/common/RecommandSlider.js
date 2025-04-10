@@ -8,7 +8,9 @@ export default function RecommandSlider({ on }) {
   const [cards, setCards] = useState([]);
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACK_SERVER}/place?reqPage=1`)
+      .get(
+        `${process.env.REACT_APP_BACK_SERVER}/place?reqPage=1&placeCat=${on}`
+      )
       .then((res) => {
         setCards(res.data.list);
       })
