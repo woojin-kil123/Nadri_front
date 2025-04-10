@@ -11,29 +11,38 @@ import { CancelOutlined, Close, Delete, Search } from "@mui/icons-material";
 import { IconButton, InputBase, Paper } from "@mui/material";
 import StarRating from "../utils/StarRating";
 import BasicDatePicker from "../utils/BasicDatePicker";
-import BasicSelect from "../utils/BasicSelect";
 import dayjs from "dayjs";
 import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import MarkerWithOverlay from "./MarkerWithOverlay";
+import { useRecoilState } from "recoil";
+import { loginNicknameState } from "../utils/RecoilData";
+import BasicSelect from "../utils/BasicSelect";
+import html2canvas from "html2canvas";
 
 const PlannerFrm = () => {
-  //마커 오버레이 여닫음 state
+  //마커 오버레이 여닫음
   const [openOverlay, setOpenOverlay] = useState(null);
-  //플래너 창 여닫음 state
+  //플래너 창 여닫음
   const [openPlanner, setOpenPlanner] = useState(false);
-  //"플래너에 추가하기" 창 여닫음 state
+  //"플래너에 추가하기" 창 여닫음
   const [openPlanningModal, setOpenPlanningModal] = useState(null);
-  //플래너에 추가한 장소 리스트 state
+  //플래너에 추가한 장소 리스트
   const [plannedPlaceList, setPlannedPlaceList] = useState([]);
-  //현재 보이는 지도 화면 state
+  //플래너 제목
+  const [planName, setPlanName] = useState("");
+  //플래너 공개 여부
+  const [planStatus, setPlanStatus] = useState("");
+  //플래너 저장 창 여닫음
+  const [openSaveModal, setOpenSaveModal] = useState(false);
+  //현재 보이는 지도 화면
   const [mapBounds, setMapBounds] = useState(null);
-  //지도 중심좌표 state(화면 이동 시 사용)
+  //지도 중심좌표(화면 이동 시 사용)
   const [mapCenter, setMapCenter] = useState({
     lat: 37.5341338,
     lng: 126.897333254,
   });
-  //유저가 클릭한 지도 위치 state
+  //유저가 클릭한 지도 위치
   const [userMarker, setUserMarker] = useState(null);
   //유저 클릭 위치를 중심으로 하는 반경 범위
   const [userRadius, setUserRadius] = useState(1000);
@@ -43,8 +52,10 @@ const PlannerFrm = () => {
   const [sortOption, setSortOption] = useState(1);
   //필터 옵션(null:전체, 1:숙박시설, 2:음식점, 3:그외)
   const [filterOption, setFilterOption] = useState(null);
+  //유저닉네임
+  const [loginNickname, setLoginNickname] = useRecoilState(loginNicknameState);
 
-  const navigate = useNavigate();
+  //↓ 작성된 useEffect 목록
 
   //플래너 진입 시 "새 플래너" 진입인지, "기존 플래너" 진입인지 판단
   const { planNo } = useParams();
@@ -73,7 +84,31 @@ const PlannerFrm = () => {
     setOpenOverlay(null);
   }, [sortOption, filterOption]);
 
-  //기존에 작성 중인 플래너 받아오는 함수
+  //작성 중(이었던) 임시 플래너를 불러오기
+  useEffect(() => {
+    const saved = window.localStorage.getItem(`${loginNickname}_cache_planner`);
+    if (saved && saved !== "[]") {
+      if (window.confirm("작성 중인 플래너가 있습니다. 불러오시겠습니까?")) {
+        const savedList = JSON.parse(saved);
+        setPlannedPlaceList(savedList);
+        setMapCenter(savedList[0].placeLatLng);
+        setOpenPlanner(true);
+      } else {
+        window.localStorage.removeItem(`${loginNickname}_cache_planner`);
+      }
+    }
+  }, []);
+  //작성 중인 플래너를 임시 데이터로 저장
+  useEffect(() => {
+    window.localStorage.setItem(
+      `${loginNickname}_cache_planner`,
+      JSON.stringify(plannedPlaceList)
+    );
+  }, [plannedPlaceList]);
+
+  //↓ 함수 및 값
+
+  //작성 완료된 플래너 조회 시
   const getPlanData = useCallback(() => {
     const refreshToken = window.localStorage.getItem("refreshToken");
     axios
@@ -206,7 +241,7 @@ const PlannerFrm = () => {
     { name: "즐길거리", value: 4 },
   ];
 
-  const deletePlan = (odr) => {
+  const handleDeletePlace = (odr) => {
     //1. 삭제하시겠습니까?
     if (window.confirm("삭제하시겠습니까?")) {
       //2. plannedPlace 삭제 및 order 재정렬
@@ -299,7 +334,9 @@ const PlannerFrm = () => {
           setOpenPlanner={setOpenPlanner}
           plannedPlaceList={plannedPlaceList}
           setPlannedPlaceList={setPlannedPlaceList}
-          deletePlan={deletePlan}
+          handleDeletePlace={handleDeletePlace}
+          planName={planName}
+          setPlanName={setPlanName}
         />
       ) : (
         <div
@@ -330,14 +367,25 @@ const PlannerFrm = () => {
         </button>
       </div>
       <div className="save-plan-btn">
-        <button
-          onClick={() => {
-            navigate(-1);
-          }}
-        >
-          저장
-        </button>
+        {plannedPlaceList.length !== 0 && (
+          <button
+            onClick={() => {
+              setOpenSaveModal(true);
+            }}
+          >
+            저장
+          </button>
+        )}
       </div>
+      {openSaveModal && (
+        <SavePlanModal
+          planName={planName}
+          setPlanName={setPlanName}
+          setOpenSaveModal={setOpenSaveModal}
+          loginNickname={loginNickname}
+          plannedPlaceList={plannedPlaceList}
+        />
+      )}
       <div className="map-wrap">
         <PrintMap
           filteredSortedList={filteredSortedList}
@@ -352,7 +400,7 @@ const PlannerFrm = () => {
           userRadius={userRadius}
           setUserRadius={setUserRadius}
           plannedPlaceList={plannedPlaceList}
-          deletePlan={deletePlan}
+          handleDeletePlace={handleDeletePlace}
           markableList={markableList}
           mapCenter={mapCenter}
         />
@@ -366,7 +414,11 @@ const CustomizedInputBase = () => {
   return (
     <Paper
       component="form"
-      sx={{ margin: "10px", display: "flex", alignItems: "center" }}
+      sx={{
+        margin: "10px",
+        display: "flex",
+        alignItems: "center",
+      }}
     >
       <IconButton sx={{ p: "10px" }} aria-label=""></IconButton>
       <InputBase
@@ -455,58 +507,69 @@ const Planner = (props) => {
     props.plannedPlaceList,
     props.setPlannedPlaceList,
   ];
-  const deletePlan = props.deletePlan;
+  const handleDeletePlace = props.handleDeletePlace;
+  const [planName, setPlanName] = [props.planName, props.setPlanName];
+  const handlePlanName = (e) => {
+    setPlanName(e.target.value);
+  };
+
   return (
     <div className="planner-wrap">
       <Close className="close-btn" onClick={() => setOpenPlanner(false)} />
-      <div className="planner-place">
-        {[...plannedPlaceList]
-          .sort((a, b) => a.order - b.order)
-          .map((p, idx) => {
-            const isDateChanged =
-              idx === 0 ||
-              p.itineraryDate !== plannedPlaceList[idx - 1].itineraryDate;
-            const showTransport = idx !== 0;
+      {plannedPlaceList.length === 0 && (
+        <div className="empty-plan">플래너가 비어 있습니다...</div>
+      )}
+      <div className="plan-name">
+        <input
+          type="text"
+          placeholder="플래너 이름을 작성하세요"
+          value={planName}
+          onChange={(e) => setPlanName(e.target.value)}
+        />
+      </div>
+      {plannedPlaceList
+        .sort((a, b) => a.order - b.order)
+        .map((p, idx) => {
+          const isDateChanged =
+            idx === 0 ||
+            p.itineraryDate !== plannedPlaceList[idx - 1].itineraryDate;
+          const showTransport = idx !== 0;
 
-            return (
-              <div key={"planned-" + idx}>
-                {showTransport && (
-                  <div className="planned-transport">
-                    <span>↓</span>
-                    <span>{p.transport}(으)로 이동</span>
+          return (
+            <div key={"planned-" + idx}>
+              {showTransport && (
+                <div className="planned-transport">
+                  <span>↓</span>
+                  <span>{p.transport}(으)로 이동</span>
+                </div>
+              )}
+              {isDateChanged && (
+                <div className="planned-date">
+                  ㅡ {dayjs(p.itineraryDate).format("YYYY년 M월 D일")} ㅡ
+                </div>
+              )}
+              <div className="planned-item">
+                <img
+                  className="planned-img"
+                  src={p.placeThumb}
+                  alt="테스트"
+                  width="50px"
+                  height="50px"
+                />
+                <div className="place-item">
+                  <div className="place-title-wrap">
+                    <span className="place-title">{p.placeTitle}</span>
+                    <span className="place-type">{p.placeType}</span>
                   </div>
-                )}
-                {isDateChanged && (
-                  <div className="planned-date">
-                    {dayjs(p.itineraryDate).format("YYYY년 M월 D일")}
-                  </div>
-                )}
-                <div className="planned-item">
-                  <img
-                    className="planned-img"
-                    src={p.placeThumb}
-                    alt="테스트"
-                    width="50px"
-                    height="50px"
-                  />
-                  <div className="place-item">
-                    <div className="place-title-wrap">
-                      <span className="place-title">
-                        {p.placeTitle}
-                        {p.order}
-                      </span>
-                      <span className="place-type">{p.placeType}</span>
-                    </div>
-                    <div className="place-addr">{p.placeAddr}</div>
-                  </div>
-                  <div className="planner-del-btn">
-                    <Delete onClick={() => deletePlan(p.order)} />
-                  </div>
+                  <div className="place-addr">{p.placeAddr}</div>
+                </div>
+                <div className="planner-del-btn">
+                  <Delete onClick={() => handleDeletePlace(p.order)} />
                 </div>
               </div>
-            );
-          })}
-      </div>
+            </div>
+          );
+        })}
     </div>
   );
 };
@@ -554,17 +617,8 @@ const PlanningModal = (props) => {
     };
 
     setPlannedPlaceList([...plannedPlaceList, placeWithPlan]);
-
-    insertItinerary(placeWithPlan);
-
     setOpenPlanningModal(null);
     setOpenPlanner(true);
-  };
-
-  const insertItinerary = (placeWithPlan) => {
-    axios.post(`${process.env.REACT_APP_BACK_SERVER}/plan/add/initiate`, {
-      itinerary: placeWithPlan,
-    });
   };
 
   const setOpenPlanner = props.setOpenPlanner;
@@ -610,7 +664,12 @@ const PlanningModal = (props) => {
           {order !== 0 && (
             <div>
               <span>어떻게 가실 건가요?</span>
-              <BasicSelect transport={transport} setTransport={setTransport} />
+              <BasicSelect
+                type={"이동수단"}
+                list={["대중교통", "자가용", "자전거", "도보"]}
+                data={transport}
+                setData={setTransport}
+              />
             </div>
           )}
           <div className="place-btn">
@@ -619,6 +678,105 @@ const PlanningModal = (props) => {
               onClick={handleAddPlace}
             >
               여행지에 추가
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+//플래너 저장 모달
+const SavePlanModal = (props) => {
+  const loginNickname = props.loginNickname;
+  const [planStatus, setPlanStatus] = useState("공개");
+  const [planName, setPlanName] = [props.planName, props.setPlanName];
+  const setOpenSaveModal = props.setOpenSaveModal;
+  const plannedPlaceList = props.plannedPlaceList;
+  const navigate = useNavigate();
+
+  const planData = {
+    tripPlanData: {
+      planName: planName.trim() === "" ? "untitled" : planName,
+      startDate: plannedPlaceList[0].itineraryDate,
+      endDate: plannedPlaceList[plannedPlaceList.length - 1].itineraryDate,
+      // planThumb
+      planStatus: planStatus === "공개" ? 1 : 2, //2: 비공개
+      memberNickname: loginNickname,
+    },
+    itineraryList: plannedPlaceList.map((item) => {
+      return {
+        itineraryDate: item.itineraryDate,
+        startLocation:
+          item.order === 0 ? null : plannedPlaceList[item.order - 1].placeId,
+        transport: item.transport,
+        endLocation: item.placeId,
+        itineraryOrder: item.order,
+      };
+    }),
+  };
+
+  const handleSavePlanner = () => {
+    if (planStatus === "") {
+      window.alert("공개 여부를 선택하세요.");
+      return;
+    }
+
+    // html2canvas(mapRef).then((canvas) => {
+    //   const thumb = canvas.toDataURL("image/jpeg");
+    // })
+
+    axios
+      .post(`${process.env.REACT_APP_BACK_SERVER}/plan/save`, planData)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data) {
+          window.localStorage.removeItem(`${loginNickname}_cache_planner`);
+          setOpenSaveModal(false);
+          navigate("/mypage/planners");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  return (
+    <div className="modal-background">
+      <div className="planning-modal save-modal">
+        <div className="page-title">플래너 저장하기</div>
+        <Close onClick={() => setOpenSaveModal(false)} className="close-btn" />
+        <div className="save-readme">
+          <div>저장하기에 앞서</div>
+          <div>마지막으로 확인해주세요.</div>
+        </div>
+        <div className="planning-input">
+          <div className="plan-name-box">
+            <label style={{ color: "var(--main2)" }}>플래너 이름</label>
+            <input
+              style={{ fontSize: 14 }}
+              type="text"
+              placeholder="기본값은 untitled입니다"
+              value={planName}
+              onChange={(e) => setPlanName(e.target.value)}
+            />
+          </div>
+          <div>
+            <span>이 플래너를</span>
+            <BasicSelect
+              type={"공개여부"}
+              list={["공개", "비공개"]}
+              data={planStatus}
+              setData={setPlanStatus}
+            />
+            <span>합니다.</span>
+          </div>
+          <div className="place-btn">
+            <button
+              style={{ width: "100px", height: "30px" }}
+              onClick={handleSavePlanner}
+            >
+              플래너 저장
             </button>
           </div>
         </div>
@@ -642,7 +800,7 @@ const PrintMap = (props) => {
   const [userMarker, setUserMarker] = [props.userMarker, props.setUserMarker];
   const [userRadius, setUserRadius] = [props.userRadius, props.setUserRadius];
   const plannedPlaceList = props.plannedPlaceList;
-  const deletePlan = props.deletePlan;
+  const handleDeletePlace = props.handleDeletePlace;
   const markableList = props.markableList;
   const mapCenter = props.mapCenter;
 
@@ -757,7 +915,7 @@ const PrintMap = (props) => {
           openOverlay={openOverlay}
           setOpenOverlay={setOpenOverlay}
           isPlanned={true}
-          deletePlan={deletePlan}
+          handleDeletePlace={handleDeletePlace}
         />
       ))}
     </Map>
