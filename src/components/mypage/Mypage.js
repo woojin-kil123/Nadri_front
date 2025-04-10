@@ -10,7 +10,6 @@ import LeftSideMenu from "./LeftSideMenu";
 import "./mypage.css";
 import "./LeftSideMenu";
 import UpdateInfo from "./UpdateInfo";
-import Withdraw from "./Withdraw";
 
 const Mypage = () => {
   const navigate = useNavigate();

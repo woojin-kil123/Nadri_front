@@ -219,7 +219,7 @@ const Login = () => {
           <div className="kakao-login-join">
             <Link>
               <img
-                src="/image/kakao_login.png"
+                src="/image/kakao_login2.png"
                 alt="Kakao Login"
                 onClick={handleKakaoLogin}
               />
