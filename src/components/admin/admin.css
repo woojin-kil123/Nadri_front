@@ -96,4 +96,10 @@
 .event-list .event-card {
   width: 30%;
 }
+/*제휴관리*/
+.hot-keyword-wrap > .popular {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
 /*리뷰 관리*/
