@@ -139,8 +139,13 @@
 
 /* 플래너(계획표) */
 .planner-wrap {
+  /* display: flex;
+  flex-direction: column;
+  align-items: center; */
   width: 300px;
-  height: 98%;
+  min-height: 200px;
+  max-height: 98%;
+  padding: 10px;
   background-color: var(--gray8);
   border: 1px solid var(--gray7);
   position: absolute;
@@ -181,7 +186,6 @@
   flex-direction: column;
   align-items: center;
   cursor: pointer;
-
   transition: transform 0.3s ease;
 }
 .planner-close-btn:hover {
@@ -194,8 +198,13 @@
   font-size: 10px;
   font-weight: bold;
 }
-.planner-place {
-  margin-top: 20px;
+.plan-name {
+  margin-bottom: 20px;
+}
+.plan-name input {
+  border: none;
+  font-size: 16px;
+  margin: 15px 0 0 15px;
 }
 .planned-item {
   display: flex;
@@ -205,6 +214,9 @@
   border-radius: 12px;
   object-fit: cover;
   margin-right: 10px;
+}
+.planned-transport {
+  font-size: 14px;
 }
 .planned-date {
   text-align: center;
@@ -216,6 +228,40 @@
 }
 .planned-item .place-title {
   font-size: 14px;
+}
+.planned-item .place-item {
+  width: 100%;
+}
+.empty-plan {
+  position: absolute;
+  top: 40%;
+  left: 25%;
+}
+
+/* 저장 모달 */
+.save-modal {
+  width: 350px !important;
+}
+.save-readme {
+  width: 80%;
+  margin-bottom: 8px;
+}
+.save-readme :first-child {
+  font-size: 13px;
+  color: var(--gray5);
+}
+.save-modal .planning-input {
+  width: 80%;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.plan-name-box input {
+  border: none;
+  border-bottom: 1px solid var(--gray5);
+  padding-left: 7px;
+  margin-left: 7px;
 }
 
 /* 여행지에 추가하기 모달 */
@@ -240,6 +286,7 @@
   flex-direction: column;
   align-items: center;
   padding: 0 5px 50px 5px;
+  border-radius: 10px;
 }
 .planning-info {
   margin-left: 20px;
@@ -272,10 +319,10 @@
   z-index: 1;
 }
 .save-plan-btn button {
-  width: 75px;
-  height: 40px;
+  width: 100px;
+  height: 50px;
   border-radius: 10px;
-  font-size: 18px;
+  font-size: 20px;
 }
 
 /* 카카오 맵 */

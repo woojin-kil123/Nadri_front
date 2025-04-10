@@ -2,16 +2,11 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
-const Join3 = () => {
+const SocialJoin2 = () => {
   const navigate = useNavigate(); // 페이지 이동을 위한 navigate 훅
   const location = useLocation(); // 현재 위치에서 전달된 데이터를 가져오는 훅
   const { email } = location.state || {}; // 이메일과 코드 데이터를 가져옴 (없으면 기본값으로 빈 객체 설정)
-  // 비밀번호 보이기/숨기기 상태
-  const [isPasswordVisible1, setIsPasswordVisible1] = useState(false);
-  const [isPasswordVisible2, setIsPasswordVisible2] = useState(false);
 
   console.log(email);
 
@@ -30,7 +25,6 @@ const Join3 = () => {
   // 회원 정보를 관리하는 상태 변수
   const [member, setMember] = useState({
     memberEmail: "", // 기본 이메일 설정 (이메일 인증 페이지에서 전달된 이메일로 업데이트됨)
-    memberPw: "", // 비밀번호 상태
     memberNickname: "", // 닉네임 상태
     memberPhone: "", // 휴대폰 번호 상태
     memberBirth: "", // 생년월일 상태
@@ -44,57 +38,13 @@ const Join3 = () => {
     }
   }, [email]);
 
-  // 비밀번호 확인 입력 값 상태 관리
-  const [memberPwRe, setMemberPwRe] = useState("");
   const [isFormValid, setIsFormValid] = useState(false); // 폼 유효성 상태
-
-  // 비밀번호 보이기/숨기기 토글 핸들러
-  const togglePasswordVisibility1 = () => {
-    setIsPasswordVisible1(!isPasswordVisible1);
-  };
-
-  // 비밀번호 보이기/숨기기 토글 핸들러
-  const togglePasswordVisibility2 = () => {
-    setIsPasswordVisible2(!isPasswordVisible2);
-  };
-
-  // 비밀번호 확인 입력값 업데이트 핸들러
-  const inputMemberPwRe = (e) => {
-    setMemberPwRe(e.target.value);
-  };
 
   // 회원 정보 입력 필드 업데이트 핸들러
   const inputMemberData = (e) => {
     const name = e.target.name; // 입력 필드의 name 속성
     const inputData = e.target.value; // 입력 필드의 값
     setMember({ ...member, [name]: inputData }); // 해당 필드의 값 상태 업데이트
-  };
-
-  // 비밀번호 일치 여부를 체크하고, 메시지 표시를 위한 ref
-  const pwMsgRef = useRef(null);
-
-  // 비밀번호 일치 여부를 확인하는 함수
-  const checkPw = () => {
-    pwMsgRef.current.classList.remove("input-ok"); // 이전 상태에서 input-ok, input-error, input-error2 클래스 제거
-    pwMsgRef.current.classList.remove("input-error");
-
-    if (member.memberPw && memberPwRe) {
-      // 비밀번호와 비밀번호 확인 값이 null 또는 빈 문자열이 아니면
-      if (member.memberPw === memberPwRe) {
-        // 비밀번호가 일치하면 "input-ok" 클래스 추가하고 일치 메시지 표시
-        pwMsgRef.current.classList.add("input-ok");
-        pwMsgRef.current.innerText = "비밀번호가 일치합니다.";
-      } else {
-        // 비밀번호가 일치하지 않으면 "input-error" 클래스 추가하고 불일치 메시지 표시
-        pwMsgRef.current.classList.add("input-error");
-        pwMsgRef.current.innerText = "비밀번호가 일치하지 않습니다.";
-      }
-    } else {
-      // 비밀번호 또는 비밀번호 확인이 입력되지 않은 경우
-      pwMsgRef.current.classList.remove("input-ok");
-      pwMsgRef.current.classList.add("input-error");
-      pwMsgRef.current.innerText = "비밀번호를 입력해주세요.";
-    }
   };
 
   // 닉네임 중복 체크 및 유효성 검사
@@ -161,7 +111,7 @@ const Join3 = () => {
 
     console.log(member); // 회원 정보 확인
     axios
-      .post(`${process.env.REACT_APP_BACK_SERVER}/member/join`, member) // 서버에 회원가입 요청
+      .post(`${process.env.REACT_APP_BACK_SERVER}/member/socialJoin`, member) // 서버에 회원가입 요청
       .then((res) => {
         Swal.fire({
           title: "회원가입 성공!",
@@ -228,9 +178,6 @@ const Join3 = () => {
 
   useEffect(() => {
     const isValid =
-      member.memberPw &&
-      memberPwRe &&
-      member.memberPw === memberPwRe &&
       member.memberNickname &&
       nicknameCheck === 1 &&
       member.memberPhone &&
@@ -239,7 +186,7 @@ const Join3 = () => {
       member.memberGender;
 
     setIsFormValid(isValid); // 폼 유효성 상태 업데이트
-  }, [member, memberPwRe, nicknameCheck, phoneError, year, month, day]);
+  }, [member, nicknameCheck, phoneError, year, month, day]);
 
   return (
     <section className="section">
@@ -257,91 +204,12 @@ const Join3 = () => {
                 joinMember(); // 회원가입 함수 호출
               }}
             >
-              {/* 비밀번호 입력 */}
-              <div className="input-wrap">
-                <div className="input-title">
-                  <label htmlFor="memberPw">비밀번호</label>
-                </div>
-                <div className="input-item" style={{ position: "relative" }}>
-                  <input
-                    type={isPasswordVisible1 ? "text" : "password"} // 비밀번호가 보일 때는 text로, 숨길 때는 password로 설정
-                    name="memberPw"
-                    id="memberPw"
-                    value={member.memberPw}
-                    onChange={inputMemberData}
-                    onBlur={checkPw} // 입력이 끝나면 비밀번호 일치 여부 확인
-                    placeholder="최소 8자 이상"
-                    style={{
-                      paddingRight: "40px", // 오른쪽에 아이콘을 배치하기 위해 오른쪽 패딩 추가
-                    }}
-                  />
-                  <span
-                    className="password-toggle-icon"
-                    onClick={togglePasswordVisibility1}
-                    style={{
-                      position: "absolute",
-                      right: "10px", // 오른쪽에 배치
-                      top: "50%", // 수직 중앙 정렬
-                      transform: "translateY(-50%)", // 정확히 중앙 정렬
-                      cursor: "pointer",
-                      zIndex: "1", // 아이콘이 input 위에 오도록 설정
-                    }}
-                  >
-                    {isPasswordVisible1 ? (
-                      <VisibilityIcon />
-                    ) : (
-                      <VisibilityOffIcon />
-                    )}
-                  </span>
-                </div>
-              </div>
-
-              {/* 비밀번호 확인 입력 */}
-              <div className="input-wrap">
-                <div className="input-title">
-                  <label htmlFor="memberPwRe">비밀번호 확인</label>
-                </div>
-                <div className="input-item" style={{ position: "relative" }}>
-                  <input
-                    type={isPasswordVisible2 ? "text" : "password"} // 비밀번호가 보일 때는 text로, 숨길 때는 password로 설정
-                    name="memberPwRe"
-                    id="memberPwRe"
-                    value={memberPwRe}
-                    onChange={inputMemberPwRe}
-                    onBlur={checkPw} // 입력이 끝나면 비밀번호 일치 여부 확인
-                    placeholder="위 비밀번호와 동일하게 입력"
-                    style={{
-                      paddingRight: "40px", // 오른쪽에 아이콘을 배치하기 위해 오른쪽 패딩 추가
-                    }}
-                  />
-                  <span
-                    className="password-toggle-icon"
-                    onClick={togglePasswordVisibility2}
-                    style={{
-                      position: "absolute",
-                      right: "10px", // 오른쪽에 배치
-                      top: "50%", // 수직 중앙 정렬
-                      transform: "translateY(-50%)", // 정확히 중앙 정렬
-                      cursor: "pointer",
-                      zIndex: "1", // 아이콘이 input 위에 오도록 설정
-                    }}
-                  >
-                    {isPasswordVisible2 ? (
-                      <VisibilityIcon />
-                    ) : (
-                      <VisibilityOffIcon />
-                    )}
-                  </span>
-                </div>
-                <p ref={pwMsgRef}></p>
-              </div>
-
               {/* 닉네임 입력 */}
               <div className="input-wrap">
                 <div className="input-title">
                   <label htmlFor="memberNickname">닉네임</label>
                 </div>
-                <div className="input-item" style={{ position: "relative" }}>
+                <div className="input-item">
                   <input
                     type="text"
                     name="memberNickname"
@@ -530,4 +398,4 @@ const Join3 = () => {
   );
 };
 
-export default Join3;
+export default SocialJoin2;

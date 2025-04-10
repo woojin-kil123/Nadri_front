@@ -74,3 +74,184 @@
 .review-nav > ul > li.active {
   color: var(--main2);
 }
+.place-info {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.place-info h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.place-info p {
+  font-size: 14px;
+  color: #666;
+}
+.review-card {
+  width: 60%;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  background-color: white;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  justify-items: center;
+  justify-self: center;
+}
+
+.place-info h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.place-info p {
+  font-size: 14px;
+  color: #777;
+  margin: 4px 0 16px;
+}
+
+.review-header {
+  margin-bottom: 12px;
+}
+
+.review-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.review-meta {
+  font-size: 14px;
+  color: #888;
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.review-body {
+  font-size: 16px;
+  margin: 16px 0;
+}
+
+.review-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.like-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.comment-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.comment-profile-image {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.comment-content-wrapper {
+  flex: 1;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.comment-nickname {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+.comment-action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.comment-action-icon {
+  cursor: pointer;
+  color: #888;
+  transition: color 0.2s ease-in-out;
+}
+
+.comment-text {
+  font-size: 14px;
+  color: var(--main1);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+.posting-place {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.place-title {
+  font-weight: bold;
+  color: #333;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.place-addr {
+  font-size: 13px;
+  color: #777;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+}
+.posting-thumb {
+  width: 100%;
+  aspect-ratio: 4 / 3; /* 고정 비율 유지 */
+  overflow: hidden;
+  border-radius: 10px;
+  background-color: #f0f0f0;
+}
+
+.place-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지 비율 유지하면서 잘라줌 */
+  display: block;
+}
+.review-list-section {
+  width: 90%;
+}
+.comment-wrap {
+  justify-items: center;
+  justify-self: center;
+}
+.review-images {
+  display: flex;
+  overflow-x: auto;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.review-image {
+  width: 150px;
+
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0; /* 줄어들지 않게 */
+}

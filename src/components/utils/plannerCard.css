@@ -1,0 +1,29 @@
+.card3 {
+  width: 288px; /* 72px * 4 = 288px (기존 Tailwind 기준) */
+  overflow: hidden;
+  background-color: var(--gray8);
+  padding: 0px;
+  float: left;
+  margin: 0px 50px;
+  margin-top: 40px;
+}
+
+.card3 > .image-container {
+  position: relative;
+  width: 100%;
+  height: 192px; /* 48px * 4 */
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.image-container > .card3-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card3 > .card3-content {
+  padding: 12px 0;
+  display: flex;
+  flex-direction: column;
+}

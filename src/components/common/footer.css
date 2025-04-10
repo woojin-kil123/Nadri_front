@@ -1,25 +1,3 @@
-/*
-background: #00f260;
-background: -webkit-linear-gradient(
-  to bottom,
-  var(--gray8),
-  var(--main6) 50%,
-  var(--main2)
-); 
-background: linear-gradient(
-  to bottom,
-  var(--gray8),
-  var(--main6) 50%,
-  var(--main2)
-);
-W3C,
-IE 10 + / Edge,
-Firefox 16 +,
-Chrome 26 +,
-Opera 12 +,
-Safari 7 + 
-
-*/
 .footer {
   background-color: var(--main2);
   position: relative;
