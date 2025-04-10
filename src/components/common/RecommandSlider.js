@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Slider from "react-slick";
 import ListCard from "../utils/ListCard";
-import { ArrowBackIosNew, ArrowForwardIos } from "@mui/icons-material";
 import axios from "axios";
 
 export default function RecommandSlider({ on }) {
