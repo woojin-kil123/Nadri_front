@@ -33,9 +33,7 @@ const PlaceDetail = () => {
   useEffect(() => {
     axios
       .get(`${backServer}/review/detail/${placeId}`)
-      .then((res) => {
-        setReview(res.data);
-      })
+      .then((res) => {})
       .catch((err) => {
         console.log(err);
       });
@@ -115,6 +113,7 @@ const PlaceDetail = () => {
       </div>
       <div className="place-detail page-title">
         <h2>리뷰</h2>
+
         <div
           className="review-write btn-primary green"
           onClick={() => {

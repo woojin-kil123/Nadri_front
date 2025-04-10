@@ -23,7 +23,20 @@ const ReviewView = () => {
   const [isCommenting, setIsCommenting] = useState(false);
   const [memberNickname, setMemberNickname] =
     useRecoilState(loginNicknameState);
-
+  const [member, setMember] = useState(null);
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_BACK_SERVER}/member/memberInfo?memberNickname=${memberNickname}`
+      )
+      .then((res) => {
+        console.log(res);
+        setMember(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [memberNickname]);
   const editComment = (commNo) => {
     const targetComment = comments.find((comment) => comment.commNo === commNo);
     if (!targetComment) return;

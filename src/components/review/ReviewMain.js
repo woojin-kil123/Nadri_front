@@ -56,7 +56,7 @@ const ReviewMain = () => {
               className={content === "room" ? "active" : ""}
               style={{ width: "15%" }}
               onClick={() => {
-                changeContnent("room");
+                changeContnent("stay");
               }}
             >
               숙소
@@ -77,7 +77,7 @@ const ReviewMain = () => {
                 changeContnent("food");
               }}
             >
-              음식
+              음식점
             </li>
             <li
               className={content === "todo" ? "active" : ""}
@@ -130,7 +130,11 @@ const ReviewItem = (props) => {
           <StarRating rating={review.starRate} />
         </div>
         <div className="posting-title">{review.reviewTitle}</div>
-        <div>{review.reviewContent}</div>
+        <div
+          dangerouslySetInnerHTML={{
+            __html: review.reviewContent, // p 태그 제거
+          }}
+        />
         <div className="posting-sub-info">
           <span>{review.memberNickname}</span>
           <span>{review.reviewDate}</span>
