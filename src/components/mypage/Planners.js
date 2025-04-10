@@ -3,27 +3,30 @@ import "./management.css";
 import axios from "axios";
 import PageNavigation from "../utils/PageNavigtion";
 import { useNavigate } from "react-router-dom";
+import { loginNicknameState } from "../utils/RecoilData";
+import { useRecoilState } from "recoil";
+import PlannerCard from "../utils/PlannerCard";
 
 const Planner = () => {
   const navigate = useNavigate();
   const [content, setContent] = useState(null);
   const [planner, setPlanner] = useState([]);
-  const [reqPage, setReqPage] = useState(1);
   const [message, setMessage] = useState("");
-  const [pi, setPi] = useState([]);
+  const [memberNickname, setMemberNickname] =
+    useRecoilState(loginNicknameState);
   const changeContent = (value) => {
     setContent(value);
 
     // 카테고리별로 다른 빈 메시지 설정
     let message = "";
     switch (value) {
-      case "comming-planner":
+      case "1":
         message = "다가오는 플래너가 없습니다.";
         break;
-      case "past-planner":
+      case "2":
         message = "지나간 플래너가 없습니다.";
         break;
-      case "bookmark-planner":
+      case "3":
         message = "찜한 플래너가 없습니다.";
         break;
       default:
@@ -33,21 +36,19 @@ const Planner = () => {
 
     axios
       .get(
-        `${process.env.REACT_APP_BACK_SERVER}/review?reqPage=${reqPage}&value=${value}`
+        `${process.env.REACT_APP_BACK_SERVER}/mypage/planner?nickname=${memberNickname}&value=${value}`
       )
       .then((res) => {
         console.log(res);
-        //setPlanner(res.data.list);
-        setPi(res.data.pi);
+        setPlanner(res.data.list);
       })
       .catch((err) => {
         console.log(err);
       });
   };
-
   // 페이지가 로드될 때 자동으로 "다가오는 플래너"로 설정
   useEffect(() => {
-    changeContent("comming-planner");
+    changeContent("1");
   }, []);
 
   return (
@@ -57,28 +58,28 @@ const Planner = () => {
         <nav className="manage-nav">
           <ul>
             <li
-              className={content === "comming-planner" ? "active-link" : ""}
+              className={content === "1" ? "active-link" : ""}
               style={{ width: "33%" }}
               onClick={() => {
-                changeContent("comming-planner");
+                changeContent("1");
               }}
             >
               다가오는 플래너
             </li>
             <li
-              className={content === "past-planner" ? "active-link" : ""}
+              className={content === "2" ? "active-link" : ""}
               style={{ width: "33%" }}
               onClick={() => {
-                changeContent("past-planner");
+                changeContent("2");
               }}
             >
               지나간 플래너
             </li>
             <li
-              className={content === "bookmark-planner" ? "active-link" : ""}
+              className={content === "3" ? "active-link" : ""}
               style={{ width: "33%" }}
               onClick={() => {
-                changeContent("bookmark-planner");
+                changeContent("3");
               }}
             >
               찜한 플래너
@@ -101,14 +102,11 @@ const Planner = () => {
             </div>
           ) : (
             <ul className="posting-wrap">
-              {planner.map((planner, index) => {
-                return <h3>즐겨찾기 리스트</h3>;
-              })}
+              {planner.map((planner, index) => (
+                <PlannerCard key={"planner-" + index} planner={planner} />
+              ))}
             </ul>
           )}
-        </div>
-        <div className="manage-paging-wrap">
-          <PageNavigation pi={pi} reqPage={reqPage} setReqPage={setReqPage} />
         </div>
       </div>
     </section>

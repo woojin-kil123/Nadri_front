@@ -4,29 +4,19 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import PageNavigation from "../utils/PageNavigtion";
 import StarRating from "../utils/StarRating";
+import { loginNicknameState } from "../utils/RecoilData";
+import { useRecoilState } from "recoil";
 
 const Reviews = () => {
   const navigate = useNavigate();
   const [content, setContent] = useState(null);
   const [reviews, setReviews] = useState([]);
-  const [reqPage, setReqPage] = useState(1);
-  const [pi, setPi] = useState([]);
   const [message, setMessage] = useState("");
-  useEffect(() => {
-    axios
-      .get(
-        `${
-          process.env.REACT_APP_BACK_SERVER
-        }/review?reqPage=${reqPage}&value=${"all"}`
-      )
-      .then((res) => {
-        console.log(res);
-        setPi(res.data.pi);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+  const [memberNickname, setMemberNickname] =
+    useRecoilState(loginNicknameState);
+
+  console.log(memberNickname);
+
   const changeContent = (value) => {
     setContent(value);
 
@@ -55,12 +45,13 @@ const Reviews = () => {
 
     axios
       .get(
-        `${process.env.REACT_APP_BACK_SERVER}/review?reqPage=${reqPage}&value=${value}`
+        `${
+          process.env.REACT_APP_BACK_SERVER
+        }/mypage/reviews?nickname=${"유저01"}&value=${value}`
       )
       .then((res) => {
         console.log(res);
-        //setReviews(res.data.list);
-        setPi(res.data.pi);
+        setReviews(res.data.list);
       })
       .catch((err) => {
         console.log(err);
@@ -146,9 +137,6 @@ const Reviews = () => {
               })}
             </ul>
           )}
-        </div>
-        <div className="manage-paging-wrap">
-          <PageNavigation pi={pi} reqPage={reqPage} setReqPage={setReqPage} />
         </div>
       </div>
     </section>
