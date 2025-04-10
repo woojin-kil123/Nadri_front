@@ -31,17 +31,6 @@ const ReviewWrite = () => {
     setFilePreviews((prev) => prev.filter((_, idx) => idx !== indexToRemove));
   };
   //여행지 정보
-  useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_BACK_SERVER}/review/placeinfo/${placeId}`)
-      .then((res) => {
-        console.log(res);
-        setPlaceInfo(res.data);
-      })
-      .catch((err) => {
-        console.error("여행지 정보 로드 실패:", err);
-      });
-  }, [placeId]);
 
   //폼 재출
   const submitReview = () => {
