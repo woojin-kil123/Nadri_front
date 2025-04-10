@@ -217,3 +217,17 @@
   text-overflow: ellipsis;
   display: -webkit-box;
 }
+.posting-thumb {
+  width: 100%;
+  aspect-ratio: 4 / 3; /* 고정 비율 유지 */
+  overflow: hidden;
+  border-radius: 10px;
+  background-color: #f0f0f0;
+}
+
+.place-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지 비율 유지하면서 잘라줌 */
+  display: block;
+}
