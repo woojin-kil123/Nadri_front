@@ -87,7 +87,7 @@ const ReviewWrite = () => {
           <img
             src={placeInfo.placeThumb || "/image/default_img.png"}
             className="place-image"
-            alt="place"
+            alt=""
           />
           <div className="place-details">
             <h3>{placeInfo.placeTitle || "이름 없음"}</h3>
