@@ -72,7 +72,7 @@ const UpdateModal = ({ onClose, placeType, setIsUpdate, event }) => {
     if (event) {
       const eventNo = event.extendedProps.eventNo;
       request = axios.patch(
-        `${process.env.REACT_APP_BACK_SERVER}/event/${eventNo}`,
+        `${process.env.REACT_APP_BACK_SERVER}/admin/event/${eventNo}`,
         form,
         {
           headers: {
@@ -82,12 +82,16 @@ const UpdateModal = ({ onClose, placeType, setIsUpdate, event }) => {
         }
       );
     } else {
-      request = axios.post(`${process.env.REACT_APP_BACK_SERVER}/event`, form, {
-        headers: {
-          contentType: "multipart/form-data",
-          processData: false,
-        },
-      });
+      request = axios.post(
+        `${process.env.REACT_APP_BACK_SERVER}/admin/event`,
+        form,
+        {
+          headers: {
+            contentType: "multipart/form-data",
+            processData: false,
+          },
+        }
+      );
     }
 
     request.then((res) => {

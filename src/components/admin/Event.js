@@ -13,7 +13,9 @@ const Event = () => {
   const [onGoing, setOnGoing] = useState([]);
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACK_SERVER}/event/onGoing?date=${today}`)
+      .get(
+        `${process.env.REACT_APP_BACK_SERVER}/admin/event/onGoing?date=${today}`
+      )
       .then((res) => {
         setOnGoing(res.data);
       });
@@ -21,7 +23,7 @@ const Event = () => {
   const [end, setEnd] = useState([]);
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACK_SERVER}/event/end?date=${today}`)
+      .get(`${process.env.REACT_APP_BACK_SERVER}/admin/event/end?date=${today}`)
       .then((res) => {
         setEnd(res.data);
       });
@@ -64,7 +66,7 @@ const Event = () => {
                       const eventNo = event.eventNo;
                       axios
                         .delete(
-                          `${process.env.REACT_APP_BACK_SERVER}/event/${eventNo}`
+                          `${process.env.REACT_APP_BACK_SERVER}/admin/event/${eventNo}`
                         )
                         .then((res) => {
                           if (res.data > 0) {
