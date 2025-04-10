@@ -26,12 +26,21 @@ const PlaceDetail = () => {
       .get(`${backServer}/review/detail/${placeId}`)
       .then((res) => {
         console.log(res);
+  const [pi, setPi] = useState([]);
+  const placeId = useParams().placeId;
+  const navigate = useNavigate();
+  console.log(placeId);
+  useEffect(() => {
+    axios
+      .get(`${backServer}/review/detail/${placeId}`)
+      .then((res) => {
+        console.log(res);
         setReview(res.data);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [reqPage]);
+  }, []);
   return (
     <div className="place-detail-wrap">
       <div className="place-detail-header">
@@ -83,6 +92,14 @@ const PlaceDetail = () => {
         <Link to="/review/write" className="btn-primary green">
           리뷰쓰기
         </Link>
+        <div
+          className="review-write btn-primary green"
+          onClick={() => {
+            navigate(`/review/write/${placeId}`);
+          }}
+        >
+          글쓰기
+        </div>
       </div>
       <div className="place-detail review-wap">
         <div>
