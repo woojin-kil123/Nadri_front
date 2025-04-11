@@ -47,6 +47,7 @@ import AdminPartner from "./components/admin/AdminPartner";
 import PlaceDetail from "./components/place/PlaceDetail";
 import EditReview from "./components/review/EditReview";
 
+
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
   const [placeType, setPlaceType] = useRecoilState(placeTypeState);
@@ -67,7 +68,6 @@ function App() {
     }
   }, [loc.pathname]);
   const [chatEl, setChatEl] = useState(null);
-
   return (
     <>
       {isLogin && <ChatMenu chatEl={chatEl} setChatEl={setChatEl} />}
