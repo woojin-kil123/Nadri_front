@@ -13,12 +13,10 @@ const PlaceDetail = () => {
   const backServer = process.env.REACT_APP_BACK_SERVER;
   const [review, setReview] = useState([]);
   const placeId = useParams().placeId;
-
-  const member = useRecoilValue(isLoginState); // 로그인 유저 정보를 가져와야 함
-  const memberNo = member?.memberNo;
-
   const [place, setPlace] = useState();
   const navigate = useNavigate();
+
+  const memberNo = useRecoilValue(memberNoState);
 
   useEffect(() => {
     axios

@@ -123,7 +123,7 @@ function App() {
                   <Route path="/place" element={<PlaceList />} />
                   <Route
                     path="/place/detail/:placeId"
-                    element={<LoginRouting element={<PlaceDetail />} />}
+                    element={<PlaceDetail />}
                   />
                   <Route path="/search" element={<SearchResult />} />
                 </Routes>
