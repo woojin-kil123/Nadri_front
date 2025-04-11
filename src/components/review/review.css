@@ -280,16 +280,25 @@
   color: #666;
 }
 
+.review-view-section .review-header {
+  margin-bottom: 12px;
+}
+
+.review-view-section .review-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
 .review-view-section .review-title {
   font-size: 20px;
   font-weight: bold;
-  margin: 16px 0 8px;
 }
 
 .review-view-section .review-meta {
   font-size: 12px;
   color: #999;
-  margin-bottom: 12px;
 }
 
 .review-view-section .review-body {
@@ -321,23 +330,24 @@
   height: 100%;
   object-fit: cover;
 }
-/* 좋아요, 댓글 카운트 */
+
+/* 좋아요, 수정, 삭제, 신고 */
 .review-view-section .review-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   font-size: 14px;
   color: #777;
-  margin-bottom: 24px;
+  margin-bottom: 0;
 }
 
 .review-actions .like-wrapper {
   display: flex;
   align-items: center;
-  gap: 4px; /* 좋아요 버튼과 숫자 사이 간격 조절 */
+  gap: 4px;
 }
 
-/* 🛠 댓글 영역 스타일 수정 시작 */
+/* 댓글 영역 */
 .review-view-section .comment-wrap {
   margin-top: 2rem;
   border-top: 1px solid #e0e0e0;
@@ -348,7 +358,7 @@
 
 .review-view-section .comment-wrap h3 {
   text-align: left !important;
-  padding-left: 4px; /* 또는 0.5rem */
+  padding-left: 4px;
 }
 
 .review-view-section .comment-wrap ul {
@@ -366,13 +376,14 @@
   padding-bottom: 1rem;
   margin-bottom: 1rem;
 }
+
 .review-view-section .comment-profile-image {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
   display: flex;
-  flex-direction: row; /* ❗ column → row */
+  flex-direction: row;
   align-items: center;
   gap: 0.5rem;
 }
@@ -413,9 +424,7 @@
   font-size: 0.95rem;
   line-height: 1.4;
 }
-/* 🛠 댓글 영역 스타일 수정 끝 */
 
-/* 댓글 작성 영역 */
 .review-view-section .comment-form {
   margin-top: 1rem;
   display: flex;
@@ -445,6 +454,7 @@
 .review-view-section .comment-form button:hover {
   background-color: #0056b3;
 }
+
 .review-view-section .write-comment-zone {
   flex: 1.5;
   padding: 0.5rem;

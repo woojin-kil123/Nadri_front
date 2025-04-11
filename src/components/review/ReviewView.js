@@ -277,7 +277,45 @@ const ReviewView = () => {
 
         {/* 리뷰 정보 */}
         <div className="review-header">
-          <h3 className="review-title">{review.reviewTitle}</h3>
+          <div className="review-header-top">
+            <h3 className="review-title">{review.reviewTitle}</h3>
+            <div className="review-actions">
+              <div className="like-wrapper">
+                <button
+                  onClick={toggleLike}
+                  className="like-button"
+                  style={{ background: "none", border: "none" }}
+                >
+                  {liked ? (
+                    <FavoriteIcon color="error" />
+                  ) : (
+                    <FavoriteBorderIcon />
+                  )}
+                </button>
+                <span>{likeCount}</span>
+              </div>
+
+              {memberNickname === review.memberNickname && (
+                <>
+                  <EditNoteIcon
+                    onClick={editReview}
+                    style={{ cursor: "pointer" }}
+                  />
+                  <DeleteIcon
+                    onClick={deleteReview}
+                    style={{ cursor: "pointer", marginLeft: "10px" }}
+                  />
+                </>
+              )}
+              {review.memberNickname !== memberNickname && (
+                <ReportIcon
+                  onClick={reportClick}
+                  style={{ cursor: "pointer", marginLeft: "10px" }}
+                />
+              )}
+            </div>
+          </div>
+
           <div className="review-meta">
             <span className="author">{review.memberNickname}</span>
             <span className="date">{review.reviewDate}</span>
@@ -285,20 +323,19 @@ const ReviewView = () => {
         </div>
 
         {/* 본문 내용 */}
-
         <div
           className="review-body"
           dangerouslySetInnerHTML={{
-            __html: review.reviewContent, // p 태그 제거
+            __html: review.reviewContent,
           }}
         />
-        {/* 첨부 이미지 표시 */}
+
+        {/* 첨부 이미지 */}
         {reviewImages.length > 0 && (
           <div className="review-images">
             {reviewImages.map((img, index) => (
-              <div className="review-image-wrapper">
+              <div className="review-image-wrapper" key={index}>
                 <img
-                  key={index}
                   src={`${process.env.REACT_APP_BACK_SERVER}/place/${img.filepath}`}
                   alt=""
                   className="review-image"
@@ -307,39 +344,9 @@ const ReviewView = () => {
             ))}
           </div>
         )}
-        {/* 좋아요, 수정, 삭제, 신고 */}
-        <div className="review-actions">
-          <div className="like-wrapper">
-            <button
-              onClick={toggleLike}
-              className="like-button"
-              style={{ background: "none", border: "none" }}
-            >
-              {liked ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
-            </button>
-            <span>{likeCount}</span>
-          </div>
-
-          {memberNickname === review.memberNickname && (
-            <>
-              <EditNoteIcon
-                onClick={editReview}
-                style={{ cursor: "pointer" }}
-              />
-              <DeleteIcon
-                onClick={deleteReview}
-                style={{ cursor: "pointer", marginLeft: "10px" }}
-              />
-            </>
-          )}
-          {review.memberNickname !== memberNickname && (
-            <ReportIcon
-              onClick={reportClick}
-              style={{ cursor: "pointer", marginLeft: "10px" }}
-            />
-          )}
-        </div>
       </div>
+
+      {/* 댓글 영역 */}
       <div className="comment-wrap">
         <h3>댓글</h3>
         <ul>
