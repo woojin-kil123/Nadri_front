@@ -309,14 +309,16 @@ const ReviewView = () => {
         )}
         {/* 좋아요, 수정, 삭제, 신고 */}
         <div className="review-actions">
-          <button
-            onClick={toggleLike}
-            className="like-button"
-            style={{ background: "none", border: "none" }}
-          >
-            {liked ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
-          </button>
-          <span>{likeCount}</span>
+          <div className="like-wrapper">
+            <button
+              onClick={toggleLike}
+              className="like-button"
+              style={{ background: "none", border: "none" }}
+            >
+              {liked ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
+            </button>
+            <span>{likeCount}</span>
+          </div>
 
           {memberNickname === review.memberNickname && (
             <>
