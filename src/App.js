@@ -46,6 +46,8 @@ import AdminMain from "./components/admin/AdminMain";
 import AdminReview from "./components/admin/AdminReview";
 import AdminPartner from "./components/admin/AdminPartner";
 import PlaceDetail from "./components/place/PlaceDetail";
+import EditReview from "./components/review/EditReview";
+
 
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
@@ -129,10 +131,14 @@ function App() {
                     path="/review/write/:placeId"
                     element={<LoginRouting element={<ReviewWrite />} />}
                   ></Route>
+                  <Route
+                    path="/review/edit/:reviewNo"
+                    element={<LoginRouting element={<EditReview />} />}
+                  ></Route>
                   <Route path="/place" element={<PlaceList />} />
                   <Route
                     path="/place/detail/:placeId"
-                    element={<LoginRouting element={<PlaceDetail />} />}
+                    element={<PlaceDetail />}
                   />
                   <Route path="/search" element={<SearchResult />} />
                 </Routes>
