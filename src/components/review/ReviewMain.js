@@ -55,7 +55,7 @@ const ReviewMain = () => {
           <ul>
             <li
               className={content === "room" ? "active" : ""}
-              style={{ width: "15%" }}
+              style={{ width: "20%" }}
               onClick={() => {
                 changeContnent("stay");
               }}
@@ -64,7 +64,7 @@ const ReviewMain = () => {
             </li>
             <li
               className={content === "spot" ? "active" : ""}
-              style={{ width: "15%" }}
+              style={{ width: "20%" }}
               onClick={() => {
                 changeContnent("spot");
               }}
@@ -73,7 +73,7 @@ const ReviewMain = () => {
             </li>
             <li
               className={content === "food" ? "active" : ""}
-              style={{ width: "15%" }}
+              style={{ width: "20%" }}
               onClick={() => {
                 changeContnent("food");
               }}
@@ -82,21 +82,12 @@ const ReviewMain = () => {
             </li>
             <li
               className={content === "todo" ? "active" : ""}
-              style={{ width: "15%" }}
+              style={{ width: "20%" }}
               onClick={() => {
                 changeContnent("todo");
               }}
             >
               즐길거리
-            </li>
-            <li
-              className={content === "plan" ? "active" : ""}
-              style={{ width: "15%" }}
-              onClick={() => {
-                changeContnent("plan");
-              }}
-            >
-              플래너
             </li>
           </ul>
         </nav>
