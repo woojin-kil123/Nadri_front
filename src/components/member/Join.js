@@ -77,6 +77,10 @@ const Join = () => {
       });
   };
 
+  const resetCodeInput = () => {
+    setMember({ ...member, memberCode: "" }); // memberCode 상태를 빈 문자열로 설정
+  };
+
   // 이메일 인증 요청
   const sendEmailVerification = () => {
     axios
@@ -88,6 +92,8 @@ const Join = () => {
         setCodeSentTime(Date.now()); // 인증 코드가 전송된 시간 저장
         setIsVerificationSent(true); // 인증 코드 요청 후 인증 코드 입력란 표시
         setTimeLeft(180); // 카운트다운 타이머 변수 3분 (180초) 설정
+
+        resetCodeInput();
       })
       .catch((error) => {});
   };

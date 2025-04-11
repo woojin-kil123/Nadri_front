@@ -30,3 +30,6 @@ npm install html2canvas
 
 길우진 2025-04-10
 npm install recharts
+
+[uninstall] 신종인 2025-04-11
+npm uninstall html2canvas

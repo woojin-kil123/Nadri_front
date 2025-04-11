@@ -22,6 +22,7 @@ import ReviewMain from "./components/review/ReviewMain";
 // 상태 관리
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
+  companyInfoState,
   isLoginState,
   isPlannerState,
   placeTypeState,
@@ -45,14 +46,24 @@ import AdminMain from "./components/admin/AdminMain";
 import AdminReview from "./components/admin/AdminReview";
 import AdminPartner from "./components/admin/AdminPartner";
 import PlaceDetail from "./components/place/PlaceDetail";
+import EditReview from "./components/review/EditReview";
+
 
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
   const [placeType, setPlaceType] = useRecoilState(placeTypeState);
+  const [companyInfo, setCompanyInfo] = useRecoilState(companyInfoState);
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BACK_SERVER}/place/type`).then((res) => {
       setPlaceType(res.data);
     });
+  }, []);
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACK_SERVER}/admin/company`)
+      .then((res) => {
+        setCompanyInfo(res.data);
+      });
   }, []);
   const isLogin = useRecoilValue(isLoginState);
 
@@ -108,8 +119,8 @@ function App() {
                     <Route path="event" element={<Event />} />
                     <Route path="partner" element={<AdminPartner />} />
                     <Route path="review" element={<AdminReview />} />
-                    <Route path="member" element={<AdminMain />} />
-                    <Route path="contents" element={<AdminMain />} />
+                    <Route path="member" element={<></>} />
+                    <Route path="contents" element={<></>} />
                     <Route path="main" element={<AdminMain />} />
                   </Route>
                   <Route
@@ -119,6 +130,10 @@ function App() {
                   <Route
                     path="/review/write/:placeId"
                     element={<LoginRouting element={<ReviewWrite />} />}
+                  ></Route>
+                  <Route
+                    path="/review/edit/:reviewNo"
+                    element={<LoginRouting element={<EditReview />} />}
                   ></Route>
                   <Route path="/place" element={<PlaceList />} />
                   <Route
