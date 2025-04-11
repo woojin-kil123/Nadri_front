@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import TextEditor from "../utils/Texteditor";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import StarRateIcon from "@mui/icons-material/StarRate";
@@ -11,7 +11,7 @@ const EditReview = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [rating, setRating] = useState(0);
-
+  const navigate = useNavigate();
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/review/${reviewNo}`)
@@ -22,10 +22,33 @@ const EditReview = () => {
       })
       .catch((err) => console.log(err));
   }, []);
-  const reviewEdit = () => {};
+  const reviewEdit = () => {
+    if (!title || !content) {
+      alert("제목과 내용을 모두 입력해주세요.");
+      return;
+    }
+    const form = new FormData();
+    form.append("reviewNo", reviewNo);
+    form.append("reviewTitle", title);
+    form.append("starRate", rating);
+    form.append("reviewContent", content);
+
+    axios
+      .patch(`${process.env.REACT_APP_BACK_SERVER}/review`, form, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+      .then((res) => {
+        console.log(res);
+        alert("리뷰가 성공적으로 수정되었습니다!");
+        navigate("/review");
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("리뷰 수정에 실패했습니다.");
+      });
+  };
   return (
     <section className="section review-write-section">
-      {/* 오른쪽 - 리뷰 작성 폼 */}
       <div className="review-form">
         <div className="form-section">
           <label className="form-label">귀하의 경험에 대해 평가해주세요</label>

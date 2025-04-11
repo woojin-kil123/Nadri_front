@@ -48,9 +48,9 @@ const ReviewWrite = () => {
 
     const form = new FormData();
     form.append("placeId", placeId);
-    form.append("reviewTitle", title);
     form.append("memberNickname", memberNickname);
     form.append("placeTypeId", placeInfo.placeTypeId);
+    form.append("reviewTitle", title);
     form.append("starRate", rating);
     form.append("reviewContent", content);
     files.forEach((file) => form.append("files", file));
@@ -59,12 +59,14 @@ const ReviewWrite = () => {
       .post(`${process.env.REACT_APP_BACK_SERVER}/review`, form, {
         headers: { "Content-Type": "multipart/form-data" },
       })
-      .then(() => {
+      .then((res) => {
+        console.log(res);
         alert("리뷰가 성공적으로 등록되었습니다!");
         navigate("/review");
       })
-      .catch((error) => {
-        console.error("리뷰 등록 실패:", error);
+      .catch((err) => {
+        console.log(err);
+
         alert("리뷰 등록에 실패했습니다.");
       });
   };
