@@ -40,7 +40,6 @@ const AdminMain = () => {
   }, []);
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BACK_SERVER}/plan/stats`).then((res) => {
-      console.log(res.data);
       setPlanStat(res.data);
     });
   }, []);
