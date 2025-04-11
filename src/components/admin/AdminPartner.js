@@ -262,19 +262,19 @@ const AutocompleteForm = ({ id, label, formData, setFormData, controller }) => {
   const onChange = (e, newValue) => {
     setFormData((prev) => ({
       ...prev,
-      [id]: newValue?.id || "",
+      [id]: newValue?.[key] || "",
     }));
   };
   return (
     <Autocomplete
       disablePortal
       options={check}
-      value={check.find((opt) => opt[id] === formData[id]) || null}
+      value={formData?.[key]}
       onChange={onChange}
       inputValue={inputText}
       onInputChange={(e, val) => setInputText(val)}
       getOptionLabel={(option) => `${option.name} | ID:${option.id} `}
-      isOptionEqualToValue={(a, b) => a[key] === b[key]}
+      isOptionEqualToValue={(a, b) => a?.[key] === b?.[key]}
       noOptionsText="결과 없음"
       sx={{ mt: 3 }}
       renderInput={(params) => (
