@@ -21,7 +21,7 @@
   align-items: center;
 }
 .review-nav > ul > li {
-  margin: 0px 15px;
+  margin: 0px 30px;
   position: relative;
   justify-items: center;
 }
@@ -250,8 +250,324 @@
 
 .review-image {
   width: 150px;
-
   object-fit: cover;
   border-radius: 8px;
   flex-shrink: 0; /* 줄어들지 않게 */
+}
+.review-write-section {
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+  padding: 32px;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.review-write-section .review-left {
+  width: 300px;
+}
+
+.review-write-section .review-left .page-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+.review-write-section .place-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  text-align: center;
+  background-color: #fff;
+}
+
+.review-write-section .review-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.review-write-section .place-info-text {
+  padding: 10px;
+}
+
+.review-write-section .place-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.review-write-section .place-addr {
+  font-size: 14px;
+  color: #555;
+}
+
+.review-write-section .review-form {
+  flex: 1;
+}
+
+.review-write-section .form-section {
+  margin-bottom: 24px;
+  font-size: 25px;
+}
+
+.review-write-section .form-label {
+  display: block;
+  font-weight: 600;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.review-write-section .form-input {
+  width: 100%;
+  border: 1px solid #ccc;
+  padding: 10px 0px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.review-write-section .submit-button {
+  width: 100%;
+  padding: 14px;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.review-write-section .submit-button:hover {
+  background-color: #333;
+}
+
+.review-write-section .upload-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  height: 200px;
+
+  padding: 2px 0px;
+  margin-bottom: 16px;
+
+  border: 2px dashed #ccc;
+  border-radius: 12px;
+  background-color: #f9f9f9;
+  color: #666;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.review-write-section.upload-box:hover {
+  background-color: #f0f0f0;
+}
+
+.review-write-section.upload-box span {
+  font-size: 12px;
+  color: #999;
+  margin-top: 6px;
+}
+.review-write-section .upload-box span {
+  font-size: 13px;
+  color: #999;
+}
+
+.review-write-section .image-preview {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.review-write-section .preview-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+/* StarRating은 기존 모양 유지하되, 여백 정렬만 */
+.review-write-section .form-section > div:first-of-type {
+  margin-top: 6px;
+}
+.review-view-section {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: "Noto Sans KR", sans-serif;
+  color: #333;
+}
+
+.review-view-section .page-title2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2cb67d;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.review-view-section .review-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+}
+
+.review-view-section .place-info h2 {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.review-view-section .place-info p {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 20px;
+}
+
+.review-view-section .review-header {
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+  margin-top: 10px;
+}
+
+.review-view-section .review-title {
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  margin: 0 auto 8px auto;
+  width: fit-content;
+}
+
+.review-view-section .review-meta {
+  font-size: 13px;
+  color: #999;
+  display: flex;
+  gap: 12px;
+}
+
+.review-view-section .review-body {
+  font-size: 15px;
+  line-height: 1.6;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  color: #444;
+}
+
+.review-view-section .review-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.review-view-section .review-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.review-view-section .review-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.review-view-section .like-button {
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.review-view-section .comment-wrap {
+  margin-top: 40px;
+}
+
+.review-view-section .comment-wrap h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.review-view-section .comment-wrap ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+}
+
+.review-view-section .comment-wrap input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.review-view-section .comment-wrap button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  background-color: #2cb67d;
+  color: white;
+  cursor: pointer;
+  margin-right: 8px;
+  font-size: 14px;
+}
+
+.review-view-section .comment-wrap button:hover {
+  background-color: #239b68;
+}
+
+.review-view-section .modal {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 999;
+  width: 90%;
+  max-width: 400px;
+}
+
+.review-view-section .modal h3 {
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+
+.review-view-section .modal select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-bottom: 12px;
+}
+
+.review-view-section .modal button {
+  padding: 8px 14px;
+  margin-right: 8px;
+  border: none;
+  border-radius: 6px;
+  background-color: #2cb67d;
+  color: white;
+  cursor: pointer;
+}
+
+.review-view-section .modal button:hover {
+  background-color: #239b68;
 }

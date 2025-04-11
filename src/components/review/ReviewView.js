@@ -158,7 +158,7 @@ const ReviewView = () => {
     setLiked(!liked);
     setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
   };
-  //
+
   //리뷰 삭제
   const deleteReview = () => {
     Swal.fire({
@@ -183,7 +183,7 @@ const ReviewView = () => {
   const [reportTarget, setReportTarget] = useState(null);
 
   const editReview = () => {
-    navigate("/editreview");
+    navigate(`/review/edit/${reviewNo}`);
   };
 
   const reportClick = (target) => {
@@ -265,7 +265,7 @@ const ReviewView = () => {
   }, [review]);
 
   return (
-    <section className="section review-list-section">
+    <section className="section review-view-section">
       <div className="page-title">리뷰 상세보기</div>
 
       <div className="review-card">
