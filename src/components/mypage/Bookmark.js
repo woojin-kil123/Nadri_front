@@ -43,12 +43,10 @@ const Bookmark = () => {
 
     axios
       .get(
-        `${
-          process.env.REACT_APP_BACK_SERVER
-        }/mypage/bookmark?nickname=${"유저01"}&value=${value}`
+        `${process.env.REACT_APP_BACK_SERVER}/mypage/bookmark?nickname=${memberNickname}&value=${value}`
       )
       .then((res) => {
-        console.log(res);
+        console.log(res.data);
         setBookmark(res.data.list);
       })
       .catch((err) => {
