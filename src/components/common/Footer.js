@@ -8,20 +8,16 @@ import { Modal } from "@mui/material";
 import Terms from "../static/Terms";
 import PrivacyPolicy from "../static/PrivacyPolicy";
 import axios from "axios";
+import { useRecoilValue } from "recoil";
+import { companyInfoState } from "../utils/RecoilData";
 
 export default function Footer() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [modalContent, setModalContent] = useState(null);
-  const [company, setCompany] = useState(null);
-  useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_BACK_SERVER}/admin/company`)
-      .then((res) => {
-        setCompany(res.data);
-      });
-  }, []);
+  const company = useRecoilValue(companyInfoState);
+
   return (
     <footer className="footer">
       <div className="contact-wrap">

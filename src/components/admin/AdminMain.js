@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import { useRecoilValue } from "recoil";
-import { placeTypeState } from "../utils/RecoilData";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { companyInfoState, placeTypeState } from "../utils/RecoilData";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import { IconButton } from "@mui/material";
 import {
@@ -18,7 +18,7 @@ const AdminMain = () => {
   const placeType = useRecoilValue(placeTypeState);
   const [reviewStat, setReviewStat] = useState(null);
   const [planStat, setPlanStat] = useState(null);
-  const [company, setCompany] = useState(null);
+  const [company, setCompany] = useRecoilState(companyInfoState);
   const [editMode, setEditMode] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   const [pieChartData, setPieChartData] = useState([]);
@@ -40,7 +40,6 @@ const AdminMain = () => {
   }, []);
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BACK_SERVER}/plan/stats`).then((res) => {
-      console.log(res.data);
       setPlanStat(res.data);
     });
   }, []);
@@ -146,6 +145,7 @@ const AdminMain = () => {
           <form
             className="info-grid"
             onSubmit={(e) => {
+              console.log("섭밋");
               e.preventDefault();
               updateCompany();
             }}
@@ -186,6 +186,13 @@ const AdminMain = () => {
                 onChange={handleChange}
               />
             </div>
+            <button
+              type="submit"
+              onClick={updateCompany}
+              style={{ display: "none" }}
+            >
+              수정
+            </button>
           </form>
         </div>
       )}
