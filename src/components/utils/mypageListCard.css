@@ -10,7 +10,7 @@
 }
 
 .card2:hover {
-  box-shadow: -10px 0 20px rgba(0, 0, 0, 0.1), 10px 0 20px rgba(0, 0, 0, 0.1); /* 마우스를 올렸을 때 그림자 */
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1), 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .card2 > .image-container {

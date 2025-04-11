@@ -152,10 +152,10 @@ const ReviewItem = (props) => {
         navigate(`/review/detail/${reviews.reviewNo}`);
       }}
     >
-      <div className="posting-thumb">
+      <div className="posting-thumb2">
         <img
-          src={reviews.placeThumb || "/image/default_img.png"}
-          className="place-image"
+          src={reviews.placeThumb || "/image/dora.png"}
+          className="place-image2"
           alt=""
         />
       </div>
