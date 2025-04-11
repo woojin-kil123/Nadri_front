@@ -73,3 +73,21 @@
 .place-wrap .card:hover {
   box-shadow: #888;
 }
+
+.posting-wrap > .posting-item {
+  width: calc(100% / 3);
+}
+
+/*나의 리뷰*/
+
+.posting-item2 {
+  width: calc(100% / 2);
+  float: left;
+  box-sizing: border-box;
+  padding: 30px;
+  cursor: pointer;
+}
+
+.posting-item2:hover {
+  box-shadow: -10px 0 20px rgba(0, 0, 0, 0.1), 10px 0 20px rgba(0, 0, 0, 0.1); /* 마우스를 올렸을 때 그림자 */
+}

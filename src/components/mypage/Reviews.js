@@ -147,17 +147,30 @@ const ReviewItem = (props) => {
   const reviews = props.reviews;
   return (
     <li
-      className="posting-item"
+      className="posting-item2"
       onClick={() => {
         navigate(`/review/detail/${reviews.reviewNo}`);
       }}
     >
+      <div className="posting-thumb">
+        <img
+          src={reviews.placeThumb || "/image/default_img.png"}
+          className="place-image"
+          alt=""
+        />
+      </div>
       <div className="posting-info">
         <div>
           <StarRating rating={reviews.starRate} />
         </div>
         <div className="posting-title">{reviews.reviewTitle}</div>
-        <div>{reviews.reviewContent}</div>
+        <div className="place-title">{reviews.placeTitle}</div>
+        <div className="place-addr">{reviews.placeAddr}</div>
+        <div
+          dangerouslySetInnerHTML={{
+            __html: reviews.reviewContent, // p 태그 제거
+          }}
+        />
         <div className="posting-sub-info">
           <span>{reviews.memberNickname}</span>
           <span>{reviews.reviewDate}</span>

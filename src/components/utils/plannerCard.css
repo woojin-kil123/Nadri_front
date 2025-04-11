@@ -1,11 +1,15 @@
 .card3 {
-  width: 288px; /* 72px * 4 = 288px (기존 Tailwind 기준) */
+  width: calc(100% / 2);
   overflow: hidden;
   background-color: var(--gray8);
-  padding: 0px;
+  padding: 20px 62px;
   float: left;
-  margin: 0px 50px;
-  margin-top: 40px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.card3:hover {
+  box-shadow: -10px 0 20px rgba(0, 0, 0, 0.1), 10px 0 20px rgba(0, 0, 0, 0.1); /* 마우스를 올렸을 때 그림자 */
 }
 
 .card3 > .image-container {
@@ -26,4 +30,12 @@
   padding: 12px 0;
   display: flex;
   flex-direction: column;
+}
+.planner-date {
+  font-size: 12px;
+}
+.d-day {
+  float: right;
+  color: rgb(255, 104, 58);
+  font-size: 13px;
 }
