@@ -54,7 +54,7 @@ const ReviewMain = () => {
         <nav className="review-nav">
           <ul>
             <li
-              className={content === "room" ? "active" : ""}
+              className={content === "stay" ? "active" : ""}
               style={{ width: "20%" }}
               onClick={() => {
                 changeContnent("stay");
