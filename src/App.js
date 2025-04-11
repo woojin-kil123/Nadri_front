@@ -48,7 +48,6 @@ import AdminPartner from "./components/admin/AdminPartner";
 import PlaceDetail from "./components/place/PlaceDetail";
 import EditReview from "./components/review/EditReview";
 
-
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
   const [placeType, setPlaceType] = useRecoilState(placeTypeState);
@@ -56,6 +55,7 @@ function App() {
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BACK_SERVER}/place/type`).then((res) => {
       setPlaceType(res.data);
+      console.log(res.data);
     });
   }, []);
   useEffect(() => {

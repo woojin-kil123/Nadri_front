@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import { useRecoilValue } from "recoil";
 import { placeTypeState } from "../utils/RecoilData";
+import Swal from "sweetalert2";
 
 const AdminPartner = () => {
   const inputStyle = {
@@ -64,13 +65,42 @@ const AdminPartner = () => {
   }, []);
   const [formData, setFormData] = useState({
     keyword: "",
-    type: "",
+    placeType: "",
     cat1: "",
     cat2: "",
     cat3: "",
     area: "",
     placeId: "",
   });
+  const selectKeywordInfo = () => {
+    const keyword = formData.keyword;
+    axios
+      .get(`${process.env.REACT_APP_BACK_SERVER}/admin/keyword/${keyword}`)
+      .then((res) => {
+        setFormData(res.data);
+      });
+  };
+  const updateKeyword = () => {
+    axios
+      .patch(`${process.env.REACT_APP_BACK_SERVER}/admin/keyword`, formData)
+      .then((res) => {
+        if (res.data > 0) {
+          Swal.fire({
+            title: "변경 완료",
+          }).then(() => {
+            setFormData({
+              keyword: "",
+              placeType: "",
+              cat1: "",
+              cat2: "",
+              cat3: "",
+              area: "",
+              placeId: "",
+            });
+          });
+        }
+      });
+  };
   return (
     <div className="hot-keyword-wrap">
       <h2>인기 검색어</h2>
@@ -118,6 +148,9 @@ const AdminPartner = () => {
           <form
             onSubmit={(e) => {
               e.preventDefault();
+              if (formData.keyword) {
+                selectKeywordInfo();
+              }
             }}
           >
             <AutocompleteForm
@@ -127,7 +160,14 @@ const AdminPartner = () => {
               setFormData={setFormData}
               controller="keyword"
             />
-            <button style={{ display: "none" }}></button>
+            <IconButton
+              type="button"
+              sx={{ p: "10px" }}
+              className="keyword-submit"
+              onClick={selectKeywordInfo}
+            >
+              조회
+            </IconButton>
           </form>
         </div>
         <div className="insert">
@@ -135,6 +175,7 @@ const AdminPartner = () => {
           <form
             onSubmit={(e) => {
               e.preventDefault();
+              updateKeyword();
             }}
           >
             <div className="info-grid">
@@ -177,7 +218,7 @@ const AdminPartner = () => {
                 formData={formData}
                 setFormData={setFormData}
                 cat={placeType}
-                id="type"
+                id="placeType"
                 label="타입"
               />
               <SelectForm
@@ -224,8 +265,9 @@ const AdminPartner = () => {
               type="button"
               sx={{ p: "10px" }}
               className="keyword-submit"
+              onClick={updateKeyword}
             >
-              확인
+              변경
             </IconButton>
           </form>
         </div>
@@ -338,7 +380,7 @@ const SelectForm = ({ inputStyle, formData, setFormData, cat, id, label }) => {
       <Select
         labelId={`${id}-label`}
         name={id}
-        value={formData[id]}
+        value={formData[id] || ""}
         label={label}
         onChange={handleChange}
         input={

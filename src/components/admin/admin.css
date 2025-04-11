@@ -153,6 +153,10 @@
   padding: 0px 20px;
   width: 50%;
 }
+.keyword-manage > .check > form button {
+  margin: 0px 20px;
+  align-self: flex-end;
+}
 .keyword-manage .keyword-submit:hover {
   background-color: var(--main3);
 }

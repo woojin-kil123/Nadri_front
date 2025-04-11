@@ -27,11 +27,12 @@ const AdminMain = () => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/review/stats`)
       .then((res) => {
+        console.log(res.data);
         setReviewStat(res.data);
         // PieChart에 맞는 데이터 구조로 변환 후 상태에 저장
         const pieData = res.data.map((item) => ({
           name: `${
-            placeType.find((type, _) => item.placeTypeId === type.id)?.name
+            placeType.find((type, _) => item.placeTypeId == type.id)?.name
           }`,
           value: item.reviewCount,
         }));
@@ -74,7 +75,7 @@ const AdminMain = () => {
             <h3>리뷰</h3>
           </div>
           <div className="total-content">
-            <div className="chart" style={{ width: "50%", height: "300px" }}>
+            <div className="chart" style={{ minWidth: "50%", height: "300px" }}>
               <ResponsiveContainer>
                 <PieChart>
                   <Pie
