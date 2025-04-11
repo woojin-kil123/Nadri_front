@@ -44,7 +44,7 @@ import axios from "axios";
 import SearchResult from "./components/search/SearchResult";
 import AdminMain from "./components/admin/AdminMain";
 import AdminReview from "./components/admin/AdminReview";
-import AdminPartner from "./components/admin/AdminPartner";
+import AdminPartner from "./components/admin/AdminKeyword";
 import PlaceDetail from "./components/place/PlaceDetail";
 import EditReview from "./components/review/EditReview";
 
@@ -117,10 +117,9 @@ function App() {
                   >
                     <Route index element={<AdminMain />} />
                     <Route path="event" element={<Event />} />
-                    <Route path="partner" element={<AdminPartner />} />
+                    <Route path="keyword" element={<AdminPartner />} />
                     <Route path="review" element={<AdminReview />} />
                     <Route path="member" element={<></>} />
-                    <Route path="contents" element={<></>} />
                     <Route path="main" element={<AdminMain />} />
                   </Route>
                   <Route

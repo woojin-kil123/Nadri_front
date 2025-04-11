@@ -18,7 +18,7 @@ import { useRecoilValue } from "recoil";
 import { placeTypeState } from "../utils/RecoilData";
 import Swal from "sweetalert2";
 
-const AdminPartner = () => {
+const AdminKeyword = () => {
   const inputStyle = {
     width: "200px",
     height: "40px",
@@ -107,38 +107,10 @@ const AdminPartner = () => {
       <div className="popular">
         {popular && (
           <>
-            <div>
-              <h4>일간</h4>
-              {popular.daily.map((p, i) => (
-                <p key={"daily-" + i}>
-                  {p.query}/{p.count}회
-                </p>
-              ))}
-            </div>
-            <div>
-              <h4>주간</h4>
-              {popular.weekly.map((p, i) => (
-                <p key={"weekly-" + i}>
-                  {p.query}/{p.count}회
-                </p>
-              ))}
-            </div>
-            <div>
-              <h4>월간</h4>
-              {popular.monthly.map((p, i) => (
-                <p key={"monthly-" + i}>
-                  {p.query}/{p.count}회
-                </p>
-              ))}
-            </div>
-            <div>
-              <h4>연간</h4>
-              {popular.yearly.map((p, i) => (
-                <p key={"yearly-" + i}>
-                  {p.query}/{p.count}회
-                </p>
-              ))}
-            </div>
+            <PopularKeywordTable title="일간" data={popular.daily} />
+            <PopularKeywordTable title="주간" data={popular.weekly} />
+            <PopularKeywordTable title="월간" data={popular.monthly} />
+            <PopularKeywordTable title="연간" data={popular.yearly} />
           </>
         )}
       </div>
@@ -275,7 +247,7 @@ const AdminPartner = () => {
     </div>
   );
 };
-export default AdminPartner;
+export default AdminKeyword;
 
 const AutocompleteForm = ({ id, label, formData, setFormData, controller }) => {
   const [inputText, setInputText] = useState("");
@@ -399,6 +371,34 @@ const SelectForm = ({ inputStyle, formData, setFormData, cat, id, label }) => {
           </MenuItem>
         ))}
       </Select>
+    </div>
+  );
+};
+
+const PopularKeywordTable = ({ title, data }) => {
+  return (
+    <div className="keyword-table-wrapper">
+      <div className="keyword-table-section">
+        <h3 className="keyword-section-title">{title}</h3>
+        <table className="keyword-table">
+          <thead>
+            <tr>
+              <th>순위</th>
+              <th>검색어</th>
+              <th>조회수</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((item, i) => (
+              <tr key={i}>
+                <td>{i + 1}</td>
+                <td>{item.query}</td>
+                <td>{item.count}회</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

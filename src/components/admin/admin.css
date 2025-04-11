@@ -96,7 +96,52 @@
 .event-list .event-card {
   width: 30%;
 }
-/*제휴관리*/
+/*키워드 관리*/
+.keyword-table-wrapper {
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.keyword-table-section {
+  flex: 1;
+  min-width: 220px;
+  max-width: 260px;
+}
+
+.keyword-section-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.keyword-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.keyword-table thead {
+  background-color: var(--main2);
+}
+
+.keyword-table th {
+  color: var(--gray8);
+  font-family: ns-r;
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+.keyword-table td {
+  padding: 8px;
+  text-align: center;
+}
+
+.keyword-table tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
 .hot-keyword-wrap > .popular {
   display: flex;
   justify-content: space-between;
@@ -105,9 +150,13 @@
 .insert .info-grid {
   display: grid;
   grid-template-columns: repeat(3, 2fr);
-  gap: 0px 40px;
-
+  justify-content: center;
   width: 90%;
+}
+.insert > form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .keyword-manage {
   padding: 20px;
@@ -115,12 +164,17 @@
   flex-direction: column;
   gap: 20px;
 }
+.keyword-manage .css-ei5fq0-MuiAutocomplete-root {
+  margin: 0 45px;
+  width: 40%;
+  align-self: flex-start;
+}
 .keyword-manage h3 {
   padding: 20px 0px;
 }
 .insert > form {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  min-height: 420px;
+  min-height: 440px;
 }
 .insert .input-wrap {
   padding: 20px;
@@ -132,8 +186,9 @@
   width: 100%;
 }
 .autocomplete .MuiInputBase-root {
-  width: 55%;
+  width: 100%;
 }
+
 .keyword-manage .keyword-submit {
   display: block;
   background-color: var(--main2);
@@ -145,16 +200,17 @@
   width: 80px;
 }
 .check .autocomplete .MuiInputBase-root {
-  width: 300px;
+  width: 350px;
 }
 .keyword-manage > .check > form {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   padding: 0px 20px;
-  width: 50%;
+  width: 100%;
 }
 .keyword-manage > .check > form button {
-  margin: 0px 20px;
+  margin: 0px;
   align-self: flex-end;
 }
 .keyword-manage .keyword-submit:hover {

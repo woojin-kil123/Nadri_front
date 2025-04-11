@@ -32,9 +32,9 @@ const MainSearch = () => {
   const inputRef = useRef(null);
   const navigate = useNavigate();
   const handleMenuClick = (typeName) => {
-    const newTag = { title: typeName };
-    if (!selectedTags.some((tag) => tag.title === newTag.title)) {
-      setSelectedTags((prev) => [...prev, newTag]);
+    const newTag = { name: typeName, id: "" };
+    if (!selectedTags.some((tag) => tag.name === newTag.name)) {
+      setSelectedTags((prev) => [...prev, newTag.name]);
       // DOM이 다시 렌더링된 다음에 input에 포커스
       setTimeout(() => {
         inputRef.current?.focus();
