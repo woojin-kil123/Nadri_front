@@ -61,40 +61,6 @@
 
 /*detail*/
 
-.container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 24px;
-  font-family: "Segoe UI", sans-serif;
-  color: #333;
-}
-
-.header {
-  margin-bottom: 16px;
-}
-
-.rating {
-  font-size: 14px;
-  color: green;
-  margin-bottom: 4px;
-}
-
-.location {
-  color: #555;
-}
-
-.title {
-  font-size: 28px;
-  font-weight: bold;
-  margin: 0;
-}
-
-.content {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-}
-
 .main-description {
   flex: 2;
   min-width: 300px;
