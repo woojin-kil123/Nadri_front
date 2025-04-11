@@ -18,6 +18,7 @@ import MarkerWithOverlay from "./MarkerWithOverlay";
 import { useRecoilState } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
 import BasicSelect from "../utils/BasicSelect";
+import DrawPlannerPathCanvas from "./DrawPlannerPath";
 
 const PlannerFrm = () => {
   //마커 오버레이 여닫음
@@ -675,26 +676,29 @@ const SavePlanModal = (props) => {
   const plannedPlaceList = props.plannedPlaceList;
   const navigate = useNavigate();
 
-  const planData = {
-    tripPlanData: {
-      planName: planName.trim() === "" ? "untitled" : planName,
-      startDate: plannedPlaceList[0].itineraryDate,
-      endDate: plannedPlaceList[plannedPlaceList.length - 1].itineraryDate,
-      // planThumb
-      planStatus: planStatus === "공개" ? 1 : 2, //2: 비공개
-      memberNickname: loginNickname,
-    },
-    itineraryList: plannedPlaceList.map((item) => {
-      return {
-        itineraryDate: item.itineraryDate,
-        startLocation:
-          item.order === 0 ? null : plannedPlaceList[item.order - 1].placeId,
-        transport: item.transport,
-        endLocation: item.placeId,
-        itineraryOrder: item.order,
-      };
+  const planData = useMemo(
+    () => ({
+      tripPlanData: {
+        planName: planName.trim() === "" ? "untitled" : planName,
+        startDate: plannedPlaceList[0].itineraryDate,
+        endDate: plannedPlaceList[plannedPlaceList.length - 1].itineraryDate,
+        planThumb: "",
+        planStatus: planStatus === "공개" ? 1 : 2, //2: 비공개
+        memberNickname: loginNickname,
+      },
+      itineraryList: plannedPlaceList.map((item) => {
+        return {
+          itineraryDate: item.itineraryDate,
+          startLocation:
+            item.order === 0 ? null : plannedPlaceList[item.order - 1].placeId,
+          transport: item.transport,
+          endLocation: item.placeId,
+          itineraryOrder: item.order,
+        };
+      }),
     }),
-  };
+    [plannedPlaceList, planName, planStatus]
+  );
 
   const handleSavePlanner = () => {
     if (planStatus === "") {
@@ -702,23 +706,50 @@ const SavePlanModal = (props) => {
       return;
     }
 
-    // html2canvas(mapRef).then((canvas) => {
-    //   const thumb = canvas.toDataURL("image/jpeg");
-    // })
+    //pathCanvas: <canvas> 태그로 감싼 DOM 요소
+    const pathCanvas = DrawPlannerPathCanvas(plannedPlaceList);
+    //canvas 태그를 파일로 변환하는 전용 함수: toBlob
+    pathCanvas.toBlob(
+      (blob) => {
+        const form = new FormData();
+        form.append("file", blob, "thumbnail.jpg");
 
-    axios
-      .post(`${process.env.REACT_APP_BACK_SERVER}/plan/save`, planData)
-      .then((res) => {
-        console.log(res.data);
-        if (res.data) {
-          window.localStorage.removeItem(`${loginNickname}_cache_planner`);
-          setOpenSaveModal(false);
-          navigate("/mypage/planners");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+        let savedFilename = null;
+        axios
+          .post(`${process.env.REACT_APP_BACK_SERVER}/plan/thumb`, form)
+          .then((res) => {
+            //썸네일 업로드 성공 시(then)
+            console.log(res.data);
+            savedFilename = res.data;
+
+            planData.tripPlanData.planThumb = savedFilename;
+
+            return axios.post(
+              `${process.env.REACT_APP_BACK_SERVER}/plan/save`,
+              planData
+            );
+          })
+          .then((res) => {
+            //썸네일 업로드 및 plan 저장 성공 시(then)
+            console.log(res.data);
+            if (res.data) {
+              window.localStorage.removeItem(`${loginNickname}_cache_planner`);
+              setOpenSaveModal(false);
+              navigate("/mypage/planners");
+            }
+          })
+          .catch((err) => {
+            //썸네일 업로드 실패, 혹은 plan 저장 실패한 모든 경우(catch)
+            console.log(err);
+            if (savedFilename) {
+              //썸네일 업로드는 됐는데 plan 저장만 실패하면 썸네일 삭제
+              window.alert("저장에 실패했습니다. 잠시 후 다시 시도해주세요.");
+            }
+          });
+      },
+      "image/jpeg",
+      0.95
+    );
   };
 
   return (
