@@ -45,6 +45,7 @@ const MainSearch = () => {
         setDropdownOpen(true);
       });
     }
+    setOpen(false);
   };
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -86,10 +87,10 @@ const MainSearch = () => {
         }/search/keyword?query=${query}${type.join("")}`
       )
       .then((res) => {
-        console.log(res.data);
         const newKeyword = res.data.map((keyword, _) => {
           return {
-            title: keyword,
+            name: keyword.name,
+            id: keyword.id,
           };
         });
         setKeyword(newKeyword);
@@ -180,8 +181,8 @@ const MainSearch = () => {
         options={keyword}
         getOptionLabel={(keyword) => {
           if (typeof keyword === "string") return keyword;
-          if (!keyword || typeof keyword.title !== "string") return "";
-          return keyword.title;
+          if (!keyword || typeof keyword.name !== "string") return "";
+          return keyword.name;
         }}
         value={selectedTags}
         inputValue={inputValue}

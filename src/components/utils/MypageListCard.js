@@ -1,11 +1,17 @@
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import "./mypageListCard.css"; // CSS는 따로 작성
 import StarRating from "./StarRating";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export default function MypageListCard(props) {
   const navigate = useNavigate();
   const place = props.place;
+  const [liked, setLiked] = useState(false);
+  const handleClick = () => {
+    setLiked((prev) => !prev);
+  };
   return (
     <>
       {!place ? (
@@ -14,7 +20,8 @@ export default function MypageListCard(props) {
         <div
           className="card2"
           onClick={() => {
-            place.route && navigate(place.route);
+            // place.route && navigate("/place/detail:" + place.placeId);
+            navigate(`/place/detail/${place.placeId}`);
           }}
         >
           <div className="image-container">
@@ -22,11 +29,15 @@ export default function MypageListCard(props) {
               src={place.placeThumb ? place.placeThumb : "/image/dora.png"}
               className="card-image"
             />
-            <div className="heart-icon">
-              <FavoriteIcon
-                style={{ color: "#4CAF50" }}
-                onClick={place.favorFunc}
-              />
+            <div
+              className="heart-icon"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <div onClick={handleClick} style={{ cursor: "pointer" }}>
+                {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+              </div>
             </div>
           </div>
           <div className="card2-content">

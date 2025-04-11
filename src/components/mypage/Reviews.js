@@ -45,9 +45,7 @@ const Reviews = () => {
 
     axios
       .get(
-        `${
-          process.env.REACT_APP_BACK_SERVER
-        }/mypage/reviews?nickname=${"유저01"}&value=${value}`
+        `${process.env.REACT_APP_BACK_SERVER}/mypage/reviews?nickname=${memberNickname}&value=${value}`
       )
       .then((res) => {
         console.log(res);
@@ -147,17 +145,30 @@ const ReviewItem = (props) => {
   const reviews = props.reviews;
   return (
     <li
-      className="posting-item"
+      className="posting-item2"
       onClick={() => {
         navigate(`/review/detail/${reviews.reviewNo}`);
       }}
     >
+      <div className="posting-thumb2">
+        <img
+          src={reviews.placeThumb || "/image/dora.png"}
+          className="place-image2"
+          alt=""
+        />
+      </div>
       <div className="posting-info">
         <div>
           <StarRating rating={reviews.starRate} />
         </div>
         <div className="posting-title">{reviews.reviewTitle}</div>
-        <div>{reviews.reviewContent}</div>
+        <div className="place-title">{reviews.placeTitle}</div>
+        <div className="place-addr">{reviews.placeAddr}</div>
+        <div
+          dangerouslySetInnerHTML={{
+            __html: reviews.reviewContent, // p 태그 제거
+          }}
+        />
         <div className="posting-sub-info">
           <span>{reviews.memberNickname}</span>
           <span>{reviews.reviewDate}</span>

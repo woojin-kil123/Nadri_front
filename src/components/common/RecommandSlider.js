@@ -8,7 +8,7 @@ export default function RecommandSlider({ on }) {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACK_SERVER}/place?reqPage=1&placeCat=${on}`
+        `${process.env.REACT_APP_BACK_SERVER}/place?reqPage=1&placeTypeId=${on}`
       )
       .then((res) => {
         setCards(res.data.list);
