@@ -32,9 +32,11 @@ const Main = () => {
   const [onPlan, setOnPlan] = useState("인기");
   //placeType 별 조회
   const placeType = useRecoilValue(placeTypeState);
-  const [onPlace, setOnPlace] = useState(placeType[0].id);
+  const [onPlace, setOnPlace] = useState("");
   useEffect(() => {
-    setOnPlace(placeType[0].name);
+    if (Array.isArray(placeType) && placeType.length > 0) {
+      setOnPlace(placeType[0].id);
+    }
   }, []);
   const [onReview, setOnReview] = useState("");
   const [showPopup, setShowPopup] = useState(false);
