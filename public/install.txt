@@ -26,7 +26,10 @@ npm install react-slick slick-carousel
 npm install @fullcalendar/react @fullcalendar/daygrid @fullcalendar/interaction
 
 신종인 2025-04-09
-npm instll html2canvas
+npm install html2canvas
 
 길우진 2025-04-10
 npm install recharts
+
+[uninstall] 신종인 2025-04-11
+npm uninstall html2canvas
