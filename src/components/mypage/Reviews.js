@@ -45,9 +45,7 @@ const Reviews = () => {
 
     axios
       .get(
-        `${
-          process.env.REACT_APP_BACK_SERVER
-        }/mypage/reviews?nickname=${"유저01"}&value=${value}`
+        `${process.env.REACT_APP_BACK_SERVER}/mypage/reviews?nickname=${memberNickname}&value=${value}`
       )
       .then((res) => {
         console.log(res);
