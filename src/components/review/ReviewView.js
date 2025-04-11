@@ -296,12 +296,14 @@ const ReviewView = () => {
         {reviewImages.length > 0 && (
           <div className="review-images">
             {reviewImages.map((img, index) => (
-              <img
-                key={index}
-                src={`${process.env.REACT_APP_BACK_SERVER}/place/${img.filepath}`}
-                alt=""
-                className="review-image"
-              />
+              <div className="review-image-wrapper">
+                <img
+                  key={index}
+                  src={`${process.env.REACT_APP_BACK_SERVER}/place/${img.filepath}`}
+                  alt=""
+                  className="review-image"
+                />
+              </div>
             ))}
           </div>
         )}
@@ -351,15 +353,22 @@ const ReviewView = () => {
         {memberNickname && (
           <>
             {!isCommenting ? (
-              <button onClick={() => setIsCommenting(true)}>댓글 작성</button>
+              <button
+                className="btn-primary"
+                onClick={() => setIsCommenting(true)}
+              >
+                댓글 작성
+              </button>
             ) : (
-              <div>
+              <div className="comment-form-actions">
                 <input
+                  className="write-comment-zone"
                   type="text"
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                 />
                 <button
+                  className="btn-primary"
                   onClick={() => {
                     const form = new FormData();
                     form.append("reviewNo", reviewNo);
@@ -377,7 +386,12 @@ const ReviewView = () => {
                 >
                   등록
                 </button>
-                <button onClick={() => setIsCommenting(false)}>취소</button>
+                <button
+                  className="btn-secondary"
+                  onClick={() => setIsCommenting(false)}
+                >
+                  취소
+                </button>
               </div>
             )}
           </>
