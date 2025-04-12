@@ -3,12 +3,13 @@ import IntroSlider from "./IntroSlide";
 import { Box, Tab, Tabs, Typography } from "@mui/material";
 import RecommandSlider from "./RecommandSlider";
 import "./main.css";
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import axios from "axios";
 import { useRecoilValue } from "recoil";
 import { placeTypeState } from "../utils/RecoilData";
 import { getKoreanToday } from "../utils/metaSet";
 import EventPopup from "../utils/EventPopup";
+import StarRating from "../utils/StarRating";
+import { useNavigate } from "react-router-dom";
 
 const Main = () => {
   const [planCategory, setPlanCategory] = useState([
@@ -30,17 +31,31 @@ const Main = () => {
     },
   ]);
   const [onPlan, setOnPlan] = useState("인기");
-  //placeType 별 조회
+  //기본 타입 지정
   const placeType = useRecoilValue(placeTypeState);
-  const [onPlace, setOnPlace] = useState("");
+  const [onPlace, setOnPlace] = useState(null);
+  const [onReview, setOnReview] = useState(null);
   useEffect(() => {
     if (Array.isArray(placeType) && placeType.length > 0) {
       setOnPlace(placeType[0].id);
+      setOnReview(placeType[0].id);
     }
   }, []);
-  const [onReview, setOnReview] = useState("");
+  //리뷰 조회
+  const [hotReview, setHotReveiw] = useState(null);
+  useEffect(() => {
+    onReview &&
+      axios
+        .get(
+          `${process.env.REACT_APP_BACK_SERVER}/review?reqPage=1&value=${onReview}`
+        )
+        .then((res) => {
+          console.log(res.data);
+          setHotReveiw(res.data.list);
+        });
+  }, [onReview]);
+  //팝업끄기
   const [showPopup, setShowPopup] = useState(false);
-
   useEffect(() => {
     const today = getKoreanToday(); // ex) "2025-04-10"
     const hiddenDate = localStorage.getItem("hidePopupDate");
@@ -48,12 +63,13 @@ const Main = () => {
       setShowPopup(true);
     }
   }, []);
+
   const dailyClose = () => {
     const today = getKoreanToday();
     localStorage.setItem("hidePopupDate", today);
     setShowPopup(false);
   };
-
+  console.log(onReview);
   return (
     <section className="section main-wrap">
       {showPopup && (
@@ -76,7 +92,7 @@ const Main = () => {
             setOn={setOnPlan}
           />
         </div>
-        <RecommandSlider on={onPlan} />
+        {/* <RecommandSlider on={onPlan} /> */}
       </div>
       <div className="recommand-wrap">
         <div className="recommand-title">
@@ -102,21 +118,23 @@ const Main = () => {
             setOn={setOnReview}
           />
         </div>
-        <div className="hot-review-wrap">
-          <div className="main-review">
-            <ReviewCard />
-          </div>
-          <div className="other-review-wrap">
-            <div className="other-review">
-              <ReviewCard />
-              <ReviewCard />
+        {Array.isArray(hotReview) && (
+          <div className="hot-review-wrap">
+            <div className="main-review">
+              <ReviewCard review={hotReview[0]} />
             </div>
-            <div className="other-review">
-              <ReviewCard />
-              <ReviewCard />
+            <div className="other-review-wrap">
+              <div className="other-review">
+                <ReviewCard review={hotReview[1]} />
+                <ReviewCard review={hotReview[2]} />
+              </div>
+              <div className="other-review">
+                <ReviewCard review={hotReview[3]} />
+                <ReviewCard review={hotReview[4]} />
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );
@@ -151,27 +169,25 @@ const FilterNavWithPanel = ({ categories, on, setOn }) => {
     </Box>
   );
 };
-const ReviewCard = () => {
+const ReviewCard = ({ review }) => {
+  const navigate = useNavigate();
   return (
     <div
       className="review-card"
       style={{
-        backgroundImage: `url(/image/dora.png)`,
+        backgroundImage: `url(${review.placeThumb})`,
         backgroundSize: "cover",
-        width: "100%",
         backgroundRepeat: "no-repeat",
       }}
+      onClick={() => {
+        navigate(`/review/detail/${review.reviewNo}`);
+      }}
     >
-      <div className="heart-icon">
-        <FavoriteIcon style={{ color: "#4CAF50" }} />
-      </div>
       <div className="card-content">
-        <h3 className="title">남산순환나들길</h3>
-        <div className="rating">
-          <span className="stars">★★★★★</span>
-          <span className="score">5.0 (22)</span>
-        </div>
-        <p className="category">국립공원</p>
+        <StarRating rating={review.starRate} />
+        <p className="score">{review.placeTitle}</p>
+        <h3 className="title">{review.reviewTitle}</h3>
+        <p className="writer">글쓴이: {review.memberNickname}</p>
       </div>
     </div>
   );
