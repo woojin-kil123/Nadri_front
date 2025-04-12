@@ -29,7 +29,6 @@ const AdminMain = () => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/review/stats`)
       .then((res) => {
-        console.log(res.data);
         // PieChart에 맞는 데이터 구조로 변환 후 상태에 저장
         const pieData = res.data.map((item) => ({
           name: `${
@@ -43,7 +42,6 @@ const AdminMain = () => {
   //플랜 통계
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BACK_SERVER}/plan/stats`).then((res) => {
-      console.log(res.data);
       setPlanStat(res.data);
       setMostPlace(res.data.mostPlace);
     });
@@ -65,7 +63,6 @@ const AdminMain = () => {
     axios
       .patch(`${process.env.REACT_APP_BACK_SERVER}/admin/company`, company)
       .then((res) => {
-        console.log(res.data);
         if (res.data > 0) {
           setIsUpdate((prev) => !prev);
           setEditMode(false);

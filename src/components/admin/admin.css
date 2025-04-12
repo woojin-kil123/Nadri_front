@@ -59,8 +59,7 @@
 .total-content .description > div {
   padding: 10px;
 }
-.total-content .plan {
-}
+
 /*정보수정*/
 .update-info .info-title {
   display: flex;
@@ -280,7 +279,10 @@
   color: #333;
   background-color: white;
 }
-
+.hot-review tbody .review-hover:hover {
+  color: var(--main2);
+  font-family: ns-b;
+}
 /* 호버 시 */
 .hot-review-title
   .MuiOutlinedInput-root:hover
