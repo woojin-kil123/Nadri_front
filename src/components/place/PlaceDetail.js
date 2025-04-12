@@ -38,7 +38,9 @@ const PlaceDetail = () => {
   useEffect(() => {
     axios
       .get(`${backServer}/review/detail/${placeId}`)
-      .then((res) => {})
+      .then((res) => {
+        setReview(res.data);
+      })
       .catch((err) => {
         console.log(err);
       });

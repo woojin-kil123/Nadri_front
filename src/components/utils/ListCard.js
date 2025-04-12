@@ -72,15 +72,9 @@ export default function ListCard(props) {
             />
             <div className="heart-icon" style={{ cursor: "pointer" }}>
               {bookmarked === 1 ? (
-                <FavoriteIcon
-                  onClick={handleHeartClick}
-                  className="heart-icon"
-                />
+                <FavoriteIcon onClick={handleHeartClick} />
               ) : (
-                <FavoriteBorderIcon
-                  onClick={handleHeartClick}
-                  className="heart-icon"
-                />
+                <FavoriteBorderIcon onClick={handleHeartClick} />
               )}
             </div>
           </div>

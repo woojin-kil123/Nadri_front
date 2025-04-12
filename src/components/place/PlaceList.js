@@ -9,6 +9,8 @@ import { useRecoilValue } from "recoil";
 import { isLoginState, loginNicknameState } from "../utils/RecoilData";
 
 const PlaceList = () => {
+  const [selectedFilters, setSelectedFilters] = useState([]);
+
   const backServer = process.env.REACT_APP_BACK_SERVER;
   const [totalCount, setTotalCount] = useState();
 
@@ -20,30 +22,37 @@ const PlaceList = () => {
   const [pi, setPi] = useState({});
   const [reqPage, setReqPage] = useState(1);
   const menus = [
-    { id: 12, name: "관광지", name2: "spot" },
-    { id: 14, name: "즐길거리", name2: "todo" },
-    { id: 32, name: "숙박", name2: "stay" },
-    { id: 39, name: "음식점", name2: "food" },
+    { id: 1, name: "관광지" }, //spot
+    { id: 2, name: "즐길거리" }, //todo
+    { id: 3, name: "숙박" }, //stay
+    { id: 4, name: "음식점" }, //food
   ];
-  const [selectedMenu, setSelectedMenu] = useState(0); // 0: 전체, 12:관광지, 14:즐길거리, 32:숙박, 39:음식점
+  const [selectedMenu, setSelectedMenu] = useState(0); // 0: 전체, 1:관광지, 2:즐길거리, 3:숙박, 4:음식점
+  const [order, setOrder] = useState(1); // 리뷰 많은순 : 1, 별점 높은순 : 2, 좋아요 많은 순 : 3
+  const changeOrder = (e) => {
+    setOrder(e.target.value);
+  };
 
   useEffect(() => {
-    console.log(selectedMenu);
-    axios
-      .get(
-        `${backServer}/place?reqPage=${reqPage}&placeTypeId=${selectedMenu}` +
-          (isLogin ? `&memberNickname=${memberNickname}` : "")
-      )
-      .then((res) => {
-        console.log(res.data);
-        setPlaceList(res.data.list);
-        setPi(res.data.pi);
-        setTotalCount(res.data.totalCount);
-      })
-      .catch((err) => {
-        console.log("장소목록 요청 실패", err);
-      });
-  }, [reqPage, selectedMenu]);
+    if (selectedMenu === 0) {
+      axios
+        .get(
+          `${backServer}/place?reqPage=${reqPage}&selectedMenu=${selectedMenu}` +
+            (isLogin ? `&memberNickname=${memberNickname}` : "") +
+            `&order=${order}`
+        )
+        .then((res) => {
+          console.log(res.data);
+          setPlaceList(res.data.list);
+          setPi(res.data.pi);
+          setTotalCount(res.data.totalCount);
+        })
+        .catch((err) => {
+          console.log("전체목록 조회 실패", err);
+        });
+    } else {
+    }
+  }, [reqPage, selectedMenu, order]);
 
   return (
     <div className="place-wrap">
@@ -55,6 +64,8 @@ const PlaceList = () => {
               menus={menus}
               selectedMenu={selectedMenu}
               setSelectedMenu={setSelectedMenu}
+              selectedFilters={selectedFilters}
+              setSelectedFilters={setSelectedFilters}
             />
           </section>
         </div>
@@ -62,7 +73,7 @@ const PlaceList = () => {
           <div className="placelist option-box">
             {totalCount && <div>총 {totalCount.toLocaleString()}개</div>}
             <div>
-              <select>
+              <select onChange={changeOrder}>
                 <option value={1}>리뷰 많은순</option>
                 <option value={2}>별점 높은순</option>
                 <option value={3}>좋아요 많은순</option>

@@ -4,9 +4,10 @@ import { useState } from "react";
 const LeftSideMenu = (props) => {
   const menus = props.menus;
   const setSelectedMenu = props.setSelectedMenu;
+  const selectedFilters = props.selectedFilters;
+  const setSelectedFilters = props.setSelectedFilters;
 
   const [activeId, setActiveId] = useState(null);
-  const [selectedFilters, setSelectedFilters] = useState([]);
 
   const subFiltersMap = {
     12: [
@@ -61,9 +62,7 @@ const LeftSideMenu = (props) => {
         : [...prev, filter]
     );
   };
-
-  console.log("activeId:", activeId);
-  console.log("필터목록:", subFiltersMap[activeId]);
+  console.log(selectedFilters);
 
   return (
     <div className="side-menu">
@@ -79,13 +78,13 @@ const LeftSideMenu = (props) => {
               <ChevronRightIcon />
             </li>
 
-            {/* 현재 활성 메뉴의 필터만 이 자리에서 보여줌 */}
+            {/* 현재 활성 메뉴의 필터만 */}
             {activeId === menu.id && subFiltersMap[menu.id] && (
-              <div className="sub-filter-wrap" style={{ paddingLeft: "10px" }}>
+              <div className="sub-filter-wrap" style={{ paddingLeft: "20px" }}>
                 {subFiltersMap[menu.id].map((filter, idx) => (
                   <label
                     key={idx}
-                    style={{ display: "block", marginTop: "4px" }}
+                    style={{ display: "block", marginTop: "5px" }}
                   >
                     <input
                       type="checkbox"
