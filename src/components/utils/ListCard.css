@@ -93,3 +93,7 @@
   padding: 20px;
   box-sizing: border-box;
 }
+
+.heart-icon > path {
+  color: var(--main3);
+}

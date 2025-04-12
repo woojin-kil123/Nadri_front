@@ -4,17 +4,36 @@ import "./ListCard.css";
 import StarRating from "./StarRating";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { isLoginState } from "./RecoilData";
+import { isLoginState, loginNicknameState } from "./RecoilData";
 import Swal from "sweetalert2";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 export default function ListCard(props) {
+  const place = props.place;
+  // console.log(place.bookmarked);
+  const backServer = process.env.REACT_APP_BACK_SERVER;
   const navigate = useNavigate();
   const isLogin = useRecoilValue(isLoginState);
+  const memberNickname = useRecoilValue(loginNicknameState);
+  const [bookmarked, setBookmarked] = useState(place.bookmarked);
 
-  const place = props.place;
-  const memberNickname = props.memberNickname;
-  const liked = props.liked; // 부모에서 상태 받음
-  const onToggleLike = props.onToggleLike;
+  // 좋아요 토글 핸들러
+  const handleToggleLike = (placeId) => {
+    axios
+      .post(`${backServer}/place/bookmark/toggle`, null, {
+        params: {
+          memberNickname: memberNickname,
+          placeId: placeId,
+        },
+      })
+      .then((res) => {
+        setBookmarked(res.data);
+      })
+      .catch((err) => {
+        console.error("좋아요 토글 실패:", err);
+      });
+  };
 
   const handleHeartClick = (e) => {
     e.stopPropagation();
@@ -25,11 +44,16 @@ export default function ListCard(props) {
         icon: "warning",
         text: "로그인 후 좋아하는 장소로 나드리가요!",
         confirmButtonText: "확인",
-      }).then(() => navigate("/login")); // ✅ 이 안에서 navigate 실행
+      }).then(() => navigate("/login"));
     } else {
-      onToggleLike(place.placeId); // ✅ 한 번만 호출
+      handleToggleLike(place.placeId);
     }
   };
+
+  // place.bookmarked 값이 바뀌면 state도 동기화
+  useEffect(() => {
+    setBookmarked(place.bookmarked);
+  }, [place.bookmarked]);
 
   return (
     <>
@@ -47,10 +71,16 @@ export default function ListCard(props) {
               alt={place.placeTitle}
             />
             <div className="heart-icon" style={{ cursor: "pointer" }}>
-              {liked ? (
-                <FavoriteIcon onClick={handleHeartClick} />
+              {bookmarked === 1 ? (
+                <FavoriteIcon
+                  onClick={handleHeartClick}
+                  className="heart-icon"
+                />
               ) : (
-                <FavoriteBorderIcon onClick={handleHeartClick} />
+                <FavoriteBorderIcon
+                  onClick={handleHeartClick}
+                  className="heart-icon"
+                />
               )}
             </div>
           </div>

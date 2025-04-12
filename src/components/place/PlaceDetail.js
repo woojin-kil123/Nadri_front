@@ -7,7 +7,8 @@ import ShareIcon from "@mui/icons-material/Share";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useRecoilValue } from "recoil";
-import { memberNoState } from "../utils/RecoilData";
+import { isLoginState, loginNicknameState } from "../utils/RecoilData";
+import Swal from "sweetalert2";
 
 const PlaceDetail = () => {
   const backServer = process.env.REACT_APP_BACK_SERVER;
@@ -15,15 +16,20 @@ const PlaceDetail = () => {
   const placeId = useParams().placeId;
   const [place, setPlace] = useState();
   const navigate = useNavigate();
-
-  const memberNo = useRecoilValue(memberNoState);
+  const isLogin = useRecoilValue(isLoginState);
+  const memberNickname = useRecoilValue(loginNicknameState);
+  const [bookmarked, setBookmarked] = useState();
 
   useEffect(() => {
     axios
-      .get(`${backServer}/place/detail?placeId=${placeId}`)
+      .get(
+        `${backServer}/place/detail?placeId=${placeId}` +
+          (isLogin ? `&memberNickname=${memberNickname}` : "")
+      )
       .then((res) => {
         console.log(res);
         setPlace(res.data);
+        setBookmarked(res.data.bookmarked);
       })
       .catch((err) => {
         console.log(err);
@@ -38,10 +44,39 @@ const PlaceDetail = () => {
       });
   }, []);
 
-  const [liked, setLiked] = useState(false);
+  const handleHeartClick = (e) => {
+    e.stopPropagation();
 
-  const handleClick = () => {
-    setLiked((prev) => !prev);
+    if (!isLogin) {
+      Swal.fire({
+        title: "로그인이 필요합니다",
+        icon: "warning",
+        text: "로그인 후 좋아하는 장소로 나드리가요!",
+        confirmButtonText: "확인",
+      }).then(() => navigate("/login"));
+    } else {
+      console.log(place);
+      handleToggleLike(placeId);
+    }
+  };
+
+  // 좋아요 토글 핸들러
+  const handleToggleLike = (placeId) => {
+    axios
+      .post(`${backServer}/place/bookmark/toggle`, null, {
+        params: {
+          memberNickname: memberNickname,
+          placeId: placeId,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        console.log(placeId);
+        setBookmarked(res.data);
+      })
+      .catch((err) => {
+        console.error("좋아요 토글 실패:", err);
+      });
   };
 
   return (
@@ -65,8 +100,12 @@ const PlaceDetail = () => {
           </div>
           <div className="share-like-box">
             <ShareIcon className="share-icon" />
-            <div onClick={handleClick} style={{ cursor: "pointer" }}>
-              {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+            <div style={{ cursor: "pointer" }}>
+              {bookmarked === 1 ? (
+                <FavoriteIcon onClick={handleHeartClick} />
+              ) : (
+                <FavoriteBorderIcon onClick={handleHeartClick} />
+              )}
             </div>
           </div>
         </div>

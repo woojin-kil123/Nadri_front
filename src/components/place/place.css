@@ -59,46 +59,17 @@
   color: #555;
 }
 
-/*detail*/
-
-.main-description {
-  flex: 2;
-  min-width: 300px;
-  line-height: 1.6;
-}
-
-.info-box {
-  flex: 1;
-  min-width: 250px;
-  background-color: #f9f9f9;
-  padding: 16px;
-  border-radius: 8px;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
-  height: auto;
-}
-
-.info-item {
-  margin-bottom: 12px;
-}
-
-.info-item strong {
-  display: block;
-  margin-bottom: 4px;
-  font-weight: bold;
-}
-
 /*place detail*/
+
 .place-detail-wrap {
   max-width: 1200px;
   margin: 0 auto;
   padding: 40px 20px;
   font-family: "sans-serif";
 }
-
 .place-detail-header {
   margin-bottom: 20px;
 }
-
 .detail-header-cat {
   display: flex;
   gap: 8px;
@@ -106,19 +77,16 @@
   color: #4caf50;
   font-weight: 600;
 }
-
 .detail-header-title .detail-title {
   font-size: 28px;
   margin: 8px 0;
 }
-
 .detail-header-info {
   font-size: 14px;
   color: #555;
   display: flex;
   justify-content: space-between;
 }
-
 .share-like-box {
   display: flex;
   gap: 10px;
@@ -127,21 +95,18 @@
 .like-icon {
   cursor: pointer;
 }
-
 /* 이미지 영역 */
 .place-detail-image {
   display: flex;
   gap: 12px;
   margin-bottom: 30px;
 }
-
 .detail-img1 {
   flex: 2;
   height: 340px;
   object-fit: cover;
   border-radius: 12px;
 }
-
 .detail-img2,
 .detail-img3,
 .detail-img4 {
@@ -152,21 +117,18 @@
   background-size: cover;
   background-position: center;
 }
-
 /* 내용과 info 박스 */
 .place-detail-content {
   display: flex;
   gap: 30px;
   margin-bottom: 40px;
 }
-
 .main-description {
   flex: 3;
   font-size: 15px;
   line-height: 1.6;
   color: #333;
 }
-
 .info-box {
   flex: 1;
   background: #f9f9f9;
@@ -176,15 +138,17 @@
   color: #333;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
-
 .info-item {
   margin-bottom: 16px;
 }
-
 .info-item strong {
   display: block;
   margin-bottom: 4px;
   color: #222;
+}
+
+.detail-header-info path {
+  color: var(--main3);
 }
 
 /* 리뷰 영역 */
@@ -194,11 +158,9 @@
   align-items: center;
   margin: 40px 0 20px;
 }
-
 .page-title h2 {
   font-size: 22px;
 }
-
 .btn-primary.green {
   padding: 8px 16px;
   background: #4caf50;
@@ -206,7 +168,6 @@
   border-radius: 6px;
   text-decoration: none;
 }
-
 .review-wap .posting-wrap {
   list-style: none;
   padding: 0;
