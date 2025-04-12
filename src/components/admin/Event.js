@@ -114,7 +114,7 @@ const EventSlide = ({ onGoing, placeType }) => {
   if (onGoing.length === 0) return null;
 
   return (
-    <div className="intro-wrap">
+    <div className="ongoing-wrap border">
       <div className="event-list">
         {isSlideMode
           ? slides[activeSlide].map((event, index) => (

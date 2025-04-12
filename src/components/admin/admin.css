@@ -4,9 +4,11 @@
   gap: 10px;
 }
 .admin-wrap .content-wrap {
-  width: 75%;
+  width: 80%;
 }
-
+.admin-wrap .content-wrap h2 {
+  padding: 10px 0px;
+}
 .admin-menu button {
   padding: 0px 20px;
   font-family: ns-r;
@@ -23,6 +25,12 @@
   background-color: var(--main2);
   width: 5px;
 }
+.admin-wrap .border {
+  margin: 0 auto;
+  width: 95%;
+  border: 1px solid var(--main2);
+  border-radius: 10px;
+}
 /*관리자 메인*/
 .admin-wrap .section {
   display: flex;
@@ -36,8 +44,22 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 20px;
+  padding: 10px;
 }
+.total-content .description {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  text-align: center;
+}
+.total-content .description > h4 {
+  background-color: var(--main2);
+  padding: 10px;
+  color: var(--gray8);
+}
+.total-content .description > div {
+  padding: 10px;
+}
+/*정보수정*/
 .update-info .info-title {
   display: flex;
   padding: 10px 0px;
@@ -50,6 +72,8 @@
 }
 
 .update-info .info-grid {
+  margin: 0 auto;
+  width: 95%;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 24px 40px;
@@ -83,8 +107,11 @@
   flex-direction: column;
   gap: 50px;
 }
+.event-page .ongoing-wrap {
+  padding: 20px 10px;
+}
 .event-page section > h2 {
-  padding-bottom: 40px;
+  padding-bottom: 20px;
 }
 .event-list {
   display: flex;
@@ -102,6 +129,7 @@
   gap: 24px;
   justify-content: space-between;
   flex-wrap: wrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .keyword-table-section {
@@ -113,7 +141,7 @@
 .keyword-section-title {
   font-size: 16px;
   font-weight: bold;
-  margin-bottom: 10px;
+  padding: 5px;
   text-align: center;
 }
 
@@ -143,6 +171,10 @@
   background-color: #fafafa;
 }
 .hot-keyword-wrap > .popular {
+  margin: 0 auto;
+  width: 95%;
+  border: 1px solid var(--main2);
+  border-radius: 10px;
   display: flex;
   justify-content: space-between;
   padding: 20px;
@@ -157,7 +189,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  height: 400px;
 }
+
 .keyword-manage {
   padding: 20px;
   display: flex;
@@ -171,10 +206,6 @@
 }
 .keyword-manage h3 {
   padding: 20px 0px;
-}
-.insert > form {
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  min-height: 440px;
 }
 .insert .input-wrap {
   padding: 20px;
@@ -194,11 +225,15 @@
   background-color: var(--main2);
   color: var(--gray8);
   border-radius: 5px;
-  font-size: 18px;
+  font-size: 15px;
   font-family: ns-r;
   margin: 10px auto;
-  width: 80px;
+  width: 60px;
 }
+.keyword-manage .keyword-submit:hover {
+  background-color: var(--main3);
+}
+
 .check .autocomplete .MuiInputBase-root {
   width: 350px;
 }
@@ -212,9 +247,6 @@
 .keyword-manage > .check > form button {
   margin: 0px;
   align-self: flex-end;
-}
-.keyword-manage .keyword-submit:hover {
-  background-color: var(--main3);
 }
 
 /* 기본 테두리 색상 */
@@ -237,7 +269,7 @@
 .hot-review-wrap .hot-review-title {
   display: flex;
   justify-content: space-between;
-  padding: 10px;
+  height: 50px;
   align-items: center;
 }
 .hot-review-title .MuiSelect-root {

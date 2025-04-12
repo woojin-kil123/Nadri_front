@@ -74,7 +74,7 @@ const AdminMain = () => {
           <div className="total-title">
             <h3>리뷰</h3>
           </div>
-          <div className="total-content">
+          <div className="total-content border">
             <div className="chart" style={{ minWidth: "50%", height: "300px" }}>
               <ResponsiveContainer>
                 <PieChart>
@@ -102,7 +102,7 @@ const AdminMain = () => {
               </ResponsiveContainer>
             </div>
             <div className="description">
-              <h4>총 리뷰 수</h4>
+              <h4>총 리뷰 </h4>
               {pieChartData &&
                 pieChartData.map((data, i) => (
                   <div key={"review-des" + i}>
@@ -116,14 +116,14 @@ const AdminMain = () => {
           <div className="total-title">
             <h3>플랜</h3>
           </div>
-          <div className="total-content">
+          <div className="total-content border">
             <div className="chart" style={{ width: "50%", height: "300px" }}>
               <h4>많이 등록된 장소</h4>
               <div> ㅎㅎㅎㅎ</div>
             </div>
             <div className="description">
-              <h4>총 플랜 수</h4>
-              {planStat && <div>{planStat.planCount}건</div>}
+              <h4>총 플랜</h4>
+              {planStat && <div>{planStat.planCount}개</div>}
             </div>
           </div>
         </div>

@@ -2,15 +2,7 @@ import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { placeTypeState } from "../utils/RecoilData";
 import axios from "axios";
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Tab,
-  Tabs,
-} from "@mui/material";
+import { MenuItem, Select } from "@mui/material";
 
 const AdminReview = () => {
   const placeType = useRecoilValue(placeTypeState);
@@ -42,7 +34,7 @@ const AdminReview = () => {
     <>
       <div className="hot-review-wrap">
         <div className="hot-review-title">
-          <h3>인기 리뷰</h3>
+          <h2>인기 리뷰</h2>
           <Select
             notched={false}
             labelId="hot-review-label"
@@ -80,7 +72,9 @@ const AdminReview = () => {
         </table>
       </div>
       <div className="reported-review warp">
-        <h3>신고 리뷰</h3>
+        <div className="hot-review-title">
+          <h2>신고 리뷰</h2>
+        </div>
         <table className="hot-review tbl">
           <thead>
             <tr>

@@ -104,7 +104,7 @@ const AdminKeyword = () => {
   return (
     <div className="hot-keyword-wrap">
       <h2>인기 검색어</h2>
-      <div className="popular">
+      <div className="popular border">
         {popular && (
           <>
             <PopularKeywordTable title="일간" data={popular.daily} />
@@ -115,7 +115,7 @@ const AdminKeyword = () => {
         )}
       </div>
       <h2>키워드 관리</h2>
-      <div className="keyword-manage">
+      <div className="keyword-manage border">
         <div className="check">
           <form
             onSubmit={(e) => {
