@@ -12,23 +12,24 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { useNavigate } from "react-router-dom";
 
 const AdminMain = () => {
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
   const placeType = useRecoilValue(placeTypeState);
-  const [reviewStat, setReviewStat] = useState(null);
   const [planStat, setPlanStat] = useState(null);
+  const [mostPlace, setMostPlace] = useState(null);
   const [company, setCompany] = useRecoilState(companyInfoState);
   const [editMode, setEditMode] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   const [pieChartData, setPieChartData] = useState([]);
-
+  const navigate = useNavigate();
+  // 리뷰 통계
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/review/stats`)
       .then((res) => {
         console.log(res.data);
-        setReviewStat(res.data);
         // PieChart에 맞는 데이터 구조로 변환 후 상태에 저장
         const pieData = res.data.map((item) => ({
           name: `${
@@ -36,14 +37,19 @@ const AdminMain = () => {
           }`,
           value: item.reviewCount,
         }));
-        setPieChartData(pieData); // 이게 핵심!!
+        setPieChartData(pieData);
       });
   }, []);
+  //플랜 통계
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BACK_SERVER}/plan/stats`).then((res) => {
+      console.log(res.data);
       setPlanStat(res.data);
+      setMostPlace(res.data.mostPlace);
     });
   }, []);
+
+  //회사정보
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/admin/company`)
@@ -116,14 +122,50 @@ const AdminMain = () => {
           <div className="total-title">
             <h3>플랜</h3>
           </div>
-          <div className="total-content border">
-            <div className="chart" style={{ width: "50%", height: "300px" }}>
-              <h4>많이 등록된 장소</h4>
-              <div> ㅎㅎㅎㅎ</div>
-            </div>
-            <div className="description">
-              <h4>총 플랜</h4>
-              {planStat && <div>{planStat.planCount}개</div>}
+          <div className="total-content">
+            <div className="plan">
+              <h4>많이 방문한 장소</h4>
+              <table className="tbl">
+                <thead>
+                  <tr>
+                    <th>순위</th>
+                    <th>ID</th>
+                    <th>이름</th>
+                    <th>분류</th>
+                    <th>주소</th>
+                    <th>방문 횟수</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {mostPlace &&
+                    mostPlace.map((place, i) => (
+                      <tr
+                        key={"most-" + i}
+                        onClick={() => {
+                          navigate(`/place/detail/${place.placeId}`);
+                        }}
+                        style={{ cursor: "pointer" }}
+                      >
+                        <td>{i + 1}</td>
+                        <td>{place.placeId}</td>
+                        <td>{place.placeTitle}</td>
+                        <td>
+                          {
+                            placeType.find(
+                              (type, _) => type.id == place.placeTypeId
+                            )?.name
+                          }
+                        </td>
+                        <td>{place.placeAddr}</td>
+                        <td>{place.visitCount}</td>
+                      </tr>
+                    ))}
+                  <tr>
+                    <th>총 플랜</th>
+                    <td colSpan={5}>{planStat && `${planStat.planCount}개`}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -146,7 +188,6 @@ const AdminMain = () => {
           <form
             className="info-grid"
             onSubmit={(e) => {
-              console.log("섭밋");
               e.preventDefault();
               updateCompany();
             }}

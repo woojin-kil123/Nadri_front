@@ -59,6 +59,8 @@
 .total-content .description > div {
   padding: 10px;
 }
+.total-content .plan {
+}
 /*정보수정*/
 .update-info .info-title {
   display: flex;

@@ -1,3 +1,6 @@
+import { useRecoilValue } from "recoil";
+import { placeTypeState } from "./RecoilData";
+
 class DropdownItem {
   constructor(icon, name, clickFunc) {
     this.icon = icon;
