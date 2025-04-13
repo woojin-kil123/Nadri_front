@@ -307,13 +307,13 @@ const ReviewView = () => {
                   />
                   <DeleteIcon
                     onClick={deleteReview}
-                    style={{ cursor: "pointer", marginLeft: "10px" }}
+                    style={{ cursor: "pointer" }}
                   />
                 </>
               ) : (
                 <ReportIcon
                   onClick={reportClick}
-                  style={{ cursor: "pointer", marginLeft: "10px" }}
+                  style={{ cursor: "pointer" }}
                 />
               )}
             </div>
