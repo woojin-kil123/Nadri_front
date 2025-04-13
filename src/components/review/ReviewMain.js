@@ -55,7 +55,7 @@ const ReviewMain = () => {
           <ul>
             <li
               className={content === "stay" ? "active" : ""}
-              style={{ width: "20%" }}
+              style={{ width: "20%", cursor: "pointer" }}
               onClick={() => {
                 changeContnent("stay");
               }}
@@ -64,7 +64,7 @@ const ReviewMain = () => {
             </li>
             <li
               className={content === "spot" ? "active" : ""}
-              style={{ width: "20%" }}
+              style={{ width: "20%", cursor: "pointer" }}
               onClick={() => {
                 changeContnent("spot");
               }}
@@ -73,7 +73,7 @@ const ReviewMain = () => {
             </li>
             <li
               className={content === "food" ? "active" : ""}
-              style={{ width: "20%" }}
+              style={{ width: "20%", cursor: "pointer" }}
               onClick={() => {
                 changeContnent("food");
               }}
@@ -82,7 +82,7 @@ const ReviewMain = () => {
             </li>
             <li
               className={content === "todo" ? "active" : ""}
-              style={{ width: "20%" }}
+              style={{ width: "20%", cursor: "pointer" }}
               onClick={() => {
                 changeContnent("todo");
               }}
@@ -113,6 +113,7 @@ const ReviewItem = (props) => {
   return (
     <li
       className="posting-item"
+      style={{ cursor: "pointer" }}
       onClick={() => {
         navigate(`/review/detail/${review.reviewNo}`);
       }}

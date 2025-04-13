@@ -11,7 +11,7 @@ const PageNavigation = (props) => {
   const arr = new Array();
   //제일앞으로(1페이지로 이동)
   arr.push(
-    <li key="first-page">
+    <li key="first-page" style={{ cursor: "pointer" }}>
       <span
         className="material-icons page-item"
         onClick={() => {
@@ -24,7 +24,7 @@ const PageNavigation = (props) => {
   );
   //이전페이지(현재 요청페이지보다 하나 전 ->reqPage-1)
   arr.push(
-    <li key="prev-page">
+    <li key="prev-page" style={{ cursor: "pointer" }}>
       <span
         className="material-icons page-item"
         onClick={() => {
@@ -41,7 +41,7 @@ const PageNavigation = (props) => {
   let pageNo = pi.pageNo;
   for (let i = 0; i < pi.pageNaviSize; i++) {
     arr.push(
-      <li key={"page-" + i}>
+      <li key={"page-" + i} style={{ cursor: "pointer" }}>
         <span
           onClick={(e) => {
             const pageNumber = e.target.innerText;
@@ -60,7 +60,7 @@ const PageNavigation = (props) => {
   }
   //다음페이지(현재 요청페이지보다 하나 전 ->reqPage+1)
   arr.push(
-    <li key="next-page">
+    <li key="next-page" style={{ cursor: "pointer" }}>
       <span
         className="material-icons page-item"
         onClick={() => {
@@ -75,7 +75,7 @@ const PageNavigation = (props) => {
   );
   //마지막페이지(totalPage)
   arr.push(
-    <li key="last-page">
+    <li key="last-page" style={{ cursor: "pointer" }}>
       <span
         className="material-icons page-item"
         onClick={() => {
