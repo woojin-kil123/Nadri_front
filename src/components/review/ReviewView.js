@@ -299,7 +299,7 @@ const ReviewView = () => {
                 <span>{likeCount}</span>
               </div>
 
-              {memberNickname === review.memberNickname && (
+              {memberNickname === review.memberNickname ? (
                 <>
                   <EditNoteIcon
                     onClick={editReview}
@@ -310,8 +310,7 @@ const ReviewView = () => {
                     style={{ cursor: "pointer", marginLeft: "10px" }}
                   />
                 </>
-              )}
-              {review.memberNickname !== memberNickname && (
+              ) : (
                 <ReportIcon
                   onClick={reportClick}
                   style={{ cursor: "pointer", marginLeft: "10px" }}
