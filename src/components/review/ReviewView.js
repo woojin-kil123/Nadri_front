@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 import { useRecoilState } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
 import EditIcon from "@mui/icons-material/Edit";
+import { Margin } from "@mui/icons-material";
 
 const ReviewView = () => {
   const params = useParams();
@@ -47,50 +48,25 @@ const ReviewView = () => {
       });
   }, [memberNickname]);
   //댓글 수정
-  const editComment = (commNo) => {
-    const targetComment = comments.find((comment) => comment.commNo === commNo);
-    if (!targetComment) return;
-
-    Swal.fire({
-      title: "댓글 수정",
-      input: "text",
-      inputLabel: "수정할 내용을 입력하세요",
-      inputPlaceholder: "댓글 내용을 입력하세요",
-      inputValue: targetComment.commContent,
-      showCancelButton: true,
-      confirmButtonText: "수정하기",
-      cancelButtonText: "취소",
-      inputValidator: (value) => {
-        if (!value) {
-          return "수정할 내용을 입력해주세요.";
+  const editComment = (commNo, editedContent) => {
+    axios
+      .patch(`${process.env.REACT_APP_BACK_SERVER}/review/comm/${commNo}`, {
+        commContent: editedContent,
+      })
+      .then((res) => {
+        console.log(res);
+        if (res.data === 1) {
+          const updatedComments = comments.map((comment) =>
+            comment.commNo === commNo
+              ? { ...comment, commContent: editedContent }
+              : comment
+          );
+          setComments(updatedComments);
         }
-      },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const editedContent = result.value;
-        console.log(commNo);
-        axios
-          .patch(`${process.env.REACT_APP_BACK_SERVER}/comm/${commNo}`, {
-            commContent: editedContent,
-          })
-          .then((res) => {
-            console.log(res);
-            if (res.data === 1) {
-              const updatedComments = comments.map((comment) =>
-                comment.commNo === commNo
-                  ? { ...comment, commContent: editedContent }
-                  : comment
-              );
-
-              setComments(updatedComments);
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    });
+      })
+      .catch((err) => console.log(err));
   };
+
   //댓글 삭제
   const deleteComment = (commNo) => {
     Swal.fire({
@@ -103,7 +79,7 @@ const ReviewView = () => {
     }).then((res) => {
       if (res.isConfirmed) {
         axios
-          .delete(`${process.env.REACT_APP_BACK_SERVER}/comm/${commNo}`)
+          .delete(`${process.env.REACT_APP_BACK_SERVER}/review/comm/${commNo}`)
           .then((res) => {
             if (res.data === 1) {
               const newComments = comments.filter(
@@ -124,7 +100,7 @@ const ReviewView = () => {
   //좋아요 불러오기
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACK_SERVER}/likes/${reviewNo}`)
+      .get(`${process.env.REACT_APP_BACK_SERVER}/review/likes/${reviewNo}`)
       .then((res) => {
         setLikeCount(res.data.likes);
         if (res.data.likeMember.memberNickname === memberNickname) {
@@ -143,16 +119,19 @@ const ReviewView = () => {
     }
     if (liked) {
       axios
-        .delete(`${process.env.REACT_APP_BACK_SERVER}/likes/${reviewNo}`, {
-          data: { memberNickname },
-        })
+        .delete(
+          `${process.env.REACT_APP_BACK_SERVER}/review/likes/${reviewNo}`,
+          {
+            data: { memberNickname },
+          }
+        )
         .catch((err) => console.log(err));
     } else {
       const form = new FormData();
       form.append("reviewNo", reviewNo);
       form.append("memberNickname", memberNickname);
       axios
-        .post(`${process.env.REACT_APP_BACK_SERVER}/likes`, form)
+        .post(`${process.env.REACT_APP_BACK_SERVER}/review/likes`, form)
         .catch((err) => console.log(err));
     }
     setLiked(!liked);
@@ -187,8 +166,12 @@ const ReviewView = () => {
   };
 
   const reportClick = (target) => {
+    if (reportNicknames.includes(memberNickname)) {
+      alert("이미 신고한 유저입니다.");
+      return; // 이미 신고한 유저라면 신고 창으로 넘어가지 않음
+    }
     setReportTarget(target);
-    setIsReporting(true);
+    setIsReporting(true); // 신고 창 열기
   };
 
   const reportSubmit = () => {
@@ -196,7 +179,6 @@ const ReviewView = () => {
       alert("신고 사유를 선택해주세요.");
       return;
     }
-
     const reportData = {
       reviewNo: reviewNo,
       reportNickname: memberNickname,
@@ -204,9 +186,10 @@ const ReviewView = () => {
     };
 
     axios
-      .post(`${process.env.REACT_APP_BACK_SERVER}/report/`, reportData)
+      .post(`${process.env.REACT_APP_BACK_SERVER}/review/report/`, reportData)
       .then(() => {
         alert(`"${reportReason}" 사유로 신고되었습니다.`);
+        navigate("/review");
       })
       .catch((err) => console.log(err));
 
@@ -241,10 +224,28 @@ const ReviewView = () => {
         });
     }
   }, [placeId]);
-
+  //신고자 목록
+  const [reportNicknames, setReportNicknames] = useState([]);
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACK_SERVER}/comm/${reviewNo}`)
+      .get(`${process.env.REACT_APP_BACK_SERVER}/review/report/${reviewNo}`)
+      .then((res) => {
+        console.log(res);
+        const nicknames = res.data.map((report) => report.reportNickname);
+
+        // 중복된 닉네임을 제거
+        const uniqueNicknames = [...new Set(nicknames)];
+
+        // 상태에 저장
+        setReportNicknames(uniqueNicknames);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACK_SERVER}/review/comm/${reviewNo}`)
       .then((res) => setComments(res.data))
       .catch((err) => console.log(err));
   }, []);
@@ -270,21 +271,68 @@ const ReviewView = () => {
 
       <div className="review-card">
         {/* 장소 정보 */}
-        <div className="place-info">
-          <h2>{placeInfo.placeTitle}</h2>
-          <p>{placeInfo.placeAddr}</p>
+        <div className="review-left">
+          <div className="place-card">
+            <img
+              src={placeInfo.placeThumb || "/image/default_img.png"}
+              alt="장소 이미지"
+              className="review-image"
+            />
+            <div className="place-info-text">
+              <h3 className="place-title">
+                {placeInfo.placeTitle || "이름 없음"}
+              </h3>
+              <p className="place-addr">
+                {placeInfo.placeAddr || "위치 정보 없음"}
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* 리뷰 정보 */}
-        <div className="review-header">
-          <div className="review-header-top">
-            <h3 className="review-title">{review.reviewTitle}</h3>
+        <div className="review-right">
+          <div className="review-header">
+            <div className="review-header-top">
+              <h3 className="review-title">{review.reviewTitle}</h3>
+            </div>
+
+            <div className="review-meta">
+              <span className="author">{review.memberNickname}</span>
+              <span className="date">{review.reviewDate}</span>
+            </div>
+
+            {/* 본문 내용 */}
+            <div
+              className="review-body"
+              dangerouslySetInnerHTML={{
+                __html: review.reviewContent,
+              }}
+            />
+
+            {/* 첨부 이미지 */}
+            {reviewImages.length > 0 && (
+              <div className="review-images">
+                {reviewImages.map((img, index) => (
+                  <div className="review-image-wrapper" key={index}>
+                    <img
+                      src={`${process.env.REACT_APP_BACK_SERVER}/place/${img.filepath}`}
+                      alt=""
+                      className="review-image"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
             <div className="review-actions">
               <div className="like-wrapper">
                 <button
                   onClick={toggleLike}
                   className="like-button"
-                  style={{ background: "none", border: "none" }}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
                 >
                   {liked ? (
                     <FavoriteIcon color="error" />
@@ -295,7 +343,7 @@ const ReviewView = () => {
                 <span>{likeCount}</span>
               </div>
 
-              {memberNickname === review.memberNickname && (
+              {memberNickname === review.memberNickname ? (
                 <>
                   <EditNoteIcon
                     onClick={editReview}
@@ -303,49 +351,19 @@ const ReviewView = () => {
                   />
                   <DeleteIcon
                     onClick={deleteReview}
-                    style={{ cursor: "pointer", marginLeft: "10px" }}
+                    style={{ cursor: "pointer" }}
                   />
                 </>
-              )}
-              {review.memberNickname !== memberNickname && (
+              ) : (
                 <ReportIcon
                   onClick={reportClick}
-                  style={{ cursor: "pointer", marginLeft: "10px" }}
+                  style={{ cursor: "pointer" }}
                 />
               )}
             </div>
           </div>
-
-          <div className="review-meta">
-            <span className="author">{review.memberNickname}</span>
-            <span className="date">{review.reviewDate}</span>
-          </div>
         </div>
-
-        {/* 본문 내용 */}
-        <div
-          className="review-body"
-          dangerouslySetInnerHTML={{
-            __html: review.reviewContent,
-          }}
-        />
-
-        {/* 첨부 이미지 */}
-        {reviewImages.length > 0 && (
-          <div className="review-images">
-            {reviewImages.map((img, index) => (
-              <div className="review-image-wrapper" key={index}>
-                <img
-                  src={`${process.env.REACT_APP_BACK_SERVER}/place/${img.filepath}`}
-                  alt=""
-                  className="review-image"
-                />
-              </div>
-            ))}
-          </div>
-        )}
       </div>
-
       {/* 댓글 영역 */}
       <div className="comment-wrap">
         <h3>댓글</h3>
@@ -374,6 +392,7 @@ const ReviewView = () => {
                   className="write-comment-zone"
                   type="text"
                   value={newComment}
+                  style={{ width: "70%" }}
                   onChange={(e) => setNewComment(e.target.value)}
                 />
                 <button
@@ -384,7 +403,10 @@ const ReviewView = () => {
                     form.append("commContent", newComment);
                     form.append("memberNickname", memberNickname);
                     axios
-                      .post(`${process.env.REACT_APP_BACK_SERVER}/comm`, form)
+                      .post(
+                        `${process.env.REACT_APP_BACK_SERVER}/review/comm`,
+                        form
+                      )
                       .then((res) => {
                         setComments([...comments, res.data]);
                       })
@@ -409,7 +431,6 @@ const ReviewView = () => {
 
       {isReporting && (
         <div className="modal">
-          <h3>신고 사유 선택</h3>
           <select
             onChange={(e) => setReportReason(e.target.value)}
             value={reportReason}
@@ -421,8 +442,24 @@ const ReviewView = () => {
               </option>
             ))}
           </select>
-          <button onClick={reportSubmit}>신고 접수</button>
-          <button onClick={() => setIsReporting(false)}>취소</button>
+          <button
+            onClick={() => {
+              if (reportNicknames.includes(memberNickname)) {
+                alert("이미 신고한 글입니다.");
+                return;
+              }
+              reportSubmit();
+            }}
+            className="btn-primary report-move"
+          >
+            신고 접수
+          </button>
+          <button
+            onClick={() => setIsReporting(false)}
+            className="btn-secondary"
+          >
+            취소
+          </button>
         </div>
       )}
     </section>
@@ -430,18 +467,25 @@ const ReviewView = () => {
 };
 
 const CommentItem = ({ comment, onDelete, onEdit }) => {
+  const [isEditing, setIsEditing] = useState(false); // Track edit state
+  const [editedContent, setEditedContent] = useState(comment.commContent); // Track edited content
   const [memberNickname, setMemberNickname] =
     useRecoilState(loginNicknameState);
-  const [member, setMember] = useState(null);
 
-  useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_BACK_SERVER}/member/memberInfo?memberNickname=${memberNickname}`
-      )
-      .then((res) => setMember(res.data))
-      .catch((err) => console.log(err));
-  }, []);
+  // Handle comment update
+  const handleSave = () => {
+    if (editedContent !== comment.commContent) {
+      // If content is modified, call the onEdit function to save changes
+      onEdit(comment.commNo, editedContent);
+    }
+    setIsEditing(false); // Close editing mode
+  };
+
+  // Handle cancel edit
+  const handleCancel = () => {
+    setEditedContent(comment.commContent); // Reset to original content
+    setIsEditing(false); // Close editing mode
+  };
 
   return (
     <li className="comment-item">
@@ -459,14 +503,42 @@ const CommentItem = ({ comment, onDelete, onEdit }) => {
                 className="comment-action-icon"
                 onClick={() => onDelete(comment.commNo)}
               />
-              <EditIcon
-                className="comment-action-icon"
-                onClick={() => onEdit(comment.commNo)}
-              />
+              {!isEditing ? (
+                <EditIcon
+                  className="comment-action-icon"
+                  onClick={() => setIsEditing(true)}
+                />
+              ) : null}
             </div>
           )}
         </div>
-        <p className="comment-text">{comment.commContent}</p>
+        {/* 수정 모드에서는 텍스트 필드, 아닌 경우 기존 댓글 표시 */}
+        {isEditing ? (
+          <div className="edit-comment-zone">
+            <input
+              type="text"
+              className="edit-comment-input"
+              value={editedContent}
+              style={{ width: "75%" }}
+              onChange={(e) => setEditedContent(e.target.value)}
+            />
+            {/* 버튼을 입력 필드 옆에 두기 */}
+            <div className="edit-comment-buttons">
+              <button
+                className="btn-primary"
+                onClick={handleSave}
+                style={{ marginRight: "5px" }}
+              >
+                저장
+              </button>
+              <button className="btn-secondary" onClick={handleCancel}>
+                취소
+              </button>
+            </div>
+          </div>
+        ) : (
+          <p className="comment-text">{comment.commContent}</p>
+        )}
       </div>
     </li>
   );

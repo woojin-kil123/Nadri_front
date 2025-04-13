@@ -54,40 +54,41 @@ const ReviewMain = () => {
         <nav className="review-nav">
           <ul>
             <li
-              className={content === "stay" ? "active" : ""}
-              style={{ width: "20%" }}
+              className={content === "12" ? "active" : ""}
+              style={{ width: "20%", cursor: "pointer" }}
+
               onClick={() => {
-                changeContnent("stay");
-              }}
-            >
-              숙소
-            </li>
-            <li
-              className={content === "spot" ? "active" : ""}
-              style={{ width: "20%" }}
-              onClick={() => {
-                changeContnent("spot");
+                changeContnent("12");
               }}
             >
               관광지
             </li>
             <li
-              className={content === "food" ? "active" : ""}
-              style={{ width: "20%" }}
+              className={content === "14" ? "active" : ""}
+              style={{ width: "20%", cursor: "pointer" }}
               onClick={() => {
-                changeContnent("food");
-              }}
-            >
-              음식점
-            </li>
-            <li
-              className={content === "todo" ? "active" : ""}
-              style={{ width: "20%" }}
-              onClick={() => {
-                changeContnent("todo");
+                changeContnent("14");
               }}
             >
               즐길거리
+            </li>
+            <li
+              className={content === "32" ? "active" : ""}
+              style={{ width: "20%", cursor: "pointer" }}
+              onClick={() => {
+                changeContnent("32");
+              }}
+            >
+              숙박
+            </li>
+            <li
+              className={content === "39" ? "active" : ""}
+              style={{ width: "20%", cursor: "pointer" }}
+              onClick={() => {
+                changeContnent("39");
+              }}
+            >
+              음식점
             </li>
           </ul>
         </nav>
@@ -113,6 +114,7 @@ const ReviewItem = (props) => {
   return (
     <li
       className="posting-item"
+      style={{ cursor: "pointer" }}
       onClick={() => {
         navigate(`/review/detail/${review.reviewNo}`);
       }}
