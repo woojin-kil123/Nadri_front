@@ -285,6 +285,7 @@
 .review-tbl tbody .review-hover:hover {
   color: var(--main2);
   font-family: ns-b;
+  cursor: pointer;
 }
 
 .report-review tbody td {

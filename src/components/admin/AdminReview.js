@@ -25,7 +25,7 @@ const AdminReview = () => {
   const [selectedType, setSelectedType] = useState(placeType[0].id);
   const [hotReview, setHotReview] = useState(null);
   const [reportedReview, setReportedReview] = useState(null);
-
+  const [isUpdate, setIsUpdate] = useState(false);
   useEffect(() => {
     if (!selectedType) return;
     axios
@@ -47,15 +47,40 @@ const AdminReview = () => {
         console.log(res.data);
         setReportedReview(res.data);
       });
-  }, [tab]);
+  }, [tab, isUpdate]);
   const handleChange = (event) => {
     setSelectedType(event.target.value);
   };
-  const handleStatusUpdate = (id, status) => {
-    axios.patch(`/admin/report/${id}`, { status }).then(() => {});
+  const handleStatusUpdate = (reviewNo, writer, reporter, status) => {
+    if (status === 1) return;
+    axios
+      .patch(`${process.env.REACT_APP_BACK_SERVER}/admin/report`, {
+        reviewNo: reviewNo,
+        memberNickname: writer,
+        reportNickname: reporter,
+        reportStatus: status,
+      })
+      .then((res) => {
+        if (res.data > 0) {
+          setIsUpdate((prev) => !prev);
+          const resultStatus = status === 2 ? "접수" : "반려";
+          Swal.fire({
+            icon: "info",
+            title: "처리 완료",
+            text: `해당 신고는 ${resultStatus} 처리 되었습니다.`,
+          });
+        }
+      });
   };
-  const handleDelete = (id) => {
-    axios.delete(`/admin/review/${id}`).then(() => {});
+  const handleDelete = (reviewNo) => {
+    console.log("삭제진행함수");
+    axios
+      .delete(`${process.env.REACT_APP_BACK_SERVER}/review/${reviewNo}`)
+      .then((res) => {
+        if (res.data > 0) {
+          setIsUpdate((prev) => !prev);
+        }
+      });
   };
   return (
     <>
@@ -140,14 +165,17 @@ const AdminReview = () => {
               </thead>
               <tbody>
                 {reportedReview &&
-                  reportedReview.map((review, i) => (
-                    <Report
-                      key={"status1-" + i}
-                      review={review}
-                      navigate={navigate}
-                      onStatusUpdate={handleStatusUpdate}
-                    />
-                  ))}
+                  reportedReview.map(
+                    (review, i) =>
+                      review.reportStatus === 1 && (
+                        <Report
+                          key={`${review.reviewNo}-${review.reportStatus}`}
+                          review={review}
+                          navigate={navigate}
+                          onStatusUpdate={handleStatusUpdate}
+                        />
+                      )
+                  )}
               </tbody>
             </table>
           )}
@@ -168,7 +196,7 @@ const AdminReview = () => {
                 {reportedReview &&
                   reportedReview.map((review, i) => (
                     <Report
-                      key={"status2-" + i}
+                      key={`${review.reviewNo}-${review.reportStatus}`}
                       review={review}
                       navigate={navigate}
                       onDelete={handleDelete}
@@ -214,22 +242,32 @@ const Report = ({ navigate, review, onStatusUpdate, onDelete }) => {
       title: "리뷰 삭제",
       text: "해당 리뷰를 삭제하시겠습니까?",
       showConfirmButton: true,
+      confirmButtonText: "확인",
       showCancelButton: true,
+      cancelButtonText: "취소",
     }).then(() => {
-      console.log("삭제 요청");
+      onDelete?.(review.reviewNo);
     });
   };
 
   const handleStatusChange = (e) => {
     const newStatus = e.target.value;
     setStatus(newStatus);
-    onStatusUpdate?.(review.reviewNo, newStatus);
+    onStatusUpdate?.(
+      review.reviewNo,
+      review.memberNickname,
+      review.reportNickname,
+      newStatus
+    );
   };
 
   return (
     <tr>
       <td>{review.reviewNo}</td>
-      <td onClick={() => navigate(`/review/detail/${review.reviewNo}`)}>
+      <td
+        onClick={() => navigate(`/review/detail/${review.reviewNo}`)}
+        className="review-hover"
+      >
         {review.reviewTitle}
       </td>
       <td>{review.memberNickname}</td>
