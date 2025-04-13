@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import LeftSideMenu from "../utils/LeftSideMenu";
 import axios from "axios";
-
 import "./place.css";
 import ListCard from "../utils/ListCard";
 import PageNavigation from "../utils/PageNavigtion";
 import { useRecoilValue } from "recoil";
 import { isLoginState, loginNicknameState } from "../utils/RecoilData";
+import { convertFiltersToCodes } from "../utils/FilterMap";
 
 const PlaceList = () => {
   const [selectedFilters, setSelectedFilters] = useState([]);
@@ -22,19 +22,24 @@ const PlaceList = () => {
   const [pi, setPi] = useState({});
   const [reqPage, setReqPage] = useState(1);
   const menus = [
-    { id: 1, name: "관광지" }, //spot
-    { id: 2, name: "즐길거리" }, //todo
-    { id: 3, name: "숙박" }, //stay
-    { id: 4, name: "음식점" }, //food
+    { id: 12, name: "관광지" }, //spot
+    { id: 14, name: "즐길거리" }, //todo
+    { id: 32, name: "숙박" }, //stay
+    { id: 39, name: "음식점" }, //food
   ];
-  const [selectedMenu, setSelectedMenu] = useState(0); // 0: 전체, 1:관광지, 2:즐길거리, 3:숙박, 4:음식점
+  const [selectedPlaceTypeId, setSelectedPlaceTypeId] = useState(0); // 0: 전체, 1:관광지, 2:즐길거리, 3:숙박, 4:음식점
   const [order, setOrder] = useState(1); // 리뷰 많은순 : 1, 별점 높은순 : 2, 좋아요 많은 순 : 3
   const changeOrder = (e) => {
     setOrder(e.target.value);
   };
 
+  const filterCodes = convertFiltersToCodes(
+    selectedPlaceTypeId,
+    selectedFilters
+  );
+
   useEffect(() => {
-    if (selectedMenu === 0) {
+    if (selectedPlaceTypeId === 0) {
       axios
         .get(
           `${backServer}/place?reqPage=${reqPage}&order=${order}` +
@@ -52,10 +57,10 @@ const PlaceList = () => {
     } else {
       axios
         .post(`${backServer}/place/filter`, {
-          selectedMenu, // ← 메뉴 ID (1~4)
-          filters: selectedFilters, // ← 한글 필터명 리스트
-          reqPage,
-          order,
+          placeTypeId: selectedPlaceTypeId, // ← 메뉴 : selectedPlaceTypeId
+          filterCodes,
+          reqPage: reqPage,
+          order: order,
           ...(isLogin && { memberNickname }),
         })
         .then((res) => {
@@ -68,7 +73,7 @@ const PlaceList = () => {
           console.log("세부필터 목록 조회 실패", err);
         });
     }
-  }, [reqPage, selectedMenu, selectedFilters, order]);
+  }, [reqPage, selectedPlaceTypeId, selectedFilters, order]);
 
   return (
     <div className="place-wrap">
@@ -78,8 +83,8 @@ const PlaceList = () => {
           <section className="section menu-box">
             <LeftSideMenu
               menus={menus}
-              selectedMenu={selectedMenu}
-              setSelectedMenu={setSelectedMenu}
+              selectedMenu={selectedPlaceTypeId}
+              setSelectedMenu={setSelectedPlaceTypeId}
               selectedFilters={selectedFilters}
               setSelectedFilters={setSelectedFilters}
             />
