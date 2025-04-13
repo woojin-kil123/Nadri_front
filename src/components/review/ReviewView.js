@@ -50,7 +50,7 @@ const ReviewView = () => {
   //댓글 수정
   const editComment = (commNo, editedContent) => {
     axios
-      .patch(`${process.env.REACT_APP_BACK_SERVER}/comm/${commNo}`, {
+      .patch(`${process.env.REACT_APP_BACK_SERVER}/review/comm/${commNo}`, {
         commContent: editedContent,
       })
       .then((res) => {
@@ -79,7 +79,7 @@ const ReviewView = () => {
     }).then((res) => {
       if (res.isConfirmed) {
         axios
-          .delete(`${process.env.REACT_APP_BACK_SERVER}/comm/${commNo}`)
+          .delete(`${process.env.REACT_APP_BACK_SERVER}/review/comm/${commNo}`)
           .then((res) => {
             if (res.data === 1) {
               const newComments = comments.filter(
@@ -100,7 +100,7 @@ const ReviewView = () => {
   //좋아요 불러오기
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACK_SERVER}/likes/${reviewNo}`)
+      .get(`${process.env.REACT_APP_BACK_SERVER}/review/likes/${reviewNo}`)
       .then((res) => {
         setLikeCount(res.data.likes);
         if (res.data.likeMember.memberNickname === memberNickname) {
@@ -119,16 +119,19 @@ const ReviewView = () => {
     }
     if (liked) {
       axios
-        .delete(`${process.env.REACT_APP_BACK_SERVER}/likes/${reviewNo}`, {
-          data: { memberNickname },
-        })
+        .delete(
+          `${process.env.REACT_APP_BACK_SERVER}/review/likes/${reviewNo}`,
+          {
+            data: { memberNickname },
+          }
+        )
         .catch((err) => console.log(err));
     } else {
       const form = new FormData();
       form.append("reviewNo", reviewNo);
       form.append("memberNickname", memberNickname);
       axios
-        .post(`${process.env.REACT_APP_BACK_SERVER}/likes`, form)
+        .post(`${process.env.REACT_APP_BACK_SERVER}/review/likes`, form)
         .catch((err) => console.log(err));
     }
     setLiked(!liked);
@@ -183,7 +186,7 @@ const ReviewView = () => {
     };
 
     axios
-      .post(`${process.env.REACT_APP_BACK_SERVER}/report/`, reportData)
+      .post(`${process.env.REACT_APP_BACK_SERVER}/review/report/`, reportData)
       .then(() => {
         alert(`"${reportReason}" 사유로 신고되었습니다.`);
       })
@@ -224,7 +227,7 @@ const ReviewView = () => {
   const [reportNicknames, setReportNicknames] = useState([]);
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACK_SERVER}/report/${reviewNo}`)
+      .get(`${process.env.REACT_APP_BACK_SERVER}/review/report/${reviewNo}`)
       .then((res) => {
         console.log(res);
         const nicknames = res.data.map((report) => report.reportNickname);
@@ -241,7 +244,7 @@ const ReviewView = () => {
   }, []);
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACK_SERVER}/comm/${reviewNo}`)
+      .get(`${process.env.REACT_APP_BACK_SERVER}/review/comm/${reviewNo}`)
       .then((res) => setComments(res.data))
       .catch((err) => console.log(err));
   }, []);
@@ -260,8 +263,7 @@ const ReviewView = () => {
         });
     }
   }, [review]);
-  console.log(reportNicknames);
-  console.log(memberNickname);
+
   return (
     <section className="section review-view-section">
       <div className="page-title">리뷰 상세보기</div>
@@ -387,7 +389,10 @@ const ReviewView = () => {
                     form.append("commContent", newComment);
                     form.append("memberNickname", memberNickname);
                     axios
-                      .post(`${process.env.REACT_APP_BACK_SERVER}/comm`, form)
+                      .post(
+                        `${process.env.REACT_APP_BACK_SERVER}/review/comm`,
+                        form
+                      )
                       .then((res) => {
                         setComments([...comments, res.data]);
                       })

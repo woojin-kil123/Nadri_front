@@ -57,7 +57,7 @@ const ReviewMain = () => {
               className={content === "stay" ? "active" : ""}
               style={{ width: "20%", cursor: "pointer" }}
               onClick={() => {
-                changeContnent("stay");
+                changeContnent("32");
               }}
             >
               숙소
@@ -66,7 +66,7 @@ const ReviewMain = () => {
               className={content === "spot" ? "active" : ""}
               style={{ width: "20%", cursor: "pointer" }}
               onClick={() => {
-                changeContnent("spot");
+                changeContnent("12");
               }}
             >
               관광지
@@ -75,7 +75,7 @@ const ReviewMain = () => {
               className={content === "food" ? "active" : ""}
               style={{ width: "20%", cursor: "pointer" }}
               onClick={() => {
-                changeContnent("food");
+                changeContnent("39");
               }}
             >
               음식점
@@ -84,7 +84,7 @@ const ReviewMain = () => {
               className={content === "todo" ? "active" : ""}
               style={{ width: "20%", cursor: "pointer" }}
               onClick={() => {
-                changeContnent("todo");
+                changeContnent("14");
               }}
             >
               즐길거리
