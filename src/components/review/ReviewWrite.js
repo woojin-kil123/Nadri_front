@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useRecoilState } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
+import { colors } from "@mui/material";
 
 const ReviewWrite = () => {
   const placeId = useParams().placeId;
@@ -91,20 +92,16 @@ const ReviewWrite = () => {
             </p>
           </div>
         </div>
+        <div className="form-section">
+          <label className="form-label">귀하의 경험에 대해 평가해주세요</label>
+          <div className="star-rating-color">
+            <StarRating rating={rating} setRating={setRating} />
+          </div>
+        </div>
       </div>
 
       {/* 오른쪽 - 리뷰 작성 폼 */}
       <div className="review-form">
-        <div className="form-section">
-          <label className="form-label">귀하의 경험에 대해 평가해주세요</label>
-          <StarRating rating={rating} setRating={setRating} />
-        </div>
-
-        <div className="form-section">
-          <label className="form-label">리뷰 쓰기</label>
-          <TextEditor data={content} setData={setContent} />
-        </div>
-
         <div className="form-section">
           <label className="form-label">제목</label>
           <input
@@ -115,37 +112,39 @@ const ReviewWrite = () => {
             placeholder="경험했던 것 중 가장 중요한 정보를 알려주세요"
           />
         </div>
+        <div className="form-section">
+          <label className="form-label">리뷰 쓰기</label>
+          <TextEditor data={content} setData={setContent} />
+        </div>
 
         <div className="form-section">
           <label className="form-label">사진 추가하기</label>
-
-          <label className="upload-box" htmlFor="filePath">
-            클릭하여 사진 추가하기
-            <br />
-            <span>또는 끌어놓기</span>
-          </label>
-
-          <input
-            type="file"
-            id="filePath"
-            style={{ display: "none" }}
-            multiple
-            onChange={fileChange}
-          />
-
-          <div className="image-preview">
-            {filePreviews.map((src, idx) => (
-              <img
-                key={idx}
-                src={src}
-                alt={`preview-${idx}`}
-                onClick={() => removeImage(idx)}
-                className="preview-image"
+          <div className="upload-preview-wrapper">
+            <label className="upload-box" htmlFor="filePath">
+              클릭하여 사진 추가하기
+              <br />
+              <span>또는 끌어놓기</span>
+              <input
+                type="file"
+                id="filePath"
+                style={{ display: "none" }}
+                multiple
+                onChange={fileChange}
               />
-            ))}
+            </label>
+            <div className="image-preview">
+              {filePreviews.map((src, idx) => (
+                <img
+                  key={idx}
+                  src={src}
+                  alt={`preview-${idx}`}
+                  onClick={() => removeImage(idx)}
+                  className="preview-image"
+                />
+              ))}
+            </div>
           </div>
         </div>
-
         <button className="submit-button" onClick={submitReview}>
           리뷰 제출
         </button>
@@ -164,7 +163,11 @@ const StarRating = ({ totalStars = 5, rating, setRating }) => {
           className={`star-icon ${index < rating ? "filled" : ""}`}
           onClick={() => setRating(index + 1)}
         >
-          {index < rating ? <StarRateIcon /> : <StarOutlineIcon />}
+          {index < rating ? (
+            <StarRateIcon style={{ color: "#ffb800", fontSize: "30px" }} /> // 노란색 적용
+          ) : (
+            <StarOutlineIcon style={{ color: "#e0e0e0", fontSize: "30px" }} /> // 회색 적용
+          )}{" "}
         </span>
       ))}
     </div>

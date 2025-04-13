@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 import { useRecoilState } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
 import EditIcon from "@mui/icons-material/Edit";
+import { Margin } from "@mui/icons-material";
 
 const ReviewView = () => {
   const params = useParams();
@@ -47,50 +48,25 @@ const ReviewView = () => {
       });
   }, [memberNickname]);
   //댓글 수정
-  const editComment = (commNo) => {
-    const targetComment = comments.find((comment) => comment.commNo === commNo);
-    if (!targetComment) return;
-
-    Swal.fire({
-      title: "댓글 수정",
-      input: "text",
-      inputLabel: "수정할 내용을 입력하세요",
-      inputPlaceholder: "댓글 내용을 입력하세요",
-      inputValue: targetComment.commContent,
-      showCancelButton: true,
-      confirmButtonText: "수정하기",
-      cancelButtonText: "취소",
-      inputValidator: (value) => {
-        if (!value) {
-          return "수정할 내용을 입력해주세요.";
+  const editComment = (commNo, editedContent) => {
+    axios
+      .patch(`${process.env.REACT_APP_BACK_SERVER}/comm/${commNo}`, {
+        commContent: editedContent,
+      })
+      .then((res) => {
+        console.log(res);
+        if (res.data === 1) {
+          const updatedComments = comments.map((comment) =>
+            comment.commNo === commNo
+              ? { ...comment, commContent: editedContent }
+              : comment
+          );
+          setComments(updatedComments);
         }
-      },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const editedContent = result.value;
-        console.log(commNo);
-        axios
-          .patch(`${process.env.REACT_APP_BACK_SERVER}/comm/${commNo}`, {
-            commContent: editedContent,
-          })
-          .then((res) => {
-            console.log(res);
-            if (res.data === 1) {
-              const updatedComments = comments.map((comment) =>
-                comment.commNo === commNo
-                  ? { ...comment, commContent: editedContent }
-                  : comment
-              );
-
-              setComments(updatedComments);
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    });
+      })
+      .catch((err) => console.log(err));
   };
+
   //댓글 삭제
   const deleteComment = (commNo) => {
     Swal.fire({
@@ -241,7 +217,19 @@ const ReviewView = () => {
         });
     }
   }, [placeId]);
-
+  //신고자 목록
+  const [reportNicknames, setReportNicknames] = useState([]);
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BACK_SERVER}/report/${reviewNo}`)
+      .then((res) => {
+        console.log(res);
+        setReportNicknames(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/comm/${reviewNo}`)
@@ -284,7 +272,11 @@ const ReviewView = () => {
                 <button
                   onClick={toggleLike}
                   className="like-button"
-                  style={{ background: "none", border: "none" }}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
                 >
                   {liked ? (
                     <FavoriteIcon color="error" />
@@ -374,6 +366,7 @@ const ReviewView = () => {
                   className="write-comment-zone"
                   type="text"
                   value={newComment}
+                  style={{ width: "80%" }}
                   onChange={(e) => setNewComment(e.target.value)}
                 />
                 <button
@@ -409,7 +402,6 @@ const ReviewView = () => {
 
       {isReporting && (
         <div className="modal">
-          <h3>신고 사유 선택</h3>
           <select
             onChange={(e) => setReportReason(e.target.value)}
             value={reportReason}
@@ -421,8 +413,15 @@ const ReviewView = () => {
               </option>
             ))}
           </select>
-          <button onClick={reportSubmit}>신고 접수</button>
-          <button onClick={() => setIsReporting(false)}>취소</button>
+          <button onClick={reportSubmit} className="btn-primary report-move">
+            신고 접수
+          </button>
+          <button
+            onClick={() => setIsReporting(false)}
+            className="btn-secondary"
+          >
+            취소
+          </button>
         </div>
       )}
     </section>
@@ -430,18 +429,25 @@ const ReviewView = () => {
 };
 
 const CommentItem = ({ comment, onDelete, onEdit }) => {
+  const [isEditing, setIsEditing] = useState(false); // Track edit state
+  const [editedContent, setEditedContent] = useState(comment.commContent); // Track edited content
   const [memberNickname, setMemberNickname] =
     useRecoilState(loginNicknameState);
-  const [member, setMember] = useState(null);
 
-  useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_BACK_SERVER}/member/memberInfo?memberNickname=${memberNickname}`
-      )
-      .then((res) => setMember(res.data))
-      .catch((err) => console.log(err));
-  }, []);
+  // Handle comment update
+  const handleSave = () => {
+    if (editedContent !== comment.commContent) {
+      // If content is modified, call the onEdit function to save changes
+      onEdit(comment.commNo, editedContent);
+    }
+    setIsEditing(false); // Close editing mode
+  };
+
+  // Handle cancel edit
+  const handleCancel = () => {
+    setEditedContent(comment.commContent); // Reset to original content
+    setIsEditing(false); // Close editing mode
+  };
 
   return (
     <li className="comment-item">
@@ -459,14 +465,42 @@ const CommentItem = ({ comment, onDelete, onEdit }) => {
                 className="comment-action-icon"
                 onClick={() => onDelete(comment.commNo)}
               />
-              <EditIcon
-                className="comment-action-icon"
-                onClick={() => onEdit(comment.commNo)}
-              />
+              {!isEditing ? (
+                <EditIcon
+                  className="comment-action-icon"
+                  onClick={() => setIsEditing(true)}
+                />
+              ) : null}
             </div>
           )}
         </div>
-        <p className="comment-text">{comment.commContent}</p>
+        {/* 수정 모드에서는 텍스트 필드, 아닌 경우 기존 댓글 표시 */}
+        {isEditing ? (
+          <div className="edit-comment-zone">
+            <input
+              type="text"
+              className="edit-comment-input"
+              value={editedContent}
+              style={{ width: "75%" }}
+              onChange={(e) => setEditedContent(e.target.value)}
+            />
+            {/* 버튼을 입력 필드 옆에 두기 */}
+            <div className="edit-comment-buttons">
+              <button
+                className="btn-primary"
+                onClick={handleSave}
+                style={{ marginRight: "5px" }}
+              >
+                저장
+              </button>
+              <button className="btn-secondary" onClick={handleCancel}>
+                취소
+              </button>
+            </div>
+          </div>
+        ) : (
+          <p className="comment-text">{comment.commContent}</p>
+        )}
       </div>
     </li>
   );

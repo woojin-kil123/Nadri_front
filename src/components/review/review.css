@@ -199,9 +199,9 @@
   align-items: center;
   justify-content: center;
 
-  width: 100%;
+  width: 50%;
 
-  height: 200px;
+  height: 100px;
 
   padding: 2px 0px;
   margin-bottom: 16px;
@@ -456,16 +456,161 @@
 }
 
 .review-view-section .write-comment-zone {
-  flex: 1.5;
-  padding: 0.5rem;
-  font-size: 0.95rem;
+  width: 100%; /* Make the input take up full width */
+  padding: 5px;
+  margin-bottom: 5px;
   border: 1px solid #ccc;
-  border-radius: 6px;
+  border-radius: 5px;
+  font-size: 16px;
+  box-sizing: border-box;
+  height: 40px;
 }
 
 .review-view-section .comment-form-actions {
   display: flex;
   align-items: center;
+  align-items: flex-start;
+  width: 100%;
   gap: 0.5rem;
-  margin-top: 0.5rem;
+}
+.review-view-section .edit-comment-input {
+  width: 100%;
+  padding: 5px;
+  margin-top: 5px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.review-view-section .write-comment-zone {
+  width: 80%;
+  padding: 5px;
+  margin-top: 5px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.review-view-section .comment-form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+.comment-form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.comment-action-icon {
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.comment-content-wrapper {
+  position: relative;
+}
+
+.edit-comment-zone {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  align-items: flex-start;
+  width: 100%;
+  gap: 0.5rem;
+}
+
+.edit-comment-input {
+  width: 70%;
+  padding: 5px;
+  margin-top: 5px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.star-rating .star-icon {
+  cursor: pointer;
+}
+.star-icon {
+  color: #e0e0e0 !important; /* 기본 색상: 회색 */
+}
+
+/* 채워진 별 색상 */
+.star-icon.filled {
+  color: #ffb800 !important; /* 노란색 */
+}
+.review-write-section .image-preview-wrapper {
+  display: flex;
+  justify-content: flex-start; /* 이미지가 왼쪽부터 정렬되도록 */
+  width: 45%; /* 오른쪽에 이미지 미리보기 */
+  gap: 10px;
+  margin-top: 10px; /* 이미지 영역을 위로 올리기 */
+  flex-wrap: wrap; /* 화면에 맞게 자동 줄바꿈 */
+}
+.upload-preview-wrapper {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.upload-box {
+  width: 220px;
+  height: 130px;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  text-align: center;
+  padding: 1rem;
+  cursor: pointer;
+  font-size: 14px;
+  color: #777;
+  background-color: #fafafa;
+}
+
+.image-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.preview-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  transition: transform 0.2s;
+}
+
+.preview-image:hover {
+  transform: scale(1.05);
+  border-color: #aaa;
+}
+.star-rating .star-icon.filled svg path {
+  color: #ffb800;
+}
+select {
+  width: 70%;
+  padding: 10px 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #333;
+  appearance: none;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%204%205'%3E%3Cpath%20fill='%23666'%20d='M2%200L0%202h4z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px;
+  margin-right: 5px;
+}
+.report-move {
+  margin-right: 5px;
+}
+.review-view-section select:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2); /* 초록 포커스 효과 */
 }
