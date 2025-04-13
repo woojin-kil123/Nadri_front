@@ -163,8 +163,12 @@ const ReviewView = () => {
   };
 
   const reportClick = (target) => {
+    if (reportNicknames.includes(memberNickname)) {
+      alert("이미 신고한 유저입니다.");
+      return; // 이미 신고한 유저라면 신고 창으로 넘어가지 않음
+    }
     setReportTarget(target);
-    setIsReporting(true);
+    setIsReporting(true); // 신고 창 열기
   };
 
   const reportSubmit = () => {
@@ -172,7 +176,6 @@ const ReviewView = () => {
       alert("신고 사유를 선택해주세요.");
       return;
     }
-
     const reportData = {
       reviewNo: reviewNo,
       reportNickname: memberNickname,
@@ -224,7 +227,13 @@ const ReviewView = () => {
       .get(`${process.env.REACT_APP_BACK_SERVER}/report/${reviewNo}`)
       .then((res) => {
         console.log(res);
-        setReportNicknames(res.data);
+        const nicknames = res.data.map((report) => report.reportNickname);
+
+        // 중복된 닉네임을 제거
+        const uniqueNicknames = [...new Set(nicknames)];
+
+        // 상태에 저장
+        setReportNicknames(uniqueNicknames);
       })
       .catch((err) => {
         console.log(err);
@@ -251,7 +260,8 @@ const ReviewView = () => {
         });
     }
   }, [review]);
-
+  console.log(reportNicknames);
+  console.log(memberNickname);
   return (
     <section className="section review-view-section">
       <div className="page-title">리뷰 상세보기</div>
@@ -413,7 +423,16 @@ const ReviewView = () => {
               </option>
             ))}
           </select>
-          <button onClick={reportSubmit} className="btn-primary report-move">
+          <button
+            onClick={() => {
+              if (reportNicknames.includes(memberNickname)) {
+                alert("이미 신고한 글입니다.");
+                return;
+              }
+              reportSubmit();
+            }}
+            className="btn-primary report-move"
+          >
             신고 접수
           </button>
           <button
