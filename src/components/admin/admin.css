@@ -279,9 +279,18 @@
   color: #333;
   background-color: white;
 }
-.hot-review tbody .review-hover:hover {
+.admin-wrap .review-tbl {
+  margin: 0 auto;
+}
+.review-tbl tbody .review-hover:hover {
   color: var(--main2);
   font-family: ns-b;
+}
+
+.report-review tbody td {
+  height: 50px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 /* 호버 시 */
 .hot-review-title
