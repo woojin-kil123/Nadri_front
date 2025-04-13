@@ -37,9 +37,8 @@ const PlaceList = () => {
     if (selectedMenu === 0) {
       axios
         .get(
-          `${backServer}/place?reqPage=${reqPage}&selectedMenu=${selectedMenu}` +
-            (isLogin ? `&memberNickname=${memberNickname}` : "") +
-            `&order=${order}`
+          `${backServer}/place?reqPage=${reqPage}&order=${order}` +
+            (isLogin ? `&memberNickname=${memberNickname}` : "")
         )
         .then((res) => {
           console.log(res.data);
@@ -51,8 +50,25 @@ const PlaceList = () => {
           console.log("전체목록 조회 실패", err);
         });
     } else {
+      axios
+        .post(`${backServer}/place/filter`, {
+          selectedMenu, // ← 메뉴 ID (1~4)
+          filters: selectedFilters, // ← 한글 필터명 리스트
+          reqPage,
+          order,
+          ...(isLogin && { memberNickname }),
+        })
+        .then((res) => {
+          console.log(res.data);
+          setPlaceList(res.data.list);
+          setPi(res.data.pi);
+          setTotalCount(res.data.totalCount);
+        })
+        .catch((err) => {
+          console.log("세부필터 목록 조회 실패", err);
+        });
     }
-  }, [reqPage, selectedMenu, order]);
+  }, [reqPage, selectedMenu, selectedFilters, order]);
 
   return (
     <div className="place-wrap">

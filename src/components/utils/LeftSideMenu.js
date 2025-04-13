@@ -10,7 +10,7 @@ const LeftSideMenu = (props) => {
   const [activeId, setActiveId] = useState(null);
 
   const subFiltersMap = {
-    12: [
+    1: [
       "자연관광지",
       "관광자원",
       "역사관광지",
@@ -19,7 +19,7 @@ const LeftSideMenu = (props) => {
       "산업관광지",
       "건축/조형물",
     ],
-    14: [
+    2: [
       "문화시설",
       "축제",
       "공연/행사",
@@ -29,7 +29,7 @@ const LeftSideMenu = (props) => {
       "복합 레포츠",
       "쇼핑",
     ],
-    32: [
+    3: [
       "관광호텔/콘도미니엄",
       "유스호스텔/레지던스",
       "팬션",
@@ -38,7 +38,7 @@ const LeftSideMenu = (props) => {
       "홈스테이",
       "한옥",
     ],
-    39: [
+    4: [
       "한식",
       "서양식",
       "일식",
@@ -62,7 +62,6 @@ const LeftSideMenu = (props) => {
         : [...prev, filter]
     );
   };
-  console.log(selectedFilters);
 
   return (
     <div className="side-menu">
