@@ -129,6 +129,7 @@
   overflow: hidden;
   text-align: center;
   background-color: #fff;
+  margin-bottom: 25px;
 }
 
 .review-write-section .review-image {
@@ -386,11 +387,13 @@
   flex-direction: row;
   align-items: center;
   gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 .review-view-section .comment-content-wrapper {
   flex: 1;
   text-align: left;
+  margin-top: 2px;
 }
 
 .review-view-section .comment-header {
@@ -428,9 +431,11 @@
 .review-view-section .comment-form {
   margin-top: 1rem;
   display: flex;
-  flex-direction: column;
   gap: 0.5rem;
   align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .review-view-section .comment-form input[type="text"] {
@@ -455,17 +460,6 @@
   background-color: #0056b3;
 }
 
-.review-view-section .write-comment-zone {
-  width: 100%; /* Make the input take up full width */
-  padding: 5px;
-  margin-bottom: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
-  box-sizing: border-box;
-  height: 40px;
-}
-
 .review-view-section .comment-form-actions {
   display: flex;
   align-items: center;
@@ -488,6 +482,9 @@
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  flex-grow: 1;
+  margin-bottom: 0;
+  margin-right: 0.5rem;
 }
 
 .review-view-section .comment-form-actions {
@@ -505,10 +502,13 @@
 .comment-action-icon {
   cursor: pointer;
   margin-right: 10px;
+  margin-top: 2px;
 }
 
 .comment-content-wrapper {
   position: relative;
+  margin-top: 2px;
+  padding-left: 4px;
 }
 
 .edit-comment-zone {
@@ -516,7 +516,8 @@
   align-items: center;
   justify-content: space-between;
   margin-top: 10px;
-  align-items: flex-start;
+  flex-wrap: nowrap;
+  align-items: center;
   width: 100%;
   gap: 0.5rem;
 }
@@ -524,10 +525,11 @@
 .edit-comment-input {
   width: 70%;
   padding: 5px;
-  margin-top: 5px;
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  margin-top: 0;
+  height: 36px;
 }
 .star-rating .star-icon {
   cursor: pointer;
