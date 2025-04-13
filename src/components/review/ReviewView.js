@@ -378,7 +378,7 @@ const ReviewView = () => {
                   className="write-comment-zone"
                   type="text"
                   value={newComment}
-                  style={{ width: "80%" }}
+                  style={{ width: "70%" }}
                   onChange={(e) => setNewComment(e.target.value)}
                 />
                 <button
