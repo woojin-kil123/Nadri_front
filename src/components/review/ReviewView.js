@@ -189,6 +189,7 @@ const ReviewView = () => {
       .post(`${process.env.REACT_APP_BACK_SERVER}/review/report/`, reportData)
       .then(() => {
         alert(`"${reportReason}" 사유로 신고되었습니다.`);
+        navigate("/review");
       })
       .catch((err) => console.log(err));
 

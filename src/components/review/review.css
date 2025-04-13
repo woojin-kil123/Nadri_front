@@ -593,7 +593,7 @@
   color: #ffb800;
 }
 select {
-  width: 70%;
+  width: 65%;
   padding: 10px 12px;
   font-size: 16px;
   border: 1px solid #ccc;
@@ -603,7 +603,6 @@ select {
   appearance: none;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%204%205'%3E%3Cpath%20fill='%23666'%20d='M2%200L0%202h4z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 10px;

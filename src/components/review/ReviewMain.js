@@ -54,16 +54,7 @@ const ReviewMain = () => {
         <nav className="review-nav">
           <ul>
             <li
-              className={content === "stay" ? "active" : ""}
-              style={{ width: "20%", cursor: "pointer" }}
-              onClick={() => {
-                changeContnent("32");
-              }}
-            >
-              숙소
-            </li>
-            <li
-              className={content === "spot" ? "active" : ""}
+              className={content === "12" ? "active" : ""}
               style={{ width: "20%", cursor: "pointer" }}
               onClick={() => {
                 changeContnent("12");
@@ -72,22 +63,31 @@ const ReviewMain = () => {
               관광지
             </li>
             <li
-              className={content === "food" ? "active" : ""}
-              style={{ width: "20%", cursor: "pointer" }}
-              onClick={() => {
-                changeContnent("39");
-              }}
-            >
-              음식점
-            </li>
-            <li
-              className={content === "todo" ? "active" : ""}
+              className={content === "14" ? "active" : ""}
               style={{ width: "20%", cursor: "pointer" }}
               onClick={() => {
                 changeContnent("14");
               }}
             >
               즐길거리
+            </li>
+            <li
+              className={content === "32" ? "active" : ""}
+              style={{ width: "20%", cursor: "pointer" }}
+              onClick={() => {
+                changeContnent("32");
+              }}
+            >
+              숙박
+            </li>
+            <li
+              className={content === "39" ? "active" : ""}
+              style={{ width: "20%", cursor: "pointer" }}
+              onClick={() => {
+                changeContnent("39");
+              }}
+            >
+              음식점
             </li>
           </ul>
         </nav>
