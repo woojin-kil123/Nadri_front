@@ -4,7 +4,6 @@ import StarRating from "../utils/StarRating";
 
 const MarkerWithOverlay = (props) => {
   const p = props.place;
-  const idx = props.idx;
   const [openOverlay, setOpenOverlay] = [
     props.openOverlay,
     props.setOpenOverlay,

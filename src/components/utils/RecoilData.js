@@ -39,6 +39,13 @@ const placeTypeState = atom({
   default: [],
   effects_UNSTABLE: [persistAtom],
 });
+
+const memberNoState = atom({
+  key: "memberNoState",
+  default: 0,
+  effects_UNSTABLE: [persistAtom],
+});
+
 const companyInfoState = atom({
   key: "companyInfoState",
   default: {},
@@ -51,5 +58,6 @@ export {
   isLoginState,
   isPlannerState,
   placeTypeState,
+  memberNoState,
   companyInfoState,
 };
