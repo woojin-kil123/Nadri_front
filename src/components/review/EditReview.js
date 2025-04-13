@@ -17,7 +17,7 @@ const EditReview = () => {
       .get(`${process.env.REACT_APP_BACK_SERVER}/review/${reviewNo}`)
       .then((res) => {
         setTitle(res.data.reviewTitle);
-        setContent(res.data.reviewTitle);
+        setContent(res.data.reviewContent);
         setRating(res.data.starRate);
       })
       .catch((err) => console.log(err));
