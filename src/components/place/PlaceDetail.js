@@ -19,6 +19,7 @@ const PlaceDetail = () => {
   const isLogin = useRecoilValue(isLoginState);
   const memberNickname = useRecoilValue(loginNicknameState);
   const [bookmarked, setBookmarked] = useState();
+  const [viewCount, setViewCount] = useState(0);
 
   useEffect(() => {
     axios
@@ -30,11 +31,17 @@ const PlaceDetail = () => {
         console.log(res);
         setPlace(res.data);
         setBookmarked(res.data.bookmarked);
+        setViewCount((prev) => prev + 1);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+
+    axios.post(`${backServer}/place/detail/${placeId}/click`).then((res) => {
+      setViewCount(res.data.viewCount);
+    });
+  }, [placeId]);
+
   useEffect(() => {
     axios
       .get(`${backServer}/review/detail/${placeId}`)
@@ -81,6 +88,19 @@ const PlaceDetail = () => {
       });
   };
 
+  //상세페이지 링크 공유
+  const handleCopyLink = () => {
+    const currentUrl = window.location.href;
+    navigator.clipboard
+      .writeText(currentUrl)
+      .then(() => {
+        alert("링크가 복사되었습니다!");
+      })
+      .catch((err) => {
+        alert("복사 실패: " + err);
+      });
+  };
+
   return (
     <div className="place-detail-wrap">
       <div className="place-detail-header">
@@ -101,7 +121,7 @@ const PlaceDetail = () => {
             {place && <a> {place.sigunguName}</a>}
           </div>
           <div className="share-like-box">
-            <ShareIcon className="share-icon" />
+            <ShareIcon className="share-icon" onClick={handleCopyLink} />
             <div style={{ cursor: "pointer" }}>
               {bookmarked === 1 ? (
                 <FavoriteIcon onClick={handleHeartClick} />
