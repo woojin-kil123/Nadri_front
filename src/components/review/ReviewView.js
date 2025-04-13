@@ -271,15 +271,58 @@ const ReviewView = () => {
 
       <div className="review-card">
         {/* 장소 정보 */}
-        <div className="place-info">
-          <h2>{placeInfo.placeTitle}</h2>
-          <p>{placeInfo.placeAddr}</p>
+        <div className="review-left">
+          <div className="place-card">
+            <img
+              src={placeInfo.placeThumb || "/image/default_img.png"}
+              alt="장소 이미지"
+              className="review-image"
+            />
+            <div className="place-info-text">
+              <h3 className="place-title">
+                {placeInfo.placeTitle || "이름 없음"}
+              </h3>
+              <p className="place-addr">
+                {placeInfo.placeAddr || "위치 정보 없음"}
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* 리뷰 정보 */}
-        <div className="review-header">
-          <div className="review-header-top">
-            <h3 className="review-title">{review.reviewTitle}</h3>
+        <div className="review-right">
+          <div className="review-header">
+            <div className="review-header-top">
+              <h3 className="review-title">{review.reviewTitle}</h3>
+            </div>
+
+            <div className="review-meta">
+              <span className="author">{review.memberNickname}</span>
+              <span className="date">{review.reviewDate}</span>
+            </div>
+
+            {/* 본문 내용 */}
+            <div
+              className="review-body"
+              dangerouslySetInnerHTML={{
+                __html: review.reviewContent,
+              }}
+            />
+
+            {/* 첨부 이미지 */}
+            {reviewImages.length > 0 && (
+              <div className="review-images">
+                {reviewImages.map((img, index) => (
+                  <div className="review-image-wrapper" key={index}>
+                    <img
+                      src={`${process.env.REACT_APP_BACK_SERVER}/place/${img.filepath}`}
+                      alt=""
+                      className="review-image"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
             <div className="review-actions">
               <div className="like-wrapper">
                 <button
@@ -319,37 +362,8 @@ const ReviewView = () => {
               )}
             </div>
           </div>
-
-          <div className="review-meta">
-            <span className="author">{review.memberNickname}</span>
-            <span className="date">{review.reviewDate}</span>
-          </div>
         </div>
-
-        {/* 본문 내용 */}
-        <div
-          className="review-body"
-          dangerouslySetInnerHTML={{
-            __html: review.reviewContent,
-          }}
-        />
-
-        {/* 첨부 이미지 */}
-        {reviewImages.length > 0 && (
-          <div className="review-images">
-            {reviewImages.map((img, index) => (
-              <div className="review-image-wrapper" key={index}>
-                <img
-                  src={`${process.env.REACT_APP_BACK_SERVER}/place/${img.filepath}`}
-                  alt=""
-                  className="review-image"
-                />
-              </div>
-            ))}
-          </div>
-        )}
       </div>
-
       {/* 댓글 영역 */}
       <div className="comment-wrap">
         <h3>댓글</h3>
