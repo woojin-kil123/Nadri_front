@@ -37,7 +37,7 @@ const PlannerWrite = (props) => {
   //필터 옵션(null:전체, 1:숙박시설, 2:음식점, 3:그외)
   const [filterOption, setFilterOption] = useState(null);
   //정렬 옵션(1:거리순, 2:리뷰많은순, 3:이름순)
-  const [sortOption, setSortOption] = useState(1);
+  const [sortOption, setSortOption] = useState(2);
 
   //페이지네이션 관련
   const [totalCount, setTotalCount] = useState(0);
@@ -93,7 +93,7 @@ const PlannerWrite = (props) => {
           width,
           height,
           page: reqPage,
-          size: 80,
+          size: 60,
           sortOption: sortOption,
           filterOption: filterOption,
         },
@@ -186,8 +186,8 @@ const PlannerWrite = (props) => {
               onChange={(e) => setSortOption(Number(e.target.value))}
               // disabled={placeList.length === 0}
             >
-              <option value={1}>거리순</option>
               <option value={2}>리뷰많은순</option>
+              <option value={1}>거리순</option>
               <option value={3}>이름순</option>
             </select>
           </div>

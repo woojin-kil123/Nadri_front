@@ -20,6 +20,7 @@ import { loginNicknameState } from "../utils/RecoilData";
 import PlannerWrite from "./PlannerWrite";
 import PlannerView from "./PlannerView";
 import GetBoundsByLevel from "../utils/GetBoundsByLevel";
+import { Alert, Snackbar } from "@mui/material";
 
 const PlannerFrm = () => {
   //마커 오버레이 여닫음
@@ -39,7 +40,6 @@ const PlannerFrm = () => {
   //플래너 소유자(작성자) 여부
   const [isOwner, setIsOwner] = useState(false);
 
-  //맵 관련 STATE
   //현재 보이는 지도 화면
   const [mapBounds, setMapBounds] = useState(null);
   //지도 중심좌표(화면 이동 시 사용)
@@ -49,9 +49,9 @@ const PlannerFrm = () => {
   });
   //유저가 클릭한 지도 위치
   const [userMarker, setUserMarker] = useState(null);
+  //지도 확대 수준
   const [mapLevel, setMapLevel] = useState(3);
 
-  //플래너 상태 판별용 STATE
   //주소에서 받은 planNo
   const { planNo } = useParams();
   //플래너 모드: view, write, null
@@ -213,6 +213,11 @@ const PlannerFrm = () => {
           <button onClick={() => setPlannerMode("write")}>수정</button>
         </div>
       )}
+      {plannerMode === "view" && !isOwner && (
+        <div className="save-plan-btn">
+          <button onClick={() => {}}>이 플래너로 시작</button>
+        </div>
+      )}
       <div className="map-wrap">
         <PrintMap
           openOverlay={openOverlay}
@@ -257,18 +262,9 @@ const PrintMap = (props) => {
 
   const [mapLevel, setMapLevel] = [props.mapLevel, props.setMapLevel];
   const [markersOn, setMarkersOn] = useState(true);
-  const { width, height } = GetBoundsByLevel(mapLevel);
   const mapRef = useRef(null);
 
-  const [searchBox, setSearchBox] = useState({
-    width: 0.086,
-    height: 0.0448,
-  }); // 초기값은 mapLevel 5 기준
-
-  useEffect(() => {
-    if (!userMarker) return;
-    setSearchBox(GetBoundsByLevel(mapLevel));
-  }, [userMarker]);
+  const [toast, setToast] = useState(false);
 
   return (
     <>
@@ -277,19 +273,33 @@ const PrintMap = (props) => {
           className="map-search-btn"
           onClick={() => {
             if (!mapRef.current) return;
+            if (mapLevel > 6) setToast(true);
             const map = mapRef.current;
 
             const center = map.getCenter();
             const lat = center.getLat();
             const lng = center.getLng();
 
-            // 중심 좌표로 userMarker 설정
             setUserMarker({ lat, lng });
           }}
         >
           이 위치에서 검색
         </button>
       )}
+      <Snackbar
+        open={toast}
+        autoHideDuration={3000}
+        onClose={() => setToast(false)}
+        style={{ zIndex: 1, position: "absolute" }}
+      >
+        <Alert
+          severity="info"
+          onClose={() => setToast(false)}
+          style={{ zIndex: 1 }}
+        >
+          현재 지도가 너무 넓어서 검색 결과가 제한되었어요.
+        </Alert>
+      </Snackbar>
       <Map
         id={`kakaomap`}
         center={mapCenter}
@@ -356,43 +366,6 @@ const PrintMap = (props) => {
               </CustomOverlayMap>
             );
           })}
-        {userMarker && (
-          <>
-            {/* <MapMarker
-              position={userMarker}
-              image={{
-                src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png",
-                size: { width: 24, height: 35 },
-              }}
-            /> */}
-            {/* <Circle
-            center={userMarker}
-            radius={userRadius}
-            strokeWeight={2}
-            strokeColor={"var(--main2)"}
-            strokeStyle={"solid"}
-            fillColor={"var(--main4)"}
-            fillOpacity={0.2}
-          /> */}
-            {/* <Rectangle
-              bounds={{
-                sw: {
-                  lat: userMarker.lat - searchBox.height / 2,
-                  lng: userMarker.lng - searchBox.width / 2,
-                },
-                ne: {
-                  lat: userMarker.lat + searchBox.height / 2,
-                  lng: userMarker.lng + searchBox.width / 2,
-                },
-              }}
-              strokeWeight={2}
-              strokeColor={"var(--main2)"}
-              strokeStyle={"solid"}
-              fillColor={"var(--main4)"}
-              fillOpacity={0.2}
-            /> */}
-          </>
-        )}
         {markersOn &&
           markableList.map((p) => {
             return (
