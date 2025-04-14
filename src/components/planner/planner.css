@@ -136,9 +136,9 @@
   background-color: var(--main2);
   color: var(--gray8);
 }
-* {
+/* * {
   outline: 1px solid red;
-}
+} */
 /* 플래너(계획표) */
 .planner-wrap {
   width: 300px;
