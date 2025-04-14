@@ -58,7 +58,7 @@
 /* 장소 리스트 */
 .place-list {
   width: 300px;
-  height: 746px;
+  height: 733px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -136,12 +136,14 @@
   background-color: var(--main2);
   color: var(--gray8);
 }
-
+* {
+  outline: 1px solid red;
+}
 /* 플래너(계획표) */
 .planner-wrap {
   width: 300px;
   min-height: 200px;
-  max-height: 98%;
+  max-height: 96%;
   padding: 10px;
   background-color: var(--gray8);
   border: 1px solid var(--gray7);
@@ -153,11 +155,13 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.08);
   transform: scale(80%);
   animation: window-animation 0.3s forwards;
+  overflow-y: scroll;
 }
 .planner-wrap.full {
   position: relative;
   left: 0;
-  top: 0;
+  top: 1%;
+  height: 100%;
 }
 @keyframes window-animation {
   from {
@@ -208,7 +212,7 @@
 }
 .plan-name input {
   border: none;
-  font-size: 16px;
+  font-size: 20px;
   margin: 15px 0 0 15px;
 }
 .planned-item {
@@ -328,6 +332,20 @@
   height: 50px;
   border-radius: 10px;
   font-size: 20px;
+}
+
+.map-search-btn {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 15px;
+  border: none;
+  border-radius: 20px;
+  width: 200px;
+  height: 30px;
+  background-color: var(--gray2);
+  color: var(--gray8);
+  cursor: pointer;
 }
 
 /* 카카오 맵 */
