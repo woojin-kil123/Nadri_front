@@ -42,7 +42,11 @@ const ReviewWrite = () => {
   };
 
   const submitReview = () => {
-    if (!title || !content) {
+    const trimmedTitle = title.trim();
+    const trimmedContent = content.trim();
+    const isContentEmpty =
+      trimmedContent === "" || trimmedContent === "<p><br></p>";
+    if (trimmedTitle === "" || isContentEmpty) {
       alert("제목과 내용을 모두 입력해주세요.");
       return;
     }
