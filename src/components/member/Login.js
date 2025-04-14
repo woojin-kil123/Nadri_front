@@ -233,11 +233,13 @@ const Login = () => {
             <div></div>
           </div>
           {/* 네이버 로그인 버튼 */}
+          {/*
           <div className="naver-login-join">
             <Link>
               <img src="/image/naver_login.png" alt="Naver Login" />
             </Link>
           </div>
+          */}
         </div>
       </div>
     </section>

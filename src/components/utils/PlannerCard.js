@@ -5,33 +5,27 @@ export default function PlannerCard(props) {
   const navigate = useNavigate();
   const planner = props.planner;
 
-  // 날짜 차이를 계산하여 D-Day, 지나간 일정일 경우 D+xx, 다가오는 일정일 경우 D-xx 표시
   const calculateDDay = (startDate, endDate) => {
     const today = new Date(); // 현재 날짜
     today.setHours(0, 0, 0, 0); // 시간은 0으로 초기화하여 날짜만 비교하도록 함
     const start = new Date(startDate); // startDate를 Date 객체로 변환
     const end = new Date(endDate); // endDate를 Date 객체로 변환
 
-    // 오늘이 startDate와 동일한 경우 d-0 표시
-    if (
-      today.getTime() === start.getTime() &&
-      today.getTime() === end.getTime()
-    ) {
-      return "day-0"; // startDate와 endDate가 오늘인 경우
+    // startDate가 오늘보다 이전인 경우 (지나간 일정은 D+xx로 표시)
+    if (today > start) {
+      const timeDiff = today - start; // 밀리초 차이 계산
+      return `day+${Math.ceil(timeDiff / (1000 * 3600 * 24))}`; // 밀리초를 일수로 변환
     }
-    // 다가오는 일정: startDate가 오늘 이후일 경우
+
+    // 다가오는 일정: startDate가 오늘 이후일 경우 D-xx
     if (today < start) {
       const timeDiff = start - today; // 밀리초 차이 계산
       return `day-${Math.ceil(timeDiff / (1000 * 3600 * 24))}`; // 밀리초를 일수로 변환
     }
-    // 진행 중인 일정: startDate가 오늘 이전이고 endDate가 오늘과 같거나 이후인 경우
-    if (today >= start && today <= end) {
-      return "day-0"; // 진행 중일 때는 d-0
-    }
-    // 지나간 일정: endDate 기준
-    if (today > end) {
-      const timeDiff = today - end; // 밀리초 차이 계산
-      return `day+${Math.ceil(timeDiff / (1000 * 3600 * 24))}`; // 밀리초를 일수로 변환
+
+    // 진행 중인 일정: startDate가 오늘과 같을 경우 D-0
+    if (today === start) {
+      return "day-0"; // 시작일이 오늘인 경우
     }
   };
 
@@ -52,7 +46,11 @@ export default function PlannerCard(props) {
         >
           <div className="image-container">
             <img
-              src={planner.placeThumb ? planner.planThumb : "/image/dora.png"}
+              src={
+                planner.placeThumb
+                  ? `${process.env.REACT_APP_BACK_SERVER}/plan/planner_thumbnail/${planner.placeThumb}`
+                  : "/image/dora.png"
+              }
               className="card3-image"
             />
           </div>

@@ -44,7 +44,10 @@ const Event = () => {
       </section>
       <section className="end-event">
         <h2>종료된 이벤트</h2>
-        <table className="tbl">
+        <table
+          className="tbl"
+          style={{ width: "90%", margin: "0 auto ", border: "1px solid #ddd" }}
+        >
           <thead>
             <tr>
               <th>이벤트 제목</th>
@@ -111,7 +114,7 @@ const EventSlide = ({ onGoing, placeType }) => {
   if (onGoing.length === 0) return null;
 
   return (
-    <div className="intro-wrap">
+    <div className="ongoing-wrap border">
       <div className="event-list">
         {isSlideMode
           ? slides[activeSlide].map((event, index) => (
