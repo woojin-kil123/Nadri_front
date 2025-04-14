@@ -292,11 +292,17 @@ const ReviewView = () => {
         {/* 리뷰 정보 */}
         <div className="review-right">
           <div className="review-header">
-            <div className="review-header-top">
+            <div
+              className="review-header-top"
+              style={{ borderBottom: "1px solid #ccc", marginBottom: "20px" }}
+            >
               <h3 className="review-title">{review.reviewTitle}</h3>
             </div>
 
-            <div className="review-meta">
+            <div
+              className="review-meta"
+              style={{ borderBottom: "1px solid #ccc", marginBottom: "15px" }}
+            >
               <span className="author">{review.memberNickname}</span>
               <span className="date">{review.reviewDate}</span>
             </div>
