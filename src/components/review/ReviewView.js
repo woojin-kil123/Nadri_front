@@ -328,7 +328,7 @@ const ReviewView = () => {
                     <img
                       src={`${process.env.REACT_APP_BACK_SERVER}/place/image/${img.filepath}`}
                       alt=""
-                      className="review-image"
+                      className="review-image2"
                     />
                   </div>
                 ))}
