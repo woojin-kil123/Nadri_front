@@ -119,6 +119,7 @@ const ReviewItem = (props) => {
         <div className="place-title">{review.placeTitle}</div>
         <div className="place-addr">{review.placeAddr}</div>
         <div
+          className="review-content"
           dangerouslySetInnerHTML={{
             __html: review.reviewContent, // p 태그 제거
           }}

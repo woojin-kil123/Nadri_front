@@ -121,7 +121,7 @@ const ReviewWrite = () => {
           <TextEditor data={content} setData={setContent} />
         </div>
 
-        <div className="form-section">
+        <div className="form-section " style={{ marginTop: "50px" }}>
           <label className="form-label">사진 추가하기</label>
           <div className="upload-preview-wrapper">
             <label className="upload-box" htmlFor="filePath">
