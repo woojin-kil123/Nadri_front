@@ -50,7 +50,6 @@ const Main = () => {
           `${process.env.REACT_APP_BACK_SERVER}/review?reqPage=1&type=${onReview}`
         )
         .then((res) => {
-          console.log(res.data);
           setHotReveiw(res.data.list);
         });
   }, [onReview]);
@@ -69,7 +68,6 @@ const Main = () => {
     localStorage.setItem("hidePopupDate", today);
     setShowPopup(false);
   };
-  console.log(onReview);
   return (
     <section className="section main-wrap">
       {showPopup && (

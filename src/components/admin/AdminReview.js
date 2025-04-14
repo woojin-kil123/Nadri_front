@@ -44,7 +44,6 @@ const AdminReview = () => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/admin/report?status=${tab}`)
       .then((res) => {
-        console.log(res.data);
         setReportedReview(res.data);
       });
   }, [tab, isUpdate]);
@@ -73,7 +72,6 @@ const AdminReview = () => {
       });
   };
   const handleDelete = (reviewNo) => {
-    console.log("삭제진행함수");
     axios
       .delete(`${process.env.REACT_APP_BACK_SERVER}/review/${reviewNo}`)
       .then((res) => {

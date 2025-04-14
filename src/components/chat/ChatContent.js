@@ -41,8 +41,6 @@ const ChatContent = ({
     setProfile(arr);
   }, [selectedRoom]);
 
-  console.log(profile);
-
   useEffect(() => {
     if (editMode && titleInput.current) {
       titleInput.current.focus();
@@ -277,9 +275,9 @@ const ChatContent = ({
             }
           }}
         />
-        <AddPhotoAlternateIcon>
+        {/* <AddPhotoAlternateIcon>
           <input type="file"></input>
-        </AddPhotoAlternateIcon>
+        </AddPhotoAlternateIcon> */}
         <button className="btn-primary" onClick={send}>
           보내기
           <TelegramIcon />
