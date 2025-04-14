@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  Circle,
   CustomOverlayMap,
   Map,
   MapMarker,
   Polyline,
+  Rectangle,
 } from "react-kakao-maps-sdk";
 import "./planner.css";
 import axios from "axios";
@@ -19,6 +19,7 @@ import { loginNicknameState } from "../utils/RecoilData";
 // import DrawPlannerPathCanvas from "./DrawPlannerPath";
 import PlannerWrite from "./PlannerWrite";
 import PlannerView from "./PlannerView";
+import GetBoundsByLevel from "../utils/GetBoundsByLevel";
 
 const PlannerFrm = () => {
   //마커 오버레이 여닫음
@@ -48,8 +49,7 @@ const PlannerFrm = () => {
   });
   //유저가 클릭한 지도 위치
   const [userMarker, setUserMarker] = useState(null);
-  //유저 클릭 위치를 중심으로 하는 반경 범위
-  const [userRadius, setUserRadius] = useState(1000);
+  const [mapLevel, setMapLevel] = useState(3);
 
   //플래너 상태 판별용 STATE
   //주소에서 받은 planNo
@@ -185,8 +185,6 @@ const PlannerFrm = () => {
       {plannerMode === "write" && (
         <PlannerWrite
           userMarker={userMarker}
-          userRadius={userRadius}
-          setUserRadius={setUserRadius}
           openPlanningModal={openPlanningModal}
           setOpenPlanningModal={setOpenPlanningModal}
           plannedPlaceList={plannedPlaceList}
@@ -198,6 +196,7 @@ const PlannerFrm = () => {
           setOpenOverlay={setOpenOverlay}
           setOpenPlanner={setOpenPlanner}
           setMapCenter={setMapCenter}
+          mapLevel={mapLevel}
         />
       )}
       <PlannerView
@@ -222,12 +221,13 @@ const PlannerFrm = () => {
           setMapBounds={setMapBounds}
           userMarker={userMarker}
           setUserMarker={setUserMarker}
-          userRadius={userRadius}
           plannedPlaceList={plannedPlaceList}
           handleDeletePlace={handleDeletePlace}
           mapCenter={mapCenter}
           plannerMode={plannerMode}
           placeList={placeList}
+          mapLevel={mapLevel}
+          setMapLevel={setMapLevel}
         />
       </div>
     </div>
@@ -243,7 +243,6 @@ const PrintMap = (props) => {
   const setOpenPlanningModal = props.setOpenPlanningModal;
   const setMapBounds = props.setMapBounds;
   const [userMarker, setUserMarker] = [props.userMarker, props.setUserMarker];
-  const userRadius = props.userRadius;
   const plannedPlaceList = props.plannedPlaceList;
   const handleDeletePlace = props.handleDeletePlace;
   const mapCenter = props.mapCenter;
@@ -256,90 +255,117 @@ const PrintMap = (props) => {
     );
   }, [placeList, plannedPlaceList]);
 
-  const [mapLevel, setMapLevel] = useState(3);
+  const [mapLevel, setMapLevel] = [props.mapLevel, props.setMapLevel];
   const [markersOn, setMarkersOn] = useState(true);
+  const { width, height } = GetBoundsByLevel(mapLevel);
+  const mapRef = useRef(null);
+
+  const [searchBox, setSearchBox] = useState({
+    width: 0.086,
+    height: 0.0448,
+  }); // 초기값은 mapLevel 5 기준
+
+  useEffect(() => {
+    if (!userMarker) return;
+    setSearchBox(GetBoundsByLevel(mapLevel));
+  }, [userMarker]);
 
   return (
-    <Map
-      id={`kakaomap`}
-      center={mapCenter}
-      style={{
-        // 지도의 크기
-        width: "100%",
-        height: "100%",
-      }}
-      level={mapLevel} // 지도의 확대 레벨
-      onZoomChanged={(map) => {
-        setMapLevel(map.getLevel());
-        setMarkersOn(map.getLevel() < 8);
-      }}
-      //지도 클릭 시
-      onClick={(map, e) => {
-        if (plannerMode === "view") return;
+    <>
+      {plannerMode === "write" && (
+        <button
+          className="map-search-btn"
+          onClick={() => {
+            if (!mapRef.current) return;
+            const map = mapRef.current;
 
-        if (openOverlay === null) {
-          //클릭 위치 좌표
-          const lat = e.latLng.getLat();
-          const lng = e.latLng.getLng();
-          setUserMarker({ lat, lng });
-        } else {
-          setOpenOverlay(null);
-        }
-      }}
-      //현재 보이는 화면 범위를 가져옴
-      onBoundsChanged={(map) => {
-        setMapBounds(map.getBounds());
-      }}
-    >
-      {plannedPlaceList.length > 1 && (
-        <Polyline //저장된 장소 간 직선 그리기
-          path={plannedPlaceList
-            .sort((a, b) => a.order - b.order)
-            .map((p) => ({
-              lat: p.placeLatLng.lat,
-              lng: p.placeLatLng.lng,
-            }))}
-          strokeWeight={4}
-          strokeColor={"tomato"}
-          strokeOpacity={0.9}
-          strokeStyle={"solid"}
-        />
+            const center = map.getCenter();
+            const lat = center.getLat();
+            const lng = center.getLng();
+
+            // 중심 좌표로 userMarker 설정
+            setUserMarker({ lat, lng });
+          }}
+        >
+          이 위치에서 검색
+        </button>
       )}
-      {plannedPlaceList.length > 1 &&
-        plannedPlaceList.slice(0, -1).map((p, idx) => {
-          const next = plannedPlaceList[idx + 1];
-          const midLat = (p.placeLatLng.lat + next.placeLatLng.lat) / 2;
-          const midLng = (p.placeLatLng.lng + next.placeLatLng.lng) / 2;
-          const rad = Math.atan2(
-            next.placeLatLng.lat - p.placeLatLng.lat,
-            next.placeLatLng.lng - p.placeLatLng.lng
-          );
-          const deg = (rad * 180) / Math.PI;
-
-          return (
-            <CustomOverlayMap
-              key={"arrow-" + idx}
-              position={{ lat: midLat, lng: midLng }}
-            >
-              <div
-                className="arrow-marker"
-                style={{ transform: `rotate(${-deg}deg)` }}
-              >
-                ➡
-              </div>
-            </CustomOverlayMap>
-          );
-        })}
-      {userMarker && (
-        <>
-          <MapMarker
-            position={userMarker}
-            image={{
-              src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png",
-              size: { width: 24, height: 35 },
-            }}
+      <Map
+        id={`kakaomap`}
+        center={mapCenter}
+        style={{
+          // 지도의 크기
+          width: "100%",
+          height: "100%",
+        }}
+        level={mapLevel} // 지도의 확대 레벨
+        onCreate={(map) => {
+          mapRef.current = map;
+        }}
+        onZoomChanged={(map) => {
+          setMapLevel(map.getLevel());
+          setMarkersOn(map.getLevel() < 8);
+        }}
+        //지도 클릭 시
+        onClick={() => {
+          if (openOverlay !== null) {
+            setOpenOverlay(null);
+          }
+        }}
+        //현재 보이는 화면 범위를 가져옴
+        onBoundsChanged={(map) => {
+          setMapBounds(map.getBounds());
+        }}
+      >
+        {plannedPlaceList.length > 1 && (
+          <Polyline //저장된 장소 간 직선 그리기
+            path={plannedPlaceList
+              .sort((a, b) => a.order - b.order)
+              .map((p) => ({
+                lat: p.placeLatLng.lat,
+                lng: p.placeLatLng.lng,
+              }))}
+            strokeWeight={4}
+            strokeColor={"tomato"}
+            strokeOpacity={0.9}
+            strokeStyle={"solid"}
           />
-          <Circle
+        )}
+        {plannedPlaceList.length > 1 &&
+          plannedPlaceList.slice(0, -1).map((p, idx) => {
+            const next = plannedPlaceList[idx + 1];
+            const midLat = (p.placeLatLng.lat + next.placeLatLng.lat) / 2;
+            const midLng = (p.placeLatLng.lng + next.placeLatLng.lng) / 2;
+            const rad = Math.atan2(
+              next.placeLatLng.lat - p.placeLatLng.lat,
+              next.placeLatLng.lng - p.placeLatLng.lng
+            );
+            const deg = (rad * 180) / Math.PI;
+
+            return (
+              <CustomOverlayMap
+                key={"arrow-" + idx}
+                position={{ lat: midLat, lng: midLng }}
+              >
+                <div
+                  className="arrow-marker"
+                  style={{ transform: `rotate(${-deg}deg)` }}
+                >
+                  ➡
+                </div>
+              </CustomOverlayMap>
+            );
+          })}
+        {userMarker && (
+          <>
+            {/* <MapMarker
+              position={userMarker}
+              image={{
+                src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png",
+                size: { width: 24, height: 35 },
+              }}
+            /> */}
+            {/* <Circle
             center={userMarker}
             radius={userRadius}
             strokeWeight={2}
@@ -347,33 +373,51 @@ const PrintMap = (props) => {
             strokeStyle={"solid"}
             fillColor={"var(--main4)"}
             fillOpacity={0.2}
+          /> */}
+            {/* <Rectangle
+              bounds={{
+                sw: {
+                  lat: userMarker.lat - searchBox.height / 2,
+                  lng: userMarker.lng - searchBox.width / 2,
+                },
+                ne: {
+                  lat: userMarker.lat + searchBox.height / 2,
+                  lng: userMarker.lng + searchBox.width / 2,
+                },
+              }}
+              strokeWeight={2}
+              strokeColor={"var(--main2)"}
+              strokeStyle={"solid"}
+              fillColor={"var(--main4)"}
+              fillOpacity={0.2}
+            /> */}
+          </>
+        )}
+        {markersOn &&
+          markableList.map((p) => {
+            return (
+              <MarkerWithOverlay
+                key={"marker-" + p.placeId}
+                place={p}
+                openOverlay={openOverlay}
+                setOpenOverlay={setOpenOverlay}
+                setOpenPlanningModal={setOpenPlanningModal}
+              />
+            );
+          })}
+        {plannedPlaceList.map((p) => (
+          <MarkerWithOverlay
+            key={"planned-" + p.placeId}
+            place={p}
+            openOverlay={openOverlay}
+            setOpenOverlay={setOpenOverlay}
+            isPlanned={true}
+            handleDeletePlace={handleDeletePlace}
+            plannerMode={plannerMode}
           />
-        </>
-      )}
-      {markersOn &&
-        markableList.map((p) => {
-          return (
-            <MarkerWithOverlay
-              key={"marker-" + p.placeId}
-              place={p}
-              openOverlay={openOverlay}
-              setOpenOverlay={setOpenOverlay}
-              setOpenPlanningModal={setOpenPlanningModal}
-            />
-          );
-        })}
-      {plannedPlaceList.map((p) => (
-        <MarkerWithOverlay
-          key={"planned-" + p.placeId}
-          place={p}
-          openOverlay={openOverlay}
-          setOpenOverlay={setOpenOverlay}
-          isPlanned={true}
-          handleDeletePlace={handleDeletePlace}
-          plannerMode={plannerMode}
-        />
-      ))}
-    </Map>
+        ))}
+      </Map>
+    </>
   );
 };
 

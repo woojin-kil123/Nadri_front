@@ -330,6 +330,20 @@
   font-size: 20px;
 }
 
+.map-search-btn {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 15px;
+  border: none;
+  border-radius: 20px;
+  width: 200px;
+  height: 30px;
+  background-color: var(--gray2);
+  color: var(--gray8);
+  cursor: pointer;
+}
+
 /* 카카오 맵 */
 .map-wrap {
   width: calc(100% - 300px);
