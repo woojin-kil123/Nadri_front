@@ -11,6 +11,27 @@
 .chat-modal > .chat-room {
   width: 70%;
   gap: 20px;
+
+  justify-content: center;
+}
+.chat-room > .chat-intro {
+  width: 80%;
+  height: 80%;
+  padding: 20px 40px;
+  align-self: center;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.chat-room > .chat-intro > h2 {
+  text-indent: 10px;
+}
+.chat-intro > .intro-description {
+  text-indent: 20px;
+}
+.chat-intro > .intro-description > p {
+  padding: 5px 0px;
 }
 .chat-modal > .chat-list {
   width: 30%;

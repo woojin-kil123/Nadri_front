@@ -213,8 +213,30 @@ const ChatModal = ({
                 />
               </>
             ) : (
-              <div>
-                <h1>깨끗한 채팅 부탁드립니다.</h1>
+              <div
+                style={{
+                  backgroundImage: "url(/image/chat_back.png)",
+                }}
+                className="chat-intro"
+              >
+                <h1> Nadri 채팅</h1>
+                <h2> 채팅 이용 방법</h2>
+                <div className="intro-description">
+                  <p>1. 채팅 목록 왼쪽 버튼을 이용해 채팅방을 만드세요.</p>
+                  <p>2. 채팅 방 내에서 초대할 친구의 닉네임을 입력하세요.</p>
+                  <p>
+                    3. 채팅 방 제목은 채팅방 내 모두와 공유합니다. 변경 시
+                    주의하세요.
+                  </p>
+                </div>
+                <h2> 채팅 관련 준수사항</h2>
+                <div className="intro-description">
+                  <p>1. 혐오발언 및 기타 분쟁을 일으킬 대화는 삼가주세요.</p>
+                  <p>
+                    2. 타인에게 피해를 주는 행동은 불이익이 발생할 수 있습니다.
+                  </p>
+                  <p>3. 채팅 관련 문의 사항은 관리자에게 문의해 주세요.</p>
+                </div>
               </div>
             )}
           </div>
