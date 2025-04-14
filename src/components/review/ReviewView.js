@@ -102,8 +102,13 @@ const ReviewView = () => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/review/likes/${reviewNo}`)
       .then((res) => {
+        console.log(res);
         setLikeCount(res.data.likes);
-        if (res.data.likeMember.memberNickname === memberNickname) {
+        if (
+          res.data.likeMember.some(
+            (member) => member.memberNickname === memberNickname
+          )
+        ) {
           setLiked(true);
         }
       })
