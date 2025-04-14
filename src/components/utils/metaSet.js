@@ -1,5 +1,6 @@
 import { useRecoilValue } from "recoil";
 import { placeTypeState } from "./RecoilData";
+import { MenuBook } from "@mui/icons-material";
 
 class DropdownItem {
   constructor(icon, name, clickFunc) {
@@ -13,6 +14,16 @@ class ChatMsg {
     this.type = type;
     this.chatNo = chatNo;
     this.message = message;
+  }
+}
+
+class PlaceFilterRequest {
+  constructor(placeTypeId, reqPage, order, memberNickname, filterCodes) {
+    this.placeTypeId = placeTypeId;
+    this.reqPage = reqPage;
+    this.order = order;
+    this.memberNickname = memberNickname;
+    this.filterCodes = filterCodes;
   }
 }
 function createChatMsg(type, chatNo, message) {
@@ -34,4 +45,4 @@ const getKoreanToday = () => {
   return cleaned.replace(/\.\s?/g, "-");
 };
 
-export { DropdownItem, createChatMsg, getKoreanToday };
+export { DropdownItem, createChatMsg, getKoreanToday, PlaceFilterRequest };

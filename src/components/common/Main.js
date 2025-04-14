@@ -47,7 +47,7 @@ const Main = () => {
     onReview &&
       axios
         .get(
-          `${process.env.REACT_APP_BACK_SERVER}/review?reqPage=1&value=${onReview}`
+          `${process.env.REACT_APP_BACK_SERVER}/review?reqPage=1&type=${onReview}`
         )
         .then((res) => {
           console.log(res.data);
@@ -118,19 +118,19 @@ const Main = () => {
             setOn={setOnReview}
           />
         </div>
-        {Array.isArray(hotReview) && (
+        {hotReview && (
           <div className="hot-review-wrap">
             <div className="main-review">
-              <ReviewCard review={hotReview[0]} />
+              {hotReview[0] && <ReviewCard review={hotReview[0]} />}
             </div>
             <div className="other-review-wrap">
               <div className="other-review">
-                <ReviewCard review={hotReview[1]} />
-                <ReviewCard review={hotReview[2]} />
+                {hotReview[1] && <ReviewCard review={hotReview[1]} />}
+                {hotReview[2] && <ReviewCard review={hotReview[2]} />}
               </div>
               <div className="other-review">
-                <ReviewCard review={hotReview[3]} />
-                <ReviewCard review={hotReview[4]} />
+                {hotReview[3] && <ReviewCard review={hotReview[3]} />}
+                {hotReview[4] && <ReviewCard review={hotReview[4]} />}
               </div>
             </div>
           </div>
@@ -170,11 +170,12 @@ const FilterNavWithPanel = ({ categories, on, setOn }) => {
 };
 const ReviewCard = ({ review }) => {
   const navigate = useNavigate();
+  const thumbUrl = review.placeThumb || "/image/default_img.png";
   return (
     <div
       className="review-card"
       style={{
-        backgroundImage: `url(${review.placeThumb})`,
+        backgroundImage: `url(${thumbUrl})`,
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
       }}

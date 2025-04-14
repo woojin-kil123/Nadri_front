@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import Slider from "react-slick";
 import ListCard from "../utils/ListCard";
 import axios from "axios";
+import { PlaceFilterRequest } from "../utils/metaSet";
 
 export default function RecommandSlider({ on }) {
   const [cards, setCards] = useState([]);
   useEffect(() => {
+    const request = new PlaceFilterRequest(on, 1, 1);
     axios
-      .get(
-        `${process.env.REACT_APP_BACK_SERVER}/place?reqPage=1&placeTypeId=${on}`
-      )
+      .post(`${process.env.REACT_APP_BACK_SERVER}/place/filter`, request)
       .then((res) => {
         setCards(res.data.list);
       })
