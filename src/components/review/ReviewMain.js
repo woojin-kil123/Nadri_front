@@ -35,7 +35,7 @@ const ReviewMain = () => {
     setReqPage(1);
     axios
       .get(
-        `${process.env.REACT_APP_BACK_SERVER}/review?reqPage=${reqPage}&value=${value}`
+        `${process.env.REACT_APP_BACK_SERVER}/review?reqPage=${reqPage}&type=${value}`
       )
       .then((res) => {
         console.log(res);

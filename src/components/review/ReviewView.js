@@ -366,7 +366,6 @@ const ReviewView = () => {
       </div>
       {/* 댓글 영역 */}
       <div className="comment-wrap">
-        <h3>댓글</h3>
         <ul>
           {comments.map((comment) => (
             <CommentItem
