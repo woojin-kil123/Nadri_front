@@ -304,7 +304,7 @@ const ReviewView = () => {
               style={{ borderBottom: "1px solid #ccc", marginBottom: "15px" }}
             >
               <span className="author">{review.memberNickname}</span>
-              <span className="date">{review.reviewDate}</span>
+              <span className="date">리뷰 일자:{review.reviewDate}</span>
             </div>
 
             {/* 본문 내용 */}

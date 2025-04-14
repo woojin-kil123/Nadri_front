@@ -18,7 +18,7 @@ const ReviewMain = () => {
       .get(
         `${
           process.env.REACT_APP_BACK_SERVER
-        }/review?reqPage=${reqPage}&value=${"all"}`
+        }/review?reqPage=${reqPage}&type=${"all"}`
       )
       .then((res) => {
         console.log(res);
@@ -56,7 +56,6 @@ const ReviewMain = () => {
             <li
               className={content === "12" ? "active" : ""}
               style={{ width: "20%", cursor: "pointer" }}
-
               onClick={() => {
                 changeContnent("12");
               }}
