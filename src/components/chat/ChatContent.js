@@ -11,6 +11,7 @@ import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutli
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Dropdown from "../utils/Dropdown";
 import GroupIcon from "@mui/icons-material/Group";
+import axios from "axios";
 
 const ChatContent = ({
   ws,
@@ -25,6 +26,8 @@ const ChatContent = ({
   const [moreEl, setMoreEl] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const titleInput = useRef(null);
+  const [hoverGroupMenu, setHoverGroupMenu] = useState(false);
+  console.log(selectedRoom);
   useEffect(() => {
     if (editMode && titleInput.current) {
       titleInput.current.focus();
@@ -66,11 +69,43 @@ const ChatContent = ({
   const moreMenu = [
     new DropdownItem(
       (
-        <GroupIcon
-          sx={{ width: 30, height: 30, marginLeft: "4px", color: "#333" }}
-        />
+        <div
+          className="dropdown-group-wrapper"
+          onMouseEnter={() => setHoverGroupMenu(true)}
+          onMouseLeave={() => setHoverGroupMenu(false)}
+        >
+          <div className="group-menu-item">
+            <GroupIcon style={{ marginLeft: "4px", color: "#333" }} />
+            <span style={{ marginLeft: "8px" }}>참여중 목록</span>
+          </div>
+
+          {hoverGroupMenu && (
+            <div className="groupInfo-popup">
+              {selectedRoom.groupInfo.map((item, i) => (
+                <div key={`group-user-${i}`} className="groupInfo">
+                  <img
+                    src={
+                      item.profileImg
+                        ? `${process.env.REACT_APP_BACK_SERVER}/profile/${item.profileImg}`
+                        : "/image/default_image.png"
+                    }
+                    alt="profile"
+                    style={{
+                      width: "36px",
+                      height: "36px",
+                      borderRadius: "50%",
+                      marginRight: "8px",
+                    }}
+                  />
+                  <span>{item.memberNickname}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       ),
-      "참여중 목록"
+      "", // 라벨 없음 (커스텀 렌더링)
+      null
     ),
     new DropdownItem(
       (

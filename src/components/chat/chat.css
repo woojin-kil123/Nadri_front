@@ -11,6 +11,27 @@
 .chat-modal > .chat-room {
   width: 70%;
   gap: 20px;
+
+  justify-content: center;
+}
+.chat-room > .chat-intro {
+  width: 80%;
+  height: 80%;
+  padding: 20px 40px;
+  align-self: center;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.chat-room > .chat-intro > h2 {
+  text-indent: 10px;
+}
+.chat-intro > .intro-description {
+  text-indent: 20px;
+}
+.chat-intro > .intro-description > p {
+  padding: 5px 0px;
 }
 .chat-modal > .chat-list {
   width: 30%;
@@ -121,6 +142,40 @@ body .chat-popup-container {
   background-color: #f4f9ff;
   overflow-y: auto;
   gap: 12px;
+}
+.chat-room > .content-middle > .groupInfo-wrap {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+}
+.content-middle > .groupInfo-wrap > div {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+.content-middle > .groupInfo-popup {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  margin-left: 4px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  min-width: 160px;
+}
+/* 메뉴 항목 전체를 감싸는 wrapper */
+.dropdown-group-wrapper {
+  position: relative;
+}
+.groupInfo-wrap > .groupInfo {
+  background-color: var(--gray8);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
 }
 .content-top > .chat-search-wrap::-webkit-scrollbar {
   width: 5px;

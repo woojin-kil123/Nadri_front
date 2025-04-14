@@ -16,8 +16,9 @@ import {
 } from "@mui/material";
 import { useRecoilValue } from "recoil";
 import { placeTypeState } from "../utils/RecoilData";
+import Swal from "sweetalert2";
 
-const AdminPartner = () => {
+const AdminKeyword = () => {
   const inputStyle = {
     width: "200px",
     height: "40px",
@@ -64,60 +65,64 @@ const AdminPartner = () => {
   }, []);
   const [formData, setFormData] = useState({
     keyword: "",
-    type: "",
+    placeType: "",
     cat1: "",
     cat2: "",
     cat3: "",
     area: "",
     placeId: "",
   });
+  const selectKeywordInfo = () => {
+    const keyword = formData.keyword;
+    axios
+      .get(`${process.env.REACT_APP_BACK_SERVER}/admin/keyword/${keyword}`)
+      .then((res) => {
+        setFormData(res.data);
+      });
+  };
+  const updateKeyword = () => {
+    axios
+      .patch(`${process.env.REACT_APP_BACK_SERVER}/admin/keyword`, formData)
+      .then((res) => {
+        if (res.data > 0) {
+          Swal.fire({
+            title: "변경 완료",
+          }).then(() => {
+            setFormData({
+              keyword: "",
+              placeType: "",
+              cat1: "",
+              cat2: "",
+              cat3: "",
+              area: "",
+              placeId: "",
+            });
+          });
+        }
+      });
+  };
   return (
     <div className="hot-keyword-wrap">
       <h2>인기 검색어</h2>
-      <div className="popular">
+      <div className="popular border">
         {popular && (
           <>
-            <div>
-              <h4>일간</h4>
-              {popular.daily.map((p, i) => (
-                <p key={"daily-" + i}>
-                  {p.query}/{p.count}회
-                </p>
-              ))}
-            </div>
-            <div>
-              <h4>주간</h4>
-              {popular.weekly.map((p, i) => (
-                <p key={"weekly-" + i}>
-                  {p.query}/{p.count}회
-                </p>
-              ))}
-            </div>
-            <div>
-              <h4>월간</h4>
-              {popular.monthly.map((p, i) => (
-                <p key={"monthly-" + i}>
-                  {p.query}/{p.count}회
-                </p>
-              ))}
-            </div>
-            <div>
-              <h4>연간</h4>
-              {popular.yearly.map((p, i) => (
-                <p key={"yearly-" + i}>
-                  {p.query}/{p.count}회
-                </p>
-              ))}
-            </div>
+            <PopularKeywordTable title="일간" data={popular.daily} />
+            <PopularKeywordTable title="주간" data={popular.weekly} />
+            <PopularKeywordTable title="월간" data={popular.monthly} />
+            <PopularKeywordTable title="연간" data={popular.yearly} />
           </>
         )}
       </div>
       <h2>키워드 관리</h2>
-      <div className="keyword-manage">
+      <div className="keyword-manage border">
         <div className="check">
           <form
             onSubmit={(e) => {
               e.preventDefault();
+              if (formData.keyword) {
+                selectKeywordInfo();
+              }
             }}
           >
             <AutocompleteForm
@@ -127,7 +132,14 @@ const AdminPartner = () => {
               setFormData={setFormData}
               controller="keyword"
             />
-            <button style={{ display: "none" }}></button>
+            <IconButton
+              type="button"
+              sx={{ p: "10px" }}
+              className="keyword-submit"
+              onClick={selectKeywordInfo}
+            >
+              조회
+            </IconButton>
           </form>
         </div>
         <div className="insert">
@@ -135,6 +147,7 @@ const AdminPartner = () => {
           <form
             onSubmit={(e) => {
               e.preventDefault();
+              updateKeyword();
             }}
           >
             <div className="info-grid">
@@ -177,7 +190,7 @@ const AdminPartner = () => {
                 formData={formData}
                 setFormData={setFormData}
                 cat={placeType}
-                id="type"
+                id="placeType"
                 label="타입"
               />
               <SelectForm
@@ -224,8 +237,9 @@ const AdminPartner = () => {
               type="button"
               sx={{ p: "10px" }}
               className="keyword-submit"
+              onClick={updateKeyword}
             >
-              확인
+              변경
             </IconButton>
           </form>
         </div>
@@ -233,7 +247,7 @@ const AdminPartner = () => {
     </div>
   );
 };
-export default AdminPartner;
+export default AdminKeyword;
 
 const AutocompleteForm = ({ id, label, formData, setFormData, controller }) => {
   const [inputText, setInputText] = useState("");
@@ -262,19 +276,19 @@ const AutocompleteForm = ({ id, label, formData, setFormData, controller }) => {
   const onChange = (e, newValue) => {
     setFormData((prev) => ({
       ...prev,
-      [id]: newValue?.id || "",
+      [id]: newValue?.[key] || "",
     }));
   };
   return (
     <Autocomplete
       disablePortal
       options={check}
-      value={check.find((opt) => opt[id] === formData[id]) || null}
+      value={formData?.[key]}
       onChange={onChange}
       inputValue={inputText}
       onInputChange={(e, val) => setInputText(val)}
       getOptionLabel={(option) => `${option.name} | ID:${option.id} `}
-      isOptionEqualToValue={(a, b) => a[key] === b[key]}
+      isOptionEqualToValue={(a, b) => a?.[key] === b?.[key]}
       noOptionsText="결과 없음"
       sx={{ mt: 3 }}
       renderInput={(params) => (
@@ -338,7 +352,7 @@ const SelectForm = ({ inputStyle, formData, setFormData, cat, id, label }) => {
       <Select
         labelId={`${id}-label`}
         name={id}
-        value={formData[id]}
+        value={formData[id] || ""}
         label={label}
         onChange={handleChange}
         input={
@@ -357,6 +371,34 @@ const SelectForm = ({ inputStyle, formData, setFormData, cat, id, label }) => {
           </MenuItem>
         ))}
       </Select>
+    </div>
+  );
+};
+
+const PopularKeywordTable = ({ title, data }) => {
+  return (
+    <div className="keyword-table-wrapper">
+      <div className="keyword-table-section">
+        <h3 className="keyword-section-title">{title}</h3>
+        <table className="keyword-table">
+          <thead>
+            <tr>
+              <th>순위</th>
+              <th>검색어</th>
+              <th>조회수</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((item, i) => (
+              <tr key={i}>
+                <td>{i + 1}</td>
+                <td>{item.query}</td>
+                <td>{item.count}회</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
