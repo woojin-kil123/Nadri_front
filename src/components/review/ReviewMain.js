@@ -10,15 +10,13 @@ const ReviewMain = () => {
   const [review, setReview] = useState([]);
   const [pi, setPi] = useState([]);
   const [reqPage, setReqPage] = useState(1);
-  const [content, setContnet] = useState(null);
+  const [content, setContnet] = useState("");
 
   //전체 리뷰 데이터
   useEffect(() => {
     axios
       .get(
-        `${
-          process.env.REACT_APP_BACK_SERVER
-        }/review?reqPage=${reqPage}&type=${"all"}`
+        `${process.env.REACT_APP_BACK_SERVER}/review?reqPage=${reqPage}&type=${content}`
       )
       .then((res) => {
         console.log(res);
@@ -28,23 +26,11 @@ const ReviewMain = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [reqPage]);
+  }, [reqPage, content]);
   //타입에 따른 데이터
   const changeContnent = (value) => {
     setContnet(value);
     setReqPage(1);
-    axios
-      .get(
-        `${process.env.REACT_APP_BACK_SERVER}/review?reqPage=${reqPage}&type=${value}`
-      )
-      .then((res) => {
-        console.log(res);
-        setReview(res.data.list);
-        setPi(res.data.pi);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   };
 
   return (
