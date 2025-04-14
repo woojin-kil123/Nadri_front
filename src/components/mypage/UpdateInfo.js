@@ -15,7 +15,7 @@ const UpdateInfo = () => {
   const [profileImg, setProfileImg] = useState();
 
   // 기본 프로필 이미지 경로
-  const defaultProfileImg = "/image/profile_default_image.png";
+  const defaultProfileImg = "/image/default_user.png";
 
   //회원 정보 가져오기
   useEffect(() => {

@@ -81,7 +81,7 @@ const UserInfo = () => {
                 src={
                   member.profileImg
                     ? `${process.env.REACT_APP_BACK_SERVER}/profile/${member.profileImg}`
-                    : "/image/profile_default_image.png"
+                    : "/image/default_user.png"
                 }
               />
             </div>
