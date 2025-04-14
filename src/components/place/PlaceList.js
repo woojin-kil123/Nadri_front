@@ -37,6 +37,10 @@ const PlaceList = () => {
     selectedPlaceTypeId,
     selectedFilters
   );
+  console.log(
+    "필터 코드 변환 결과:",
+    convertFiltersToCodes(selectedPlaceTypeId, selectedFilters)
+  );
 
   useEffect(() => {
     if (selectedPlaceTypeId === 0) {
