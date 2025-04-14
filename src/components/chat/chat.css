@@ -143,6 +143,40 @@ body .chat-popup-container {
   overflow-y: auto;
   gap: 12px;
 }
+.chat-room > .content-middle > .groupInfo-wrap {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+}
+.content-middle > .groupInfo-wrap > div {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+.content-middle > .groupInfo-popup {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  margin-left: 4px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  min-width: 160px;
+}
+/* 메뉴 항목 전체를 감싸는 wrapper */
+.dropdown-group-wrapper {
+  position: relative;
+}
+.groupInfo-wrap > .groupInfo {
+  background-color: var(--gray8);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
 .content-top > .chat-search-wrap::-webkit-scrollbar {
   width: 5px;
   right: 0px;

@@ -143,7 +143,6 @@ const Main = () => {
 const FilterNavWithPanel = ({ categories, on, setOn }) => {
   const placeType = useRecoilValue(placeTypeState);
   const tabIndex = categories.findIndex((type) => type.id === on); // 문자열인 on → index 변환
-
   const handleChange = (_, newIndex) => {
     const selected = categories[newIndex].id;
     setOn(selected);
