@@ -33,12 +33,6 @@
   height: 300px;
   padding-bottom: 50px;
 }
-.text-zone > .quil {
-  height: 500px;
-}
-.ql-editor > p {
-  height: 300px;
-}
 
 .review-list-section .review-nav > ul > li.active {
   color: var(--main2);
