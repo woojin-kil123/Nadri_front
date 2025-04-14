@@ -15,6 +15,7 @@ import ChatMenu from "./ChatMenu";
 const ChatModal = ({
   chatModalEl,
   setChatModalEl,
+  chatMenu,
   setChatMenu,
   setIsNewMessage,
 }) => {
@@ -45,16 +46,21 @@ const ChatModal = ({
   useEffect(() => {
     if (!Array.isArray(roomList)) return;
     // 안읽은 메시지 있는 채팅방만 필터
-    const unreadRooms = roomList.filter((room) => room.notRead > 0);
+    const unreadRooms = roomList.filter(
+      (room) => room.notRead > 0 && room.groupInfo.length > 1
+    );
     // DropdownItem 리스트로 변환
-    const menuItems = unreadRooms.map((room) => {
+    const menuItems = unreadRooms.map((room, i) => {
       return new DropdownItem(
         <AnnouncementIcon />,
         `${room.chatTitle}에 새 메시지!`,
+        //클릭시 동작 함수
         (e) => {
           setChatModalEl(e.currentTarget);
           setSelectedRoom(room);
-        } // 클릭시 이동 함수
+          menuItems.splice(i, 1);
+          setChatMenu([...chatMenu, menuItems]);
+        }
       );
     });
     setChatMenu([

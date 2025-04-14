@@ -20,7 +20,6 @@ const ChatMenu = ({ chatEl, setChatEl }) => {
   useEffect(() => {
     if (chatMenu.length > 1) {
       setIsNewMessage(true);
-      console.log("뉴메시지 유즈이펙트 작동");
     }
   }, [chatMenu.length]);
   const chatOpen = (e) => {
@@ -49,6 +48,7 @@ const ChatMenu = ({ chatEl, setChatEl }) => {
       <ChatModal
         chatModalEl={chatModalEl}
         setChatModalEl={setChatModalEl}
+        chatMenu={chatMenu}
         setChatMenu={setChatMenu}
         setIsNewMessage={setIsNewMessage}
         sx={{ zIndex: 50 }}

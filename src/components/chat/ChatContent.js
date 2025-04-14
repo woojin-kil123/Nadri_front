@@ -91,11 +91,9 @@ const ChatContent = ({
                     }
                     alt="profile"
                     style={{
-                      marginLeft: "20px",
-                      width: "36px",
-                      height: "36px",
+                      width: "30px",
+                      height: "30px",
                       borderRadius: "50%",
-                      marginRight: "8px",
                     }}
                   />
                   <span>{item.memberNickname}</span>
