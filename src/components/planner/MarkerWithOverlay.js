@@ -11,6 +11,7 @@ const MarkerWithOverlay = (props) => {
   const setOpenPlanningModal = props.setOpenPlanningModal;
   const isPlanned = props.isPlanned;
   const handleDeletePlace = props.handleDeletePlace;
+  const plannerMode = props.plannerMode;
 
   return (
     <>
@@ -76,27 +77,29 @@ const MarkerWithOverlay = (props) => {
                     >
                       상세보기
                     </div>
-                    <div className="place-btn">
-                      {isPlanned ? (
-                        <button
-                          onClick={() => {
-                            setOpenOverlay(null);
-                            handleDeletePlace(p.order);
-                          }}
-                        >
-                          삭제
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => {
-                            // setOpenOverlay(null);
-                            setOpenPlanningModal(p.placeId);
-                          }}
-                        >
-                          추가
-                        </button>
-                      )}
-                    </div>
+                    {plannerMode !== "view" && (
+                      <div className="place-btn">
+                        {isPlanned ? (
+                          <button
+                            onClick={() => {
+                              setOpenOverlay(null);
+                              handleDeletePlace(p.order);
+                            }}
+                          >
+                            삭제
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              // setOpenOverlay(null);
+                              setOpenPlanningModal(p.placeId);
+                            }}
+                          >
+                            추가
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
