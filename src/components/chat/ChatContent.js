@@ -87,10 +87,11 @@ const ChatContent = ({
                     src={
                       item.profileImg
                         ? `${process.env.REACT_APP_BACK_SERVER}/profile/${item.profileImg}`
-                        : "/image/default_image.png"
+                        : "/image/default_user.png"
                     }
                     alt="profile"
                     style={{
+                      marginLeft: "20px",
                       width: "36px",
                       height: "36px",
                       borderRadius: "50%",
