@@ -47,7 +47,7 @@ const Main = () => {
     onReview &&
       axios
         .get(
-          `${process.env.REACT_APP_BACK_SERVER}/review?reqPage=1&value=${onReview}`
+          `${process.env.REACT_APP_BACK_SERVER}/review?reqPage=1&type=${onReview}`
         )
         .then((res) => {
           console.log(res.data);
