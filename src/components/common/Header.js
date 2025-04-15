@@ -67,11 +67,13 @@ const HeaderLink = (props) => {
   const [memberLevel, setMemberLevel] = useRecoilState(memberLevelState);
   const isLogin = props.isLogin;
   const navigate = useNavigate();
+
   const logout = () => {
     setMemberNickname("");
     setMemberLevel(0);
     delete axios.defaults.headers.common["Authorization"];
     window.localStorage.removeItem("refreshToken");
+    navigate("/");
   };
 
   const accountMenu = [
@@ -81,7 +83,7 @@ const HeaderLink = (props) => {
       }),
     memberLevel == 1 &&
       new DropdownItem(<CalendarTodayIcon />, "나의 일정", () => {
-        navigate("/myplan");
+        navigate("/mypage/planners");
       }),
     memberLevel == 2 &&
       new DropdownItem(<AdminPanelSettingsIcon />, "관리자 페이지", () => {

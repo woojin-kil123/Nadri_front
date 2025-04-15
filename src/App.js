@@ -106,11 +106,11 @@ function App() {
                   <Route path="/join3" element={<Join3 />} />
                   <Route path="/updatePw" element={<UpdatePw />} />
                   <Route path="/updatePw2" element={<UpdatePw2 />} />
-                  {/*<Route path="/mypage/*" element={<Mypage />} /> */}
-                  <Route
+                  <Route path="/mypage/*" element={<Mypage />} />
+                  {/*<Route
                     path="/mypage/*"
                     element={<LoginRouting element={<Mypage />} />}
-                  />
+                  />*/}
                   <Route path="/review" element={<ReviewMain />}></Route>
                   <Route
                     path="/admin/*"
