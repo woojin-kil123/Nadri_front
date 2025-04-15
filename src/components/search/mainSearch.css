@@ -17,8 +17,18 @@
 .main-search .css-6h9cc6-MuiInputBase-root-MuiInput-root::after {
   border-bottom: 2px solid var(--main2);
 }
+.search-result .place-wrap {
+  width: 100%;
+}
 .content .result-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+.pageNavi-box .css-etfcq2-MuiPagination-root .Mui-selected {
+  background-color: var(--main2);
+}
+
+.pageNavi-box .css-etfcq2-MuiPagination-root .Mui-selected:hover {
+  background-color: var(--main2);
 }
