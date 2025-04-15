@@ -13,7 +13,9 @@ const EditReview = () => {
   const [rating, setRating] = useState(0);
   const [files, setFiles] = useState([]);
   const [filePreviews, setFilePreviews] = useState([]);
-
+  const [newFiles, setNewFiles] = useState([]);
+  const [newFilePreviews, setNewFilePreviews] = useState([]);
+  const [deleteFile, setDeleteFile] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,35 +47,52 @@ const EditReview = () => {
     }
   }, []);
   const fileChange = (e) => {
-    const selectedFiles = Array.from(e.target.files);
-    setFiles(selectedFiles);
-
-    const previews = selectedFiles.map((file) => URL.createObjectURL(file));
-    setFilePreviews(previews);
+    const newChangeFiles = Array.from(e.target.files);
+    const combinedFiles = [...newFiles, ...newChangeFiles];
+    setNewFiles(combinedFiles);
+    const newPreviews = newChangeFiles.map((file) => URL.createObjectURL(file));
+    setNewFilePreviews((prev) => [...prev, ...newPreviews]);
   };
 
   const removeImage = (index) => {
-    const newFiles = [...files];
-    const newPreviews = [...filePreviews];
-    newFiles.splice(index, 1);
-    newPreviews.splice(index, 1);
-    setFiles(newFiles);
-    setFilePreviews(newPreviews);
+    const newChangeFiles = [...newFiles];
+    const newChangePreviews = [...newFilePreviews];
+    newChangeFiles.splice(index, 1);
+    newChangePreviews.splice(index, 1);
+    setNewFiles(newChangeFiles);
+    setNewFilePreviews(newChangePreviews);
   };
-
+  const remove = (index) => {
+    const changeFiles = [...files];
+    const chanePreviews = [...filePreviews];
+    const removed = changeFiles[index];
+    changeFiles.splice(index, 1);
+    chanePreviews.splice(index, 1);
+    if (removed.filepath) {
+      setDeleteFile((prev) => [...prev, removed.filepath]);
+    }
+    setFiles(changeFiles);
+    setFilePreviews(chanePreviews);
+  };
+  console.log(deleteFile);
   const reviewEdit = () => {
-    if (!title || !content) {
+    const trimmedTitle = title.trim();
+    const trimmedContent = content.trim();
+    const isContentEmpty =
+      trimmedContent === "" || trimmedContent === "<p><br></p>";
+    if (trimmedTitle === "" || isContentEmpty) {
       alert("제목과 내용을 모두 입력해주세요.");
       return;
     }
-
     const form = new FormData();
     form.append("reviewNo", reviewNo);
     form.append("reviewTitle", title);
     form.append("starRate", rating);
     form.append("reviewContent", content);
-
-    files.forEach((file) => {
+    deleteFile.forEach((filepath) => {
+      form.append("deleteFilepaths", filepath);
+    });
+    newFiles.forEach((file) => {
       form.append("multipartFile", file); // 백엔드 필드 이름에 맞게 조정
     });
 
@@ -91,7 +110,7 @@ const EditReview = () => {
         alert("리뷰 수정에 실패했습니다.");
       });
   };
-
+  console.log(newFiles);
   return (
     <section className="section review-write-section">
       <div className="review-form">
@@ -106,7 +125,9 @@ const EditReview = () => {
         </div>
 
         <div className="form-section">
-          <label className="form-label">제목</label>
+          <label className="form-label" style={{ marginTop: "50px" }}>
+            제목
+          </label>
           <input
             type="text"
             className="form-input"
@@ -119,7 +140,10 @@ const EditReview = () => {
         {/* 이미지 업로드 영역 */}
         <div className="form-section" style={{ marginTop: "50px" }}>
           <label className="form-label">사진 추가하기</label>
-          <div className="upload-preview-wrapper">
+          <div
+            className="upload-preview-wrapper "
+            style={{ marginTop: "50px" }}
+          >
             <label className="upload-box" htmlFor="filePath">
               클릭하여 사진 추가하기
               <br />
@@ -133,14 +157,26 @@ const EditReview = () => {
               />
             </label>
             <div className="image-preview">
-              {filePreviews.map((src, idx) => (
-                <img
-                  key={idx}
-                  src={src}
-                  alt={`preview-${idx}`}
-                  onClick={() => removeImage(idx)}
-                  className="preview-image"
-                />
+              {[
+                ...files.map((img, index) => ({
+                  type: "existing",
+                  src: `${process.env.REACT_APP_BACK_SERVER}/place/image/${img.filepath}`,
+                  onClick: () => remove(index),
+                })),
+                ...newFilePreviews.map((src, index) => ({
+                  type: "new",
+                  src: src,
+                  onClick: () => removeImage(index),
+                })),
+              ].map((imgData, index) => (
+                <div className="review-image-wrapper" key={index}>
+                  <img
+                    src={imgData.src}
+                    alt={`preview-${index}`}
+                    onClick={imgData.onClick}
+                    className="preview-image"
+                  />
+                </div>
               ))}
             </div>
           </div>
