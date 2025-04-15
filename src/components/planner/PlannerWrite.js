@@ -48,14 +48,14 @@ const PlannerWrite = (props) => {
 
   //getPlaceList() 실행 관리
   useEffect(() => {
-    if (!userMarker) return; //마커 없으면 실행 취소
+    if (!userMarker) return;
 
-    //마커 지정 시 타이머 설정: 0.5초 뒤 데이터 받아오게끔
+    //장소 조회 타이머 설정: 0.5초 뒤 실행
     const timer = setTimeout(() => {
       getPlaceList();
     }, 500);
 
-    //0.5초 이내에 새 마커가 지정되면 현재 타이머 제거
+    //0.5초 내 새 조회 요청이 발생하면 타이머 리셋(랙 방지)
     return () => clearTimeout(timer);
   }, [userMarker, sortOption, filterOption, reqPage]);
 
@@ -227,13 +227,6 @@ const PlannerWrite = (props) => {
           )}
         </div>
       </div>
-      <div className="radius-slider">
-        <label htmlFor="radiusRange">검색반경: m</label>
-        <input id="radiusRange" type="range" min="100" max="5000" step="100" />
-        <button className="re-search" onClick={getPlaceList}>
-          새로고침
-        </button>
-      </div>
       <div className="save-plan-btn">
         {plannedPlaceList.length !== 0 && (
           <button
@@ -348,18 +341,20 @@ const PlanningModal = (props) => {
     props.setPlannedPlaceList,
   ];
   const setOpenPlanner = props.setOpenPlanner;
-
   const [date, setDate] = useState(dayjs());
+  const [transport, setTransport] = useState("");
+  const [order, setOrder] = useState(plannedPlaceList.length);
+
   useEffect(() => {
     if (plannedPlaceList.length > 0) {
       setDate(
         dayjs(plannedPlaceList[plannedPlaceList.length - 1].itineraryDate)
       );
+      setTransport(
+        plannedPlaceList[plannedPlaceList.length - 1].transport || ""
+      );
     }
   }, [plannedPlaceList]);
-
-  const [transport, setTransport] = useState("");
-  const [order, setOrder] = useState(plannedPlaceList.length);
 
   const handleAddPlace = () => {
     if (date.format("YYYY-MM-DD") < dayjs().format("YYYY-MM-DD")) {
