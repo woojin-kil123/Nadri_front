@@ -124,8 +124,9 @@ const PlaceDetail = () => {
   };
 
   const handleSave = () => {
+    console.log(editPlace);
     axios
-      .put(`${backServer}/admin/place/update`, editPlace)
+      .patch(`${backServer}/admin/place/update`, editPlace)
       .then(() => {
         alert("수정 완료!");
         setPlace(editPlace);
@@ -159,12 +160,22 @@ const PlaceDetail = () => {
 
           {memberLevel == 2 &&
             (editMode ? (
-              <div className="edit-button-wrap">
-                <button onClick={handleSave}>저장</button>
-                <button onClick={() => setEditMode(false)}>취소</button>
+              <div className="place-detail edit-button-wrap">
+                <button className="btn-primary" onClick={handleSave}>
+                  저장
+                </button>
+                <button
+                  className="btn-secondary"
+                  onClick={() => setEditMode(false)}
+                >
+                  취소
+                </button>
               </div>
             ) : (
-              <button className="edit-btn" onClick={() => setEditMode(true)}>
+              <button
+                className="btn-primary edit-btn"
+                onClick={() => setEditMode(true)}
+              >
                 수정하기
               </button>
             ))}
@@ -199,29 +210,53 @@ const PlaceDetail = () => {
             alt="place"
           />
         </div>
-        <div className="placeImage-box-more"></div>
+        <div className="placeImage-more-box">
+          <div className="placeImage-more">
+            <img
+              src={place?.placeThumb || "/image/dora.png"}
+              className="detail-img2"
+              alt="place"
+            />
+            <img
+              src={place?.placeThumb || "/image/dora.png"}
+              className="detail-img3"
+              alt="place"
+            />
+          </div>
+          <div className="placeImage-more">
+            <img
+              src={place?.placeThumb || "/image/dora.png"}
+              className="detail-img4"
+              alt="place"
+            />
+            <img
+              src={place?.placeThumb || "/image/dora.png"}
+              className="detail-img5"
+              alt="place"
+            />
+          </div>
+        </div>
       </div>
 
       <div className="place-detail-content">
-        <div className="main-description">
-          <strong>개요</strong>
-          {editMode ? (
-            <textarea
-              name="placeOverview"
-              value={editPlace.placeOverview || ""}
-              onChange={handleChange}
-            />
-          ) : (
-            <p>
-              경복궁은 조선 왕조 제일의 법궁이다. 북으로 북악산을 기대어 자리
-              잡았고 정문인 광화문 앞으로는 넓은 육조거리(지금의 세종로)가
-              펼쳐져, 왕도인 한양(서울) 도시 계획의 중심이기도 하다. 1395년 태조
-              이성계가 창건하였고, 1592년 임진왜란으로 불타 없어졌다가, 고종
-              때인 1867년 중건되었다. 흥선대원군이 주도한 중건 경복궁은 500여
-              동의 건물들이 미로같이 빼곡히 들어선 웅장한 모습이었다.
-            </p>
-          )}
-        </div>
+        {place && (
+          <div className="main-description">
+            <strong>개요</strong>
+            {editMode ? (
+              <textarea
+                className="place-overview-textarea"
+                name="placeOverview"
+                value={editPlace.placeOverview ?? ""}
+                onChange={handleChange}
+              />
+            ) : (
+              <p>
+                {place.placeOverview ??
+                  "경복궁은 조선 왕조 제일의 법궁이다. 북으로 북악산을 기대어 자리 잡았고 정문인 광화문 앞으로는 넓은 육조거리(지금의 세종로)가 펼쳐져, 왕도인 한양(서울) 도시 계획의 중심이기도 하다. 1395년 태조 이성계가 창건하였고, 1592년 임진왜란으로 불타 없어졌다가, 고종 때인 1867년 중건되었다. 흥선대원군이 주도한 중건 경복궁은 500여 동의 건물들이 미로같이 빼곡히 들어선 웅장한 모습이었다."}
+              </p>
+            )}
+          </div>
+        )}
 
         <div className="info-box">
           {place?.placeAddr && (
@@ -305,6 +340,7 @@ const PlaceDetail = () => {
           )}
 
           <div className="info-request-box">
+            {}
             <span onClick={handleOpen}>잘못된 정보 알려주기</span>
           </div>
         </div>
@@ -313,12 +349,12 @@ const PlaceDetail = () => {
       <div className="place-detail page-title">
         <h2>리뷰</h2>
         <div
-          className="review-write btn-primary green"
+          className="btn-primary review-write "
           onClick={() => {
             navigate(`/review/write/${placeId}`);
           }}
         >
-          글쓰기
+          리뷰작성
         </div>
       </div>
 
@@ -455,7 +491,7 @@ const PlaceDetail = () => {
                 "&:hover": { backgroundColor: "var(--main3)" },
               }}
             >
-              저장
+              전송
             </Button>
           </DialogActions>
         </form>
