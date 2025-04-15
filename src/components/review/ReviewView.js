@@ -12,7 +12,7 @@ import { useRecoilState } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
 import EditIcon from "@mui/icons-material/Edit";
 import { Margin } from "@mui/icons-material";
-
+import StarRating from "../utils/StarRating";
 const ReviewView = () => {
   const params = useParams();
   const reviewNo = params.reviewNo;
@@ -102,8 +102,13 @@ const ReviewView = () => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/review/likes/${reviewNo}`)
       .then((res) => {
+        console.log(res);
         setLikeCount(res.data.likes);
-        if (res.data.likeMember.memberNickname === memberNickname) {
+        if (
+          res.data.likeMember.some(
+            (member) => member.memberNickname === memberNickname
+          )
+        ) {
           setLiked(true);
         }
       })
@@ -296,15 +301,39 @@ const ReviewView = () => {
               className="review-header-top"
               style={{ borderBottom: "1px solid #ccc", marginBottom: "20px" }}
             >
-              <h3 className="review-title">{review.reviewTitle}</h3>
+              <h3 className="review-title" style={{ textAlign: "center" }}>
+                {review.reviewTitle}
+              </h3>
             </div>
 
             <div
               className="review-meta"
-              style={{ borderBottom: "1px solid #ccc", marginBottom: "15px" }}
+              style={{
+                borderBottom: "1px solid #ccc",
+                marginBottom: "15px",
+              }}
             >
-              <span className="author">{review.memberNickname}</span>
-              <span className="date">리뷰 일자:{review.reviewDate}</span>
+              <div
+                className="review-metat-content"
+                style={{
+                  marginLeft: "20px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%", // 가로 폭 꽉 채움
+                  maxWidth: "600px",
+                }}
+              >
+                <div style={{ flex: 1, textAlign: "left" }}>
+                  <StarRating rating={review.starRate} />
+                </div>
+                <div style={{ flex: 1, textAlign: "center", fontSize: "15px" }}>
+                  <span className="author">{review.memberNickname}</span>
+                </div>
+                <div style={{ flex: 1, textAlign: "right", fontSize: "15px" }}>
+                  <span className="date">작성일:{review.reviewDate}</span>
+                </div>
+              </div>
             </div>
 
             {/* 본문 내용 */}
@@ -321,9 +350,9 @@ const ReviewView = () => {
                 {reviewImages.map((img, index) => (
                   <div className="review-image-wrapper" key={index}>
                     <img
-                      src={`${process.env.REACT_APP_BACK_SERVER}/place/${img.filepath}`}
+                      src={`${process.env.REACT_APP_BACK_SERVER}/place/image/${img.filepath}`}
                       alt=""
-                      className="review-image"
+                      className="review-image2"
                     />
                   </div>
                 ))}
@@ -338,34 +367,78 @@ const ReviewView = () => {
                     background: "none",
                     border: "none",
                     cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
                   }}
                 >
                   {liked ? (
-                    <FavoriteIcon color="error" />
+                    <FavoriteIcon
+                      color="error"
+                      sx={{
+                        width: "20px",
+                        height: "20px",
+                        verticalAlign: "middle",
+                      }}
+                    />
                   ) : (
-                    <FavoriteBorderIcon />
+                    <FavoriteBorderIcon
+                      sx={{
+                        width: "20px",
+                        height: "20px",
+                        verticalAlign: "middle",
+                      }}
+                    />
                   )}
                 </button>
-                <span>{likeCount}</span>
+                <span
+                  style={{
+                    alignItems: "center",
+                    fontSize: "15px",
+                    verticalAlign: "middle",
+                    marginLeft: "4px",
+                  }}
+                >
+                  {likeCount}
+                </span>
               </div>
 
-              {memberNickname === review.memberNickname ? (
-                <>
-                  <EditNoteIcon
-                    onClick={editReview}
-                    style={{ cursor: "pointer" }}
+              <div
+                className="multi-btn-zone"
+                style={{ display: "flex", gap: "8px", alignItems: "center" }}
+              >
+                {memberNickname === review.memberNickname ? (
+                  <>
+                    <EditNoteIcon
+                      onClick={editReview}
+                      sx={{
+                        width: "20px",
+                        height: "20px",
+                        cursor: "pointer",
+                        verticalAlign: "middle",
+                      }}
+                    />
+                    <DeleteIcon
+                      onClick={deleteReview}
+                      sx={{
+                        width: "20px",
+                        height: "20px",
+                        cursor: "pointer",
+                        verticalAlign: "middle",
+                      }}
+                    />
+                  </>
+                ) : (
+                  <ReportIcon
+                    onClick={reportClick}
+                    sx={{
+                      width: "20px",
+                      height: "20px",
+                      cursor: "pointer",
+                      verticalAlign: "middle",
+                    }}
                   />
-                  <DeleteIcon
-                    onClick={deleteReview}
-                    style={{ cursor: "pointer" }}
-                  />
-                </>
-              ) : (
-                <ReportIcon
-                  onClick={reportClick}
-                  style={{ cursor: "pointer" }}
-                />
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>

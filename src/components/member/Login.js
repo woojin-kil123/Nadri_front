@@ -97,7 +97,7 @@ const Login = () => {
     axios
       .post(`${process.env.REACT_APP_BACK_SERVER}/member/login`, member)
       .then((res) => {
-        console.log(res);
+        console.log(res.data);
         setMemberNickname(res.data.memberNickname);
         setMemberLevel(res.data.memberLevel);
         setMemberNo(res.data.memberNo);

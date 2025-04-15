@@ -11,19 +11,77 @@ const EditReview = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [rating, setRating] = useState(0);
+  const [files, setFiles] = useState([]);
+  const [filePreviews, setFilePreviews] = useState([]);
+  const [newFiles, setNewFiles] = useState([]);
+  const [newFilePreviews, setNewFilePreviews] = useState([]);
+  const [deleteFile, setDeleteFile] = useState([]);
+  const [placeId, setPlaceId] = useState(0);
   const navigate = useNavigate();
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/review/${reviewNo}`)
       .then((res) => {
+        console.log(res);
         setTitle(res.data.reviewTitle);
         setContent(res.data.reviewContent);
         setRating(res.data.starRate);
+        // 기존 이미지 미리보기를 위해 필요시 여기서 불러오기 추가 가능
       })
       .catch((err) => console.log(err));
+  }, [reviewNo]);
+  useEffect(() => {
+    if (reviewNo) {
+      axios
+        .get(
+          `${process.env.REACT_APP_BACK_SERVER}/review/reviewImage?reviewNo=${reviewNo}`
+        )
+        .then((res) => {
+          console.log(res);
+          setFiles(res.data); // res.data는 PlaceImgDTO 리스트여야 함
+          setFilePreviews(res.data);
+        })
+        .catch((err) => {
+          console.log("리뷰 이미지 불러오기 실패:", err);
+        });
+    }
   }, []);
+  const fileChange = (e) => {
+    const newChangeFiles = Array.from(e.target.files);
+    const combinedFiles = [...newFiles, ...newChangeFiles];
+    setNewFiles(combinedFiles);
+    const newPreviews = newChangeFiles.map((file) => URL.createObjectURL(file));
+    setNewFilePreviews((prev) => [...prev, ...newPreviews]);
+  };
+
+  const removeImage = (index) => {
+    const newChangeFiles = [...newFiles];
+    const newChangePreviews = [...newFilePreviews];
+    newChangeFiles.splice(index, 1);
+    newChangePreviews.splice(index, 1);
+    setNewFiles(newChangeFiles);
+    setNewFilePreviews(newChangePreviews);
+  };
+  const remove = (index) => {
+    const changeFiles = [...files];
+    const chanePreviews = [...filePreviews];
+    const removed = changeFiles[index];
+    changeFiles.splice(index, 1);
+    chanePreviews.splice(index, 1);
+    if (removed.filepath) {
+      setDeleteFile((prev) => [...prev, removed.filepath]);
+    }
+    setFiles(changeFiles);
+    setFilePreviews(chanePreviews);
+  };
+
   const reviewEdit = () => {
-    if (!title || !content) {
+    const trimmedTitle = title.trim();
+    const trimmedContent = content.trim();
+    const isContentEmpty =
+      trimmedContent === "" || trimmedContent === "<p><br></p>";
+    if (trimmedTitle === "" || isContentEmpty) {
       alert("제목과 내용을 모두 입력해주세요.");
       return;
     }
@@ -32,6 +90,12 @@ const EditReview = () => {
     form.append("reviewTitle", title);
     form.append("starRate", rating);
     form.append("reviewContent", content);
+    deleteFile.forEach((filepath) => {
+      form.append("deleteFilepaths", filepath);
+    });
+    newFiles.forEach((file) => {
+      form.append("multipartFile", file); // 백엔드 필드 이름에 맞게 조정
+    });
 
     axios
       .patch(`${process.env.REACT_APP_BACK_SERVER}/review`, form, {
@@ -47,6 +111,7 @@ const EditReview = () => {
         alert("리뷰 수정에 실패했습니다.");
       });
   };
+
   return (
     <section className="section review-write-section">
       <div className="review-form">
@@ -54,14 +119,10 @@ const EditReview = () => {
           <label className="form-label">귀하의 경험에 대해 평가해주세요</label>
           <StarRating rating={rating} setRating={setRating} />
         </div>
-
         <div className="form-section">
-          <label className="form-label">리뷰 쓰기</label>
-          <TextEditor data={content} setData={setContent} />
-        </div>
-
-        <div className="form-section">
-          <label className="form-label">제목</label>
+          <label className="form-label" style={{ marginTop: "50px" }}>
+            제목
+          </label>
           <input
             type="text"
             className="form-input"
@@ -71,6 +132,56 @@ const EditReview = () => {
           />
         </div>
 
+        <div className="form-section">
+          <label className="form-label">리뷰 쓰기</label>
+          <TextEditor data={content} setData={setContent} />
+        </div>
+
+        {/* 이미지 업로드 영역 */}
+        <div className="form-section" style={{ marginTop: "50px" }}>
+          <label className="form-label">사진 추가하기</label>
+          <div
+            className="upload-preview-wrapper "
+            style={{ marginTop: "50px" }}
+          >
+            <label className="upload-box" htmlFor="filePath">
+              클릭하여 사진 추가하기
+              <br />
+              <span>또는 끌어놓기</span>
+              <input
+                type="file"
+                id="filePath"
+                style={{ display: "none" }}
+                multiple
+                onChange={fileChange}
+              />
+            </label>
+            <div className="image-preview">
+              {[
+                ...files.map((img, index) => ({
+                  type: "existing",
+                  src: `${process.env.REACT_APP_BACK_SERVER}/place/image/${img.filepath}`,
+                  onClick: () => remove(index),
+                })),
+                ...newFilePreviews.map((src, index) => ({
+                  type: "new",
+                  src: src,
+                  onClick: () => removeImage(index),
+                })),
+              ].map((imgData, index) => (
+                <div className="review-image-wrapper" key={index}>
+                  <img
+                    src={imgData.src}
+                    alt={`preview-${index}`}
+                    onClick={imgData.onClick}
+                    className="preview-image"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
         <button className="submit-button" onClick={reviewEdit}>
           리뷰수정
         </button>
@@ -78,6 +189,7 @@ const EditReview = () => {
     </section>
   );
 };
+
 const StarRating = ({ totalStars = 5, rating, setRating }) => {
   return (
     <div className="star-rating">
