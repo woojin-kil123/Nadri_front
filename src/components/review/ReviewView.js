@@ -343,34 +343,78 @@ const ReviewView = () => {
                     background: "none",
                     border: "none",
                     cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
                   }}
                 >
                   {liked ? (
-                    <FavoriteIcon color="error" />
+                    <FavoriteIcon
+                      color="error"
+                      sx={{
+                        width: "20px",
+                        height: "20px",
+                        verticalAlign: "middle",
+                      }}
+                    />
                   ) : (
-                    <FavoriteBorderIcon />
+                    <FavoriteBorderIcon
+                      sx={{
+                        width: "20px",
+                        height: "20px",
+                        verticalAlign: "middle",
+                      }}
+                    />
                   )}
                 </button>
-                <span>{likeCount}</span>
+                <span
+                  style={{
+                    alignItems: "center",
+                    fontSize: "15px",
+                    verticalAlign: "middle",
+                    marginLeft: "4px",
+                  }}
+                >
+                  {likeCount}
+                </span>
               </div>
 
-              {memberNickname === review.memberNickname ? (
-                <>
-                  <EditNoteIcon
-                    onClick={editReview}
-                    style={{ cursor: "pointer" }}
+              <div
+                className="multi-btn-zone"
+                style={{ display: "flex", gap: "8px", alignItems: "center" }}
+              >
+                {memberNickname === review.memberNickname ? (
+                  <>
+                    <EditNoteIcon
+                      onClick={editReview}
+                      sx={{
+                        width: "20px",
+                        height: "20px",
+                        cursor: "pointer",
+                        verticalAlign: "middle",
+                      }}
+                    />
+                    <DeleteIcon
+                      onClick={deleteReview}
+                      sx={{
+                        width: "20px",
+                        height: "20px",
+                        cursor: "pointer",
+                        verticalAlign: "middle",
+                      }}
+                    />
+                  </>
+                ) : (
+                  <ReportIcon
+                    onClick={reportClick}
+                    sx={{
+                      width: "20px",
+                      height: "20px",
+                      cursor: "pointer",
+                      verticalAlign: "middle",
+                    }}
                   />
-                  <DeleteIcon
-                    onClick={deleteReview}
-                    style={{ cursor: "pointer" }}
-                  />
-                </>
-              ) : (
-                <ReportIcon
-                  onClick={reportClick}
-                  style={{ cursor: "pointer" }}
-                />
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>
