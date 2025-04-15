@@ -59,7 +59,7 @@ const PlaceDetail = () => {
     handleClose();
   };
 
-  const [placeImgs, setPlaceImgs] = useState([]);
+  const [placeImages, setPlaceIamges] = useState([]);
 
   useEffect(() => {
     axios
@@ -78,7 +78,7 @@ const PlaceDetail = () => {
       .get(`${backServer}/place/images/${placeId}`)
       .then((res) => {
         console.log(res);
-        setPlaceImgs(res.data);
+        setPlaceIamges(res.data);
       })
       .catch((err) => console.error("이미지 불러오기 실패", err));
 
@@ -119,9 +119,15 @@ const PlaceDetail = () => {
       });
   };
 
+  //공유버튼 -> 링크복사 함수
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href).then(() => {
-      alert("링크가 복사되었습니다!");
+      Swal.fire({
+        title: "링크 복사 완료",
+        icon: "success",
+        text: "이 장소의 링크가 복사되었습니다!",
+        confirmButtonText: "확인",
+      });
     });
   };
 
@@ -146,6 +152,24 @@ const PlaceDetail = () => {
         alert("수정 실패");
         console.log(err);
       });
+  };
+
+  //이미지(썸네일 제외) 삭제용 함수
+  const handleImageDelete = (placeImageNo) => {
+    if (window.confirm("정말 이미지를 삭제하시겠습니까?")) {
+      axios
+        .delete(`${backServer}/admin/place/image/${placeImageNo}`)
+        .then(() => {
+          // 삭제 성공 시 상태에서 제거
+          setPlaceIamges((prev) =>
+            prev.filter((img) => img.placeImageNo !== placeImageNo)
+          );
+        })
+        .catch((err) => {
+          console.error("이미지 삭제 실패", err);
+          alert("삭제 실패");
+        });
+    }
   };
 
   return (
@@ -223,35 +247,83 @@ const PlaceDetail = () => {
 
         <div className="placeImage-more-box">
           <div className="placeImage-more">
-            {placeImgs[0] && (
-              <img
-                src={`${backServer}/assets/place/image/${placeImgs[0].filepath}`}
-                className="detail-img"
-                alt="img2"
-              />
+            {placeImages[0] && (
+              <div className="img-wrap">
+                <img
+                  src={`${backServer}/assets/place/image/${placeImages[0].filepath}`}
+                  className="detail-img"
+                  alt="img2"
+                />
+                {editMode && memberLevel === 2 && (
+                  <button
+                    className="img-delete-btn"
+                    onClick={() =>
+                      handleImageDelete(placeImages[0].placeImageNo)
+                    }
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
             )}
-            {placeImgs[1] && (
-              <img
-                src={`${backServer}/assets/place/image/${placeImgs[1].filepath}`}
-                className="detail-img"
-                alt="img3"
-              />
+            {placeImages[2] && (
+              <div className="img-wrap">
+                <img
+                  src={`${backServer}/assets/place/image/${placeImages[2].filepath}`}
+                  className="detail-img"
+                  alt="img3"
+                />
+                {editMode && memberLevel === 2 && (
+                  <button
+                    className="img-delete-btn"
+                    onClick={() =>
+                      handleImageDelete(placeImages[0].placeImageNo)
+                    }
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
             )}
           </div>
           <div className="placeImage-more">
-            {placeImgs[2] && (
-              <img
-                src={`${backServer}/assets/place/image/${placeImgs[2].filepath}`}
-                className="detail-img"
-                alt="img4"
-              />
+            {placeImages[1] && (
+              <div className="img-wrap">
+                <img
+                  src={`${backServer}/assets/place/image/${placeImages[1].filepath}`}
+                  className="detail-img"
+                  alt="img4"
+                />
+                {editMode && memberLevel === 2 && (
+                  <button
+                    className="img-delete-btn"
+                    onClick={() =>
+                      handleImageDelete(placeImages[0].placeImageNo)
+                    }
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
             )}
-            {placeImgs[3] && (
-              <img
-                src={`${backServer}/assets/place/image/${placeImgs[3].filepath}`}
-                className="detail-img"
-                alt="img5"
-              />
+            {placeImages[3] && (
+              <div className="img-wrap">
+                <img
+                  src={`${backServer}/assets/place/image/${placeImages[3].filepath}`}
+                  className="detail-img"
+                  alt="img5"
+                />
+                {editMode && memberLevel === 2 && (
+                  <button
+                    className="img-delete-btn"
+                    onClick={() =>
+                      handleImageDelete(placeImages[0].placeImageNo)
+                    }
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
             )}
           </div>
         </div>
@@ -281,16 +353,7 @@ const PlaceDetail = () => {
           {place?.placeAddr && (
             <div className="info-item">
               <strong>주소</strong>
-              {editMode ? (
-                <input
-                  type="text"
-                  name="placeAddr"
-                  value={editPlace.placeAddr || ""}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p>{place.placeAddr}</p>
-              )}
+              <p>{place.placeAddr}</p>
             </div>
           )}
 

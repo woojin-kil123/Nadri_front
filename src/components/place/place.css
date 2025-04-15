@@ -153,16 +153,19 @@
   gap: 10px;
   height: 195px;
 }
-.placeImage-more img {
-  flex: 1;
+.img-wrap {
+  position: relative;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  flex: 1;
+}
+.img-wrap img {
+  width: 100%;
+  height: 100%;
   border-radius: 12px;
+  object-fit: cover;
 }
-.placeImage-more img:first-child {
-  width: 290px;
-}
+
 .placeImage-more-box > .placeImage-more {
   display: flex;
   justify-content: space-between;
@@ -173,6 +176,23 @@
   height: 400px;
   object-fit: cover;
   border-radius: 12px;
+}
+.img-delete-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: rgba(255, 255, 255, 0.8);
+  color: red;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+.img-delete-btn:hover {
+  background: red;
+  color: white;
 }
 
 /* 내용과 info 박스 */
