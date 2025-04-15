@@ -1,7 +1,7 @@
 import { CancelOutlined, Close, Search } from "@mui/icons-material";
 import { IconButton, InputBase, Paper } from "@mui/material";
 import axios from "axios";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import StarRating from "../utils/StarRating";
 import BasicDatePicker from "../utils/BasicDatePicker";
@@ -12,6 +12,8 @@ import PageNavigation from "../utils/PageNavigtion";
 import { useRecoilValue } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
 import GetBoundsByLevel from "../utils/GetBoundsByLevel";
+import CaptureMap from "./CaptureMap";
+const leafletImage = require("leaflet-image");
 
 const PlannerWrite = (props) => {
   const {
@@ -458,6 +460,8 @@ const SavePlanModal = (props) => {
   const plannedPlaceList = props.plannedPlaceList;
   const navigate = useNavigate();
   const { planNo } = useParams();
+  const [mapInstance, setMapInstance] = useState(null);
+  const [saving, setSaving] = useState(false);
 
   const planData = useMemo(
     () => ({
@@ -485,6 +489,74 @@ const SavePlanModal = (props) => {
   );
 
   const handleSavePlanner = () => {
+    if (saving) {
+      alert("저장 중입니다. 잠시만 기다려주세요.");
+    }
+    if (planStatus === "") {
+      window.alert("공개 여부를 선택하세요.");
+      return;
+    }
+    if (!mapInstance) {
+      alert("지도가 아직 준비되지 않았습니다. 잠시만 기다려주세요.");
+      return;
+    }
+
+    setSaving(true);
+    // leaflet 이미지 캡처
+    leafletImage(mapInstance, function (err, canvas) {
+      if (err || !canvas) {
+        console.error("지도 캡처 실패", err);
+        return;
+      }
+
+      canvas.toBlob(
+        (blob) => {
+          const form = new FormData();
+          form.append("file", blob, "thumbnail.jpg");
+          if (planNo) {
+            form.append("planNo", planNo);
+          }
+
+          let savedFilename = null;
+          axios
+            .post(`${process.env.REACT_APP_BACK_SERVER}/plan/thumb`, form)
+            .then((res) => {
+              savedFilename = res.data;
+              planData.tripPlanData.planThumb = savedFilename;
+
+              const url = planNo
+                ? `${process.env.REACT_APP_BACK_SERVER}/plan/update`
+                : `${process.env.REACT_APP_BACK_SERVER}/plan/save`;
+
+              return planNo
+                ? axios.put(url, planData)
+                : axios.post(url, planData);
+            })
+            .then((res) => {
+              if (res.data) {
+                window.localStorage.removeItem(
+                  `${loginNickname}_cache_planner`
+                );
+                setOpenSaveModal(false);
+                setSaving(false);
+                navigate("/mypage/planners");
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+              setSaving(false);
+              if (savedFilename) {
+                window.alert("저장에 실패했습니다. 잠시 후 다시 시도해주세요.");
+              }
+            });
+        },
+        "image/jpeg",
+        0.95
+      );
+    });
+  };
+
+  const handleSavePlanner2 = () => {
     if (planStatus === "") {
       window.alert("공개 여부를 선택하세요.");
       return;
@@ -544,46 +616,62 @@ const SavePlanModal = (props) => {
   };
 
   return (
-    <div className="modal-background">
-      <div className="planning-modal save-modal">
-        <div className="page-title">플래너 저장하기</div>
-        <Close onClick={() => setOpenSaveModal(false)} className="close-btn" />
-        <div className="save-readme">
-          <div>저장하기에 앞서</div>
-          <div>마지막으로 확인해주세요.</div>
+    <>
+      {saving && (
+        <div className="loading-overlay">
+          <div className="spinner" />
+          <p>저장 중입니다. 잠시만 기다려주세요...</p>
         </div>
-        <div className="planning-input">
-          <div className="plan-name-box">
-            <label style={{ color: "var(--main2)" }}>플래너 이름</label>
-            <input
-              style={{ fontSize: 14 }}
-              type="text"
-              placeholder="기본값은 untitled입니다"
-              value={planName}
-              onChange={(e) => setPlanName(e.target.value)}
-            />
+      )}
+      <div className="modal-background">
+        <div className="planning-modal save-modal">
+          <div className="page-title">플래너 저장하기</div>
+          <Close
+            onClick={() => setOpenSaveModal(false)}
+            className="close-btn"
+          />
+          <div className="save-readme">
+            <div>저장하기에 앞서</div>
+            <div>마지막으로 확인해주세요.</div>
           </div>
-          <div>
-            <span>이 플래너를</span>
-            <BasicSelect
-              type={"공개여부"}
-              list={["공개", "비공개"]}
-              data={planStatus}
-              setData={setPlanStatus}
-            />
-            <span>합니다.</span>
-          </div>
-          <div className="place-btn">
-            <button
-              style={{ width: "100px", height: "30px" }}
-              onClick={handleSavePlanner}
-            >
-              플래너 저장
-            </button>
+          <div className="planning-input">
+            <div className="plan-name-box">
+              <label style={{ color: "var(--main2)" }}>플래너 이름</label>
+              <input
+                style={{ fontSize: 14 }}
+                type="text"
+                placeholder="기본값은 untitled입니다"
+                value={planName}
+                onChange={(e) => setPlanName(e.target.value)}
+              />
+            </div>
+            <div>
+              <span>이 플래너를</span>
+              <BasicSelect
+                type={"공개여부"}
+                list={["공개", "비공개"]}
+                data={planStatus}
+                setData={setPlanStatus}
+              />
+              <span>합니다.</span>
+            </div>
+            <div className="place-btn">
+              <button
+                style={{ width: "100px", height: "30px" }}
+                onClick={handleSavePlanner}
+                disabled={saving || !mapInstance}
+              >
+                {saving ? "저장 중..." : "플래너 저장"}
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      <CaptureMap
+        plannedPlaceList={plannedPlaceList}
+        setMapInstance={setMapInstance}
+      />
+    </>
   );
 };
 

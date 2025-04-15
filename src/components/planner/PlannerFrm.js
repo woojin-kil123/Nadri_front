@@ -1,25 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  CustomOverlayMap,
-  Map,
-  MapMarker,
-  Polyline,
-  Rectangle,
-} from "react-kakao-maps-sdk";
+import { CustomOverlayMap, Map, Polyline } from "react-kakao-maps-sdk";
 import "./planner.css";
 import axios from "axios";
-import {
-  // Link, useNavigate,
-  useParams,
-} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import MarkerWithOverlay from "./MarkerWithOverlay";
 import { useRecoilState } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
-// import BasicSelect from "../utils/BasicSelect";
-// import DrawPlannerPathCanvas from "./DrawPlannerPath";
 import PlannerWrite from "./PlannerWrite";
 import PlannerView from "./PlannerView";
-import GetBoundsByLevel from "../utils/GetBoundsByLevel";
 import { Alert, Snackbar } from "@mui/material";
 
 const PlannerFrm = () => {
