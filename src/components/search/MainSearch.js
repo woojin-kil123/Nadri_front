@@ -34,7 +34,7 @@ const MainSearch = () => {
   const handleMenuClick = (typeName) => {
     const newTag = { name: typeName, id: "" };
     if (!selectedTags.some((tag) => tag.name === newTag.name)) {
-      setSelectedTags((prev) => [...prev, newTag.name]);
+      setSelectedTags((prev) => [...prev, newTag]);
       // DOM이 다시 렌더링된 다음에 input에 포커스
       setTimeout(() => {
         inputRef.current?.focus();
@@ -102,7 +102,7 @@ const MainSearch = () => {
   }, [selectedTags]);
   const doSearch = () => {
     const arr = placeType.filter((type, _) =>
-      selectedTags.find((tag, _) => type.name === tag.title)
+      selectedTags.find((tag, _) => type.name === tag.name)
     );
     const type = arr.map((type, _) => `&type=${type.id}`);
 
@@ -202,9 +202,9 @@ const MainSearch = () => {
         }}
         onChange={(event, newValue, reason, details) => {
           if (reason === "selectOption" && details?.option) {
-            setInputValue(details.option.title);
+            setInputValue(details.option.name);
           } else if (reason === "removeOption") {
-            setSelectedTags(newValue);
+            setSelectedTags(newValue); // 객체 배열 유지
           }
         }}
         renderInput={(params) => (

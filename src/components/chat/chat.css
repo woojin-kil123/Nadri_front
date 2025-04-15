@@ -75,7 +75,7 @@ body .chat-popup-container {
   cursor: pointer;
 }
 .chat-list > .content-middle > div:hover * {
-  font-size: 15px;
+  font-size: 17px;
   transition: 0.2s;
 }
 .content-middle .room-title {
@@ -138,7 +138,6 @@ body .chat-popup-container {
   display: flex;
   flex-direction: column;
   padding: 20px;
-  padding-right: 60px; /* 스크롤 공간 여유 */
   background-color: #f4f9ff;
   overflow-y: auto;
   gap: 12px;
@@ -158,32 +157,44 @@ body .chat-popup-container {
   top: 0;
   left: 100%;
   margin-left: 4px;
-  background-color: white;
-  border: 1px solid #ddd;
+  background-color: var(--gray8);
+  border: 1px solid var(--main2);
+
   border-radius: 6px;
   padding: 8px;
   z-index: 1000;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   min-width: 160px;
+  display: flex;
+  flex-direction: column;
 }
 /* 메뉴 항목 전체를 감싸는 wrapper */
 .dropdown-group-wrapper {
   position: relative;
 }
-.groupInfo-wrap > .groupInfo {
-  background-color: var(--gray8);
+.dropdown-group-wrapper .group-menu-item {
   display: flex;
   align-items: center;
+}
+.groupInfo-popup > .groupInfo {
+  background-color: var(--gray8);
+  width: 120px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  justify-content: space-evenly;
   gap: 8px;
-  padding: 4px 0;
+  margin: 0px 10px;
+  padding: 10px 0;
 }
+.chat-room > .content-middle::-webkit-scrollbar,
 .content-top > .chat-search-wrap::-webkit-scrollbar {
-  width: 5px;
-  right: 0px;
+  display: none;
 }
-.chat-room > .content-middle::-webkit-scrollbar-thumb {
-  background-color: #aaa;
-  border-radius: 4px;
+.chat-room .content-middle .user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 /* 오른쪽 메시지 (내가 보낸 것) */
 .content-middle .right {

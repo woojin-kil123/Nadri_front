@@ -62,7 +62,7 @@ const Reviews = () => {
   }, []);
 
   return (
-    <section className="section">
+    <section className="section review-list-section2">
       <div className="page-title">내 리뷰 관리</div>
       <div className="manage-wrap">
         <nav className="manage-nav">
@@ -165,6 +165,7 @@ const ReviewItem = (props) => {
         <div className="place-title">{reviews.placeTitle}</div>
         <div className="place-addr">{reviews.placeAddr}</div>
         <div
+          className="review-content2"
           dangerouslySetInnerHTML={{
             __html: reviews.reviewContent, // p 태그 제거
           }}

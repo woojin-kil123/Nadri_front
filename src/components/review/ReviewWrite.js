@@ -42,7 +42,11 @@ const ReviewWrite = () => {
   };
 
   const submitReview = () => {
-    if (!title || !content) {
+    const trimmedTitle = title.trim();
+    const trimmedContent = content.trim();
+    const isContentEmpty =
+      trimmedContent === "" || trimmedContent === "<p><br></p>";
+    if (trimmedTitle === "" || isContentEmpty) {
       alert("제목과 내용을 모두 입력해주세요.");
       return;
     }
@@ -117,7 +121,7 @@ const ReviewWrite = () => {
           <TextEditor data={content} setData={setContent} />
         </div>
 
-        <div className="form-section">
+        <div className="form-section " style={{ marginTop: "50px" }}>
           <label className="form-label">사진 추가하기</label>
           <div className="upload-preview-wrapper">
             <label className="upload-box" htmlFor="filePath">
