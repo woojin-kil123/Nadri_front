@@ -8,8 +8,8 @@ import { Box, Tab, Tabs } from "@mui/material";
 const SearchResult = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const [query, setQuery] = useState("");
-  const [typeId, setTypeId] = useState([]);
+  const [query, setQuery] = useState(null);
+  const [typeId, setTypeId] = useState(null);
   const placeType = useRecoilValue(placeTypeState);
   const contentType = [
     { id: 1, name: "여행 정보" },
@@ -22,13 +22,15 @@ const SearchResult = () => {
     setTypeId(queryParams.getAll("type"));
   }, [location]);
   useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_BACK_SERVER}/search?query=${query}&type=${placeType[0].id}`
-      )
-      .then((res) => {
-        console.log(res.data);
-      });
+    if (query || typeId) {
+      axios
+        .get(
+          `${process.env.REACT_APP_BACK_SERVER}/search?query=${query}&type=${placeType[0].id}`
+        )
+        .then((res) => {
+          console.log(res.data);
+        });
+    }
   }, [query, typeId]);
   return (
     <>
@@ -47,7 +49,6 @@ const SearchResult = () => {
 export default SearchResult;
 
 const FilterNavWithPanel = ({ categories, on, setOn }) => {
-  const placeType = useRecoilValue(placeTypeState);
   const tabIndex = categories.findIndex((type) => type.id === on); // 문자열인 on → index 변환
   const handleChange = (_, newIndex) => {
     const selected = categories[newIndex].id;
