@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 const AdminMember = () => {
   const backServer = process.env.REACT_APP_BACK_SERVER;
@@ -8,6 +9,7 @@ const AdminMember = () => {
     axios
       .get(`${backServer}/admin/member/list`)
       .then((res) => {
+        console.log(res);
         setMembers(res.data);
       })
       .catch((err) => {
@@ -29,25 +31,41 @@ const AdminMember = () => {
         );
       });
   };
-
   const handleKick = (memberNo) => {
-    console.log(memberNo);
-    if (window.confirm("정말 강퇴하시겠습니까?")) {
-      axios
-        .patch(`${backServer}/admin/member/${memberNo}`)
-        .then(() => {
-          setMembers((prev) => prev.filter((m) => m.memberNo !== memberNo));
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
+    console.log("강퇴 전:", members);
+    console.log("강퇴할 번호:", memberNo);
+    Swal.fire({
+      icon: "warning",
+      title: "회원 강퇴",
+      text: "해당 회원을 강퇴시키겠습니까?",
+      showConfirmButton: true,
+      confirmButtonText: "확인",
+      showCancelButton: true,
+      cancelButtonText: "취소",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .patch(`${backServer}/admin/member/${memberNo}`)
+          .then(() => {
+            setMembers((prev) => {
+              const filtered = prev.filter(
+                (m) => parseInt(m.memberNo) !== parseInt(memberNo)
+              );
+              console.log("강퇴 후:", filtered);
+              return filtered;
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    });
   };
 
   return (
     <div className="member-tbl-wrap">
-      <h2>회원 관리</h2>
-      <table className="admind-table member-tbl tbl">
+      <h2>경고회원 관리</h2>
+      <table className="admin-table member-tbl tbl">
         <thead>
           <tr>
             <th style={{ width: "7%" }}>번호</th>
