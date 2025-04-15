@@ -35,6 +35,7 @@ const TextEditor = (props) => {
       onChange={setData}
       theme="snow"
       modules={modules}
+      style={{ height: "300px" }}
     />
   );
 };

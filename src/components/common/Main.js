@@ -19,24 +19,18 @@ const Main = () => {
     },
     {
       name: "최신",
-      id: 2,
-    },
-    {
-      name: "혼자",
-      id: 3,
-    },
-    {
-      name: "여럿이",
-      id: 4,
+      id: 0,
     },
   ]);
-  const [onPlan, setOnPlan] = useState("인기");
-  //기본 타입 지정
   const placeType = useRecoilValue(placeTypeState);
+  //기본 타입 지정
+  const [onPlan, setOnPlan] = useState(1);
   const [onPlace, setOnPlace] = useState(null);
   const [onReview, setOnReview] = useState(null);
+
   useEffect(() => {
     if (Array.isArray(placeType) && placeType.length > 0) {
+      setOnPlan(1);
       setOnPlace(placeType[0].id);
       setOnReview(placeType[0].id);
     }
@@ -50,7 +44,6 @@ const Main = () => {
           `${process.env.REACT_APP_BACK_SERVER}/review?reqPage=1&type=${onReview}`
         )
         .then((res) => {
-          console.log(res.data);
           setHotReveiw(res.data.list);
         });
   }, [onReview]);
@@ -69,7 +62,6 @@ const Main = () => {
     localStorage.setItem("hidePopupDate", today);
     setShowPopup(false);
   };
-  console.log(onReview);
   return (
     <section className="section main-wrap">
       {showPopup && (
@@ -92,7 +84,7 @@ const Main = () => {
             setOn={setOnPlan}
           />
         </div>
-        {/* <RecommandSlider on={onPlan} /> */}
+        <RecommandSlider on={onPlan} content="plan" />
       </div>
       <div className="recommand-wrap">
         <div className="recommand-title">
@@ -105,7 +97,7 @@ const Main = () => {
             setOn={setOnPlace}
           />
         </div>
-        <RecommandSlider on={onPlace} />
+        <RecommandSlider on={onPlace} content="place" />
       </div>
       <div className="recommand-wrap">
         <div className="recommand-title">

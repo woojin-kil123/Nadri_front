@@ -1,7 +1,7 @@
 import { CancelOutlined, Close, Search } from "@mui/icons-material";
 import { IconButton, InputBase, Paper } from "@mui/material";
 import axios from "axios";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import StarRating from "../utils/StarRating";
 import BasicDatePicker from "../utils/BasicDatePicker";
@@ -11,12 +11,13 @@ import DrawPlannerPathCanvas from "./DrawPlannerPath";
 import PageNavigation from "../utils/PageNavigtion";
 import { useRecoilValue } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
+import GetBoundsByLevel from "../utils/GetBoundsByLevel";
+import CaptureMap from "./CaptureMap";
+const leafletImage = require("leaflet-image");
 
 const PlannerWrite = (props) => {
   const {
     userMarker,
-    userRadius,
-    setUserRadius,
     openPlanningModal,
     setOpenPlanningModal,
     plannedPlaceList,
@@ -28,6 +29,7 @@ const PlannerWrite = (props) => {
     setOpenOverlay,
     setOpenPlanner,
     setMapCenter,
+    mapLevel,
   } = props;
 
   const loginNickname = useRecoilValue(loginNicknameState);
@@ -37,7 +39,7 @@ const PlannerWrite = (props) => {
   //필터 옵션(null:전체, 1:숙박시설, 2:음식점, 3:그외)
   const [filterOption, setFilterOption] = useState(null);
   //정렬 옵션(1:거리순, 2:리뷰많은순, 3:이름순)
-  const [sortOption, setSortOption] = useState(1);
+  const [sortOption, setSortOption] = useState(2);
 
   //페이지네이션 관련
   const [totalCount, setTotalCount] = useState(0);
@@ -46,14 +48,14 @@ const PlannerWrite = (props) => {
 
   //getPlaceList() 실행 관리
   useEffect(() => {
-    if (!userMarker) return; //마커 없으면 실행 취소
+    if (!userMarker) return;
 
-    //마커 지정 시 타이머 설정: 0.5초 뒤 데이터 받아오게끔
+    //장소 조회 타이머 설정: 0.5초 뒤 실행
     const timer = setTimeout(() => {
       getPlaceList();
     }, 500);
 
-    //0.5초 이내에 새 마커가 지정되면 현재 타이머 제거
+    //0.5초 내 새 조회 요청이 발생하면 타이머 리셋(랙 방지)
     return () => clearTimeout(timer);
   }, [userMarker, sortOption, filterOption, reqPage]);
 
@@ -69,7 +71,7 @@ const PlannerWrite = (props) => {
         case 12:
           return "관광지";
         case 14:
-          return "문화시설";
+          return "즐길거리";
         case 15:
           return "축제/행사";
         case 28:
@@ -83,15 +85,17 @@ const PlannerWrite = (props) => {
       }
     };
 
+    const { width, height } = GetBoundsByLevel(mapLevel);
+
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/plan/nearby`, {
         params: {
           lat,
           lng,
-          width: 0.03,
-          height: 0.03,
+          width,
+          height,
           page: reqPage,
-          size: 100,
+          size: 60,
           sortOption: sortOption,
           filterOption: filterOption,
         },
@@ -182,10 +186,10 @@ const PlannerWrite = (props) => {
             <select
               value={sortOption}
               onChange={(e) => setSortOption(Number(e.target.value))}
-              disabled={placeList.length === 0}
+              // disabled={placeList.length === 0}
             >
-              <option value={1}>거리순</option>
               <option value={2}>리뷰많은순</option>
+              <option value={1}>거리순</option>
               <option value={3}>이름순</option>
             </select>
           </div>
@@ -223,33 +227,18 @@ const PlannerWrite = (props) => {
           )}
         </div>
       </div>
-      <div className="radius-slider">
-        <label htmlFor="radiusRange">검색반경: {userRadius}m</label>
-        <input
-          id="radiusRange"
-          type="range"
-          min="100"
-          max="5000"
-          step="100"
-          value={userRadius}
-          onChange={(e) => {
-            setUserRadius(parseInt(e.target.value));
-          }}
-        />
-        <button className="re-search" onClick={getPlaceList}>
-          새로고침
-        </button>
-      </div>
-      <div className="save-plan-btn">
-        {plannedPlaceList.length !== 0 && (
-          <button
-            onClick={() => {
-              setOpenSaveModal(true);
-            }}
-          >
-            저장
-          </button>
-        )}
+      <div className="planner-handler-wrap">
+        <div className="save-plan-btn">
+          {plannedPlaceList.length !== 0 && (
+            <button
+              onClick={() => {
+                setOpenSaveModal(true);
+              }}
+            >
+              저장
+            </button>
+          )}
+        </div>
       </div>
       {openSaveModal && (
         <SavePlanModal
@@ -354,18 +343,20 @@ const PlanningModal = (props) => {
     props.setPlannedPlaceList,
   ];
   const setOpenPlanner = props.setOpenPlanner;
-
   const [date, setDate] = useState(dayjs());
+  const [transport, setTransport] = useState("");
+  const [order, setOrder] = useState(plannedPlaceList.length);
+
   useEffect(() => {
     if (plannedPlaceList.length > 0) {
       setDate(
         dayjs(plannedPlaceList[plannedPlaceList.length - 1].itineraryDate)
       );
+      setTransport(
+        plannedPlaceList[plannedPlaceList.length - 1].transport || ""
+      );
     }
   }, [plannedPlaceList]);
-
-  const [transport, setTransport] = useState("");
-  const [order, setOrder] = useState(plannedPlaceList.length);
 
   const handleAddPlace = () => {
     if (date.format("YYYY-MM-DD") < dayjs().format("YYYY-MM-DD")) {
@@ -466,6 +457,8 @@ const SavePlanModal = (props) => {
   const plannedPlaceList = props.plannedPlaceList;
   const navigate = useNavigate();
   const { planNo } = useParams();
+  const [mapInstance, setMapInstance] = useState(null);
+  const [saving, setSaving] = useState(false);
 
   const planData = useMemo(
     () => ({
@@ -493,6 +486,74 @@ const SavePlanModal = (props) => {
   );
 
   const handleSavePlanner = () => {
+    if (saving) {
+      alert("저장 중입니다. 잠시만 기다려주세요.");
+    }
+    if (planStatus === "") {
+      window.alert("공개 여부를 선택하세요.");
+      return;
+    }
+    if (!mapInstance) {
+      alert("지도가 아직 준비되지 않았습니다. 잠시만 기다려주세요.");
+      return;
+    }
+
+    setSaving(true);
+    // leaflet 이미지 캡처
+    leafletImage(mapInstance, function (err, canvas) {
+      if (err || !canvas) {
+        console.error("지도 캡처 실패", err);
+        return;
+      }
+
+      canvas.toBlob(
+        (blob) => {
+          const form = new FormData();
+          form.append("file", blob, "thumbnail.jpg");
+          if (planNo) {
+            form.append("planNo", planNo);
+          }
+
+          let savedFilename = null;
+          axios
+            .post(`${process.env.REACT_APP_BACK_SERVER}/plan/thumb`, form)
+            .then((res) => {
+              savedFilename = res.data;
+              planData.tripPlanData.planThumb = savedFilename;
+
+              const url = planNo
+                ? `${process.env.REACT_APP_BACK_SERVER}/plan/update`
+                : `${process.env.REACT_APP_BACK_SERVER}/plan/save`;
+
+              return planNo
+                ? axios.put(url, planData)
+                : axios.post(url, planData);
+            })
+            .then((res) => {
+              if (res.data) {
+                window.localStorage.removeItem(
+                  `${loginNickname}_cache_planner`
+                );
+                setOpenSaveModal(false);
+                setSaving(false);
+                navigate("/mypage/planners");
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+              setSaving(false);
+              if (savedFilename) {
+                window.alert("저장에 실패했습니다. 잠시 후 다시 시도해주세요.");
+              }
+            });
+        },
+        "image/jpeg",
+        0.95
+      );
+    });
+  };
+
+  const handleSavePlanner2 = () => {
     if (planStatus === "") {
       window.alert("공개 여부를 선택하세요.");
       return;
@@ -552,46 +613,62 @@ const SavePlanModal = (props) => {
   };
 
   return (
-    <div className="modal-background">
-      <div className="planning-modal save-modal">
-        <div className="page-title">플래너 저장하기</div>
-        <Close onClick={() => setOpenSaveModal(false)} className="close-btn" />
-        <div className="save-readme">
-          <div>저장하기에 앞서</div>
-          <div>마지막으로 확인해주세요.</div>
+    <>
+      {saving && (
+        <div className="loading-overlay">
+          <div className="spinner" />
+          <p>저장 중입니다. 잠시만 기다려주세요...</p>
         </div>
-        <div className="planning-input">
-          <div className="plan-name-box">
-            <label style={{ color: "var(--main2)" }}>플래너 이름</label>
-            <input
-              style={{ fontSize: 14 }}
-              type="text"
-              placeholder="기본값은 untitled입니다"
-              value={planName}
-              onChange={(e) => setPlanName(e.target.value)}
-            />
+      )}
+      <div className="modal-background">
+        <div className="planning-modal save-modal">
+          <div className="page-title">플래너 저장하기</div>
+          <Close
+            onClick={() => setOpenSaveModal(false)}
+            className="close-btn"
+          />
+          <div className="save-readme">
+            <div>저장하기에 앞서</div>
+            <div>마지막으로 확인해주세요.</div>
           </div>
-          <div>
-            <span>이 플래너를</span>
-            <BasicSelect
-              type={"공개여부"}
-              list={["공개", "비공개"]}
-              data={planStatus}
-              setData={setPlanStatus}
-            />
-            <span>합니다.</span>
-          </div>
-          <div className="place-btn">
-            <button
-              style={{ width: "100px", height: "30px" }}
-              onClick={handleSavePlanner}
-            >
-              플래너 저장
-            </button>
+          <div className="planning-input">
+            <div className="plan-name-box">
+              <label style={{ color: "var(--main2)" }}>플래너 이름</label>
+              <input
+                style={{ fontSize: 14 }}
+                type="text"
+                placeholder="기본값은 untitled입니다"
+                value={planName}
+                onChange={(e) => setPlanName(e.target.value)}
+              />
+            </div>
+            <div>
+              <span>이 플래너를</span>
+              <BasicSelect
+                type={"공개여부"}
+                list={["공개", "비공개"]}
+                data={planStatus}
+                setData={setPlanStatus}
+              />
+              <span>합니다.</span>
+            </div>
+            <div className="place-btn">
+              <button
+                style={{ width: "100px", height: "30px" }}
+                onClick={handleSavePlanner}
+                disabled={saving || !mapInstance}
+              >
+                {saving ? "저장 중..." : "플래너 저장"}
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      <CaptureMap
+        plannedPlaceList={plannedPlaceList}
+        setMapInstance={setMapInstance}
+      />
+    </>
   );
 };
 

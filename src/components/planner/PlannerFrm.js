@@ -1,24 +1,15 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  Circle,
-  CustomOverlayMap,
-  Map,
-  MapMarker,
-  Polyline,
-} from "react-kakao-maps-sdk";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { CustomOverlayMap, Map, Polyline } from "react-kakao-maps-sdk";
 import "./planner.css";
 import axios from "axios";
-import {
-  // Link, useNavigate,
-  useParams,
-} from "react-router-dom";
+import { replace, useNavigate, useParams } from "react-router-dom";
 import MarkerWithOverlay from "./MarkerWithOverlay";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
-// import BasicSelect from "../utils/BasicSelect";
-// import DrawPlannerPathCanvas from "./DrawPlannerPath";
 import PlannerWrite from "./PlannerWrite";
 import PlannerView from "./PlannerView";
+import { Alert, Box, Button, CircularProgress, Snackbar } from "@mui/material";
+import Swal from "sweetalert2";
 
 const PlannerFrm = () => {
   //마커 오버레이 여닫음
@@ -34,11 +25,14 @@ const PlannerFrm = () => {
   //장소 리스트
   const [placeList, setPlaceList] = useState([]);
   //유저닉네임
-  const [loginNickname, setLoginNickname] = useRecoilState(loginNicknameState);
+  const loginNickname = useRecoilValue(loginNicknameState);
   //플래너 소유자(작성자) 여부
   const [isOwner, setIsOwner] = useState(false);
+  //플래너 북마크
+  const [bookmarked, setBookmarked] = useState(0);
 
-  //맵 관련 STATE
+  const navigate = useNavigate();
+
   //현재 보이는 지도 화면
   const [mapBounds, setMapBounds] = useState(null);
   //지도 중심좌표(화면 이동 시 사용)
@@ -48,10 +42,9 @@ const PlannerFrm = () => {
   });
   //유저가 클릭한 지도 위치
   const [userMarker, setUserMarker] = useState(null);
-  //유저 클릭 위치를 중심으로 하는 반경 범위
-  const [userRadius, setUserRadius] = useState(1000);
+  //지도 확대 수준
+  const [mapLevel, setMapLevel] = useState(3);
 
-  //플래너 상태 판별용 STATE
   //주소에서 받은 planNo
   const { planNo } = useParams();
   //플래너 모드: view, write, null
@@ -61,6 +54,17 @@ const PlannerFrm = () => {
 
   //플래너 진입 시 "새 플래너 작성"인지, "기존 플래너 열람"인지 판단
   useEffect(() => {
+    const isNaturalNumber = /^[1-9]\d*$/; //자연수 정규표현식
+    if (planNo && !isNaturalNumber.test(planNo)) {
+      Swal.fire({
+        title: "잘못된 접근",
+        icon: "error",
+        text: "올바르지 않은 플래너 주소입니다.",
+        confirmButtonText: "확인",
+      }).then(() => {
+        navigate("/", { replace: true });
+      });
+    }
     if (planNo) {
       getPlanData(planNo);
       setPlannerMode("view");
@@ -101,11 +105,11 @@ const PlannerFrm = () => {
 
   //작성된 플래너 조회 시
   const getPlanData = useCallback(() => {
-    const refreshToken = window.localStorage.getItem("refreshToken");
     axios
-      .get(`${process.env.REACT_APP_BACK_SERVER}/plan/verify/${planNo}`, {
-        headers: {
-          Authorization: refreshToken,
+      .get(`${process.env.REACT_APP_BACK_SERVER}/plan/verify`, {
+        params: {
+          loginNickname: loginNickname,
+          planNo: planNo,
         },
       })
       .then((res) => {
@@ -153,13 +157,37 @@ const PlannerFrm = () => {
 
         setPlanName(plan.planName ?? "untitled");
         setIsOwner(isOwner);
+        setBookmarked(plan.bookmarked);
         setPlannedPlaceList(mappedData);
         if (mappedData.length > 0) {
           setMapCenter(mappedData[0].placeLatLng);
         }
       })
       .catch((err) => {
-        console.log(err);
+        if (err && err.response) {
+          const status = err.response.status;
+          if (status === 403) {
+            Swal.fire({
+              title: "비공개 플래너",
+              icon: "warning",
+              text: "작성자가 비공개로 설정한 플래너입니다.",
+              confirmButtonText: "확인",
+            }).then(() => {
+              navigate("/", { replace: true });
+            });
+          } else if (status === 404) {
+            Swal.fire({
+              title: "존재하지 않는 플래너",
+              icon: "error",
+              text: "주소가 잘못되었거나 삭제된 플래너입니다.",
+              confirmButtonText: "확인",
+            }).then(() => {
+              navigate("/", { replace: true });
+            });
+          }
+        } else {
+          console.log(err);
+        }
       });
   });
 
@@ -185,8 +213,6 @@ const PlannerFrm = () => {
       {plannerMode === "write" && (
         <PlannerWrite
           userMarker={userMarker}
-          userRadius={userRadius}
-          setUserRadius={setUserRadius}
           openPlanningModal={openPlanningModal}
           setOpenPlanningModal={setOpenPlanningModal}
           plannedPlaceList={plannedPlaceList}
@@ -198,6 +224,7 @@ const PlannerFrm = () => {
           setOpenOverlay={setOpenOverlay}
           setOpenPlanner={setOpenPlanner}
           setMapCenter={setMapCenter}
+          mapLevel={mapLevel}
         />
       )}
       <PlannerView
@@ -208,26 +235,26 @@ const PlannerFrm = () => {
         planName={planName}
         setPlanName={setPlanName}
         plannerMode={plannerMode}
+        setPlannerMode={setPlannerMode}
+        setOpenOverlay={setOpenOverlay}
+        setMapCenter={setMapCenter}
+        isOwner={isOwner}
+        bookmarked={bookmarked}
       />
-      {plannerMode === "view" && isOwner && (
-        <div className="save-plan-btn">
-          <button onClick={() => setPlannerMode("write")}>수정</button>
-        </div>
-      )}
       <div className="map-wrap">
         <PrintMap
           openOverlay={openOverlay}
           setOpenOverlay={setOpenOverlay}
           setOpenPlanningModal={setOpenPlanningModal}
           setMapBounds={setMapBounds}
-          userMarker={userMarker}
           setUserMarker={setUserMarker}
-          userRadius={userRadius}
           plannedPlaceList={plannedPlaceList}
           handleDeletePlace={handleDeletePlace}
           mapCenter={mapCenter}
           plannerMode={plannerMode}
           placeList={placeList}
+          mapLevel={mapLevel}
+          setMapLevel={setMapLevel}
         />
       </div>
     </div>
@@ -242,8 +269,7 @@ const PrintMap = (props) => {
   ];
   const setOpenPlanningModal = props.setOpenPlanningModal;
   const setMapBounds = props.setMapBounds;
-  const [userMarker, setUserMarker] = [props.userMarker, props.setUserMarker];
-  const userRadius = props.userRadius;
+  const setUserMarker = props.setUserMarker;
   const plannedPlaceList = props.plannedPlaceList;
   const handleDeletePlace = props.handleDeletePlace;
   const mapCenter = props.mapCenter;
@@ -256,124 +282,142 @@ const PrintMap = (props) => {
     );
   }, [placeList, plannedPlaceList]);
 
-  const [mapLevel, setMapLevel] = useState(3);
+  const [mapLevel, setMapLevel] = [props.mapLevel, props.setMapLevel];
   const [markersOn, setMarkersOn] = useState(true);
+  const mapRef = useRef(null);
+
+  const [toast, setToast] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(false);
+  }, [placeList]);
 
   return (
-    <Map
-      id={`kakaomap`}
-      center={mapCenter}
-      style={{
-        // 지도의 크기
-        width: "100%",
-        height: "100%",
-      }}
-      level={mapLevel} // 지도의 확대 레벨
-      onZoomChanged={(map) => {
-        setMapLevel(map.getLevel());
-        setMarkersOn(map.getLevel() < 8);
-      }}
-      //지도 클릭 시
-      onClick={(map, e) => {
-        if (plannerMode === "view") return;
+    <>
+      {plannerMode === "write" && (
+        <Box sx={{ "& > button": { m: 1 } }}>
+          <Button
+            className="map-search-btn"
+            size="medium"
+            onClick={() => {
+              if (!mapRef.current) return;
+              if (mapLevel > 6) setToast(true);
 
-        if (openOverlay === null) {
-          //클릭 위치 좌표
-          const lat = e.latLng.getLat();
-          const lng = e.latLng.getLng();
-          setUserMarker({ lat, lng });
-        } else {
-          setOpenOverlay(null);
-        }
-      }}
-      //현재 보이는 화면 범위를 가져옴
-      onBoundsChanged={(map) => {
-        setMapBounds(map.getBounds());
-      }}
-    >
-      {plannedPlaceList.length > 1 && (
-        <Polyline //저장된 장소 간 직선 그리기
-          path={plannedPlaceList
-            .sort((a, b) => a.order - b.order)
-            .map((p) => ({
-              lat: p.placeLatLng.lat,
-              lng: p.placeLatLng.lng,
-            }))}
-          strokeWeight={4}
-          strokeColor={"tomato"}
-          strokeOpacity={0.9}
-          strokeStyle={"solid"}
-        />
-      )}
-      {plannedPlaceList.length > 1 &&
-        plannedPlaceList.slice(0, -1).map((p, idx) => {
-          const next = plannedPlaceList[idx + 1];
-          const midLat = (p.placeLatLng.lat + next.placeLatLng.lat) / 2;
-          const midLng = (p.placeLatLng.lng + next.placeLatLng.lng) / 2;
-          const rad = Math.atan2(
-            next.placeLatLng.lat - p.placeLatLng.lat,
-            next.placeLatLng.lng - p.placeLatLng.lng
-          );
-          const deg = (rad * 180) / Math.PI;
+              const center = mapRef.current.getCenter();
+              const lat = center.getLat();
+              const lng = center.getLng();
 
-          return (
-            <CustomOverlayMap
-              key={"arrow-" + idx}
-              position={{ lat: midLat, lng: midLng }}
-            >
-              <div
-                className="arrow-marker"
-                style={{ transform: `rotate(${-deg}deg)` }}
-              >
-                ➡
-              </div>
-            </CustomOverlayMap>
-          );
-        })}
-      {userMarker && (
-        <>
-          <MapMarker
-            position={userMarker}
-            image={{
-              src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png",
-              size: { width: 24, height: 35 },
+              setLoading(true);
+              setUserMarker({ lat, lng });
             }}
-          />
-          <Circle
-            center={userMarker}
-            radius={userRadius}
-            strokeWeight={2}
-            strokeColor={"var(--main2)"}
-            strokeStyle={"solid"}
-            fillColor={"var(--main4)"}
-            fillOpacity={0.2}
-          />
-        </>
+            loading={loading}
+            variant="outlined"
+          >
+            이 위치에서 검색
+          </Button>
+        </Box>
       )}
-      {markersOn &&
-        markableList.map((p) => {
-          return (
-            <MarkerWithOverlay
-              key={"marker-" + p.placeId}
-              place={p}
-              openOverlay={openOverlay}
-              setOpenOverlay={setOpenOverlay}
-              setOpenPlanningModal={setOpenPlanningModal}
-            />
-          );
-        })}
-      {plannedPlaceList.map((p) => (
-        <MarkerWithOverlay
-          key={"planned-" + p.placeId}
-          place={p}
-          openOverlay={openOverlay}
-          setOpenOverlay={setOpenOverlay}
-          isPlanned={true}
-          handleDeletePlace={handleDeletePlace}
-          plannerMode={plannerMode}
-        />
-      ))}
-    </Map>
+      <Snackbar
+        open={toast}
+        autoHideDuration={4000}
+        onClose={() => setToast(false)}
+      >
+        <Alert severity="error" onClose={() => setToast(false)}>
+          현재 지도가 너무 넓어서 검색 결과가 제한되었어요.
+        </Alert>
+      </Snackbar>
+      <Map
+        id={`kakaomap`}
+        center={mapCenter}
+        style={{
+          // 지도의 크기
+          width: "100%",
+          height: "100%",
+        }}
+        level={mapLevel} // 지도의 확대 레벨
+        onCreate={(map) => {
+          mapRef.current = map;
+        }}
+        onZoomChanged={(map) => {
+          setMapLevel(map.getLevel());
+          setMarkersOn(map.getLevel() < 8);
+        }}
+        //지도 클릭 시
+        onClick={() => {
+          if (openOverlay !== null) {
+            setOpenOverlay(null);
+          }
+        }}
+        //현재 보이는 화면 범위를 가져옴
+        onBoundsChanged={(map) => {
+          setMapBounds(map.getBounds());
+        }}
+      >
+        {plannedPlaceList.length > 1 && (
+          <Polyline //저장된 장소 간 직선 그리기
+            path={plannedPlaceList
+              .sort((a, b) => a.order - b.order)
+              .map((p) => ({
+                lat: p.placeLatLng.lat,
+                lng: p.placeLatLng.lng,
+              }))}
+            strokeWeight={4}
+            strokeColor={"tomato"}
+            strokeOpacity={0.9}
+            strokeStyle={"solid"}
+          />
+        )}
+        {plannedPlaceList.length > 1 &&
+          plannedPlaceList.slice(0, -1).map((p, idx) => {
+            const next = plannedPlaceList[idx + 1];
+            const midLat = (p.placeLatLng.lat + next.placeLatLng.lat) / 2;
+            const midLng = (p.placeLatLng.lng + next.placeLatLng.lng) / 2;
+            const rad = Math.atan2(
+              next.placeLatLng.lat - p.placeLatLng.lat,
+              next.placeLatLng.lng - p.placeLatLng.lng
+            );
+            const deg = (rad * 180) / Math.PI;
+
+            return (
+              <CustomOverlayMap
+                key={"arrow-" + idx}
+                position={{ lat: midLat, lng: midLng }}
+              >
+                <div
+                  className="arrow-marker"
+                  style={{ transform: `rotate(${-deg}deg)` }}
+                >
+                  ➡
+                </div>
+              </CustomOverlayMap>
+            );
+          })}
+        {markersOn &&
+          markableList.map((p) => {
+            return (
+              <MarkerWithOverlay
+                key={"marker-" + p.placeId}
+                place={p}
+                openOverlay={openOverlay}
+                setOpenOverlay={setOpenOverlay}
+                setOpenPlanningModal={setOpenPlanningModal}
+              />
+            );
+          })}
+        {plannedPlaceList.map((p) => (
+          <MarkerWithOverlay
+            key={"planned-" + p.placeId}
+            place={p}
+            openOverlay={openOverlay}
+            setOpenOverlay={setOpenOverlay}
+            isPlanned={true}
+            handleDeletePlace={handleDeletePlace}
+            plannerMode={plannerMode}
+          />
+        ))}
+      </Map>
+    </>
   );
 };
 

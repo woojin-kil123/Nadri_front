@@ -121,7 +121,7 @@ const EventSlide = ({ onGoing, placeType }) => {
               <div className="event-card" key={index}>
                 <div className="event-thumbnail">
                   <img
-                    src={`${process.env.REACT_APP_BACK_SERVER}/event/thumb/${event.eventImg}`}
+                    src={`${process.env.REACT_APP_BACK_SERVER}/assets/event/thumb/${event.eventImg}`}
                     style={{
                       width: "100%",
                       height: "100%",
@@ -147,7 +147,7 @@ const EventSlide = ({ onGoing, placeType }) => {
               <div className="event-card" key={index}>
                 <div className="event-thumbnail">
                   <img
-                    src={`${process.env.REACT_APP_BACK_SERVER}/event/thumb/${event.eventImg}`}
+                    src={`${process.env.REACT_APP_BACK_SERVER}/assets/event/thumb/${event.eventImg}`}
                     style={{
                       width: "100%",
                       height: "100%",

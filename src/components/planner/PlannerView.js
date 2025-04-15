@@ -1,7 +1,7 @@
 import { Close, Delete } from "@mui/icons-material";
 import dayjs from "dayjs";
-import { useState } from "react";
-import { useRecoilState } from "recoil";
+import { Link, useParams } from "react-router-dom";
+import ToggleBookmark from "./utils/ToggleBookmark";
 
 const PlannerView = (props) => {
   const {
@@ -12,6 +12,11 @@ const PlannerView = (props) => {
     planName,
     setPlanName,
     plannerMode,
+    setPlannerMode,
+    setOpenOverlay,
+    setMapCenter,
+    isOwner,
+    bookmarked,
   } = props;
 
   const handleDeletePlace = (odr) => {
@@ -24,6 +29,7 @@ const PlannerView = (props) => {
     });
     setPlannedPlaceList(newList);
   };
+
   return (
     <>
       {openPlanner ? (
@@ -34,6 +40,9 @@ const PlannerView = (props) => {
           planName={planName}
           setPlanName={setPlanName}
           plannerMode={plannerMode}
+          setOpenOverlay={setOpenOverlay}
+          setMapCenter={setMapCenter}
+          bookmarked={bookmarked}
         />
       ) : (
         <div
@@ -46,6 +55,23 @@ const PlannerView = (props) => {
           <p>플래너</p>
         </div>
       )}
+      <div className="planner-handler-wrap">
+        {plannerMode === "view" ? (
+          isOwner ? (
+            <div className="save-plan-btn">
+              <button onClick={() => setPlannerMode("write")}>수정</button>
+            </div>
+          ) : (
+            <>
+              <div className="save-plan-btn">
+                <button onClick={() => {}}>이 플래너로 시작</button>
+              </div>
+            </>
+          )
+        ) : (
+          <></>
+        )}
+      </div>
     </>
   );
 };
@@ -57,14 +83,37 @@ const Planner = (props) => {
   const handleDeletePlace = props.handleDeletePlace;
   const [planName, setPlanName] = [props.planName, props.setPlanName];
   const plannerMode = props.plannerMode;
+  const setOpenOverlay = props.setOpenOverlay;
+  const setMapCenter = props.setMapCenter;
+  const bookmarked = props.bookmarked;
+
+  const { planNo } = useParams();
+  const ctrlUrl = "/plan";
 
   return (
     <div className={`planner-wrap ${plannerMode === "view" ? "full" : ""}`}>
-      <Close className="close-btn" onClick={() => setOpenPlanner(false)} />
+      {plannerMode === "view" && (
+        <>
+          <div className="logo planner-logo">
+            <Link to="/">NADRI</Link>
+          </div>
+          <ToggleBookmark
+            bookmarked={bookmarked}
+            objectNo={planNo}
+            controllerUrl={ctrlUrl}
+          />
+        </>
+      )}
+      {plannerMode === "write" && (
+        <Close className="close-btn" onClick={() => setOpenPlanner(false)} />
+      )}
       {plannedPlaceList.length === 0 && (
         <div className="empty-plan">플래너가 비어 있습니다...</div>
       )}
       <div className="plan-name">
+        {plannerMode === "view" && (
+          <div className="plan-name-shadow">플랜명</div>
+        )}
         <input
           type="text"
           placeholder="플래너 이름을 작성하세요"
@@ -96,7 +145,13 @@ const Planner = (props) => {
                   ㅡ {dayjs(p.itineraryDate).format("YYYY년 M월 D일")} ㅡ
                 </div>
               )}
-              <div className="planned-item">
+              <div
+                className="planned-item"
+                onClick={() => {
+                  setOpenOverlay(p.placeId);
+                  setMapCenter(p.placeLatLng);
+                }}
+              >
                 <img
                   className="planned-img"
                   src={p.placeThumb}
