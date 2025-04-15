@@ -30,7 +30,7 @@ const EventPopup = ({ onClose, dailyClose }) => {
               style={{
                 backgroundImage: `url("${
                   e.eventImg
-                    ? `${process.env.REACT_APP_BACK_SERVER}/event/thumb/${e.eventImg}`
+                    ? `${process.env.REACT_APP_BACK_SERVER}/assets/event/thumb/${e.eventImg}`
                     : "/image/dora.png"
                 }")`,
                 backgroundSize: "cover",

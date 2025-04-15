@@ -80,7 +80,7 @@ const PlanCard = ({ plan }) => {
         <img
           src={
             plan.planThumb
-              ? `${process.env.REACT_APP_BACK_SERVER}/plan/thumbnail/${plan.planThumb}`
+              ? `${process.env.REACT_APP_BACK_SERVER}/assets/plan/thumb/${plan.planThumb}`
               : "/image/dora.png"
           }
           className="card-image"
