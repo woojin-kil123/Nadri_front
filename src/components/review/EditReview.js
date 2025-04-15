@@ -27,7 +27,6 @@ const EditReview = () => {
         setTitle(res.data.reviewTitle);
         setContent(res.data.reviewContent);
         setRating(res.data.starRate);
-        setPlaceId(res.data.placeId);
         // 기존 이미지 미리보기를 위해 필요시 여기서 불러오기 추가 가능
       })
       .catch((err) => console.log(err));
@@ -76,7 +75,7 @@ const EditReview = () => {
     setFiles(changeFiles);
     setFilePreviews(chanePreviews);
   };
-  console.log(deleteFile);
+
   const reviewEdit = () => {
     const trimmedTitle = title.trim();
     const trimmedContent = content.trim();
@@ -91,7 +90,6 @@ const EditReview = () => {
     form.append("reviewTitle", title);
     form.append("starRate", rating);
     form.append("reviewContent", content);
-    form.append("placeId", placeId);
     deleteFile.forEach((filepath) => {
       form.append("deleteFilepaths", filepath);
     });
@@ -113,7 +111,7 @@ const EditReview = () => {
         alert("리뷰 수정에 실패했습니다.");
       });
   };
-  console.log(newFiles);
+
   return (
     <section className="section review-write-section">
       <div className="review-form">
@@ -121,12 +119,6 @@ const EditReview = () => {
           <label className="form-label">귀하의 경험에 대해 평가해주세요</label>
           <StarRating rating={rating} setRating={setRating} />
         </div>
-
-        <div className="form-section">
-          <label className="form-label">리뷰 쓰기</label>
-          <TextEditor data={content} setData={setContent} />
-        </div>
-
         <div className="form-section">
           <label className="form-label" style={{ marginTop: "50px" }}>
             제목
@@ -138,6 +130,11 @@ const EditReview = () => {
             onChange={(e) => setTitle(e.target.value)}
             placeholder="경험했던 것 중 가장 중요한 정보를 알려주세요"
           />
+        </div>
+
+        <div className="form-section">
+          <label className="form-label">리뷰 쓰기</label>
+          <TextEditor data={content} setData={setContent} />
         </div>
 
         {/* 이미지 업로드 영역 */}

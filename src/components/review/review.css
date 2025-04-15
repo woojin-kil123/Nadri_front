@@ -67,7 +67,6 @@
   aspect-ratio: 4 / 3; /* 고정 비율 유지 */
   overflow: hidden;
   border-radius: 10px;
-  background-color: #f0f0f0;
 }
 
 .place-image {
@@ -288,8 +287,10 @@
 }
 
 .review-view-section .review-title {
+  width: 100%;
   font-size: 20px;
   font-weight: bold;
+  text-align: center;
 }
 
 .review-view-section .review-meta {
