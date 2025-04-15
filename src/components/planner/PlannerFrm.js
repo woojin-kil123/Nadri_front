@@ -4,7 +4,7 @@ import "./planner.css";
 import axios from "axios";
 import { replace, useNavigate, useParams } from "react-router-dom";
 import MarkerWithOverlay from "./MarkerWithOverlay";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
 import PlannerWrite from "./PlannerWrite";
 import PlannerView from "./PlannerView";
@@ -25,9 +25,11 @@ const PlannerFrm = () => {
   //장소 리스트
   const [placeList, setPlaceList] = useState([]);
   //유저닉네임
-  const [loginNickname, setLoginNickname] = useRecoilState(loginNicknameState);
+  const loginNickname = useRecoilValue(loginNicknameState);
   //플래너 소유자(작성자) 여부
   const [isOwner, setIsOwner] = useState(false);
+  //플래너 북마크
+  const [bookmarked, setBookmarked] = useState(0);
 
   const navigate = useNavigate();
 
@@ -52,7 +54,7 @@ const PlannerFrm = () => {
 
   //플래너 진입 시 "새 플래너 작성"인지, "기존 플래너 열람"인지 판단
   useEffect(() => {
-    const isNaturalNumber = /^[1-9]\d*$/; //자연수의 정규표현식
+    const isNaturalNumber = /^[1-9]\d*$/; //자연수 정규표현식
     if (planNo && !isNaturalNumber.test(planNo)) {
       Swal.fire({
         title: "잘못된 접근",
@@ -103,16 +105,17 @@ const PlannerFrm = () => {
 
   //작성된 플래너 조회 시
   const getPlanData = useCallback(() => {
-    const refreshToken = window.localStorage.getItem("refreshToken");
     axios
-      .get(`${process.env.REACT_APP_BACK_SERVER}/plan/verify/${planNo}`, {
-        headers: {
-          Authorization: refreshToken,
+      .get(`${process.env.REACT_APP_BACK_SERVER}/plan/verify`, {
+        params: {
+          loginNickname: loginNickname,
+          planNo: planNo,
         },
       })
       .then((res) => {
         //플랜정보 + 플랜 내 방문지들 + 소유자 여부 반환
         const { plan, isOwner, itineraries } = res.data;
+        console.log(plan);
 
         //placeTypeId 매핑 함수
         const getPlaceTypeName = (typeId) => {
@@ -155,6 +158,7 @@ const PlannerFrm = () => {
 
         setPlanName(plan.planName ?? "untitled");
         setIsOwner(isOwner);
+        setBookmarked(plan.bookmarked);
         setPlannedPlaceList(mappedData);
         if (mappedData.length > 0) {
           setMapCenter(mappedData[0].placeLatLng);
@@ -232,19 +236,12 @@ const PlannerFrm = () => {
         planName={planName}
         setPlanName={setPlanName}
         plannerMode={plannerMode}
+        setPlannerMode={setPlannerMode}
         setOpenOverlay={setOpenOverlay}
         setMapCenter={setMapCenter}
+        isOwner={isOwner}
+        bookmarked={bookmarked}
       />
-      {plannerMode === "view" && isOwner && (
-        <div className="save-plan-btn">
-          <button onClick={() => setPlannerMode("write")}>수정</button>
-        </div>
-      )}
-      {plannerMode === "view" && !isOwner && (
-        <div className="save-plan-btn">
-          <button onClick={() => {}}>이 플래너로 시작</button>
-        </div>
-      )}
       <div className="map-wrap">
         <PrintMap
           openOverlay={openOverlay}

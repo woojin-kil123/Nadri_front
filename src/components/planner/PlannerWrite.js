@@ -227,16 +227,18 @@ const PlannerWrite = (props) => {
           )}
         </div>
       </div>
-      <div className="save-plan-btn">
-        {plannedPlaceList.length !== 0 && (
-          <button
-            onClick={() => {
-              setOpenSaveModal(true);
-            }}
-          >
-            저장
-          </button>
-        )}
+      <div className="planner-handler-wrap">
+        <div className="save-plan-btn">
+          {plannedPlaceList.length !== 0 && (
+            <button
+              onClick={() => {
+                setOpenSaveModal(true);
+              }}
+            >
+              저장
+            </button>
+          )}
+        </div>
       </div>
       {openSaveModal && (
         <SavePlanModal

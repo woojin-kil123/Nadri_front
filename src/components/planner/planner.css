@@ -206,12 +206,17 @@
   font-weight: bold;
 }
 .plan-name {
-  margin-bottom: 20px;
+  margin: 0 0 20px 8px;
 }
 .plan-name input {
   border: none;
   font-size: 20px;
   margin: 15px 0 0 15px;
+}
+.plan-name-shadow {
+  color: var(--gray6);
+  position: absolute;
+  text-align: center;
 }
 .planned-item {
   display: flex;
@@ -349,7 +354,7 @@
   z-index: 1;
   background-color: var(--gray7);
 }
-.save-plan-btn {
+.planner-handler-wrap {
   position: absolute;
   top: 60px;
   right: 50px;
