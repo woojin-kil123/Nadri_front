@@ -3,7 +3,9 @@ import { useRecoilValue } from "recoil";
 import { placeTypeState } from "../utils/RecoilData";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Box, Tab, Tabs } from "@mui/material";
+import { Box, Pagination, Stack, Tab, Tabs } from "@mui/material";
+import ListCard from "../utils/ListCard";
+import PageNavigation from "../utils/PageNavigtion";
 
 const SearchResult = () => {
   const location = useLocation();
@@ -11,6 +13,8 @@ const SearchResult = () => {
   const [query, setQuery] = useState(null);
   const [typeId, setTypeId] = useState(null);
   const placeType = useRecoilValue(placeTypeState);
+  const [placeResult, setPlaceResult] = useState(null);
+  const [reqPage, setReqPage] = useState(null);
   const contentType = [
     { id: 1, name: "여행 정보" },
     { id: 2, name: "플랜" },
@@ -29,6 +33,7 @@ const SearchResult = () => {
         )
         .then((res) => {
           console.log(res.data);
+          setPlaceResult(res.data.place);
         });
     }
   }, [query, typeId]);
@@ -41,7 +46,34 @@ const SearchResult = () => {
           on={onContent}
           setOn={setOnContent}
         />
-        <div className="result-wrap"></div>
+        <div className="result-wrap">
+          {placeResult && (
+            <>
+              <div className="place-wrap">
+                {placeResult.list.map((item, i) => (
+                  <ListCard key={"card-" + i} place={item} />
+                ))}
+              </div>
+              <div className="pageNavi-box">
+                <Stack spacing={2}>
+                  <Pagination
+                    count={placeResult.pi.totalPage}
+                    sx={{
+                      "& .Mui-selected": {
+                        backgroundColor: "var(--main2)", // 원하는 파란색
+                        color: "#fff",
+                        borderRadius: "50%",
+                      },
+                      "& .MuiPaginationItem-root": {
+                        borderRadius: "50%", // 전체 버튼 둥글게
+                      },
+                    }}
+                  />
+                </Stack>
+              </div>
+            </>
+          )}
+        </div>
       </section>
     </>
   );

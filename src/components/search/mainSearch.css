@@ -17,3 +17,8 @@
 .main-search .css-6h9cc6-MuiInputBase-root-MuiInput-root::after {
   border-bottom: 2px solid var(--main2);
 }
+.content .result-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
