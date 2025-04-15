@@ -98,13 +98,37 @@ const Login = () => {
       .post(`${process.env.REACT_APP_BACK_SERVER}/member/login`, member)
       .then((res) => {
         console.log(res);
-        setMemberNickname(res.data.memberNickname);
-        setMemberLevel(res.data.memberLevel);
-        setMemberNo(res.data.memberNo);
-        //로그인 이후 axios를 통한 요청을 수행하는 경우 토큰값을 자동으로 axios에 추가하는 설정
-        axios.defaults.headers.common["Authorization"] = res.data.accessToken;
-        window.localStorage.setItem("refreshToken", res.data.refreshToken);
-        // 로그인 성공 시, 로그인 상태 저장 및 페이지 이동
+        console.log(res.data);
+        if (res.data === "") {
+          Swal.fire({
+            text: "강제탈퇴 된 회원입니다.",
+            icon: "warning",
+            confirmButtonColor: "var(--main2)",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              axios
+                .patch(
+                  `${process.env.REACT_APP_BACK_SERVER}/member/deleteDelMember`,
+                  member
+                )
+                .then((res) => {
+                  console.log(res);
+                  navigate("/");
+                })
+                .catch((err) => {
+                  console.error(err);
+                });
+            }
+          });
+        } else {
+          setMemberNickname(res.data.memberNickname);
+          setMemberLevel(res.data.memberLevel);
+          setMemberNo(res.data.memberNo);
+          //로그인 이후 axios를 통한 요청을 수행하는 경우 토큰값을 자동으로 axios에 추가하는 설정
+          axios.defaults.headers.common["Authorization"] = res.data.accessToken;
+          window.localStorage.setItem("refreshToken", res.data.refreshToken);
+          // 로그인 성공 시, 로그인 상태 저장 및 페이지 이동
+        }
         navigate("/"); // 로그인 후 홈으로 이동
       })
       .catch((err) => {

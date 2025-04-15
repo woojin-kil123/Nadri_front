@@ -104,3 +104,12 @@
   height: 100%;
   object-fit: cover;
 }
+
+.posting-item2 .review-content2 {
+  max-height: 20px; /* 높이를 제한, 필요에 맞게 조정 */
+  overflow: hidden; /* 넘치는 내용 숨기기 */
+  text-overflow: ellipsis; /* 잘린 텍스트에 ... 표시 */
+  display: -webkit-box;
+  -webkit-box-orient: vertical; /* 세로로 정렬 */
+  white-space: normal; /* 여러 줄 텍스트 처리 */
+}
