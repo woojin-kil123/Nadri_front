@@ -2,13 +2,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CustomOverlayMap, Map, Polyline } from "react-kakao-maps-sdk";
 import "./planner.css";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { replace, useNavigate, useParams } from "react-router-dom";
 import MarkerWithOverlay from "./MarkerWithOverlay";
 import { useRecoilState } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
 import PlannerWrite from "./PlannerWrite";
 import PlannerView from "./PlannerView";
-import { Alert, Snackbar } from "@mui/material";
+import { Alert, Box, Button, CircularProgress, Snackbar } from "@mui/material";
+import Swal from "sweetalert2";
 
 const PlannerFrm = () => {
   //마커 오버레이 여닫음
@@ -27,6 +28,8 @@ const PlannerFrm = () => {
   const [loginNickname, setLoginNickname] = useRecoilState(loginNicknameState);
   //플래너 소유자(작성자) 여부
   const [isOwner, setIsOwner] = useState(false);
+
+  const navigate = useNavigate();
 
   //현재 보이는 지도 화면
   const [mapBounds, setMapBounds] = useState(null);
@@ -49,6 +52,17 @@ const PlannerFrm = () => {
 
   //플래너 진입 시 "새 플래너 작성"인지, "기존 플래너 열람"인지 판단
   useEffect(() => {
+    const isNaturalNumber = /^[1-9]\d*$/; //자연수의 정규표현식
+    if (planNo && !isNaturalNumber.test(planNo)) {
+      Swal.fire({
+        title: "잘못된 접근",
+        icon: "error",
+        text: "올바르지 않은 플래너 주소입니다.",
+        confirmButtonText: "확인",
+      }).then(() => {
+        navigate("/", { replace: true });
+      });
+    }
     if (planNo) {
       getPlanData(planNo);
       setPlannerMode("view");
@@ -147,7 +161,30 @@ const PlannerFrm = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        if (err && err.response) {
+          const status = err.response.status;
+          if (status === 403) {
+            Swal.fire({
+              title: "비공개 플래너",
+              icon: "warning",
+              text: "작성자가 비공개로 설정한 플래너입니다.",
+              confirmButtonText: "확인",
+            }).then(() => {
+              navigate("/", { replace: true });
+            });
+          } else if (status === 404) {
+            Swal.fire({
+              title: "존재하지 않는 플래너",
+              icon: "error",
+              text: "주소가 잘못되었거나 삭제된 플래너입니다.",
+              confirmButtonText: "확인",
+            }).then(() => {
+              navigate("/", { replace: true });
+            });
+          }
+        } else {
+          console.log(err);
+        }
       });
   });
 
@@ -195,6 +232,8 @@ const PlannerFrm = () => {
         planName={planName}
         setPlanName={setPlanName}
         plannerMode={plannerMode}
+        setOpenOverlay={setOpenOverlay}
+        setMapCenter={setMapCenter}
       />
       {plannerMode === "view" && isOwner && (
         <div className="save-plan-btn">
@@ -212,7 +251,6 @@ const PlannerFrm = () => {
           setOpenOverlay={setOpenOverlay}
           setOpenPlanningModal={setOpenPlanningModal}
           setMapBounds={setMapBounds}
-          userMarker={userMarker}
           setUserMarker={setUserMarker}
           plannedPlaceList={plannedPlaceList}
           handleDeletePlace={handleDeletePlace}
@@ -235,7 +273,7 @@ const PrintMap = (props) => {
   ];
   const setOpenPlanningModal = props.setOpenPlanningModal;
   const setMapBounds = props.setMapBounds;
-  const [userMarker, setUserMarker] = [props.userMarker, props.setUserMarker];
+  const setUserMarker = props.setUserMarker;
   const plannedPlaceList = props.plannedPlaceList;
   const handleDeletePlace = props.handleDeletePlace;
   const mapCenter = props.mapCenter;
@@ -253,38 +291,43 @@ const PrintMap = (props) => {
   const mapRef = useRef(null);
 
   const [toast, setToast] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(false);
+  }, [placeList]);
 
   return (
     <>
       {plannerMode === "write" && (
-        <button
-          className="map-search-btn"
-          onClick={() => {
-            if (!mapRef.current) return;
-            if (mapLevel > 6) setToast(true);
-            const map = mapRef.current;
+        <Box sx={{ "& > button": { m: 1 } }}>
+          <Button
+            className="map-search-btn"
+            size="medium"
+            onClick={() => {
+              if (!mapRef.current) return;
+              if (mapLevel > 6) setToast(true);
 
-            const center = map.getCenter();
-            const lat = center.getLat();
-            const lng = center.getLng();
+              const center = mapRef.current.getCenter();
+              const lat = center.getLat();
+              const lng = center.getLng();
 
-            setUserMarker({ lat, lng });
-          }}
-        >
-          이 위치에서 검색
-        </button>
+              setLoading(true);
+              setUserMarker({ lat, lng });
+            }}
+            loading={loading}
+            variant="outlined"
+          >
+            이 위치에서 검색
+          </Button>
+        </Box>
       )}
       <Snackbar
         open={toast}
-        autoHideDuration={3000}
+        autoHideDuration={4000}
         onClose={() => setToast(false)}
-        style={{ zIndex: 1, position: "absolute" }}
       >
-        <Alert
-          severity="info"
-          onClose={() => setToast(false)}
-          style={{ zIndex: 1 }}
-        >
+        <Alert severity="error" onClose={() => setToast(false)}>
           현재 지도가 너무 넓어서 검색 결과가 제한되었어요.
         </Alert>
       </Snackbar>

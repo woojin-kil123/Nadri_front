@@ -361,19 +361,13 @@
   border-radius: 10px;
   font-size: 20px;
 }
-
 .map-search-btn {
-  position: absolute;
+  position: absolute !important;
   z-index: 2;
   left: 50%;
   top: 15px;
-  border: none;
-  border-radius: 20px;
-  width: 200px;
-  height: 30px;
-  background-color: var(--gray2);
-  color: var(--gray8);
-  cursor: pointer;
+  border-radius: 20px !important;
+  background-color: var(--gray8) !important;
 }
 
 /* 카카오 맵 */
@@ -497,7 +491,7 @@
   cursor: pointer;
   font-size: 13px;
 }
-
+/* 지도 위 그림들 */
 .arrow-marker {
   font-size: 20px;
   display: inline-block;
