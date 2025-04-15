@@ -47,6 +47,7 @@ import AdminReview from "./components/admin/AdminReview";
 import AdminPartner from "./components/admin/AdminKeyword";
 import PlaceDetail from "./components/place/PlaceDetail";
 import EditReview from "./components/review/EditReview";
+import "leaflet/dist/leaflet.css";
 
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
