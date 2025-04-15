@@ -59,6 +59,8 @@ const PlaceDetail = () => {
     handleClose();
   };
 
+  const [placeImages, setPlaceImages] = useState([]);
+
   useEffect(() => {
     axios
       .get(
@@ -71,6 +73,13 @@ const PlaceDetail = () => {
         setBookmarked(res.data.bookmarked);
         setViewCount((prev) => prev + 1);
       });
+
+    axios
+      .get(`${backServer}/place/images`, {
+        params: { placeId: placeId },
+      })
+      .then((res) => setPlaceImages(res.data))
+      .catch((err) => console.error("이미지 불러오기 실패", err));
 
     axios.post(`${backServer}/place/detail/${placeId}/click`).then((res) => {
       setViewCount(res.data.viewCount);
