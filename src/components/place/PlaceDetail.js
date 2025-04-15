@@ -59,7 +59,7 @@ const PlaceDetail = () => {
     handleClose();
   };
 
-  const [placeImages, setPlaceImages] = useState([]);
+  const [placeImgs, setPlaceImgs] = useState([]);
 
   useEffect(() => {
     axios
@@ -75,10 +75,11 @@ const PlaceDetail = () => {
       });
 
     axios
-      .get(`${backServer}/place/images`, {
-        params: { placeId: placeId },
+      .get(`${backServer}/place/images/${placeId}`)
+      .then((res) => {
+        console.log(res);
+        setPlaceImgs(res.data);
       })
-      .then((res) => setPlaceImages(res.data))
       .catch((err) => console.error("이미지 불러오기 실패", err));
 
     axios.post(`${backServer}/place/detail/${placeId}/click`).then((res) => {
@@ -215,34 +216,43 @@ const PlaceDetail = () => {
         <div className="placeThumb-box">
           <img
             src={place?.placeThumb || "/image/dora.png"}
-            className="detail-img1"
-            alt="place"
+            className="detail-img-main"
+            alt="main"
           />
         </div>
+
         <div className="placeImage-more-box">
           <div className="placeImage-more">
-            <img
-              src={place?.placeThumb || "/image/dora.png"}
-              className="detail-img2"
-              alt="place"
-            />
-            <img
-              src={place?.placeThumb || "/image/dora.png"}
-              className="detail-img3"
-              alt="place"
-            />
+            {placeImgs[0] && (
+              <img
+                src={`${backServer}/assets/place/image/${placeImgs[0].filepath}`}
+                className="detail-img"
+                alt="img2"
+              />
+            )}
+            {placeImgs[1] && (
+              <img
+                src={`${backServer}/assets/place/image/${placeImgs[1].filepath}`}
+                className="detail-img"
+                alt="img3"
+              />
+            )}
           </div>
           <div className="placeImage-more">
-            <img
-              src={place?.placeThumb || "/image/dora.png"}
-              className="detail-img4"
-              alt="place"
-            />
-            <img
-              src={place?.placeThumb || "/image/dora.png"}
-              className="detail-img5"
-              alt="place"
-            />
+            {placeImgs[2] && (
+              <img
+                src={`${backServer}/assets/place/image/${placeImgs[2].filepath}`}
+                className="detail-img"
+                alt="img4"
+              />
+            )}
+            {placeImgs[3] && (
+              <img
+                src={`${backServer}/assets/place/image/${placeImgs[3].filepath}`}
+                className="detail-img"
+                alt="img5"
+              />
+            )}
           </div>
         </div>
       </div>

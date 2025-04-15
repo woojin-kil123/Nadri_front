@@ -85,6 +85,11 @@
   color: #4caf50;
   font-weight: 600;
 }
+.detail-header-cat > div {
+  background-color: #27b77830;
+  border-radius: 15px;
+  padding: 5px 10px;
+}
 .detail-header-title .detail-title {
   font-size: 28px;
   margin: 8px 0;
@@ -136,35 +141,40 @@
 .placeImage-more-box {
   height: 400px;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
+  justify-content: space-between;
+}
+.placeImage-more {
+  flex: 1;
+  display: flex;
+  gap: 10px;
+  height: 195px;
+}
+.placeImage-more img {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+.placeImage-more img:first-child {
+  width: 290px;
 }
 .placeImage-more-box > .placeImage-more {
-  height: 200px;
   display: flex;
   justify-content: space-between;
   gap: 10px;
-  box-sizing: border-box;
-}
-.placeImage-more-box > .placeImage-more:first-of-type {
-  padding-bottom: 5px;
-}
-.placeImage-more-box > .placeImage-more:last-child {
-  padding-top: 5px;
 }
 
-.detail-img1 {
+.detail-img-main {
   height: 400px;
   object-fit: cover;
   border-radius: 12px;
 }
-.detail-img2,
-.detail-img3 {
-  border-radius: 12px;
-}
 
-.detail-img4,
-.detail-img5 {
-  border-radius: 12px;
-}
 /* 내용과 info 박스 */
 .place-detail-content {
   display: flex;
