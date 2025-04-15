@@ -33,3 +33,6 @@ npm install recharts
 
 [uninstall] 신종인 2025-04-11
 npm uninstall html2canvas
+
+신종인 2025-04-14
+npm install react-leaflet@4.2.1 leaflet leaflet-image
