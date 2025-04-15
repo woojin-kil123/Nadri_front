@@ -139,6 +139,7 @@ const PlaceDetail = () => {
     }));
   };
 
+  //상세페이지 수정 후 저장
   const handleSave = () => {
     console.log(editPlace);
     axios
