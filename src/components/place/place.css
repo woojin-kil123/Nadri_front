@@ -159,6 +159,20 @@
   color: var(--main3);
 }
 
+.info-request-box {
+  text-align: right;
+  padding-top: 10px;
+}
+.info-request-box > span {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.css-74d805-MuiButtonBase-root-MuiButton-root {
+  background-color: var(--main2);
+  color: var(--main2);
+}
+
 /* 리뷰 영역 */
 .place-detail.page-title {
   display: flex;

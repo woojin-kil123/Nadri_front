@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./place.css";
 import axios from "axios";
 import StarRating from "../utils/StarRating";
@@ -8,7 +8,18 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import Swal from "sweetalert2";
 import { useRecoilValue } from "recoil";
-import { isLoginState, loginNicknameState } from "../utils/RecoilData";
+import {
+  isLoginState,
+  loginNicknameState,
+  memberLevelState,
+} from "../utils/RecoilData";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 const PlaceDetail = () => {
   const backServer = process.env.REACT_APP_BACK_SERVER;
@@ -17,14 +28,36 @@ const PlaceDetail = () => {
 
   const isLogin = useRecoilValue(isLoginState);
   const memberNickname = useRecoilValue(loginNicknameState);
-  const isAdmin = true; // useRecoilValue(isAdminState); // 관리자 여부
-
+  const memberLevel = useRecoilValue(memberLevelState); // 관리자 = 2
   const [place, setPlace] = useState();
   const [editPlace, setEditPlace] = useState({});
   const [editMode, setEditMode] = useState(false);
   const [review, setReview] = useState([]);
   const [bookmarked, setBookmarked] = useState();
   const [viewCount, setViewCount] = useState(0);
+
+  const [open, setOpen] = useState(false); // 모달 오픈 여부 상태
+
+  // 모달 열기
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  // 모달 닫기
+  const handleClose = () => {
+    setOpen(false);
+  };
+  // 폼 제출 핸들러
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+    const formJson = Object.fromEntries(formData.entries());
+
+    console.log("제출 데이터:", formJson);
+
+    // 서버 요청 등 처리 후 모달 닫기
+    handleClose();
+  };
 
   useEffect(() => {
     axios
@@ -44,6 +77,7 @@ const PlaceDetail = () => {
     });
 
     axios.get(`${backServer}/review/detail/${placeId}`).then((res) => {
+      console.log(res);
       setReview(res.data);
     });
   }, [placeId]);
@@ -123,7 +157,7 @@ const PlaceDetail = () => {
             <h1 className="detail-title">{place?.placeTitle}</h1>
           )}
 
-          {isAdmin &&
+          {memberLevel == 2 &&
             (editMode ? (
               <div className="edit-button-wrap">
                 <button onClick={handleSave}>저장</button>
@@ -158,11 +192,14 @@ const PlaceDetail = () => {
       </div>
 
       <div className="place-detail-image">
-        <img
-          src={place?.placeThumb || "/image/dora.png"}
-          className="detail-img1"
-          alt="place"
-        />
+        <div className="placeThumb-box">
+          <img
+            src={place?.placeThumb || "/image/dora.png"}
+            className="detail-img1"
+            alt="place"
+          />
+        </div>
+        <div className="placeImage-box-more"></div>
       </div>
 
       <div className="place-detail-content">
@@ -266,6 +303,10 @@ const PlaceDetail = () => {
               )}
             </div>
           )}
+
+          <div className="info-request-box">
+            <span onClick={handleOpen}>잘못된 정보 알려주기</span>
+          </div>
         </div>
       </div>
 
@@ -288,6 +329,137 @@ const PlaceDetail = () => {
           ))}
         </ul>
       </div>
+
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>정보 수정 요청</DialogTitle>
+        <DialogContentText style={{ padding: "0 25px" }}>
+          혹시 방문하신 장소의 정보가 다르게 입력되어 있나요? 알려주신다면 확인
+          후 반영하여 더 나은 나드리가 되겠습니다. 감사합니다!!^^
+        </DialogContentText>
+        <form onSubmit={handleSubmit}>
+          <DialogContent>
+            <TextField
+              name="placeTitle"
+              label="장소 이름"
+              fullWidth
+              margin="dense"
+              sx={{
+                "& label.Mui-focused": {
+                  color: "var(--main2)", // 포커스된 라벨 색
+                },
+                "& .MuiOutlinedInput-root": {
+                  "&.Mui-focused fieldset": {
+                    borderColor: "var(--main2)", // 포커스된 테두리 색
+                  },
+                },
+              }}
+            />
+            <TextField
+              name="placeAddr"
+              label="주소"
+              fullWidth
+              margin="dense"
+              sx={{
+                "& label.Mui-focused": {
+                  color: "var(--main2)", // 포커스된 라벨 색
+                },
+                "& .MuiOutlinedInput-root": {
+                  "&.Mui-focused fieldset": {
+                    borderColor: "var(--main2)", // 포커스된 테두리 색
+                  },
+                },
+              }}
+            />
+            <TextField
+              name="placeAddr"
+              label="문의 및 안내"
+              fullWidth
+              margin="dense"
+              sx={{
+                "& label.Mui-focused": {
+                  color: "var(--main2)", // 포커스된 라벨 색
+                },
+                "& .MuiOutlinedInput-root": {
+                  "&.Mui-focused fieldset": {
+                    borderColor: "var(--main2)", // 포커스된 테두리 색
+                  },
+                },
+              }}
+            />
+            <TextField
+              name="placeAddr"
+              label="운영시간"
+              fullWidth
+              margin="dense"
+              sx={{
+                "& label.Mui-focused": {
+                  color: "var(--main2)", // 포커스된 라벨 색
+                },
+                "& .MuiOutlinedInput-root": {
+                  "&.Mui-focused fieldset": {
+                    borderColor: "var(--main2)", // 포커스된 테두리 색
+                  },
+                },
+              }}
+            />
+            <TextField
+              name="placeAddr"
+              label="쉬는날"
+              fullWidth
+              margin="dense"
+              sx={{
+                "& label.Mui-focused": {
+                  color: "var(--main2)", // 포커스된 라벨 색
+                },
+                "& .MuiOutlinedInput-root": {
+                  "&.Mui-focused fieldset": {
+                    borderColor: "var(--main2)", // 포커스된 테두리 색
+                  },
+                },
+              }}
+            />
+            <TextField
+              name="placeAddr"
+              label="주차"
+              fullWidth
+              margin="dense"
+              sx={{
+                "& label.Mui-focused": {
+                  color: "var(--main2)", // 포커스된 라벨 색
+                },
+                "& .MuiOutlinedInput-root": {
+                  "&.Mui-focused fieldset": {
+                    borderColor: "var(--main2)", // 포커스된 테두리 색
+                  },
+                },
+              }}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={handleClose}
+              sx={{
+                backgroundColor: "white",
+                color: "var(--main2)",
+                "&:hover": { backgroundColor: "#efefef" },
+              }}
+            >
+              취소
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                backgroundColor: "var(--main2)",
+                color: "white",
+                "&:hover": { backgroundColor: "var(--main3)" },
+              }}
+            >
+              저장
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
     </div>
   );
 };
