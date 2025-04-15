@@ -1,7 +1,5 @@
 import { Close, Delete } from "@mui/icons-material";
 import dayjs from "dayjs";
-import { useState } from "react";
-import { useRecoilState } from "recoil";
 
 const PlannerView = (props) => {
   const {
@@ -12,6 +10,8 @@ const PlannerView = (props) => {
     planName,
     setPlanName,
     plannerMode,
+    setOpenOverlay,
+    setMapCenter,
   } = props;
 
   const handleDeletePlace = (odr) => {
@@ -34,6 +34,8 @@ const PlannerView = (props) => {
           planName={planName}
           setPlanName={setPlanName}
           plannerMode={plannerMode}
+          setOpenOverlay={setOpenOverlay}
+          setMapCenter={setMapCenter}
         />
       ) : (
         <div
@@ -57,6 +59,8 @@ const Planner = (props) => {
   const handleDeletePlace = props.handleDeletePlace;
   const [planName, setPlanName] = [props.planName, props.setPlanName];
   const plannerMode = props.plannerMode;
+  const setOpenOverlay = props.setOpenOverlay;
+  const setMapCenter = props.setMapCenter;
 
   return (
     <div className={`planner-wrap ${plannerMode === "view" ? "full" : ""}`}>
@@ -98,7 +102,13 @@ const Planner = (props) => {
                   ㅡ {dayjs(p.itineraryDate).format("YYYY년 M월 D일")} ㅡ
                 </div>
               )}
-              <div className="planned-item">
+              <div
+                className="planned-item"
+                onClick={() => {
+                  setOpenOverlay(p.placeId);
+                  setMapCenter(p.placeLatLng);
+                }}
+              >
                 <img
                   className="planned-img"
                   src={p.placeThumb}
