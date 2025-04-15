@@ -1,6 +1,6 @@
 import { Close, Delete } from "@mui/icons-material";
 import dayjs from "dayjs";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import ToggleBookmark from "./utils/ToggleBookmark";
 
 const PlannerView = (props) => {
@@ -87,6 +87,9 @@ const Planner = (props) => {
   const setMapCenter = props.setMapCenter;
   const bookmarked = props.bookmarked;
 
+  const { planNo } = useParams();
+  const ctrlUrl = "/plan";
+
   return (
     <div className={`planner-wrap ${plannerMode === "view" ? "full" : ""}`}>
       {plannerMode === "view" && (
@@ -94,7 +97,11 @@ const Planner = (props) => {
           <div className="logo planner-logo">
             <Link to="/">NADRI</Link>
           </div>
-          <ToggleBookmark bookmarked={bookmarked} />
+          <ToggleBookmark
+            bookmarked={bookmarked}
+            objectNo={planNo}
+            controllerUrl={ctrlUrl}
+          />
         </>
       )}
       {plannerMode === "write" && (
