@@ -14,7 +14,7 @@ const ToggleBookmark = ({ bookmarked, objectNo, controllerUrl }) => {
   const [bookmarkState, setBookmarkState] = useState(bookmarked === 1);
 
   useEffect(() => {
-    setBookmarkState(bookmarked);
+    setBookmarkState(bookmarked === 1);
   }, [bookmarked]);
 
   const toggle = (objectNo) => {
@@ -33,8 +33,6 @@ const ToggleBookmark = ({ bookmarked, objectNo, controllerUrl }) => {
   };
 
   const handleClick = (e) => {
-    e.stopPropagation();
-
     if (!isLogin) {
       Swal.fire({
         title: "로그인이 필요합니다",
@@ -53,6 +51,7 @@ const ToggleBookmark = ({ bookmarked, objectNo, controllerUrl }) => {
         sx={{ m: 1 }}
         size="large"
         checked={bookmarkState}
+        onClick={(e) => e.stopPropagation()} // 이거 꼭 필요!
         onChange={handleClick}
         icon={<BookmarkBorder />}
         checkedIcon={<Bookmark />}

@@ -82,7 +82,7 @@ export default function RecommandSlider({ on, content }) {
 
 const PlanCard = ({ plan }) => {
   const navigate = useNavigate();
-  const [bookmarked, setBookmarked] = useState(null);
+  const [bookmarked, setBookmarked] = useState(plan.bookmarked);
   return (
     <div className="card" onClick={() => navigate(`/planner/${plan.planNo}`)}>
       <div className="image-container">
@@ -94,14 +94,12 @@ const PlanCard = ({ plan }) => {
           }
           className="card-image"
         />
-        <div
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation(); // 이벤트 버블링 방지
-          }}
-        >
-          <ToggleBookmark bookmarked={bookmarked} />
-        </div>
+
+        <ToggleBookmark
+          bookmarked={bookmarked}
+          objectNo={plan.planNo}
+          controllerUrl={"/plan"}
+        />
       </div>
       <div className="card-content">
         <h3 className="title">{plan.planName}</h3>
