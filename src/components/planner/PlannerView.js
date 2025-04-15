@@ -60,7 +60,9 @@ const Planner = (props) => {
 
   return (
     <div className={`planner-wrap ${plannerMode === "view" ? "full" : ""}`}>
-      <Close className="close-btn" onClick={() => setOpenPlanner(false)} />
+      {plannerMode === "write" && (
+        <Close className="close-btn" onClick={() => setOpenPlanner(false)} />
+      )}
       {plannedPlaceList.length === 0 && (
         <div className="empty-plan">플래너가 비어 있습니다...</div>
       )}

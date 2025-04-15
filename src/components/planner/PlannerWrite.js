@@ -11,12 +11,11 @@ import DrawPlannerPathCanvas from "./DrawPlannerPath";
 import PageNavigation from "../utils/PageNavigtion";
 import { useRecoilValue } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
+import GetBoundsByLevel from "../utils/GetBoundsByLevel";
 
 const PlannerWrite = (props) => {
   const {
     userMarker,
-    userRadius,
-    setUserRadius,
     openPlanningModal,
     setOpenPlanningModal,
     plannedPlaceList,
@@ -28,6 +27,7 @@ const PlannerWrite = (props) => {
     setOpenOverlay,
     setOpenPlanner,
     setMapCenter,
+    mapLevel,
   } = props;
 
   const loginNickname = useRecoilValue(loginNicknameState);
@@ -37,7 +37,7 @@ const PlannerWrite = (props) => {
   //필터 옵션(null:전체, 1:숙박시설, 2:음식점, 3:그외)
   const [filterOption, setFilterOption] = useState(null);
   //정렬 옵션(1:거리순, 2:리뷰많은순, 3:이름순)
-  const [sortOption, setSortOption] = useState(1);
+  const [sortOption, setSortOption] = useState(2);
 
   //페이지네이션 관련
   const [totalCount, setTotalCount] = useState(0);
@@ -69,7 +69,7 @@ const PlannerWrite = (props) => {
         case 12:
           return "관광지";
         case 14:
-          return "문화시설";
+          return "즐길거리";
         case 15:
           return "축제/행사";
         case 28:
@@ -83,15 +83,17 @@ const PlannerWrite = (props) => {
       }
     };
 
+    const { width, height } = GetBoundsByLevel(mapLevel);
+
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/plan/nearby`, {
         params: {
           lat,
           lng,
-          width: 0.03,
-          height: 0.03,
+          width,
+          height,
           page: reqPage,
-          size: 100,
+          size: 60,
           sortOption: sortOption,
           filterOption: filterOption,
         },
@@ -182,10 +184,10 @@ const PlannerWrite = (props) => {
             <select
               value={sortOption}
               onChange={(e) => setSortOption(Number(e.target.value))}
-              disabled={placeList.length === 0}
+              // disabled={placeList.length === 0}
             >
-              <option value={1}>거리순</option>
               <option value={2}>리뷰많은순</option>
+              <option value={1}>거리순</option>
               <option value={3}>이름순</option>
             </select>
           </div>
@@ -224,18 +226,8 @@ const PlannerWrite = (props) => {
         </div>
       </div>
       <div className="radius-slider">
-        <label htmlFor="radiusRange">검색반경: {userRadius}m</label>
-        <input
-          id="radiusRange"
-          type="range"
-          min="100"
-          max="5000"
-          step="100"
-          value={userRadius}
-          onChange={(e) => {
-            setUserRadius(parseInt(e.target.value));
-          }}
-        />
+        <label htmlFor="radiusRange">검색반경: m</label>
+        <input id="radiusRange" type="range" min="100" max="5000" step="100" />
         <button className="re-search" onClick={getPlaceList}>
           새로고침
         </button>

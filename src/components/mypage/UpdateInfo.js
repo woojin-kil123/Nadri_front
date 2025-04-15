@@ -10,12 +10,13 @@ const UpdateInfo = () => {
   const [loginNickname, setLoginNickname] = useRecoilState(loginNicknameState); //리코일에서 로그인한 회원 닉네임 조회
   const [member, setMember] = useState(null); // 회원 상세 정보를 저장할 member state
   const [isFormValid, setIsFormValid] = useState(true); // 폼 유효성 상태
+  const [sendProfileImg, setSendProfileImg] = useState();
 
   // 상태 관리: 프로필 이미지 URL
   const [profileImg, setProfileImg] = useState();
 
   // 기본 프로필 이미지 경로
-  const defaultProfileImg = "/image/profile_default_image.png";
+  const defaultProfileImg = "/image/default_user.png";
 
   //회원 정보 가져오기
   useEffect(() => {
@@ -25,7 +26,9 @@ const UpdateInfo = () => {
       )
       .then((res) => {
         console.log(res);
+        console.log(res.data);
         setMember(res.data);
+
         // 서버에서 프로필 이미지가 있다면 그 이미지로 설정
         setProfileImg(
           res.data.profileImg
@@ -123,10 +126,7 @@ const UpdateInfo = () => {
 
   // member.profileImg 업데이트
   const updateMemberProfileImg = (file) => {
-    setMember((prevState) => ({
-      ...prevState,
-      profileImg: file, // 프로필 이미지만 업데이트
-    }));
+    setSendProfileImg(file);
   };
 
   // 기본 이미지로 설정
@@ -201,8 +201,11 @@ const UpdateInfo = () => {
     form.append("memberPhone", member.memberPhone);
     form.append("memberBirth", member.memberBirth);
     form.append("memberGender", member.memberGender);
-    if (member.profileImg) {
-      form.append("uploadProfile", member.profileImg); // 실제 이미지 파일 객체를 추가
+    if (member.profileImg !== null) {
+      form.append("ProfileImg", member.profileImg);
+    }
+    if (sendProfileImg) {
+      form.append("uploadProfile", sendProfileImg); // 실제 이미지 파일 객체를 추가
     }
     console.log(member.memberEmail);
     console.log(member.memberNickname);
@@ -210,6 +213,7 @@ const UpdateInfo = () => {
     console.log(member.memberGender);
     console.log(member.memberBirth);
     console.log(member.profileImg);
+    console.log(sendProfileImg);
     console.log(form);
     axios
       .patch(`${process.env.REACT_APP_BACK_SERVER}/member`, form, {

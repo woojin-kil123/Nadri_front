@@ -15,6 +15,7 @@ import ChatMenu from "./ChatMenu";
 const ChatModal = ({
   chatModalEl,
   setChatModalEl,
+  chatMenu,
   setChatMenu,
   setIsNewMessage,
 }) => {
@@ -38,23 +39,29 @@ const ChatModal = ({
     );
     setWs(socket);
     return () => {
-      console.log("채팅페이지에서 벗어나면 실행");
       socket.close();
     };
   }, []);
   useEffect(() => {
     if (!Array.isArray(roomList)) return;
     // 안읽은 메시지 있는 채팅방만 필터
-    const unreadRooms = roomList.filter((room) => room.notRead > 0);
+    const unreadRooms = roomList.filter(
+      (room) =>
+        room.notRead > 0 &&
+        room.groupInfo.length > 1 &&
+        room.latestSenderNickname !== loginNickname
+    );
     // DropdownItem 리스트로 변환
-    const menuItems = unreadRooms.map((room) => {
+    const menuItems = unreadRooms.map((room, i) => {
       return new DropdownItem(
         <AnnouncementIcon />,
         `${room.chatTitle}에 새 메시지!`,
+        //클릭시 동작 함수
         (e) => {
           setChatModalEl(e.currentTarget);
           setSelectedRoom(room);
-        } // 클릭시 이동 함수
+          setIsNewMessage(false);
+        }
       );
     });
     setChatMenu([
@@ -63,13 +70,12 @@ const ChatModal = ({
       }),
       ...menuItems,
     ]);
-  }, [roomList]);
+  }, [roomList, loginNickname]);
   const startChat = () => {
     const data = createChatMsg("FETCH_ROOM_LIST");
     ws.send(data);
   };
   const receiveMsg = (receiveData) => {
-    console.log("서버에서 데이터를 받으면 실행되는 함수");
     //data 타입별로 정리
     const data = JSON.parse(receiveData.data);
     switch (data.type) {
@@ -126,9 +132,7 @@ const ChatModal = ({
         break;
     }
   };
-  const endChat = () => {
-    console.log("웹소켓 연결이 끊어지면 실행되는 함수");
-  };
+  const endChat = () => {};
   ws.onopen = startChat;
   ws.onmessage = receiveMsg;
   ws.onclose = endChat;
