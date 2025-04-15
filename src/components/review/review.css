@@ -67,7 +67,6 @@
   aspect-ratio: 4 / 3; /* 고정 비율 유지 */
   overflow: hidden;
   border-radius: 10px;
-  background-color: #f0f0f0;
 }
 
 .place-image {
@@ -81,20 +80,18 @@
   justify-items: center;
   justify-self: center;
 }
-.review-images {
-  display: flex;
-  overflow-x: auto;
-  gap: 10px;
-  padding: 10px 0;
-}
-
-.review-image {
-  width: 150px;
-  object-fit: cover;
-  border-radius: 8px;
-  flex-shrink: 0; /* 줄어들지 않게 */
-}
 .review-write-section {
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+  padding: 32px;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.review-edit-section {
   display: flex;
   flex-direction: row;
   gap: 40px;
@@ -130,7 +127,6 @@
 .review-image {
   width: 100%;
   height: 200px;
-  object-fit: cover;
 }
 
 .place-info-text {
@@ -291,8 +287,10 @@
 }
 
 .review-view-section .review-title {
+  width: 100%;
   font-size: 20px;
   font-weight: bold;
+  text-align: center;
 }
 
 .review-view-section .review-meta {
@@ -307,7 +305,7 @@
   height: 200px;
 }
 
-.review-view-section .review-images {
+.review-images {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 10px;
@@ -327,7 +325,7 @@
 
 .review-view-section .review-image {
   width: 100%;
-  height: 100%;
+  height: 250px;
   object-fit: cover;
 }
 
@@ -561,7 +559,11 @@
   flex-wrap: wrap;
   gap: 10px;
 }
-
+.review-image2 {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 .preview-image {
   width: 100px;
   height: 100px;

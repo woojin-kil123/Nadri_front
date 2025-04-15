@@ -24,7 +24,7 @@ const Main = () => {
   ]);
   const placeType = useRecoilValue(placeTypeState);
   //기본 타입 지정
-  const [onPlan, setOnPlan] = useState(null);
+  const [onPlan, setOnPlan] = useState(1);
   const [onPlace, setOnPlace] = useState(null);
   const [onReview, setOnReview] = useState(null);
 
