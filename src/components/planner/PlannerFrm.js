@@ -115,7 +115,6 @@ const PlannerFrm = () => {
       .then((res) => {
         //플랜정보 + 플랜 내 방문지들 + 소유자 여부 반환
         const { plan, isOwner, itineraries } = res.data;
-        console.log(plan);
 
         //placeTypeId 매핑 함수
         const getPlaceTypeName = (typeId) => {
