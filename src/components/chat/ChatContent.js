@@ -27,7 +27,20 @@ const ChatContent = ({
   const [editMode, setEditMode] = useState(false);
   const titleInput = useRef(null);
   const [hoverGroupMenu, setHoverGroupMenu] = useState(false);
-  console.log(selectedRoom);
+  const [profile, setProfile] = useState([]);
+
+  useEffect(() => {
+    const arr = selectedRoom.groupInfo.map((member, i) => {
+      return {
+        memberNickname: member.memberNickname,
+        profileImg: member.profileImg
+          ? `${process.env.REACT_APP_BACK_SERVER}/profile/${member.profileImg}`
+          : "/image/default_user.png",
+      };
+    });
+    setProfile(arr);
+  }, [selectedRoom]);
+
   useEffect(() => {
     if (editMode && titleInput.current) {
       titleInput.current.focus();
@@ -85,17 +98,16 @@ const ChatContent = ({
                 <div key={`group-user-${i}`} className="groupInfo">
                   <img
                     src={
-                      item.profileImg
-                        ? `${process.env.REACT_APP_BACK_SERVER}/profile/${item.profileImg}`
-                        : "/image/default_user.png"
+                      profile.find(
+                        (member, i) =>
+                          member.memberNickname === item.memberNickname
+                      )?.profileImg
                     }
                     alt="profile"
                     style={{
-                      marginLeft: "20px",
-                      width: "36px",
-                      height: "36px",
+                      width: "30px",
+                      height: "30px",
                       borderRadius: "50%",
-                      marginRight: "8px",
                     }}
                   />
                   <span>{item.memberNickname}</span>
@@ -212,17 +224,34 @@ const ChatContent = ({
             <div
               key={`content-${i}`}
               className={
-                c.memberNickname == "길우진"
+                c.memberNickname == "관리자"
                   ? "admin-msg"
                   : c.memberNickname == loginNickname
                   ? "right"
                   : "left"
               }
             >
-              {c.memberNickname != "길우진" && <h3>{c.memberNickname}</h3>}
+              {c.memberNickname != "관리자" && (
+                <div className="user-info">
+                  <img
+                    src={
+                      profile.find(
+                        (member, i) =>
+                          member.memberNickname === c.memberNickname
+                      )?.profileImg
+                    }
+                    style={{
+                      width: "35px",
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                    }}
+                  />
+                  <h3>{c.memberNickname}</h3>
+                </div>
+              )}
               <p
                 className={
-                  c.memberNickname == "길우진" ? "admin-text" : "chat-text"
+                  c.memberNickname == "관리자" ? "admin-text" : "chat-text"
                 }
               >
                 {c.chatContent}
@@ -246,9 +275,9 @@ const ChatContent = ({
             }
           }}
         />
-        <AddPhotoAlternateIcon>
+        {/* <AddPhotoAlternateIcon>
           <input type="file"></input>
-        </AddPhotoAlternateIcon>
+        </AddPhotoAlternateIcon> */}
         <button className="btn-primary" onClick={send}>
           보내기
           <TelegramIcon />

@@ -102,8 +102,13 @@ const ReviewView = () => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/review/likes/${reviewNo}`)
       .then((res) => {
+        console.log(res);
         setLikeCount(res.data.likes);
-        if (res.data.likeMember.memberNickname === memberNickname) {
+        if (
+          res.data.likeMember.some(
+            (member) => member.memberNickname === memberNickname
+          )
+        ) {
           setLiked(true);
         }
       })
@@ -321,7 +326,7 @@ const ReviewView = () => {
                 {reviewImages.map((img, index) => (
                   <div className="review-image-wrapper" key={index}>
                     <img
-                      src={`${process.env.REACT_APP_BACK_SERVER}/place/${img.filepath}`}
+                      src={`${process.env.REACT_APP_BACK_SERVER}/place/image/${img.filepath}`}
                       alt=""
                       className="review-image"
                     />
