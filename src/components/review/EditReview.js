@@ -27,6 +27,7 @@ const EditReview = () => {
         setTitle(res.data.reviewTitle);
         setContent(res.data.reviewContent);
         setRating(res.data.starRate);
+        setPlaceId(res.data.placeId);
         // 기존 이미지 미리보기를 위해 필요시 여기서 불러오기 추가 가능
       })
       .catch((err) => console.log(err));
@@ -90,6 +91,7 @@ const EditReview = () => {
     form.append("reviewTitle", title);
     form.append("starRate", rating);
     form.append("reviewContent", content);
+    form.append("placeId", placeId);
     deleteFile.forEach((filepath) => {
       form.append("deleteFilepaths", filepath);
     });
