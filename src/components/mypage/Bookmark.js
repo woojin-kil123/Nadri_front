@@ -56,7 +56,7 @@ const Bookmark = () => {
 
   // 페이지가 로드될 때 자동으로 "다가오는 플래너"로 설정
   useEffect(() => {
-    changeContent("room");
+    changeContent("spot");
   }, []);
 
   return (
@@ -119,9 +119,10 @@ const Bookmark = () => {
             </div>
           ) : (
             <ul className="posting-wrap">
-              {bookmark.map((card, i) => (
-                <MypageListCard key={"card-" + i} place={card} />
-              ))}
+              {Array.isArray(cards) &&
+                bookmark.map((card, i) => {
+                  return <MypageListCard key={"card-" + i} place={card} />;
+                })}
             </ul>
           )}
         </div>
