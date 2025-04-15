@@ -4,9 +4,13 @@ import ListCard from "../utils/ListCard";
 import axios from "axios";
 import { PlaceFilterRequest } from "../utils/metaSet";
 import { useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { loginNicknameState } from "../utils/RecoilData";
+import ToggleBookmark from "../planner/utils/ToggleBookmark";
 
 export default function RecommandSlider({ on, content }) {
   const [cards, setCards] = useState(null);
+  const loginNickname = useRecoilValue(loginNicknameState);
   useEffect(() => {
     switch (content) {
       case "place":
@@ -25,7 +29,11 @@ export default function RecommandSlider({ on, content }) {
         //플랜 조회
         axios
           .get(
-            `${process.env.REACT_APP_BACK_SERVER}/plan?reqPage=${1}&order=${on}`
+            `${
+              process.env.REACT_APP_BACK_SERVER
+            }/plan?reqPage=${1}&order=${on}&loginNickanme=${
+              loginNickname ? loginNickname : ""
+            }`
           )
           .then((res) => {
             console.log(res.data);
@@ -74,6 +82,7 @@ export default function RecommandSlider({ on, content }) {
 
 const PlanCard = ({ plan }) => {
   const navigate = useNavigate();
+  const [bookmarked, setBookmarked] = useState(null);
   return (
     <div className="card" onClick={() => navigate(`/planner/${plan.planNo}`)}>
       <div className="image-container">
@@ -85,10 +94,18 @@ const PlanCard = ({ plan }) => {
           }
           className="card-image"
         />
-        <div className="heart-icon" style={{ cursor: "pointer" }}></div>
+        <div
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation(); // 이벤트 버블링 방지
+          }}
+        >
+          <ToggleBookmark bookmarked={bookmarked} />
+        </div>
       </div>
       <div className="card-content">
         <h3 className="title">{plan.planName}</h3>
+        <p className="description">작성자 : {plan.memberNickname}</p>
         <p className="date">
           {plan.startDate}~{plan.endDate}
         </p>

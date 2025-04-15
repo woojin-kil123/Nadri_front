@@ -7,6 +7,7 @@ import { Box, Pagination, Stack, Tab, Tabs } from "@mui/material";
 import ListCard from "../utils/ListCard";
 import PageNavigation from "../utils/PageNavigtion";
 import StarRating from "../utils/StarRating";
+import ToggleBookmark from "../planner/utils/ToggleBookmark";
 
 const SearchResult = () => {
   const location = useLocation();
@@ -155,6 +156,7 @@ const Result = ({ result, onContent }) => {
 };
 
 const PlanCard = ({ plan }) => {
+  const [bookmarked, setBookmarked] = useState(null);
   const navigate = useNavigate();
   return (
     <div className="card" onClick={() => navigate(`/planner/${plan.planNo}`)}>
@@ -167,10 +169,18 @@ const PlanCard = ({ plan }) => {
           }
           className="card-image"
         />
-        <div className="heart-icon" style={{ cursor: "pointer" }}></div>
+        <div
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation(); // 이벤트 버블링 방지
+          }}
+        >
+          <ToggleBookmark bookmarked={bookmarked} />
+        </div>
       </div>
       <div className="card-content">
         <h3 className="title">{plan.planName}</h3>
+        <p className="description">작성자 : {plan.memberNickname}</p>
         <p className="date">
           {plan.startDate}~{plan.endDate}
         </p>
