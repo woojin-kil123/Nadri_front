@@ -24,7 +24,9 @@ export default function RecommandSlider({ on, content }) {
       case "plan":
         //플랜 조회
         axios
-          .get(`${process.env.REACT_APP_BACK_SERVER}/plan?reqPage=${1}`)
+          .get(
+            `${process.env.REACT_APP_BACK_SERVER}/plan?reqPage=${1}&order=${on}`
+          )
           .then((res) => {
             console.log(res.data);
             setCards(res.data);

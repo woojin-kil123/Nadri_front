@@ -19,7 +19,7 @@ const Main = () => {
     },
     {
       name: "최신",
-      id: 2,
+      id: 0,
     },
   ]);
   const placeType = useRecoilValue(placeTypeState);
