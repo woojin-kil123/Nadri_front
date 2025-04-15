@@ -12,7 +12,7 @@ import { useRecoilState } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
 import EditIcon from "@mui/icons-material/Edit";
 import { Margin } from "@mui/icons-material";
-
+import StarRating from "../utils/StarRating";
 const ReviewView = () => {
   const params = useParams();
   const reviewNo = params.reviewNo;
@@ -301,15 +301,39 @@ const ReviewView = () => {
               className="review-header-top"
               style={{ borderBottom: "1px solid #ccc", marginBottom: "20px" }}
             >
-              <h3 className="review-title">{review.reviewTitle}</h3>
+              <h3 className="review-title" style={{ textAlign: "center" }}>
+                {review.reviewTitle}
+              </h3>
             </div>
 
             <div
               className="review-meta"
-              style={{ borderBottom: "1px solid #ccc", marginBottom: "15px" }}
+              style={{
+                borderBottom: "1px solid #ccc",
+                marginBottom: "15px",
+              }}
             >
-              <span className="author">{review.memberNickname}</span>
-              <span className="date">리뷰 일자:{review.reviewDate}</span>
+              <div
+                className="review-metat-content"
+                style={{
+                  marginLeft: "20px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%", // 가로 폭 꽉 채움
+                  maxWidth: "600px",
+                }}
+              >
+                <div style={{ flex: 1, textAlign: "left" }}>
+                  <StarRating rating={review.starRate} />
+                </div>
+                <div style={{ flex: 1, textAlign: "center", fontSize: "15px" }}>
+                  <span className="author">{review.memberNickname}</span>
+                </div>
+                <div style={{ flex: 1, textAlign: "right", fontSize: "15px" }}>
+                  <span className="date">작성일:{review.reviewDate}</span>
+                </div>
+              </div>
             </div>
 
             {/* 본문 내용 */}
