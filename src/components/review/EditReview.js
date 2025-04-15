@@ -75,7 +75,7 @@ const EditReview = () => {
     setFiles(changeFiles);
     setFilePreviews(chanePreviews);
   };
-  console.log(deleteFile);
+
   const reviewEdit = () => {
     const trimmedTitle = title.trim();
     const trimmedContent = content.trim();
@@ -111,7 +111,7 @@ const EditReview = () => {
         alert("리뷰 수정에 실패했습니다.");
       });
   };
-  console.log(newFiles);
+
   return (
     <section className="section review-write-section">
       <div className="review-form">
