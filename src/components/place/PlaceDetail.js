@@ -178,12 +178,22 @@ const PlaceDetail = () => {
     axios
       .patch(`${backServer}/admin/place/update`, editPlace)
       .then(() => {
-        alert("수정 완료!");
+        Swal.fire({
+          title: "수정 완료",
+          icon: "success",
+          text: "수정을 완료하였습니다.",
+          confirmButtonText: "확인",
+        });
         setPlace(editPlace);
         setEditMode(false);
       })
       .catch((err) => {
-        alert("수정 실패");
+        Swal.fire({
+          title: "수정 실패",
+          icon: "warning",
+          text: "수정을 실패하였습니다.",
+          confirmButtonText: "확인",
+        });
         console.log(err);
       });
   };
@@ -201,7 +211,12 @@ const PlaceDetail = () => {
         })
         .catch((err) => {
           console.error("이미지 삭제 실패", err);
-          alert("삭제 실패");
+          Swal.fire({
+            title: "수정 실패",
+            icon: "warning",
+            text: "수정을 실패하였습니다.",
+            confirmButtonText: "확인",
+          });
         });
     }
   };

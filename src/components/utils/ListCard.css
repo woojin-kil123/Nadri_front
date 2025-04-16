@@ -83,6 +83,6 @@
   margin: 0;
 }
 
-.heart-icon > path {
+.heart-icon path {
   color: var(--main3);
 }
