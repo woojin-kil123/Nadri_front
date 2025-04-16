@@ -38,7 +38,7 @@ export const filterNameToCodeMap = {
   },
 };
 
-// ✅ 이 함수 추가!
+// 한글필터명을 코드로 바꿔주는 함수!
 export const convertFiltersToCodes = (placeTypeId, selectedFilters) => {
   const typeMap = filterNameToCodeMap[placeTypeId] || {};
   return selectedFilters.flatMap((filterName) => typeMap[filterName] || []);

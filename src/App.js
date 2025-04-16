@@ -47,6 +47,8 @@ import AdminReview from "./components/admin/AdminReview";
 import AdminPartner from "./components/admin/AdminKeyword";
 import PlaceDetail from "./components/place/PlaceDetail";
 import EditReview from "./components/review/EditReview";
+import AdminMember from "./components/admin/AdminMember";
+
 import "leaflet/dist/leaflet.css";
 
 function App() {
@@ -56,7 +58,6 @@ function App() {
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BACK_SERVER}/place/type`).then((res) => {
       setPlaceType(res.data);
-      console.log(res.data);
     });
   }, []);
   useEffect(() => {
@@ -120,7 +121,7 @@ function App() {
                     <Route path="event" element={<Event />} />
                     <Route path="keyword" element={<AdminPartner />} />
                     <Route path="review" element={<AdminReview />} />
-                    <Route path="member" element={<></>} />
+                    <Route path="member" element={<AdminMember />} />
                     <Route path="main" element={<AdminMain />} />
                   </Route>
                   <Route

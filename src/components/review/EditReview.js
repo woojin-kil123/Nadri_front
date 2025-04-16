@@ -162,7 +162,7 @@ const EditReview = () => {
               {[
                 ...files.map((img, index) => ({
                   type: "existing",
-                  src: `${process.env.REACT_APP_BACK_SERVER}/place/image/${img.filepath}`,
+                  src: `${process.env.REACT_APP_BACK_SERVER}/assets/place/image/${img.filepath}`,
                   onClick: () => remove(index),
                 })),
                 ...newFilePreviews.map((src, index) => ({
