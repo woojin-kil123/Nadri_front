@@ -135,9 +135,7 @@ const PlannerWrite = (props) => {
         setTotalCount(totalCount);
         setPageInfo(pageInfo);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
     //아래 배열 내 값이 바뀔 때 함수를 재생성함(useCallback)
   }, [userMarker, sortOption, filterOption, reqPage]);
 
@@ -526,7 +524,6 @@ const SavePlanModal = (props) => {
     // leaflet 이미지 캡처
     leafletImage(mapInstance, function (err, canvas) {
       if (err || !canvas) {
-        console.error("지도 캡처 실패", err);
         return;
       }
 
@@ -564,7 +561,6 @@ const SavePlanModal = (props) => {
               }
             })
             .catch((err) => {
-              console.log(err);
               setSaving(false);
               if (savedFilename) {
                 window.alert("저장에 실패했습니다. 잠시 후 다시 시도해주세요.");
@@ -624,7 +620,6 @@ const SavePlanModal = (props) => {
           })
           .catch((err) => {
             //썸네일 업로드 실패, 혹은 plan 저장 실패한 모든 경우(catch)
-            console.log(err);
             if (savedFilename) {
               //썸네일 업로드는 됐는데 plan 저장만 실패하면 썸네일 삭제
               window.alert("저장에 실패했습니다. 잠시 후 다시 시도해주세요.");

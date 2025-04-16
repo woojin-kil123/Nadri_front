@@ -53,8 +53,6 @@ const PlaceDetail = () => {
     const formData = new FormData(event.target);
     const formJson = Object.fromEntries(formData.entries());
 
-    console.log("제출 데이터:", formJson);
-
     // 서버 요청 등 처리 후 모달 닫기
     handleClose();
   };
@@ -74,12 +72,9 @@ const PlaceDetail = () => {
         setViewCount((prev) => prev + 1);
       });
 
-    axios
-      .get(`${backServer}/place/images/${placeId}`)
-      .then((res) => {
-        setPlaceIamges(res.data);
-      })
-      .catch((err) => console.error("이미지 불러오기 실패", err));
+    axios.get(`${backServer}/place/images/${placeId}`).then((res) => {
+      setPlaceIamges(res.data);
+    });
 
     axios.post(`${backServer}/place/detail/${placeId}/click`).then((res) => {
       setViewCount(res.data.viewCount);
@@ -104,9 +99,7 @@ const PlaceDetail = () => {
             placeOverview: res.data.placeOverview,
           }));
         })
-        .catch((err) => {
-          console.error(" 개요 가져오기 실패:", err);
-        });
+        .catch((err) => {});
     }
   }, [placeId, overviewLoading]);
 
@@ -159,7 +152,6 @@ const PlaceDetail = () => {
 
   //상세페이지 수정 후 저장
   const handleSave = () => {
-    console.log(editPlace);
     axios
       .patch(`${backServer}/admin/place/update`, editPlace)
       .then(() => {
@@ -169,7 +161,6 @@ const PlaceDetail = () => {
       })
       .catch((err) => {
         alert("수정 실패");
-        console.log(err);
       });
   };
 
@@ -185,7 +176,6 @@ const PlaceDetail = () => {
           );
         })
         .catch((err) => {
-          console.error("이미지 삭제 실패", err);
           alert("삭제 실패");
         });
     }

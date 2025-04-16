@@ -191,7 +191,6 @@ const PlannerFrm = () => {
             });
           }
         } else {
-          console.log(err);
         }
       });
   });

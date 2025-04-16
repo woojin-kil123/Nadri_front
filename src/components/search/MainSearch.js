@@ -20,6 +20,7 @@ import { useRecoilValue } from "recoil";
 import { placeTypeState } from "../utils/RecoilData";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const MainSearch = () => {
   const [open, setOpen] = useState(false);
@@ -101,6 +102,15 @@ const MainSearch = () => {
     selectedTags.length > 0 && selectKeyword();
   }, [selectedTags]);
   const doSearch = () => {
+    const blockedChars = /[`"'<>]/;
+    if (blockedChars.test(inputValue)) {
+      Swal.fire({
+        icon: "warning",
+        title: "입력 확인",
+        text: "` , ' , < , > 같은 특수문자는 사용할 수 없습니다.",
+      });
+      return;
+    }
     const arr = placeType.filter((type, _) =>
       selectedTags.find((tag, _) => type.name === tag.name)
     );

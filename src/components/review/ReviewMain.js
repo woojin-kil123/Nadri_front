@@ -103,7 +103,7 @@ const ReviewItem = (props) => {
     >
       <div className="posting-thumb">
         <img
-          src={review.placeThumb || "/image/default_img.png"}
+          src={review.placeThumb || "/image/default_thumb.png"}
           className="place-image"
           alt=""
         />

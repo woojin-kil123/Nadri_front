@@ -8,8 +8,6 @@ const SocialJoin2 = () => {
   const location = useLocation(); // 현재 위치에서 전달된 데이터를 가져오는 훅
   const { email } = location.state || {}; // 이메일과 코드 데이터를 가져옴 (없으면 기본값으로 빈 객체 설정)
 
-  console.log(email);
-
   useEffect(() => {
     if (!email) {
       Swal.fire({
@@ -58,16 +56,13 @@ const SocialJoin2 = () => {
           `${process.env.REACT_APP_BACK_SERVER}/member/exists?memberNickname=${member.memberNickname}`
         )
         .then((res) => {
-          console.log(res);
           if (res.data === 0) {
             setNicknameCheck(1); // 사용 가능한 닉네임
           } else {
             setNicknameCheck(3); // 이미 사용중인 닉네임
           }
         })
-        .catch((err) => {
-          console.log(err); // 에러 발생 시 콘솔 출력
-        });
+        .catch((err) => {});
     } else {
       setNicknameCheck(2); // 유효하지 않은 닉네임
     }
@@ -109,7 +104,6 @@ const SocialJoin2 = () => {
       return;
     }
 
-    console.log(member); // 회원 정보 확인
     axios
       .post(`${process.env.REACT_APP_BACK_SERVER}/member/socialJoin`, member) // 서버에 회원가입 요청
       .then((res) => {
@@ -172,7 +166,6 @@ const SocialJoin2 = () => {
   useEffect(() => {
     if (member.memberBirth) {
       // memberBirth가 변경될 때마다 콘솔 로그로 출력
-      console.log(member);
     }
   }, [member.memberBirth]); // memberBirth 상태에 의존
 
