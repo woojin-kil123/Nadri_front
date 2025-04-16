@@ -3,10 +3,13 @@ import "./plannerCard.css";
 import ToggleBookmark from "../planner/utils/ToggleBookmark";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import DeletePlannerButton from "../planner/utils/DeletePlannerButton";
 
 export default function PlannerCard(props) {
   const navigate = useNavigate();
   const planner = props.planner;
+  const cards = props.cards;
+  const setCards = props.setCards;
 
   const calculateDDay = (startDate, endDate) => {
     const today = new Date(); // 현재 날짜
@@ -55,6 +58,12 @@ export default function PlannerCard(props) {
                   : "/image/default_thumb.png"
               }
               className="card3-image"
+            />
+            <DeletePlannerButton
+              objectNo={planner.planNo}
+              planner={planner}
+              cards={cards}
+              setCards={setCards}
             />
           </div>
           <div className="card3-content">
