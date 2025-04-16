@@ -162,7 +162,7 @@ const AdminReview = () => {
                 </tr>
               </thead>
               <tbody>
-                {reportedReview &&
+                {reportedReview && reportedReview.length > 0 ? (
                   reportedReview.map(
                     (review, i) =>
                       review.reportStatus === 1 && (
@@ -173,7 +173,12 @@ const AdminReview = () => {
                           onStatusUpdate={handleStatusUpdate}
                         />
                       )
-                  )}
+                  )
+                ) : (
+                  <tr>
+                    <td colSpan={6}>신고된 리뷰가 없습니다.</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           )}
@@ -191,7 +196,7 @@ const AdminReview = () => {
                 </tr>
               </thead>
               <tbody>
-                {reportedReview &&
+                {reportedReview && reportedReview.length > 0 ? (
                   reportedReview.map((review, i) => (
                     <Report
                       key={`${review.reviewNo}-${review.reportStatus}`}
@@ -199,7 +204,12 @@ const AdminReview = () => {
                       navigate={navigate}
                       onDelete={handleDelete}
                     />
-                  ))}
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={6}>신고된 리뷰가 없습니다.</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           )}

@@ -164,7 +164,7 @@ const EventTooltip = ({ event, position, onMouseLeave }) => {
       <img
         src={
           eventImg
-            ? `${process.env.REACT_APP_BACK_SERVER}/event/thumb/${eventImg}`
+            ? `${process.env.REACT_APP_BACK_SERVER}/assets/event/thumb/${eventImg}`
             : "/image/default_img.png"
         }
       />

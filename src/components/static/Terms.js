@@ -1,8 +1,12 @@
+import { ClearIcon } from "@mui/x-date-pickers";
 import { Link } from "react-router-dom";
 
-const Terms = () => {
+const Terms = ({ onClose }) => {
   return (
     <div className="terms-container">
+      <button className="popup-close" onClick={onClose}>
+        <ClearIcon />
+      </button>
       <h2 className="terms-title">Nadri 서비스 이용약관</h2>
       <div className="terms-content">
         <h3>당사의 법적 약관에 대한 동의</h3>
