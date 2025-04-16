@@ -3,8 +3,7 @@ import { isLoginState, loginNicknameState } from "../../utils/RecoilData";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { Checkbox } from "@mui/material";
+import { Checkbox, Tooltip } from "@mui/material";
 import { Bookmark, BookmarkBorder } from "@mui/icons-material";
 
 const ToggleBookmark = ({
@@ -48,15 +47,17 @@ const ToggleBookmark = ({
 
   return (
     <div className="close-btn">
-      <Checkbox
-        sx={{ m: 1 }}
-        size="large"
-        checked={bookmarked === 1}
-        onClick={(e) => e.stopPropagation()} // 이거 꼭 필요!
-        onChange={handleClick}
-        icon={<BookmarkBorder sx={{ fill: "var(--gray4)" }} />}
-        checkedIcon={<Bookmark sx={{ fill: "var(--main4)" }} />}
-      />
+      <Tooltip title="북마크">
+        <Checkbox
+          sx={{ m: 1 }}
+          size="large"
+          checked={bookmarked === 1}
+          onClick={(e) => e.stopPropagation()} // 이거 꼭 필요!
+          onChange={handleClick}
+          icon={<BookmarkBorder sx={{ fill: "var(--gray4)" }} />}
+          checkedIcon={<Bookmark sx={{ fill: "var(--main4)" }} />}
+        />
+      </Tooltip>
     </div>
   );
 };

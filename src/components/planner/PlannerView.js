@@ -1,7 +1,9 @@
-import { Close, Delete } from "@mui/icons-material";
+import { Close, Delete, Settings } from "@mui/icons-material";
 import dayjs from "dayjs";
 import { Link, useParams } from "react-router-dom";
 import ToggleBookmark from "./utils/ToggleBookmark";
+import DeletePlannerButton from "./utils/DeletePlannerButton";
+import { Button } from "@mui/material";
 
 const PlannerView = (props) => {
   const {
@@ -43,6 +45,7 @@ const PlannerView = (props) => {
           setOpenOverlay={setOpenOverlay}
           setMapCenter={setMapCenter}
           bookmarked={bookmarked}
+          isOwner={isOwner}
         />
       ) : (
         <div
@@ -59,13 +62,22 @@ const PlannerView = (props) => {
         {plannerMode === "view" ? (
           isOwner ? (
             <div className="save-plan-btn">
-              <button onClick={() => setPlannerMode("write")}>수정</button>
+              <Button
+                onClick={() => setPlannerMode("write")}
+                variant="contained"
+                startIcon={<Settings />}
+                sx={{ backgroundColor: "var(--main2)" }}
+              >
+                수정
+              </Button>
             </div>
           ) : (
             <>
-              <div className="save-plan-btn">
-                <button onClick={() => {}}>이 플래너로 시작</button>
-              </div>
+              {/* <div className="save-plan-btn">
+                <button 
+                disabled={dayjs()}
+                onClick={() => {}}>이 플래너로 시작</button>
+              </div> */}
             </>
           )
         ) : (
@@ -86,9 +98,9 @@ const Planner = (props) => {
   const setOpenOverlay = props.setOpenOverlay;
   const setMapCenter = props.setMapCenter;
   const bookmarked = props.bookmarked;
+  const isOwner = props.isOwner;
 
   const { planNo } = useParams();
-  const ctrlUrl = "/plan";
 
   return (
     <div className={`planner-wrap ${plannerMode === "view" ? "full" : ""}`}>
@@ -97,11 +109,15 @@ const Planner = (props) => {
           <div className="logo planner-logo">
             <Link to="/">NADRI</Link>
           </div>
-          <ToggleBookmark
-            bookmarked={bookmarked}
-            objectNo={planNo}
-            controllerUrl={ctrlUrl}
-          />
+          {!isOwner ? (
+            <ToggleBookmark
+              bookmarked={bookmarked}
+              objectNo={planNo}
+              controllerUrl={"/plan"}
+            />
+          ) : (
+            <DeletePlannerButton objectNo={planNo} />
+          )}
         </>
       )}
       {plannerMode === "write" && (
@@ -161,7 +177,7 @@ const Planner = (props) => {
                 />
                 <div className="place-item">
                   <div className="place-title-wrap">
-                    <span className="place-title">{p.placeTitle}</span>
+                    <span className="place-titlename">{p.placeTitle}</span>
                     <span className="place-type">{p.placeType}</span>
                   </div>
                   <div className="place-addr">{p.placeAddr}</div>

@@ -39,7 +39,7 @@ import AdminRouting from "./components/utils/AdminRouting";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Admin from "./components/admin/Admin";
-import Event from "./components/admin/Event";
+import AdminEvent from "./components/admin/AdminEvent";
 import axios from "axios";
 import SearchResult from "./components/search/SearchResult";
 import AdminMain from "./components/admin/AdminMain";
@@ -119,7 +119,7 @@ function App() {
                     element={<AdminRouting element={<Admin />} />}
                   >
                     <Route index element={<AdminMain />} />
-                    <Route path="event" element={<Event />} />
+                    <Route path="event" element={<AdminEvent />} />
                     <Route path="keyword" element={<AdminPartner />} />
                     <Route path="review" element={<AdminReview />} />
                     <Route path="member" element={<AdminMember />} />

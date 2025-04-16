@@ -47,9 +47,11 @@ const EventPopup = ({ onClose, dailyClose }) => {
               </div>
             </div>
           ))}
-        <button onClick={dailyClose} className="btn-primary">
-          오늘 그만 보기
-        </button>
+        {dailyClose && (
+          <button onClick={dailyClose} className="btn-primary">
+            오늘 그만 보기
+          </button>
+        )}
       </div>
     </div>
   );

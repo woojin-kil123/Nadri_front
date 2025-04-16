@@ -1,6 +1,11 @@
-const PrivacyPolicy = () => {
+import { ClearIcon } from "@mui/x-date-pickers";
+
+const PrivacyPolicy = ({ onClose }) => {
   return (
     <div className="privacy-container">
+      <button className="popup-close" onClick={onClose}>
+        <ClearIcon />
+      </button>
       <h1 className="privacy-title">Nadri 개인정보 처리방침</h1>
       <div className="privacy-content">
         <p>

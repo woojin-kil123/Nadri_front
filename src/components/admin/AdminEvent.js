@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import Calendar from "./Calendar";
 import axios from "axios";
 import { getKoreanToday } from "../utils/metaSet";
-import dayjs from "dayjs";
 import { useRecoilValue } from "recoil";
 import { placeTypeState } from "../utils/RecoilData";
 
-const Event = () => {
+const AdminEvent = () => {
   const today = getKoreanToday();
   const placeType = useRecoilValue(placeTypeState);
   const [isUpdate, setIsUpdate] = useState(false);
@@ -46,7 +45,7 @@ const Event = () => {
         <h2>종료된 이벤트</h2>
         <table
           className="tbl"
-          style={{ width: "90%", margin: "0 auto ", border: "1px solid #ddd" }}
+          style={{ width: "95%", margin: "0 auto ", border: "1px solid #ddd" }}
         >
           <thead>
             <tr>
@@ -57,39 +56,47 @@ const Event = () => {
             </tr>
           </thead>
           <tbody>
-            {end.map((event, i) => (
-              <tr key={"end-" + i}>
-                <td>{event.eventTitle}</td>
-                <td style={{ width: "50%" }}>{event.eventContent}</td>
-                <td>{event.endDate}</td>
-                <td>
-                  <button
-                    className="btn-primary"
-                    onClick={() => {
-                      const eventNo = event.eventNo;
-                      axios
-                        .delete(
-                          `${process.env.REACT_APP_BACK_SERVER}/admin/event/${eventNo}`
-                        )
-                        .then((res) => {
-                          if (res.data > 0) {
-                            setIsUpdate((prev) => !prev);
-                          }
-                        });
-                    }}
-                  >
-                    삭제
-                  </button>
+            {end && end.length > 0 ? (
+              end.map((event, i) => (
+                <tr key={"end-" + i}>
+                  <td>{event.eventTitle}</td>
+                  <td style={{ width: "50%" }}>{event.eventContent}</td>
+                  <td>{event.endDate}</td>
+                  <td>
+                    <button
+                      className="btn-primary"
+                      onClick={() => {
+                        const eventNo = event.eventNo;
+                        axios
+                          .delete(
+                            `${process.env.REACT_APP_BACK_SERVER}/admin/event/${eventNo}`
+                          )
+                          .then((res) => {
+                            if (res.data > 0) {
+                              setIsUpdate((prev) => !prev);
+                            }
+                          });
+                      }}
+                    >
+                      삭제
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={4} style={{ textAlign: "center" }}>
+                  종료된 이벤트가 없습니다.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </section>
     </div>
   );
 };
-export default Event;
+export default AdminEvent;
 
 const EventSlide = ({ onGoing, placeType }) => {
   const [activeSlide, setActiveSlide] = useState(0);
