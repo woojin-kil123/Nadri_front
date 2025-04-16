@@ -53,7 +53,7 @@ const Planner = () => {
         .get(
           `${
             process.env.REACT_APP_BACK_SERVER
-          }/plan?reqPage=${1}&order=${1}&loginNickname=${memberNickname}&memberNickname=${memberNickname}`
+          }/plan?reqPage=${1}&order=${1}&loginNickname=${memberNickname}&isBookmark=true`
         )
         .then((res) => {
           console.log(res);

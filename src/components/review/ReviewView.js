@@ -40,12 +40,9 @@ const ReviewView = () => {
         `${process.env.REACT_APP_BACK_SERVER}/member/memberInfo?memberNickname=${memberNickname}`
       )
       .then((res) => {
-        console.log(res);
         setMember(res.data);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   }, [memberNickname]);
   //댓글 수정
   const editComment = (commNo, editedContent) => {
@@ -54,7 +51,6 @@ const ReviewView = () => {
         commContent: editedContent,
       })
       .then((res) => {
-        console.log(res);
         if (res.data === 1) {
           const updatedComments = comments.map((comment) =>
             comment.commNo === commNo
@@ -64,7 +60,7 @@ const ReviewView = () => {
           setComments(updatedComments);
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {});
   };
 
   //댓글 삭제
@@ -88,9 +84,7 @@ const ReviewView = () => {
               setComments(newComments);
             }
           })
-          .catch((err) => {
-            console.log(err);
-          });
+          .catch((err) => {});
       }
     });
   };
@@ -102,7 +96,6 @@ const ReviewView = () => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/review/likes/${reviewNo}`)
       .then((res) => {
-        console.log(res);
         setLikeCount(res.data.likes);
         if (
           res.data.likeMember.some(
@@ -112,9 +105,7 @@ const ReviewView = () => {
           setLiked(true);
         }
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   }, []);
   //좋아요 기능 구현
   const toggleLike = () => {
@@ -130,14 +121,14 @@ const ReviewView = () => {
             data: { memberNickname },
           }
         )
-        .catch((err) => console.log(err));
+        .catch((err) => {});
     } else {
       const form = new FormData();
       form.append("reviewNo", reviewNo);
       form.append("memberNickname", memberNickname);
       axios
         .post(`${process.env.REACT_APP_BACK_SERVER}/review/likes`, form)
-        .catch((err) => console.log(err));
+        .catch((err) => {});
     }
     setLiked(!liked);
     setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
@@ -157,7 +148,7 @@ const ReviewView = () => {
         axios
           .delete(`${process.env.REACT_APP_BACK_SERVER}/review/${reviewNo}`)
           .then(() => navigate("/review"))
-          .catch((err) => console.log(err));
+          .catch((err) => {});
       }
     });
   };
@@ -196,7 +187,7 @@ const ReviewView = () => {
         alert(`"${reportReason}" 사유로 신고되었습니다.`);
         navigate("/review");
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {});
 
     setIsReporting(false);
     setReportReason("");
@@ -210,7 +201,7 @@ const ReviewView = () => {
         setReview(res.data);
         setPlaceId(res.data.placeId);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {});
   }, []);
 
   //여행지 정보
@@ -221,12 +212,9 @@ const ReviewView = () => {
           `${process.env.REACT_APP_BACK_SERVER}/place/detail?placeId=${placeId}`
         )
         .then((res) => {
-          console.log(res);
           setPlaceInfo(res.data);
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => {});
     }
   }, [placeId]);
   //신고자 목록
@@ -235,7 +223,6 @@ const ReviewView = () => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/review/report/${reviewNo}`)
       .then((res) => {
-        console.log(res);
         const nicknames = res.data.map((report) => report.reportNickname);
 
         // 중복된 닉네임을 제거
@@ -244,15 +231,13 @@ const ReviewView = () => {
         // 상태에 저장
         setReportNicknames(uniqueNicknames);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   }, []);
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/review/comm/${reviewNo}`)
       .then((res) => setComments(res.data))
-      .catch((err) => console.log(err));
+      .catch((err) => {});
   }, []);
   // 사진 있으면 불러오기
   useEffect(() => {
@@ -264,9 +249,7 @@ const ReviewView = () => {
         .then((res) => {
           setReviewImages(res.data); // res.data는 PlaceImgDTO 리스트여야 함
         })
-        .catch((err) => {
-          console.log("리뷰 이미지 불러오기 실패:", err);
-        });
+        .catch((err) => {});
     }
   }, [review]);
 
@@ -350,7 +333,7 @@ const ReviewView = () => {
                 {reviewImages.map((img, index) => (
                   <div className="review-image-wrapper" key={index}>
                     <img
-                      src={`${process.env.REACT_APP_BACK_SERVER}/place/image/${img.filepath}`}
+                      src={`${process.env.REACT_APP_BACK_SERVER}/assets/place/image/${img.filepath}`}
                       alt=""
                       className="review-image2"
                     />
@@ -488,7 +471,7 @@ const ReviewView = () => {
                       .then((res) => {
                         setComments([...comments, res.data]);
                       })
-                      .catch((err) => console.log(err));
+                      .catch((err) => {});
                     setNewComment("");
                     setIsCommenting(false);
                   }}

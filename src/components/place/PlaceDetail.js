@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./place.css";
 import axios from "axios";
 import StarRating from "../utils/StarRating";
@@ -8,7 +8,18 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import Swal from "sweetalert2";
 import { useRecoilValue } from "recoil";
-import { isLoginState, loginNicknameState } from "../utils/RecoilData";
+import {
+  isLoginState,
+  loginNicknameState,
+  memberLevelState,
+} from "../utils/RecoilData";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 const PlaceDetail = () => {
   const backServer = process.env.REACT_APP_BACK_SERVER;
@@ -17,14 +28,38 @@ const PlaceDetail = () => {
 
   const isLogin = useRecoilValue(isLoginState);
   const memberNickname = useRecoilValue(loginNicknameState);
-  const isAdmin = true; // useRecoilValue(isAdminState); // 관리자 여부
-
+  const memberLevel = useRecoilValue(memberLevelState); // 관리자 = 2
   const [place, setPlace] = useState();
   const [editPlace, setEditPlace] = useState({});
   const [editMode, setEditMode] = useState(false);
   const [review, setReview] = useState([]);
   const [bookmarked, setBookmarked] = useState();
   const [viewCount, setViewCount] = useState(0);
+
+  const [open, setOpen] = useState(false); // 모달 오픈 여부 상태
+
+  // 모달 열기
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  // 모달 닫기
+  const handleClose = () => {
+    setOpen(false);
+  };
+  // 폼 제출 핸들러
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+    const formJson = Object.fromEntries(formData.entries());
+
+    console.log("제출 데이터:", formJson);
+
+    // 서버 요청 등 처리 후 모달 닫기
+    handleClose();
+  };
+
+  const [placeImages, setPlaceIamges] = useState([]);
 
   useEffect(() => {
     axios
@@ -39,11 +74,20 @@ const PlaceDetail = () => {
         setViewCount((prev) => prev + 1);
       });
 
+    axios
+      .get(`${backServer}/place/images/${placeId}`)
+      .then((res) => {
+        console.log(res);
+        setPlaceIamges(res.data);
+      })
+      .catch((err) => console.error("이미지 불러오기 실패", err));
+
     axios.post(`${backServer}/place/detail/${placeId}/click`).then((res) => {
       setViewCount(res.data.viewCount);
     });
 
     axios.get(`${backServer}/review/detail/${placeId}`).then((res) => {
+      console.log(res);
       setReview(res.data);
     });
   }, [placeId]);
@@ -75,9 +119,15 @@ const PlaceDetail = () => {
       });
   };
 
+  //공유버튼 -> 링크복사 함수
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href).then(() => {
-      alert("링크가 복사되었습니다!");
+      Swal.fire({
+        title: "링크 복사 완료",
+        icon: "success",
+        text: "이 장소의 링크가 복사되었습니다!",
+        confirmButtonText: "확인",
+      });
     });
   };
 
@@ -89,9 +139,11 @@ const PlaceDetail = () => {
     }));
   };
 
+  //상세페이지 수정 후 저장
   const handleSave = () => {
+    console.log(editPlace);
     axios
-      .put(`${backServer}/admin/place/update`, editPlace)
+      .patch(`${backServer}/admin/place/update`, editPlace)
       .then(() => {
         alert("수정 완료!");
         setPlace(editPlace);
@@ -101,6 +153,24 @@ const PlaceDetail = () => {
         alert("수정 실패");
         console.log(err);
       });
+  };
+
+  //이미지(썸네일 제외) 삭제용 함수
+  const handleImageDelete = (placeImageNo) => {
+    if (window.confirm("정말 이미지를 삭제하시겠습니까?")) {
+      axios
+        .delete(`${backServer}/admin/place/image/${placeImageNo}`)
+        .then(() => {
+          // 삭제 성공 시 상태에서 제거
+          setPlaceIamges((prev) =>
+            prev.filter((img) => img.placeImageNo !== placeImageNo)
+          );
+        })
+        .catch((err) => {
+          console.error("이미지 삭제 실패", err);
+          alert("삭제 실패");
+        });
+    }
   };
 
   return (
@@ -123,14 +193,24 @@ const PlaceDetail = () => {
             <h1 className="detail-title">{place?.placeTitle}</h1>
           )}
 
-          {isAdmin &&
+          {memberLevel == 2 &&
             (editMode ? (
-              <div className="edit-button-wrap">
-                <button onClick={handleSave}>저장</button>
-                <button onClick={() => setEditMode(false)}>취소</button>
+              <div className="place-detail edit-button-wrap">
+                <button className="btn-primary" onClick={handleSave}>
+                  저장
+                </button>
+                <button
+                  className="btn-secondary"
+                  onClick={() => setEditMode(false)}
+                >
+                  취소
+                </button>
               </div>
             ) : (
-              <button className="edit-btn" onClick={() => setEditMode(true)}>
+              <button
+                className="btn-primary edit-btn"
+                onClick={() => setEditMode(true)}
+              >
                 수정하기
               </button>
             ))}
@@ -158,48 +238,123 @@ const PlaceDetail = () => {
       </div>
 
       <div className="place-detail-image">
-        <img
-          src={place?.placeThumb || "/image/dora.png"}
-          className="detail-img1"
-          alt="place"
-        />
+        <div className="placeThumb-box">
+          <img
+            src={place?.placeThumb || "/image/dora.png"}
+            className="detail-img-main"
+            alt="main"
+          />
+        </div>
+
+        <div className="placeImage-more-box">
+          <div className="placeImage-more">
+            {placeImages[0] && (
+              <div className="img-wrap">
+                <img
+                  src={`${backServer}/assets/place/image/${placeImages[0].filepath}`}
+                  className="detail-img"
+                  alt="img2"
+                />
+                {editMode && memberLevel === 2 && (
+                  <button
+                    className="img-delete-btn"
+                    onClick={() =>
+                      handleImageDelete(placeImages[0].placeImageNo)
+                    }
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            )}
+            {placeImages[2] && (
+              <div className="img-wrap">
+                <img
+                  src={`${backServer}/assets/place/image/${placeImages[2].filepath}`}
+                  className="detail-img"
+                  alt="img3"
+                />
+                {editMode && memberLevel === 2 && (
+                  <button
+                    className="img-delete-btn"
+                    onClick={() =>
+                      handleImageDelete(placeImages[0].placeImageNo)
+                    }
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+          <div className="placeImage-more">
+            {placeImages[1] && (
+              <div className="img-wrap">
+                <img
+                  src={`${backServer}/assets/place/image/${placeImages[1].filepath}`}
+                  className="detail-img"
+                  alt="img4"
+                />
+                {editMode && memberLevel === 2 && (
+                  <button
+                    className="img-delete-btn"
+                    onClick={() =>
+                      handleImageDelete(placeImages[0].placeImageNo)
+                    }
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            )}
+            {placeImages[3] && (
+              <div className="img-wrap">
+                <img
+                  src={`${backServer}/assets/place/image/${placeImages[3].filepath}`}
+                  className="detail-img"
+                  alt="img5"
+                />
+                {editMode && memberLevel === 2 && (
+                  <button
+                    className="img-delete-btn"
+                    onClick={() =>
+                      handleImageDelete(placeImages[0].placeImageNo)
+                    }
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       <div className="place-detail-content">
-        <div className="main-description">
-          <strong>개요</strong>
-          {editMode ? (
-            <textarea
-              name="placeOverview"
-              value={editPlace.placeOverview || ""}
-              onChange={handleChange}
-            />
-          ) : (
-            <p>
-              경복궁은 조선 왕조 제일의 법궁이다. 북으로 북악산을 기대어 자리
-              잡았고 정문인 광화문 앞으로는 넓은 육조거리(지금의 세종로)가
-              펼쳐져, 왕도인 한양(서울) 도시 계획의 중심이기도 하다. 1395년 태조
-              이성계가 창건하였고, 1592년 임진왜란으로 불타 없어졌다가, 고종
-              때인 1867년 중건되었다. 흥선대원군이 주도한 중건 경복궁은 500여
-              동의 건물들이 미로같이 빼곡히 들어선 웅장한 모습이었다.
-            </p>
-          )}
-        </div>
+        {place && (
+          <div className="main-description">
+            <strong>개요</strong>
+            {editMode ? (
+              <textarea
+                className="place-overview-textarea"
+                name="placeOverview"
+                value={editPlace.placeOverview ?? ""}
+                onChange={handleChange}
+              />
+            ) : (
+              <p>
+                {place.placeOverview ??
+                  "경복궁은 조선 왕조 제일의 법궁이다. 북으로 북악산을 기대어 자리 잡았고 정문인 광화문 앞으로는 넓은 육조거리(지금의 세종로)가 펼쳐져, 왕도인 한양(서울) 도시 계획의 중심이기도 하다. 1395년 태조 이성계가 창건하였고, 1592년 임진왜란으로 불타 없어졌다가, 고종 때인 1867년 중건되었다. 흥선대원군이 주도한 중건 경복궁은 500여 동의 건물들이 미로같이 빼곡히 들어선 웅장한 모습이었다."}
+              </p>
+            )}
+          </div>
+        )}
 
         <div className="info-box">
           {place?.placeAddr && (
             <div className="info-item">
               <strong>주소</strong>
-              {editMode ? (
-                <input
-                  type="text"
-                  name="placeAddr"
-                  value={editPlace.placeAddr || ""}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p>{place.placeAddr}</p>
-              )}
+              <p>{place.placeAddr}</p>
             </div>
           )}
 
@@ -266,18 +421,23 @@ const PlaceDetail = () => {
               )}
             </div>
           )}
+
+          <div className="info-request-box">
+            {}
+            <span onClick={handleOpen}>잘못된 정보 알려주기</span>
+          </div>
         </div>
       </div>
 
       <div className="place-detail page-title">
         <h2>리뷰</h2>
         <div
-          className="review-write btn-primary green"
+          className="btn-primary review-write "
           onClick={() => {
             navigate(`/review/write/${placeId}`);
           }}
         >
-          글쓰기
+          리뷰작성
         </div>
       </div>
 
@@ -288,6 +448,137 @@ const PlaceDetail = () => {
           ))}
         </ul>
       </div>
+
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>정보 수정 요청</DialogTitle>
+        <DialogContentText style={{ padding: "0 25px" }}>
+          혹시 방문하신 장소의 정보가 다르게 입력되어 있나요? 알려주신다면 확인
+          후 반영하여 더 나은 나드리가 되겠습니다. 감사합니다!!^^
+        </DialogContentText>
+        <form onSubmit={handleSubmit}>
+          <DialogContent>
+            <TextField
+              name="placeTitle"
+              label="장소 이름"
+              fullWidth
+              margin="dense"
+              sx={{
+                "& label.Mui-focused": {
+                  color: "var(--main2)", // 포커스된 라벨 색
+                },
+                "& .MuiOutlinedInput-root": {
+                  "&.Mui-focused fieldset": {
+                    borderColor: "var(--main2)", // 포커스된 테두리 색
+                  },
+                },
+              }}
+            />
+            <TextField
+              name="placeAddr"
+              label="주소"
+              fullWidth
+              margin="dense"
+              sx={{
+                "& label.Mui-focused": {
+                  color: "var(--main2)", // 포커스된 라벨 색
+                },
+                "& .MuiOutlinedInput-root": {
+                  "&.Mui-focused fieldset": {
+                    borderColor: "var(--main2)", // 포커스된 테두리 색
+                  },
+                },
+              }}
+            />
+            <TextField
+              name="placeAddr"
+              label="문의 및 안내"
+              fullWidth
+              margin="dense"
+              sx={{
+                "& label.Mui-focused": {
+                  color: "var(--main2)", // 포커스된 라벨 색
+                },
+                "& .MuiOutlinedInput-root": {
+                  "&.Mui-focused fieldset": {
+                    borderColor: "var(--main2)", // 포커스된 테두리 색
+                  },
+                },
+              }}
+            />
+            <TextField
+              name="placeAddr"
+              label="운영시간"
+              fullWidth
+              margin="dense"
+              sx={{
+                "& label.Mui-focused": {
+                  color: "var(--main2)", // 포커스된 라벨 색
+                },
+                "& .MuiOutlinedInput-root": {
+                  "&.Mui-focused fieldset": {
+                    borderColor: "var(--main2)", // 포커스된 테두리 색
+                  },
+                },
+              }}
+            />
+            <TextField
+              name="placeAddr"
+              label="쉬는날"
+              fullWidth
+              margin="dense"
+              sx={{
+                "& label.Mui-focused": {
+                  color: "var(--main2)", // 포커스된 라벨 색
+                },
+                "& .MuiOutlinedInput-root": {
+                  "&.Mui-focused fieldset": {
+                    borderColor: "var(--main2)", // 포커스된 테두리 색
+                  },
+                },
+              }}
+            />
+            <TextField
+              name="placeAddr"
+              label="주차"
+              fullWidth
+              margin="dense"
+              sx={{
+                "& label.Mui-focused": {
+                  color: "var(--main2)", // 포커스된 라벨 색
+                },
+                "& .MuiOutlinedInput-root": {
+                  "&.Mui-focused fieldset": {
+                    borderColor: "var(--main2)", // 포커스된 테두리 색
+                  },
+                },
+              }}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={handleClose}
+              sx={{
+                backgroundColor: "white",
+                color: "var(--main2)",
+                "&:hover": { backgroundColor: "#efefef" },
+              }}
+            >
+              취소
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                backgroundColor: "var(--main2)",
+                color: "white",
+                "&:hover": { backgroundColor: "var(--main3)" },
+              }}
+            >
+              전송
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
     </div>
   );
 };
