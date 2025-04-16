@@ -36,7 +36,6 @@ export default function RecommandSlider({ on, content }) {
             }`
           )
           .then((res) => {
-            console.log(res.data);
             setCards(res.data);
           });
         break;

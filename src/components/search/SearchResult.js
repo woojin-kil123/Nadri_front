@@ -32,7 +32,6 @@ const SearchResult = () => {
       axios
         .get(`${process.env.REACT_APP_BACK_SERVER}/search?query=${query}`)
         .then((res) => {
-          console.log(res.data);
           setPlaceResult(res.data.place);
           setPlanResult(res.data.plan);
           setReviewResult(res.data.review);
@@ -115,11 +114,6 @@ const Result = ({ result, onContent }) => {
       setShowList([]);
     }
   }, [index, result]);
-
-  // 콘솔 확인
-  console.log("✅ result:", result);
-  console.log("📄 result.list length:", result?.list?.length);
-  console.log("📦 showList:", showList);
 
   // list가 없거나 빈 배열이면 메시지 출력
   if (!Array.isArray(result?.list) || result.list.length === 0) {
