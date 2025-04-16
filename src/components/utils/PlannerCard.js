@@ -3,6 +3,7 @@ import "./plannerCard.css";
 import ToggleBookmark from "../planner/utils/ToggleBookmark";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import DeletePlannerButton from "../planner/utils/DeletePlannerButton";
 
 export default function PlannerCard(props) {
   const navigate = useNavigate();
@@ -56,6 +57,7 @@ export default function PlannerCard(props) {
               }
               className="card3-image"
             />
+            <DeletePlannerButton objectNo={planner.planNo} />
           </div>
           <div className="card3-content">
             <h3 className="planner-title">{planner.planName}</h3>

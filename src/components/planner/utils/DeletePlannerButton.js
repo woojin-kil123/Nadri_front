@@ -10,6 +10,7 @@ const DeletePlannerButton = ({ objectNo }) => {
   const isLogin = useRecoilValue(isLoginState);
   const memberNickname = useRecoilValue(loginNicknameState);
   const navigate = useNavigate();
+  console.log(objectNo);
 
   const deletePlanner = (objectNo) => {
     axios
@@ -31,7 +32,8 @@ const DeletePlannerButton = ({ objectNo }) => {
       });
   };
 
-  const handleClick = () => {
+  const handleClick = (e) => {
+    e.stopPropagation();
     if (!isLogin) {
       Swal.fire({
         title: "로그인이 필요합니다",
