@@ -119,7 +119,7 @@ const PlaceList = () => {
                 <select onChange={changeOrder}>
                   <option value={1}>리뷰 많은순</option>
                   <option value={2}>별점 높은순</option>
-                  <option value={3}>좋아요 많은순</option>
+                  <option value={3}>추천순</option>
                 </select>
               </div>
             </div>

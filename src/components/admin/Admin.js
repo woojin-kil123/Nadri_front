@@ -11,10 +11,10 @@ const Admin = () => {
   const menus = [
     { name: "메인", path: "main" },
     { name: "이벤트 관리", path: "event" },
-    { name: "키워드 관리", path: "keyword" },
+    { name: "검색 관리", path: "keyword" },
     { name: "리뷰 관리", path: "review" },
     { name: "회원 관리", path: "member" },
-    { name: "컨텐츠 관리", path: "contents" },
+    { name: "여행지 관리", path: "place" },
   ];
 
   return (

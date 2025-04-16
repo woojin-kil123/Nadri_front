@@ -38,6 +38,13 @@ const PlaceDetail = () => {
 
   const [open, setOpen] = useState(false); // 모달 오픈 여부 상태
 
+  const [form, setForm] = useState({
+    placeId: placeId,
+    placeTitle: "",
+    placeAddr: "",
+    placeTel: "",
+  });
+
   // 모달 열기
   const handleOpen = () => {
     setOpen(true);
@@ -49,12 +56,15 @@ const PlaceDetail = () => {
   // 폼 제출 핸들러
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    const formData = new FormData(event.target);
-    const formJson = Object.fromEntries(formData.entries());
-
-    // 서버 요청 등 처리 후 모달 닫기
-    handleClose();
+    axios.post(`${backServer}/admin/place/request`, form).then(() => {
+      Swal.fire({
+        title: "수정 요청 완료",
+        icon: "success",
+        text: "감사합니다! 더 정확한 나드리가 되겠습니다.",
+        confirmButtonText: "확인",
+      });
+      handleClose();
+    });
   };
 
   const [placeImages, setPlaceIamges] = useState([]);
@@ -149,18 +159,36 @@ const PlaceDetail = () => {
       [name]: value,
     }));
   };
+  const handleRequestChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   //상세페이지 수정 후 저장
   const handleSave = () => {
     axios
       .patch(`${backServer}/admin/place/update`, editPlace)
       .then(() => {
-        alert("수정 완료!");
+        Swal.fire({
+          title: "수정 완료",
+          icon: "success",
+          text: "수정을 완료하였습니다.",
+          confirmButtonText: "확인",
+        });
         setPlace(editPlace);
         setEditMode(false);
       })
       .catch((err) => {
-        alert("수정 실패");
+        Swal.fire({
+          title: "수정 실패",
+          icon: "warning",
+          text: "수정을 실패하였습니다.",
+          confirmButtonText: "확인",
+        });
+        console.log(err);
       });
   };
 
@@ -176,12 +204,18 @@ const PlaceDetail = () => {
           );
         })
         .catch((err) => {
-          alert("삭제 실패");
+          console.error("이미지 삭제 실패", err);
+          Swal.fire({
+            title: "수정 실패",
+            icon: "warning",
+            text: "수정을 실패하였습니다.",
+            confirmButtonText: "확인",
+          });
         });
     }
   };
-  if (!place) return null;
 
+  if (!place) return null;
   return (
     <div className="place-detail-wrap">
       <div className="place-detail-header">
@@ -393,56 +427,7 @@ const PlaceDetail = () => {
             </div>
           )}
 
-          {place?.useTime && (
-            <div className="info-item">
-              <strong>운영시간</strong>
-              {editMode ? (
-                <input
-                  type="text"
-                  name="useTime"
-                  value={editPlace.useTime || ""}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p>{place.useTime}</p>
-              )}
-            </div>
-          )}
-
-          {place?.restDate && (
-            <div className="info-item">
-              <strong>쉬는날</strong>
-              {editMode ? (
-                <input
-                  type="text"
-                  name="restDate"
-                  value={editPlace.restDate || ""}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p>{place.restDate}</p>
-              )}
-            </div>
-          )}
-
-          {place?.parking && (
-            <div className="info-item">
-              <strong>주차</strong>
-              {editMode ? (
-                <input
-                  type="text"
-                  name="parking"
-                  value={editPlace.parking || ""}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p>{place.parking}</p>
-              )}
-            </div>
-          )}
-
           <div className="info-request-box">
-            {}
             <span onClick={handleOpen}>잘못된 정보 알려주기</span>
           </div>
         </div>
@@ -481,6 +466,7 @@ const PlaceDetail = () => {
               label="장소 이름"
               fullWidth
               margin="dense"
+              onChange={handleRequestChange}
               sx={{
                 "& label.Mui-focused": {
                   color: "var(--main2)", // 포커스된 라벨 색
@@ -497,6 +483,7 @@ const PlaceDetail = () => {
               label="주소"
               fullWidth
               margin="dense"
+              onChange={handleRequestChange}
               sx={{
                 "& label.Mui-focused": {
                   color: "var(--main2)", // 포커스된 라벨 색
@@ -509,58 +496,11 @@ const PlaceDetail = () => {
               }}
             />
             <TextField
-              name="placeAddr"
-              label="문의 및 안내"
+              name="placeTel"
+              label="문의 및 안내(연락처)"
               fullWidth
               margin="dense"
-              sx={{
-                "& label.Mui-focused": {
-                  color: "var(--main2)", // 포커스된 라벨 색
-                },
-                "& .MuiOutlinedInput-root": {
-                  "&.Mui-focused fieldset": {
-                    borderColor: "var(--main2)", // 포커스된 테두리 색
-                  },
-                },
-              }}
-            />
-            <TextField
-              name="placeAddr"
-              label="운영시간"
-              fullWidth
-              margin="dense"
-              sx={{
-                "& label.Mui-focused": {
-                  color: "var(--main2)", // 포커스된 라벨 색
-                },
-                "& .MuiOutlinedInput-root": {
-                  "&.Mui-focused fieldset": {
-                    borderColor: "var(--main2)", // 포커스된 테두리 색
-                  },
-                },
-              }}
-            />
-            <TextField
-              name="placeAddr"
-              label="쉬는날"
-              fullWidth
-              margin="dense"
-              sx={{
-                "& label.Mui-focused": {
-                  color: "var(--main2)", // 포커스된 라벨 색
-                },
-                "& .MuiOutlinedInput-root": {
-                  "&.Mui-focused fieldset": {
-                    borderColor: "var(--main2)", // 포커스된 테두리 색
-                  },
-                },
-              }}
-            />
-            <TextField
-              name="placeAddr"
-              label="주차"
-              fullWidth
-              margin="dense"
+              onChange={handleRequestChange}
               sx={{
                 "& label.Mui-focused": {
                   color: "var(--main2)", // 포커스된 라벨 색
