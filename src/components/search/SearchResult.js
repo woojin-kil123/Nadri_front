@@ -199,12 +199,15 @@ const ReviewCard = ({ review }) => {
         backgroundImage: `url(${thumbUrl})`,
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
+        borderRadius: "10px",
+        marginBottom: "20px",
+        cursor: "pointer",
       }}
       onClick={() => {
         navigate(`/review/detail/${review.reviewNo}`);
       }}
     >
-      <div className="card-content">
+      <div className="card-content" style={{ width: "100%" }}>
         <StarRating rating={review.starRate} />
         <p className="score">{review.placeTitle}</p>
         <h3 className="title">{review.reviewTitle}</h3>
