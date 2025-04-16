@@ -105,7 +105,10 @@ const AdminMember = () => {
                   )}
                   {tab === 2 && <span style={{ color: "#999" }}>처리중</span>}
                   {tab === 3 && (
-                    <button onClick={() => handleConfirmDelete(m.memberNo)}>
+                    <button
+                      style={{ backgroundColor: "var(--main5)" }}
+                      onClick={() => handleConfirmDelete(m.memberNo)}
+                    >
                       확인
                     </button>
                   )}
