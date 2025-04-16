@@ -4,23 +4,22 @@ import {
   Favorite,
   FavoriteBorder,
   Save,
-  Search,
 } from "@mui/icons-material";
-import { Button, IconButton, InputBase, Paper } from "@mui/material";
+import { Button } from "@mui/material";
 import axios from "axios";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import StarRating from "../utils/StarRating";
 import BasicDatePicker from "../utils/BasicDatePicker";
 import dayjs from "dayjs";
 import BasicSelect from "../utils/BasicSelect";
-import DrawPlannerPathCanvas from "./utils/DrawPlannerPath";
 import PageNavigation from "../utils/PageNavigtion";
 import { useRecoilValue } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
 import GetBoundsByLevel from "../utils/GetBoundsByLevel";
 import CaptureMap from "./utils/CaptureMap";
 import PlannerGuideModal from "./utils/PlannerGuideModal";
+import CustomizedInputBase from "./utils/CustomizedInputBase";
 const leafletImage = require("leaflet-image");
 
 const PlannerWrite = (props) => {
@@ -38,6 +37,7 @@ const PlannerWrite = (props) => {
     setOpenPlanner,
     setMapCenter,
     mapLevel,
+    setMapLevel,
   } = props;
 
   const memberNickname = useRecoilValue(loginNicknameState);
@@ -173,7 +173,10 @@ const PlannerWrite = (props) => {
             <Link to="/">NADRI</Link>
           </div>
           <div className="search-wrap">
-            <CustomizedInputBase />
+            <CustomizedInputBase
+              setMapCenter={setMapCenter}
+              setMapLevel={setMapLevel}
+            />
           </div>
           <div className="filter-wrap">
             {filterItems.map((item) => {
@@ -272,29 +275,6 @@ const PlannerWrite = (props) => {
         />
       )}
     </>
-  );
-};
-
-// 검색 창
-const CustomizedInputBase = () => {
-  return (
-    <Paper
-      component="form"
-      sx={{
-        margin: "10px",
-        display: "flex",
-        alignItems: "center",
-      }}
-    >
-      <IconButton sx={{ p: "10px" }} aria-label=""></IconButton>
-      <InputBase
-        sx={{ ml: 1, flex: 1, fontSize: "12px" }}
-        placeholder="지역 검색"
-      />
-      <IconButton type="button" sx={{ p: "10px" }} aria-label="">
-        <Search />
-      </IconButton>
-    </Paper>
   );
 };
 

@@ -228,6 +228,7 @@ const PlannerFrm = () => {
           setOpenPlanner={setOpenPlanner}
           setMapCenter={setMapCenter}
           mapLevel={mapLevel}
+          setMapLevel={setMapLevel}
         />
       )}
       <PlannerView
