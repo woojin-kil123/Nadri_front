@@ -40,7 +40,7 @@ const MarkerWithOverlay = (props) => {
             <div className="overlay-info">
               <div className="overlay-title">
                 <div className="overlay-title-name">
-                  {p.placeTitle}
+                  <span className="place-ellipsis">{p.placeTitle}</span>
                   <span className="overlay-class">{p.placeType}</span>
                 </div>
                 <div
