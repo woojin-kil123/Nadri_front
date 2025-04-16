@@ -1,6 +1,6 @@
 import { Close } from "@mui/icons-material";
 import { CustomOverlayMap, MapMarker } from "react-kakao-maps-sdk";
-import StarRating from "../utils/StarRating";
+import StarRating from "../../utils/StarRating";
 
 const MarkerWithOverlay = (props) => {
   const p = props.place;
@@ -40,7 +40,7 @@ const MarkerWithOverlay = (props) => {
             <div className="overlay-info">
               <div className="overlay-title">
                 <div className="overlay-title-name">
-                  {p.placeTitle}
+                  <span className="place-ellipsis">{p.placeTitle}</span>
                   <span className="overlay-class">{p.placeType}</span>
                 </div>
                 <div
