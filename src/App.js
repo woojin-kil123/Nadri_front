@@ -50,6 +50,7 @@ import EditReview from "./components/review/EditReview";
 import AdminMember from "./components/admin/AdminMember";
 
 import "leaflet/dist/leaflet.css";
+import AdminPlace from "./components/admin/AdminPlace";
 
 function App() {
   const [planner, setPlanner] = useRecoilState(isPlannerState);
@@ -123,6 +124,7 @@ function App() {
                     <Route path="review" element={<AdminReview />} />
                     <Route path="member" element={<AdminMember />} />
                     <Route path="main" element={<AdminMain />} />
+                    <Route path="place" element={<AdminPlace />} />
                   </Route>
                   <Route
                     path="/review/detail/:reviewNo"
