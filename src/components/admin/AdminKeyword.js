@@ -90,7 +90,7 @@ const AdminKeyword = () => {
           }).then(() => {
             setFormData({
               keyword: "",
-              placeType: "",
+              placeType: 0,
               cat1: "",
               cat2: "",
               cat3: "",
@@ -101,6 +101,9 @@ const AdminKeyword = () => {
         }
       });
   };
+  useEffect(() => {
+    console.log("🟢 formData updated:", formData);
+  }, [formData]);
   return (
     <div className="hot-keyword-wrap">
       <h2>인기 검색어</h2>
@@ -283,12 +286,12 @@ const AutocompleteForm = ({ id, label, formData, setFormData, controller }) => {
     <Autocomplete
       disablePortal
       options={check}
-      value={formData?.[key]}
+      value={check.find((opt) => opt[key] === formData[id]) || null}
       onChange={onChange}
       inputValue={inputText}
       onInputChange={(e, val) => setInputText(val)}
       getOptionLabel={(option) => `${option.name} | ID:${option.id} `}
-      isOptionEqualToValue={(a, b) => a?.[key] === b?.[key]}
+      isOptionEqualToValue={(option, value) => option[key] === value[key]}
       noOptionsText="결과 없음"
       sx={{ mt: 3 }}
       renderInput={(params) => (
@@ -325,25 +328,26 @@ const AutocompleteForm = ({ id, label, formData, setFormData, controller }) => {
 };
 const SelectForm = ({ inputStyle, formData, setFormData, cat, id, label }) => {
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const value = e.target.value; // ✅ 문자열 그대로 유지
+    setFormData((prev) => ({ ...prev, [id]: value }));
   };
+
   return (
     <div className="input-wrap">
       <InputLabel
         shrink
         id={`${id}-label`}
         sx={{
-          position: "static", // 기본 absolute → static으로 풀기
-          transform: "none", // 이동 해제
-          fontSize: "14px", // 원하는 스타일
+          position: "static",
+          transform: "none",
+          fontSize: "14px",
           color: "#333",
           "&.Mui-focused": {
             color: "#3d3d3d",
             fontFamily: "ns-b",
           },
           "& .MuiFormLabel-asterisk": {
-            display: "none", // ← 요거!
+            display: "none",
           },
         }}
       >
@@ -352,21 +356,16 @@ const SelectForm = ({ inputStyle, formData, setFormData, cat, id, label }) => {
       <Select
         labelId={`${id}-label`}
         name={id}
-        value={formData[id] || ""}
+        value={formData[id] ?? ""} // ✅ 0 등 falsy 값도 살림
         label={label}
         onChange={handleChange}
-        input={
-          <OutlinedInput
-            notched={false} // notch 비활성화
-            sx={inputStyle}
-          />
-        }
+        input={<OutlinedInput notched={false} sx={inputStyle} />}
       >
         <MenuItem value="">
           <span>해당없음</span>
         </MenuItem>
         {cat.map((c, i) => (
-          <MenuItem key={c.id + i} value={c.id}>
+          <MenuItem key={`${c.id}-${i}`} value={String(c.id)}>
             {c.name}
           </MenuItem>
         ))}
