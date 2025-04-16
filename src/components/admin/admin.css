@@ -311,3 +311,34 @@
 .hot-review-title .MuiSelect-icon {
   color: #888;
 }
+
+/*회원 관리*/
+.member-tbl-wrap .member-tbl {
+  border-top: 1px solid var(--main3);
+  width: 100%;
+  border-spacing: 0;
+}
+.review-tbl tbody .review-hover:hover {
+  color: var(--main2);
+  font-family: ns-b;
+  cursor: pointer;
+  text-align: center;
+}
+
+.member-tbl select {
+  padding: 4px 6px;
+  font-size: 14px;
+  text-align: center;
+}
+.member-tbl button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.member-tbl button:hover {
+  background-color: #d32f2f;
+}

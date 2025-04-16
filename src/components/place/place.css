@@ -85,15 +85,43 @@
   color: #4caf50;
   font-weight: 600;
 }
+.detail-header-cat > div {
+  background-color: #27b77830;
+  border-radius: 15px;
+  padding: 5px 10px;
+}
 .detail-header-title .detail-title {
   font-size: 28px;
   margin: 8px 0;
 }
+.detail-header-title {
+  display: flex;
+  justify-content: space-between;
+}
+.detail-header-title > input {
+  width: 700px;
+  height: 50px;
+  border: none;
+  border-bottom: 1px solid rgb(233, 233, 233);
+  color: rgb(160, 160, 160);
+  font-size: large;
+  display: block;
+}
+
 .detail-header-info {
   font-size: 14px;
   color: #555;
   display: flex;
   justify-content: space-between;
+}
+.btn-primary.edit-btn {
+  height: 45px;
+}
+
+.place-detail.edit-button-wrap {
+  display: flex;
+  gap: 10px;
+  height: 40px;
 }
 .share-like-box {
   display: flex;
@@ -103,28 +131,70 @@
 .like-icon {
   cursor: pointer;
 }
+
 /* 이미지 영역 */
 .place-detail-image {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   margin-bottom: 30px;
 }
-.detail-img1 {
-  flex: 2;
-  height: 340px;
-  object-fit: cover;
-  border-radius: 12px;
+.placeImage-more-box {
+  height: 400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
+  justify-content: space-between;
 }
-.detail-img2,
-.detail-img3,
-.detail-img4 {
+.placeImage-more {
   flex: 1;
-  height: 110px;
+  display: flex;
+  gap: 10px;
+  height: 195px;
+}
+.img-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+}
+.img-wrap img {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.placeImage-more-box > .placeImage-more {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.detail-img-main {
+  height: 400px;
   object-fit: cover;
   border-radius: 12px;
-  background-size: cover;
-  background-position: center;
 }
+.img-delete-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: rgba(255, 255, 255, 0.8);
+  color: red;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+.img-delete-btn:hover {
+  background: red;
+  color: white;
+}
+
 /* 내용과 info 박스 */
 .place-detail-content {
   display: flex;
@@ -136,7 +206,27 @@
   font-size: 15px;
   line-height: 1.6;
   color: #333;
+  box-sizing: content-box;
+  padding: 0 20px;
 }
+.place-overview-textarea {
+  width: 100%;
+  height: 200px;
+  padding: 12px;
+  font-size: 15px;
+  line-height: 1.6;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  resize: vertical;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: border 0.2s ease;
+}
+
+.place-overview-textarea:focus {
+  outline: none;
+  border-color: var(--main2);
+}
+
 .info-box {
   flex: 1;
   background: #f9f9f9;
@@ -157,6 +247,23 @@
 
 .detail-header-info path {
   color: var(--main3);
+}
+
+.info-request-box {
+  text-align: right;
+  padding-top: 10px;
+}
+.info-request-box > span {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.css-74d805-MuiButtonBase-root-MuiButton-root {
+  background-color: var(--main2);
+  color: var(--main2);
+}
+.MuiDialogActions-root.MuiDialogActions-spacing.css-15fu35s-MuiDialogActions-root {
+  padding: 16px 24px;
 }
 
 /* 리뷰 영역 */
