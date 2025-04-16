@@ -11,7 +11,6 @@ import { useEffect, useState } from "react";
 
 export default function ListCard(props) {
   const place = props.place;
-  // console.log(place.bookmarked);
   const backServer = process.env.REACT_APP_BACK_SERVER;
   const navigate = useNavigate();
   const isLogin = useRecoilValue(isLoginState);
@@ -30,9 +29,7 @@ export default function ListCard(props) {
       .then((res) => {
         setBookmarked(res.data);
       })
-      .catch((err) => {
-        console.error("좋아요 토글 실패:", err);
-      });
+      .catch((err) => {});
   };
 
   const handleHeartClick = (e) => {

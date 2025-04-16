@@ -81,7 +81,6 @@ const UpdatePw = () => {
         `${process.env.REACT_APP_BACK_SERVER}/member/isSocial?email=${member.memberEmail}`
       )
       .then((res) => {
-        console.log(res);
         if (res.data === 1) {
           axios
             .get(
@@ -93,20 +92,15 @@ const UpdatePw = () => {
               setIsVerificationSent(true); // 인증 코드 발송 상태로 변경
               setTimeLeft(180); // 카운트다운 타이머 변수 3분 (180초) 설정
             })
-            .catch((err) => {
-              console.log(err);
-            });
+            .catch((err) => {});
         } else {
-          console.log("소셜 회원인 이메일입니다.");
           Swal.fire({
             text: "소셜 회원인 이메일입니다.",
             icon: "error",
           });
         }
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 
   const verifyEmailCode = () => {

@@ -9,12 +9,9 @@ const AdminMember = () => {
     axios
       .get(`${backServer}/admin/member/list`)
       .then((res) => {
-        console.log(res);
         setMembers(res.data);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   }, []);
 
   const handleLevelChange = (memberNo, newLevel) => {
@@ -32,8 +29,6 @@ const AdminMember = () => {
       });
   };
   const handleKick = (memberNo) => {
-    console.log("강퇴 전:", members);
-    console.log("강퇴할 번호:", memberNo);
     Swal.fire({
       icon: "warning",
       title: "회원 강퇴",
@@ -51,13 +46,11 @@ const AdminMember = () => {
               const filtered = prev.filter(
                 (m) => parseInt(m.memberNo) !== parseInt(memberNo)
               );
-              console.log("강퇴 후:", filtered);
+
               return filtered;
             });
           })
-          .catch((err) => {
-            console.log(err);
-          });
+          .catch((err) => {});
       }
     });
   };

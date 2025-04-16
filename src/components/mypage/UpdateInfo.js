@@ -43,9 +43,7 @@ const UpdateInfo = () => {
           setDay(birthDay);
         }
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   }, [loginNickname]);
 
   // 회원 정보 입력 필드 업데이트 핸들러
@@ -75,9 +73,7 @@ const UpdateInfo = () => {
               setNicknameCheck(4); // 이미 사용중인 닉네임
             }
           })
-          .catch((err) => {
-            console.log(err); // 에러 발생 시 콘솔 출력
-          });
+          .catch((err) => {});
       } else {
         setNicknameCheck(3); // 유효하지 않은 닉네임
       }
@@ -225,7 +221,6 @@ const UpdateInfo = () => {
         });
       })
       .catch((err) => {
-        console.log(err);
         Swal.fire({
           title: "오류 발생",
           text: "정보 수정 중 오류가 발생했습니다. 다시 시도해주세요.",

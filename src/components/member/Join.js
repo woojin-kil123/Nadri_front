@@ -70,7 +70,6 @@ const Join = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
         setEmailCheckMessage("이메일 확인 중 오류가 발생했습니다.");
         setEmailCheckColor("red");
         setIsEmailVerified(false);
