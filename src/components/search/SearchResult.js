@@ -108,7 +108,7 @@ const Result = ({ result, onContent }) => {
 
   useEffect(() => {
     if (Array.isArray(result?.list)) {
-      const sliced = result.list.slice((index - 1) * 9, index * 9);
+      const sliced = result.list.slice((index - 1) * 12, index * 12);
       setShowList(sliced);
     } else {
       setShowList([]);
@@ -145,7 +145,7 @@ const Result = ({ result, onContent }) => {
           <Pagination
             page={index}
             onChange={(e, value) => setIndex(value)}
-            count={Math.ceil(result.list.length / 9)}
+            count={Math.ceil(result.list.length / 12)}
             sx={{
               "& .Mui-selected": {
                 backgroundColor: "var(--main2)",

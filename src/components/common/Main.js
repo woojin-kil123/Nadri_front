@@ -189,7 +189,7 @@ const FilterNavWithPanel = ({ categories, on, setOn }) => {
 };
 const ReviewCard = ({ review }) => {
   const navigate = useNavigate();
-  const thumbUrl = review.placeThumb || "/image/default_img.png";
+  const thumbUrl = review.placeThumb || "/image/default_spot.png";
   return (
     <div
       className="review-card"
@@ -197,6 +197,7 @@ const ReviewCard = ({ review }) => {
         backgroundImage: `url(${thumbUrl})`,
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
       }}
       onClick={() => {
         navigate(`/review/detail/${review.reviewNo}`);
