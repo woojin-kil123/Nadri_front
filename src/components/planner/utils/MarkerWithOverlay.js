@@ -1,6 +1,6 @@
 import { Close } from "@mui/icons-material";
 import { CustomOverlayMap, MapMarker } from "react-kakao-maps-sdk";
-import StarRating from "../utils/StarRating";
+import StarRating from "../../utils/StarRating";
 
 const MarkerWithOverlay = (props) => {
   const p = props.place;

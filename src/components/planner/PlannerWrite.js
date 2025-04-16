@@ -1,5 +1,5 @@
-import { CancelOutlined, Close, Search } from "@mui/icons-material";
-import { IconButton, InputBase, Paper } from "@mui/material";
+import { CancelOutlined, Close, Save, Search } from "@mui/icons-material";
+import { Button, IconButton, InputBase, Paper } from "@mui/material";
 import axios from "axios";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -7,12 +7,13 @@ import StarRating from "../utils/StarRating";
 import BasicDatePicker from "../utils/BasicDatePicker";
 import dayjs from "dayjs";
 import BasicSelect from "../utils/BasicSelect";
-import DrawPlannerPathCanvas from "./DrawPlannerPath";
+import DrawPlannerPathCanvas from "./utils/DrawPlannerPath";
 import PageNavigation from "../utils/PageNavigtion";
 import { useRecoilValue } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
 import GetBoundsByLevel from "../utils/GetBoundsByLevel";
-import CaptureMap from "./CaptureMap";
+import CaptureMap from "./utils/CaptureMap";
+import PlannerGuideModal from "./utils/PlannerGuideModal";
 const leafletImage = require("leaflet-image");
 
 const PlannerWrite = (props) => {
@@ -228,18 +229,22 @@ const PlannerWrite = (props) => {
         </div>
       </div>
       <div className="planner-handler-wrap">
-        <div className="save-plan-btn">
-          {plannedPlaceList.length !== 0 && (
-            <button
+        {plannedPlaceList.length !== 0 && (
+          <div className="save-plan-btn">
+            <Button
               onClick={() => {
                 setOpenSaveModal(true);
               }}
+              variant="contained"
+              startIcon={<Save />}
+              sx={{ backgroundColor: "var(--main2)" }}
             >
               저장
-            </button>
-          )}
-        </div>
+            </Button>
+          </div>
+        )}
       </div>
+      <PlannerGuideModal />
       {openSaveModal && (
         <SavePlanModal
           loginNickname={loginNickname}
@@ -267,7 +272,7 @@ const CustomizedInputBase = () => {
       <IconButton sx={{ p: "10px" }} aria-label=""></IconButton>
       <InputBase
         sx={{ ml: 1, flex: 1, fontSize: "12px" }}
-        placeholder="여행지, 즐길거리 등"
+        placeholder="지역 검색"
       />
       <IconButton type="button" sx={{ p: "10px" }} aria-label="">
         <Search />
@@ -295,7 +300,7 @@ const PrintPlaceList = (props) => {
     <div className="place-item">
       <img className="place-img" src={p.placeThumb} alt="테스트" />
       <div className="place-title-wrap">
-        <span className="place-title">{p.placeTitle}</span>
+        <span className="place-titlename">{p.placeTitle}</span>
         <span className="place-type">{p.placeType}</span>
       </div>
       <div className="place-addr place-ellipsis">{p.placeAddr}</div>
@@ -412,7 +417,7 @@ const PlanningModal = (props) => {
           />
           <div className="place-item">
             <div className="place-title-wrap">
-              <div className="place-title">{p.placeTitle}</div>
+              <div className="place-titlename">{p.placeTitle}</div>
               <div className="place-type">{p.placeType}</div>
             </div>
             <div className="place-addr">{p.placeAddr}</div>

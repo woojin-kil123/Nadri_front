@@ -432,7 +432,6 @@ section.section.bg-section {
   width: 40px;
   height: 40px;
   text-align: center;
-  line-height: 40px;
   overflow: hidden;
 }
 .pagination.circle-style > li {
