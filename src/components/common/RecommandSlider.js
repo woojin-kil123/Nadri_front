@@ -31,7 +31,7 @@ export default function RecommandSlider({ on, content }) {
           .get(
             `${
               process.env.REACT_APP_BACK_SERVER
-            }/plan?reqPage=${1}&order=${on}&loginNickanme=${
+            }/plan?reqPage=${1}&order=${on}&loginNickname=${
               loginNickname ? loginNickname : ""
             }`
           )
