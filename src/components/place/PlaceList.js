@@ -46,7 +46,6 @@ const PlaceList = () => {
             (isLogin ? `&memberNickname=${memberNickname}` : "")
         )
         .then((res) => {
-          console.log(res.data);
           setPlaceList(res.data.list);
           setPi(res.data.pi);
           setTotalCount(res.data.totalCount);
@@ -64,7 +63,6 @@ const PlaceList = () => {
           ...(isLogin && { memberNickname }),
         })
         .then((res) => {
-          console.log(res.data);
           setPlaceList(res.data.list);
           setPi(res.data.pi);
           setTotalCount(res.data.totalCount);
@@ -77,7 +75,7 @@ const PlaceList = () => {
 
   return (
     <div className="place-wrap">
-      <div className="page-title">여기서 여행지 조회</div>
+      <div className="page-title">나드리와 함께 나들이를 계획해요</div>
       <div className="page-content">
         <div className="placelist-side">
           <section className="section menu-box">
@@ -101,7 +99,7 @@ const PlaceList = () => {
               </select>
             </div>
           </div>
-          <div className="place-wrap">
+          <div className="place-card-wrap">
             {Array.isArray(cards) &&
               placeList.map((card, i) => {
                 return <ListCard key={"card-" + i} place={card} />;
