@@ -65,9 +65,11 @@ const PlannerView = (props) => {
             </div>
           ) : (
             <>
-              <div className="save-plan-btn">
-                <button onClick={() => {}}>이 플래너로 시작</button>
-              </div>
+              {/* <div className="save-plan-btn">
+                <button 
+                disabled={dayjs()}
+                onClick={() => {}}>이 플래너로 시작</button>
+              </div> */}
             </>
           )
         ) : (
