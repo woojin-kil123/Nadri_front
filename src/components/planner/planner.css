@@ -63,6 +63,7 @@
   flex-direction: column;
   align-items: center;
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 .place-item {
   width: 235px;
@@ -80,10 +81,10 @@
   border-radius: 8px;
   margin-bottom: 5px;
 }
-.place-title {
+.place-titlename {
   margin-right: 8px;
   letter-spacing: -1px;
-  font-size: 18px;
+  font-size: 17px;
 }
 .place-type {
   letter-spacing: -0.3px;
@@ -238,7 +239,7 @@
 .planner-del-btn > svg {
   cursor: pointer;
 }
-.planned-item .place-title {
+.planned-item .place-titlename {
   font-size: 14px;
 }
 .planned-item .place-item {
@@ -309,17 +310,17 @@
 /* 여행지에 추가하기 모달 */
 .modal-background {
   position: fixed;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   top: 0;
   left: 0;
   width: 1920px;
   height: 953px;
   z-index: 2;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.4);
 }
 .planning-modal {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   position: relative;
   width: 400px;
   background-color: var(--gray8);
@@ -412,8 +413,8 @@
 }
 .overlay-info .overlay-title {
   padding: 5px 0 5px 10px;
-  background: #eee;
-  border-bottom: 1px solid #ddd;
+  background: var(--gray7);
+  border-bottom: 1px solid var(--gray5);
   font-size: 16px;
   font-weight: bold;
   letter-spacing: -0.5px;
@@ -424,10 +425,13 @@
 }
 .overlay-title-name {
   width: 240px;
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
 }
 .overlay-info .overlay-class {
+  width: 110px;
   margin-left: 6px;
-  margin-right: 40px;
   font-weight: 400;
   font-size: 12px;
   letter-spacing: -1px;
@@ -513,4 +517,39 @@
   font-size: 15px;
   color: white;
   text-align: center;
+}
+
+/* 가이드 모달 */
+.planner-guide-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 777;
+}
+.planner-guide-modal img {
+  display: block;
+}
+.guide-modal-btn {
+  bottom: 20px;
+  right: 20px;
+  left: unset;
+}
+
+/* 페이지네이션 관련 */
+.place-list .pagination li {
+  width: 30px;
+}
+
+.heart-icon {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  padding: 2px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
 }
