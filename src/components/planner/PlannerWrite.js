@@ -1,5 +1,12 @@
-import { CancelOutlined, Close, Search } from "@mui/icons-material";
-import { IconButton, InputBase, Paper } from "@mui/material";
+import {
+  CancelOutlined,
+  Close,
+  Favorite,
+  FavoriteBorder,
+  Save,
+  Search,
+} from "@mui/icons-material";
+import { Button, IconButton, InputBase, Paper } from "@mui/material";
 import axios from "axios";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -7,12 +14,13 @@ import StarRating from "../utils/StarRating";
 import BasicDatePicker from "../utils/BasicDatePicker";
 import dayjs from "dayjs";
 import BasicSelect from "../utils/BasicSelect";
-import DrawPlannerPathCanvas from "./DrawPlannerPath";
+import DrawPlannerPathCanvas from "./utils/DrawPlannerPath";
 import PageNavigation from "../utils/PageNavigtion";
 import { useRecoilValue } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
 import GetBoundsByLevel from "../utils/GetBoundsByLevel";
-import CaptureMap from "./CaptureMap";
+import CaptureMap from "./utils/CaptureMap";
+import PlannerGuideModal from "./utils/PlannerGuideModal";
 const leafletImage = require("leaflet-image");
 
 const PlannerWrite = (props) => {
@@ -32,7 +40,7 @@ const PlannerWrite = (props) => {
     mapLevel,
   } = props;
 
-  const loginNickname = useRecoilValue(loginNicknameState);
+  const memberNickname = useRecoilValue(loginNicknameState);
   //플래너 저장 창 여닫음
   const [openSaveModal, setOpenSaveModal] = useState(false);
 
@@ -88,18 +96,21 @@ const PlannerWrite = (props) => {
     const { width, height } = GetBoundsByLevel(mapLevel);
 
     axios
-      .get(`${process.env.REACT_APP_BACK_SERVER}/plan/nearby`, {
-        params: {
-          lat,
-          lng,
-          width,
-          height,
-          page: reqPage,
-          size: 60,
-          sortOption: sortOption,
-          filterOption: filterOption,
-        },
-      })
+      .get(
+        `${process.env.REACT_APP_BACK_SERVER}/plan/${memberNickname}/nearby`,
+        {
+          params: {
+            lat,
+            lng,
+            width,
+            height,
+            page: reqPage,
+            size: 60, //한 페이지 당 장소 수
+            sortOption: sortOption,
+            filterOption: filterOption,
+          },
+        }
+      )
       .then((res) => {
         const { list, totalCount, pageInfo } = res.data;
         const mappedData = list.map((p) => {
@@ -116,15 +127,14 @@ const PlannerWrite = (props) => {
               lng: p.mapLng,
             },
             distance: p.distance, //userMarker에서 place까지의 거리
+            placeBookmarked: p.bookmarked,
           };
         });
         setPlaceList(mappedData);
         setTotalCount(totalCount);
         setPageInfo(pageInfo);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
     //아래 배열 내 값이 바뀔 때 함수를 재생성함(useCallback)
   }, [userMarker, sortOption, filterOption, reqPage]);
 
@@ -228,21 +238,24 @@ const PlannerWrite = (props) => {
         </div>
       </div>
       <div className="planner-handler-wrap">
-        <div className="save-plan-btn">
-          {plannedPlaceList.length !== 0 && (
-            <button
+        {plannedPlaceList.length !== 0 && (
+          <div className="save-plan-btn">
+            <Button
               onClick={() => {
                 setOpenSaveModal(true);
               }}
+              variant="contained"
+              startIcon={<Save />}
+              sx={{ backgroundColor: "var(--main2)" }}
             >
               저장
-            </button>
-          )}
-        </div>
+            </Button>
+          </div>
+        )}
       </div>
+      <PlannerGuideModal />
       {openSaveModal && (
         <SavePlanModal
-          loginNickname={loginNickname}
           planName={planName}
           setPlanName={setPlanName}
           setOpenSaveModal={setOpenSaveModal}
@@ -267,7 +280,7 @@ const CustomizedInputBase = () => {
       <IconButton sx={{ p: "10px" }} aria-label=""></IconButton>
       <InputBase
         sx={{ ml: 1, flex: 1, fontSize: "12px" }}
-        placeholder="여행지, 즐길거리 등"
+        placeholder="지역 검색"
       />
       <IconButton type="button" sx={{ p: "10px" }} aria-label="">
         <Search />
@@ -293,9 +306,12 @@ const PrintPlaceList = (props) => {
 
   return (
     <div className="place-item">
+      <div className="heart-icon">
+        {p.placeBookmarked === 1 ? <Favorite /> : <FavoriteBorder />}
+      </div>
       <img className="place-img" src={p.placeThumb} alt="테스트" />
       <div className="place-title-wrap">
-        <span className="place-title">{p.placeTitle}</span>
+        <span className="place-titlename">{p.placeTitle}</span>
         <span className="place-type">{p.placeType}</span>
       </div>
       <div className="place-addr place-ellipsis">{p.placeAddr}</div>
@@ -412,7 +428,7 @@ const PlanningModal = (props) => {
           />
           <div className="place-item">
             <div className="place-title-wrap">
-              <div className="place-title">{p.placeTitle}</div>
+              <div className="place-titlename">{p.placeTitle}</div>
               <div className="place-type">{p.placeType}</div>
             </div>
             <div className="place-addr">{p.placeAddr}</div>
@@ -450,7 +466,7 @@ const PlanningModal = (props) => {
 
 //플래너 저장 모달
 const SavePlanModal = (props) => {
-  const loginNickname = props.loginNickname;
+  const memberNickname = useRecoilValue(loginNicknameState);
   const [planStatus, setPlanStatus] = useState("공개");
   const [planName, setPlanName] = [props.planName, props.setPlanName];
   const setOpenSaveModal = props.setOpenSaveModal;
@@ -469,7 +485,7 @@ const SavePlanModal = (props) => {
         endDate: plannedPlaceList[plannedPlaceList.length - 1].itineraryDate,
         planThumb: "",
         planStatus: planStatus === "공개" ? 1 : 2, //2: 비공개
-        memberNickname: loginNickname,
+        memberNickname: memberNickname,
       },
       itineraryList: plannedPlaceList.map((item) => {
         return {
@@ -502,7 +518,6 @@ const SavePlanModal = (props) => {
     // leaflet 이미지 캡처
     leafletImage(mapInstance, function (err, canvas) {
       if (err || !canvas) {
-        console.error("지도 캡처 실패", err);
         return;
       }
 
@@ -532,7 +547,7 @@ const SavePlanModal = (props) => {
             .then((res) => {
               if (res.data) {
                 window.localStorage.removeItem(
-                  `${loginNickname}_cache_planner`
+                  `${memberNickname}_cache_planner`
                 );
                 setOpenSaveModal(false);
                 setSaving(false);
@@ -540,7 +555,6 @@ const SavePlanModal = (props) => {
               }
             })
             .catch((err) => {
-              console.log(err);
               setSaving(false);
               if (savedFilename) {
                 window.alert("저장에 실패했습니다. 잠시 후 다시 시도해주세요.");
@@ -593,14 +607,13 @@ const SavePlanModal = (props) => {
           .then((res) => {
             //썸네일 업로드 및 plan 저장 성공 시(then)
             if (res.data) {
-              window.localStorage.removeItem(`${loginNickname}_cache_planner`);
+              window.localStorage.removeItem(`${memberNickname}_cache_planner`);
               setOpenSaveModal(false);
               navigate("/mypage/planners");
             }
           })
           .catch((err) => {
             //썸네일 업로드 실패, 혹은 plan 저장 실패한 모든 경우(catch)
-            console.log(err);
             if (savedFilename) {
               //썸네일 업로드는 됐는데 plan 저장만 실패하면 썸네일 삭제
               window.alert("저장에 실패했습니다. 잠시 후 다시 시도해주세요.");

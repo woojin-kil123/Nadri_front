@@ -45,9 +45,7 @@ export default function MypageListCard(props) {
           setBookmark(data);
         }
       })
-      .catch((err) => {
-        console.error("좋아요 토글 실패:", err);
-      });
+      .catch((err) => {});
   };
 
   const handleHeartClick = (e) => {
@@ -69,8 +67,6 @@ export default function MypageListCard(props) {
   useEffect(() => {
     setBookmarked(place.bookmarked);
   }, [place.bookmarked]);
-
-  console.log(bookmarked);
 
   return (
     <>

@@ -2,20 +2,20 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CustomOverlayMap, Map, Polyline } from "react-kakao-maps-sdk";
 import "./planner.css";
 import axios from "axios";
-import { replace, useNavigate, useParams } from "react-router-dom";
-import MarkerWithOverlay from "./MarkerWithOverlay";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useNavigate, useParams } from "react-router-dom";
+import MarkerWithOverlay from "./utils/MarkerWithOverlay";
+import { useRecoilValue } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
 import PlannerWrite from "./PlannerWrite";
 import PlannerView from "./PlannerView";
-import { Alert, Box, Button, CircularProgress, Snackbar } from "@mui/material";
+import { Alert, Box, Button, Snackbar } from "@mui/material";
 import Swal from "sweetalert2";
 
 const PlannerFrm = () => {
   //마커 오버레이 여닫음
   const [openOverlay, setOpenOverlay] = useState(null);
   //플래너 창 여닫음
-  const [openPlanner, setOpenPlanner] = useState(true);
+  const [openPlanner, setOpenPlanner] = useState(false);
   //"플래너에 추가하기" 창 여닫음
   const [openPlanningModal, setOpenPlanningModal] = useState(null);
   //플래너에 추가한 장소 리스트
@@ -51,6 +51,11 @@ const PlannerFrm = () => {
   const [plannerMode, setPlannerMode] = useState(null);
 
   //↓ 작성된 useEffect 목록
+
+  // 플래너에 담은 방문지가 있으면 플래너 열어두기
+  useEffect(() => {
+    setOpenPlanner(plannedPlaceList.length > 0);
+  }, [plannedPlaceList]);
 
   //플래너 진입 시 "새 플래너 작성"인지, "기존 플래너 열람"인지 판단
   useEffect(() => {
@@ -186,7 +191,6 @@ const PlannerFrm = () => {
             });
           }
         } else {
-          console.log(err);
         }
       });
   });
@@ -296,7 +300,7 @@ const PrintMap = (props) => {
   return (
     <>
       {plannerMode === "write" && (
-        <Box sx={{ "& > button": { m: 1 } }}>
+        <Box>
           <Button
             className="map-search-btn"
             size="medium"
@@ -313,6 +317,7 @@ const PrintMap = (props) => {
             }}
             loading={loading}
             variant="outlined"
+            sx={{ padding: "5px 40px", m: 1 }}
           >
             이 위치에서 검색
           </Button>

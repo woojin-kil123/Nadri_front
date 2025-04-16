@@ -13,9 +13,6 @@ const UpdatePw2 = () => {
   const [isPasswordVisible1, setIsPasswordVisible1] = useState(false);
   const [isPasswordVisible2, setIsPasswordVisible2] = useState(false);
 
-  console.log(email);
-  console.log(code);
-
   useEffect(() => {
     if (!code) {
       Swal.fire({
@@ -99,7 +96,6 @@ const UpdatePw2 = () => {
   };
 
   const rePwMember = () => {
-    console.log(member); // 변경할 회원 정보 확인
     axios
       .patch(`${process.env.REACT_APP_BACK_SERVER}/member/updatePw`, member) // 비밀번호 업데이트 API 호출
       .then((res) => {

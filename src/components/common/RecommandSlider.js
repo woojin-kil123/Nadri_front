@@ -20,9 +20,7 @@ export default function RecommandSlider({ on, content }) {
           .then((res) => {
             setCards(res.data.list);
           })
-          .catch((err) => {
-            console.log(err);
-          });
+          .catch((err) => {});
 
         break;
       case "plan":

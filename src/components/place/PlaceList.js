@@ -51,9 +51,7 @@ const PlaceList = () => {
           setPi(res.data.pi);
           setTotalCount(res.data.totalCount);
         })
-        .catch((err) => {
-          console.log("전체목록 조회 실패", err);
-        });
+        .catch((err) => {});
     } else {
       axios
         .post(`${backServer}/place/filter`, {
@@ -68,9 +66,7 @@ const PlaceList = () => {
           setPi(res.data.pi);
           setTotalCount(res.data.totalCount);
         })
-        .catch((err) => {
-          console.log("세부필터 목록 조회 실패", err);
-        });
+        .catch((err) => {});
     }
   }, [reqPage, selectedPlaceTypeId, selectedFilters, order]);
   const [loading, setLoading] = useState(true);
@@ -123,7 +119,7 @@ const PlaceList = () => {
                 <select onChange={changeOrder}>
                   <option value={1}>리뷰 많은순</option>
                   <option value={2}>별점 높은순</option>
-                  <option value={3}>좋아요 많은순</option>
+                  <option value={3}>추천순</option>
                 </select>
               </div>
             </div>
