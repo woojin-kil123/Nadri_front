@@ -118,9 +118,7 @@ const AdminKeyword = () => {
         }
       });
   };
-  useEffect(() => {
-    console.log("🟢 formData updated:", formData);
-  }, [formData]);
+
   return (
     <div className="hot-keyword-wrap">
       <h2>인기 검색어</h2>
