@@ -46,7 +46,6 @@ const PlaceList = () => {
             (isLogin ? `&memberNickname=${memberNickname}` : "")
         )
         .then((res) => {
-          console.log(res.data);
           setPlaceList(res.data.list);
           setPi(res.data.pi);
           setTotalCount(res.data.totalCount);
@@ -64,7 +63,6 @@ const PlaceList = () => {
           ...(isLogin && { memberNickname }),
         })
         .then((res) => {
-          console.log(res.data);
           setPlaceList(res.data.list);
           setPi(res.data.pi);
           setTotalCount(res.data.totalCount);

@@ -291,5 +291,7 @@
 }
 .review-wap .posting-wrap {
   list-style: none;
-  padding: 0;
+}
+.review-wap .posting-wrap .posting-item {
+  height: 300px;
 }
