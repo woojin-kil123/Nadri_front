@@ -2,13 +2,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CustomOverlayMap, Map, Polyline } from "react-kakao-maps-sdk";
 import "./planner.css";
 import axios from "axios";
-import { replace, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import MarkerWithOverlay from "./utils/MarkerWithOverlay";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import { loginNicknameState } from "../utils/RecoilData";
 import PlannerWrite from "./PlannerWrite";
 import PlannerView from "./PlannerView";
-import { Alert, Box, Button, CircularProgress, Snackbar } from "@mui/material";
+import { Alert, Box, Button, Snackbar } from "@mui/material";
 import Swal from "sweetalert2";
 
 const PlannerFrm = () => {

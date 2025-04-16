@@ -113,7 +113,6 @@ const PlannerWrite = (props) => {
       )
       .then((res) => {
         const { list, totalCount, pageInfo } = res.data;
-        console.log(list);
         const mappedData = list.map((p) => {
           return {
             placeId: p.placeId,
@@ -307,12 +306,7 @@ const PrintPlaceList = (props) => {
 
   return (
     <div className="place-item">
-      <div
-        className="heart-icon"
-        onClick={() => {
-          console.log(p);
-        }}
-      >
+      <div className="heart-icon">
         {p.placeBookmarked === 1 ? <Favorite /> : <FavoriteBorder />}
       </div>
       <img className="place-img" src={p.placeThumb} alt="테스트" />

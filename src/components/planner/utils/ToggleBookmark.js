@@ -3,7 +3,6 @@ import { isLoginState, loginNicknameState } from "../../utils/RecoilData";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useEffect, useState } from "react";
 import { Checkbox, Tooltip } from "@mui/material";
 import { Bookmark, BookmarkBorder } from "@mui/icons-material";
 
