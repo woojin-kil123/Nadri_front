@@ -25,7 +25,7 @@ const ReviewWrite = () => {
         `${process.env.REACT_APP_BACK_SERVER}/place/detail?placeId=${placeId}`
       )
       .then((res) => setPlaceInfo(res.data))
-      .catch((err) => console.log(err));
+      .catch((err) => {});
   }, [placeId]);
 
   const fileChange = (e) => {
@@ -65,13 +65,10 @@ const ReviewWrite = () => {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
-        console.log(res);
         alert("리뷰가 성공적으로 등록되었습니다!");
         navigate("/review");
       })
       .catch((err) => {
-        console.log(err);
-
         alert("리뷰 등록에 실패했습니다.");
       });
   };
