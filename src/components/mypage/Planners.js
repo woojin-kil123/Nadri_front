@@ -30,7 +30,7 @@ const Planner = () => {
         message = "지나간 플래너가 없습니다.";
         break;
       case "3":
-        message = "찜한 플래너가 없습니다.";
+        message = "즐겨찾기한 플래너가 없습니다.";
         break;
       default:
         message = "";
@@ -98,7 +98,7 @@ const Planner = () => {
                 changeContent("3");
               }}
             >
-              찜한 플래너
+              즐겨찾기 한 플래너
             </li>
           </ul>
         </nav>

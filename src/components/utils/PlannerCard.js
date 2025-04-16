@@ -7,7 +7,6 @@ import axios from "axios";
 export default function PlannerCard(props) {
   const navigate = useNavigate();
   const planner = props.planner;
-  const [bookmarked, setBookmarked] = useState(planner.bookmarked);
 
   const calculateDDay = (startDate, endDate) => {
     const today = new Date(); // 현재 날짜
