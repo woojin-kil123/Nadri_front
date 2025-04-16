@@ -77,7 +77,7 @@ const PageNavigation = (props) => {
   arr.push(
     <li key="last-page" style={{ cursor: "pointer" }}>
       <span
-        className="material-icons page-item"
+        className="page-list material-icons page-item"
         onClick={() => {
           setReqPage(totalPage);
         }}

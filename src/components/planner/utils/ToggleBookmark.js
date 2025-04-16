@@ -7,15 +7,16 @@ import { useEffect, useState } from "react";
 import { Checkbox, Tooltip } from "@mui/material";
 import { Bookmark, BookmarkBorder } from "@mui/icons-material";
 
-const ToggleBookmark = ({ bookmarked, objectNo, controllerUrl }) => {
+const ToggleBookmark = ({
+  bookmarked,
+  setBookmarked,
+  objectNo,
+  controllerUrl,
+}) => {
   const isLogin = useRecoilValue(isLoginState);
   const memberNickname = useRecoilValue(loginNicknameState);
   const navigate = useNavigate();
-  const [bookmarkState, setBookmarkState] = useState(bookmarked === 1);
-
-  useEffect(() => {
-    setBookmarkState(bookmarked === 1);
-  }, [bookmarked]);
+  // const [bookmarkState, setBookmarkState] = useState(bookmarked === 1);
 
   const toggle = (objectNo) => {
     axios
@@ -25,7 +26,7 @@ const ToggleBookmark = ({ bookmarked, objectNo, controllerUrl }) => {
         `${process.env.REACT_APP_BACK_SERVER}${controllerUrl}/${objectNo}/${memberNickname}`
       )
       .then((res) => {
-        setBookmarkState(res.data === 1);
+        setBookmarked(res.data === 1 ? 1 : 0);
       })
       .catch((err) => {
         console.log(err);
@@ -50,12 +51,12 @@ const ToggleBookmark = ({ bookmarked, objectNo, controllerUrl }) => {
       <Tooltip title="북마크">
         <Checkbox
           sx={{ m: 1 }}
-          size="medium"
-          checked={bookmarkState}
+          size="large"
+          checked={bookmarked === 1}
           onClick={(e) => e.stopPropagation()} // 이거 꼭 필요!
           onChange={handleClick}
-          icon={<BookmarkBorder />}
-          checkedIcon={<Bookmark />}
+          icon={<BookmarkBorder sx={{ fill: "var(--gray4)" }} />}
+          checkedIcon={<Bookmark sx={{ fill: "var(--main4)" }} />}
         />
       </Tooltip>
     </div>

@@ -272,9 +272,10 @@ const Login = () => {
 
 const REST_API_KEY = process.env.REACT_APP_REST_API_KEY;
 const REDIRECT_URL = process.env.REACT_APP_REDIRECT_URL;
-const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URL}&response_type=code`;
+const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${"http://192.168.10.20:3000/login/kakao"}&response_type=code`;
 
 const handleKakaoLogin = () => {
+  console.log(REDIRECT_URL);
   window.location.href = kakaoURL; //kakaoURL로 이동
 };
 

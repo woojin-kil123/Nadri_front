@@ -447,11 +447,15 @@ section.section.bg-section {
   display: block;
   width: 100%;
   height: 100%;
-  line-height: 40px;
 }
 .pagination .page-item.active-page {
+  display: inline-block;
   background-color: var(--main2);
   color: #fff;
+  min-width: 20px;
+  width: 27px;
+  height: 27px;
+  border-radius: 50px;
 }
 
 .posting-comment {

@@ -77,7 +77,6 @@ const PlaceDetail = () => {
     axios
       .get(`${backServer}/place/images/${placeId}`)
       .then((res) => {
-        console.log(res);
         setPlaceIamges(res.data);
       })
       .catch((err) => console.error("이미지 불러오기 실패", err));
@@ -87,10 +86,29 @@ const PlaceDetail = () => {
     });
 
     axios.get(`${backServer}/review/detail/${placeId}`).then((res) => {
-      console.log(res);
       setReview(res.data);
     });
   }, [placeId]);
+
+  const [overviewLoading, setOverviewLoading] = useState(false);
+
+  useEffect(() => {
+    if (!place?.placeOverview && place?.placeId && !overviewLoading) {
+      setOverviewLoading(true); // 요청 1회만 수행
+
+      axios
+        .get(`${backServer}/place/overview/fetch?placeId=${place.placeId}`)
+        .then((res) => {
+          setPlace((prev) => ({
+            ...prev,
+            placeOverview: res.data.placeOverview,
+          }));
+        })
+        .catch((err) => {
+          console.error(" 개요 가져오기 실패:", err);
+        });
+    }
+  }, [placeId, overviewLoading]);
 
   const handleHeartClick = (e) => {
     e.stopPropagation();
@@ -172,6 +190,7 @@ const PlaceDetail = () => {
         });
     }
   };
+  if (!place) return null;
 
   return (
     <div className="place-detail-wrap">
@@ -240,7 +259,18 @@ const PlaceDetail = () => {
       <div className="place-detail-image">
         <div className="placeThumb-box">
           <img
-            src={place?.placeThumb || "/image/dora.png"}
+            src={
+              place?.placeThumb ||
+              (place?.placeTypeId === 12
+                ? "/image/default_spot.png"
+                : place.placeTypeId === 14
+                ? "/image/default_todo.png"
+                : place.placeTypeId === 32
+                ? "/image/default_stay.png"
+                : place.placeTypeId === 39
+                ? "/image/default_food.png"
+                : "/image/default_thumb.png")
+            }
             className="detail-img-main"
             alt="main"
           />
@@ -341,11 +371,10 @@ const PlaceDetail = () => {
                 value={editPlace.placeOverview ?? ""}
                 onChange={handleChange}
               />
+            ) : place.placeOverview ? (
+              <p>{place.placeOverview}</p>
             ) : (
-              <p>
-                {place.placeOverview ??
-                  "경복궁은 조선 왕조 제일의 법궁이다. 북으로 북악산을 기대어 자리 잡았고 정문인 광화문 앞으로는 넓은 육조거리(지금의 세종로)가 펼쳐져, 왕도인 한양(서울) 도시 계획의 중심이기도 하다. 1395년 태조 이성계가 창건하였고, 1592년 임진왜란으로 불타 없어졌다가, 고종 때인 1867년 중건되었다. 흥선대원군이 주도한 중건 경복궁은 500여 동의 건물들이 미로같이 빼곡히 들어선 웅장한 모습이었다."}
-              </p>
+              <p>개요 정보를 불러오는 중입니다...</p>
             )}
           </div>
         )}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import IntroSlider from "./IntroSlide";
-import { Box, Tab, Tabs, Typography } from "@mui/material";
+import { Box, CircularProgress, Tab, Tabs, Typography } from "@mui/material";
 import RecommandSlider from "./RecommandSlider";
 import "./main.css";
 import axios from "axios";
@@ -62,8 +62,35 @@ const Main = () => {
     localStorage.setItem("hidePopupDate", today);
     setShowPopup(false);
   };
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 500); // ⏱ 2초 후 로딩 해제
+    return () => clearTimeout(timer); // cleanup
+  }, []);
   return (
     <section className="section main-wrap">
+      {loading && (
+        <div className="loading">
+          <CircularProgress
+            size={60}
+            thickness={3}
+            color="inherit"
+            sx={{
+              "& circle": {
+                stroke: "#27b778",
+              },
+            }}
+          />
+          <div className="spinner-wrap">
+            <img
+              src="/image/nadri_logo.svg"
+              alt="로딩 중"
+              className="loading-image"
+            />
+            <p className="loading-text">잠시만 기다려 주세요...</p>
+          </div>
+        </div>
+      )}
       {showPopup && (
         <EventPopup
           onClose={() => {
@@ -75,7 +102,7 @@ const Main = () => {
       <IntroSlider />
       <div className="recommand-wrap">
         <div className="recommand-title">
-          <h2>추천플랜</h2>
+          <h2>추천 플랜</h2>
         </div>
         <div className="recommand-nav">
           <FilterNavWithPanel

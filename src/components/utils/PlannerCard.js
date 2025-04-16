@@ -1,5 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import "./plannerCard.css";
+import ToggleBookmark from "../planner/utils/ToggleBookmark";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function PlannerCard(props) {
   const navigate = useNavigate();
@@ -48,8 +51,8 @@ export default function PlannerCard(props) {
             <img
               src={
                 planner.placeThumb
-                  ? `${process.env.REACT_APP_BACK_SERVER}/plan/planner_thumbnail/${planner.placeThumb}`
-                  : "/image/dora.png"
+                  ? `${process.env.REACT_APP_BACK_SERVER}/assets/plan/thumb/${planner.planThumb}`
+                  : "/image/default_thumb.png"
               }
               className="card3-image"
             />

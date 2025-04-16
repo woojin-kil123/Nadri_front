@@ -121,7 +121,14 @@ const Bookmark = () => {
             <ul className="posting-wrap">
               {Array.isArray(cards) &&
                 bookmark.map((card, i) => {
-                  return <MypageListCard key={"card-" + i} place={card} />;
+                  return (
+                    <MypageListCard
+                      key={"card-" + i}
+                      place={card}
+                      bookmark={bookmark}
+                      setBookmark={setBookmark}
+                    />
+                  );
                 })}
             </ul>
           )}
