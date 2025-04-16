@@ -1,6 +1,7 @@
 import "./main.css";
 import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const slides = [
   {
@@ -9,6 +10,7 @@ const slides = [
     KTitle: "나만의 여행을 계획하세요",
     KDescription: "여행 일정을 공유하고 함께 할 수 있어요",
     image: "/image/intro_plan.png",
+    url: "planner",
   },
   {
     ETitle: "Have a place you’ve always wanted to visit?",
@@ -16,6 +18,7 @@ const slides = [
     KTitle: "꼭 가보고 싶은 곳이 있었나요?",
     KDescription: "검색을 통해 원하시는 정보를 찾으세요",
     image: "/image/intro_spot.png",
+    url: "place",
   },
   {
     ETitle: "From cozy stays and more",
@@ -23,6 +26,7 @@ const slides = [
     KTitle: "편하게 머물 수 있는 공간들부터",
     KDescription: "여러분들의 솔직한 평가를 나누세요",
     image: "/image/intro_hotel.png",
+    url: "place",
   },
   {
     ETitle: "Fun activities, tailored for you",
@@ -30,6 +34,7 @@ const slides = [
     KTitle: "재미있는 즐길거리까지",
     KDescription: "여러분이 원한 맞춤 추천을 제공합니다",
     image: "/image/intro_content.png",
+    url: "place",
   },
   {
     ETitle: "Chat in real time and share reviews",
@@ -37,12 +42,13 @@ const slides = [
     KTitle: "실시간 채팅과 다양한 리뷰와 함께",
     KDescription: "친구들과 편하게 여행을 계획해보세요",
     image: "/image/intro_chat.png",
+    url: "review",
   },
 ];
 
 const IntroSlider = () => {
   const [activeIndex, setActiveIndex] = useState(0);
-
+  const navigate = useNavigate();
   // 자동 슬라이드 전환 (5초 간격)
   useEffect(() => {
     const interval = setInterval(() => {
@@ -69,7 +75,14 @@ const IntroSlider = () => {
             <p>{slides[activeIndex].EDescription}</p>
           </div>
           <div className="intro-btn-wrap">
-            <button className="btn-primary">시작하기</button>
+            <button
+              className="btn-primary"
+              onClick={() => {
+                navigate(slides[activeIndex].url);
+              }}
+            >
+              시작하기
+            </button>
           </div>
         </div>
         {/* Right image section */}

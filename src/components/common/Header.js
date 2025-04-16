@@ -26,6 +26,7 @@ import MainSearch from "../search/MainSearch";
 
 const Header = () => {
   const isLogin = useRecoilValue(isLoginState);
+
   return (
     <header className="header">
       <div className="logo">
