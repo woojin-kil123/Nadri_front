@@ -111,10 +111,9 @@ const PlannerFrm = () => {
   //작성된 플래너 조회 시
   const getPlanData = useCallback(() => {
     axios
-      .get(`${process.env.REACT_APP_BACK_SERVER}/plan/verify`, {
+      .get(`${process.env.REACT_APP_BACK_SERVER}/plan/${planNo}`, {
         params: {
           loginNickname: loginNickname,
-          planNo: planNo,
         },
       })
       .then((res) => {

@@ -488,7 +488,6 @@ const SavePlanModal = (props) => {
   const planData = useMemo(
     () => ({
       tripPlanData: {
-        planNo: planNo ?? 0,
         planName: planName.trim() === "" ? "untitled" : planName,
         startDate: plannedPlaceList[0].itineraryDate,
         endDate: plannedPlaceList[plannedPlaceList.length - 1].itineraryDate,
@@ -513,6 +512,7 @@ const SavePlanModal = (props) => {
   const handleSavePlanner = () => {
     if (saving) {
       alert("저장 중입니다. 잠시만 기다려주세요.");
+      return;
     }
     if (planStatus === "") {
       window.alert("공개 여부를 선택하세요.");
@@ -524,114 +524,79 @@ const SavePlanModal = (props) => {
     }
 
     setSaving(true);
+
     // leaflet 이미지 캡처
     leafletImage(mapInstance, function (err, canvas) {
       if (err || !canvas) {
+        setSaving(false);
         return;
       }
 
       canvas.toBlob(
         (blob) => {
           const form = new FormData();
-          form.append("file", blob, "thumbnail.jpg");
-          if (planNo) {
-            form.append("planNo", planNo);
-          }
+          form.append("file", blob, "plan_thumb.jpg");
 
-          let savedFilename = null;
-          axios
-            .post(`${process.env.REACT_APP_BACK_SERVER}/plan/thumb`, form)
-            .then((res) => {
-              savedFilename = res.data;
-              planData.tripPlanData.planThumb = savedFilename;
+          if (!planNo) {
+            //새 플랜 저장
+            axios
+              .post(`${process.env.REACT_APP_BACK_SERVER}/plan/thumb`, form)
+              .then((res) => {
+                const savedFilename = res.data;
+                planData.tripPlanData.planThumb = savedFilename;
 
-              const url = planNo
-                ? `${process.env.REACT_APP_BACK_SERVER}/plan/update`
-                : `${process.env.REACT_APP_BACK_SERVER}/plan/save`;
-
-              return planNo
-                ? axios.put(url, planData)
-                : axios.post(url, planData);
-            })
-            .then((res) => {
-              if (res.data) {
-                window.localStorage.removeItem(
-                  `${memberNickname}_cache_planner`
+                return axios.post(
+                  `${process.env.REACT_APP_BACK_SERVER}/plan`,
+                  planData
                 );
-                setOpenSaveModal(false);
+              })
+              .then((res) => {
+                if (res.data) {
+                  window.localStorage.removeItem(
+                    `${memberNickname}_cache_planner`
+                  );
+                  setOpenSaveModal(false);
+                  navigate("/mypage/planners");
+                }
                 setSaving(false);
-                navigate("/mypage/planners");
-              }
-            })
-            .catch((err) => {
-              setSaving(false);
-              if (savedFilename) {
-                window.alert("저장에 실패했습니다. 잠시 후 다시 시도해주세요.");
-              }
-            });
+              })
+              .catch((err) => {
+                console.log(err);
+                setSaving(false);
+              });
+          } else {
+            //기존 플랜 수정
+            axios
+              .post(
+                `${process.env.REACT_APP_BACK_SERVER}/plan/${planNo}/thumb`,
+                form
+              )
+              .then((res) => {
+                const savedFilename = res.data;
+                planData.tripPlanData.planThumb = savedFilename;
+
+                return axios.put(
+                  `${process.env.REACT_APP_BACK_SERVER}/plan/${planNo}`,
+                  planData
+                );
+              })
+              .then((res) => {
+                if (res.data) {
+                  setOpenSaveModal(false);
+                  navigate("/mypage/planners");
+                }
+                setSaving(false);
+              })
+              .catch((err) => {
+                console.log(err);
+                setSaving(false);
+              });
+          }
         },
         "image/jpeg",
         0.95
       );
     });
-  };
-
-  const handleSavePlanner2 = () => {
-    if (planStatus === "") {
-      window.alert("공개 여부를 선택하세요.");
-      return;
-    }
-
-    //pathCanvas: <canvas> 태그로 감싼 DOM 요소
-    const pathCanvas = DrawPlannerPathCanvas(plannedPlaceList);
-    //canvas 태그를 파일로 변환하는 전용 함수: toBlob
-    pathCanvas.toBlob(
-      (blob) => {
-        const form = new FormData();
-        form.append("file", blob, "thumbnail.jpg");
-        if (planNo) {
-          form.append("planNo", planNo);
-        }
-
-        let savedFilename = null;
-        axios
-          .post(`${process.env.REACT_APP_BACK_SERVER}/plan/thumb`, form)
-          .then((res) => {
-            //썸네일 업로드 성공 시(then)
-            savedFilename = res.data;
-            planData.tripPlanData.planThumb = savedFilename;
-
-            if (planNo) {
-              return axios.put(
-                `${process.env.REACT_APP_BACK_SERVER}/plan/update`,
-                planData
-              );
-            } else {
-              return axios.post(
-                `${process.env.REACT_APP_BACK_SERVER}/plan/save`,
-                planData
-              );
-            }
-          })
-          .then((res) => {
-            //썸네일 업로드 및 plan 저장 성공 시(then)
-            if (res.data) {
-              window.localStorage.removeItem(`${memberNickname}_cache_planner`);
-              setOpenSaveModal(false);
-              navigate("/mypage/planners");
-            }
-          })
-          .catch((err) => {
-            //썸네일 업로드 실패, 혹은 plan 저장 실패한 모든 경우(catch)
-            if (savedFilename) {
-              //썸네일 업로드는 됐는데 plan 저장만 실패하면 썸네일 삭제
-              window.alert("저장에 실패했습니다. 잠시 후 다시 시도해주세요.");
-            }
-          });
-      },
-      "image/jpeg",
-      0.95
-    );
   };
 
   return (
