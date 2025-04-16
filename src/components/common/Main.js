@@ -75,7 +75,7 @@ const Main = () => {
       <IntroSlider />
       <div className="recommand-wrap">
         <div className="recommand-title">
-          <h2>추천플랜</h2>
+          <h2>추천 플랜</h2>
         </div>
         <div className="recommand-nav">
           <FilterNavWithPanel

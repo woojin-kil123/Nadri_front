@@ -2,6 +2,7 @@ import { getTodayDate } from "@mui/x-date-pickers/internals";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { getKoreanToday } from "./metaSet";
+import ClearIcon from "@mui/icons-material/Clear";
 
 const EventPopup = ({ onClose, dailyClose }) => {
   const today = getKoreanToday();
@@ -20,7 +21,7 @@ const EventPopup = ({ onClose, dailyClose }) => {
     <div className="popup-overlay">
       <div className="popup-content">
         <button className="popup-close" onClick={onClose}>
-          X
+          <ClearIcon />
         </button>
         {event &&
           event.map((e, i) => (
@@ -37,14 +38,18 @@ const EventPopup = ({ onClose, dailyClose }) => {
                 backgroundPosition: "center",
               }}
             >
-              <h2>{e.eventTitle}</h2>
-              <p>{e.eventContent}</p>
-              <p>
-                {e.startDate} ~ {e.endDate}
-              </p>
+              <div className="description">
+                <h2>{e.eventTitle}</h2>
+                <p>{e.eventContent}</p>
+                <p>
+                  {e.startDate} ~ {e.endDate}
+                </p>
+              </div>
             </div>
           ))}
-        <button onClick={dailyClose}>오늘하루 보지않기</button>
+        <button onClick={dailyClose} className="btn-primary">
+          오늘 그만 보기
+        </button>
       </div>
     </div>
   );
