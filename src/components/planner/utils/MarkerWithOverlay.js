@@ -21,8 +21,13 @@ const MarkerWithOverlay = (props) => {
         image={
           isPlanned
             ? {
-                src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png",
-                size: { width: 24, height: 35 },
+                src: "/image/markerStar_resized.png",
+                size: { width: 30, height: 42 },
+              }
+            : p.placeBookmarked === 1
+            ? {
+                src: "/image/marker_bookmarked_spot.png",
+                size: { width: 30, height: 42 },
               }
             : undefined
         }

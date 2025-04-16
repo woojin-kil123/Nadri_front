@@ -113,7 +113,7 @@ const PlannerWrite = (props) => {
       )
       .then((res) => {
         const { list, totalCount, pageInfo } = res.data;
-        const mappedData = list.map((p) => {
+        const mappedData = list.map((p, idx) => {
           return {
             placeId: p.placeId,
             placeThumb: p.placeThumb ?? "/image/place_default_img.png",
@@ -128,9 +128,18 @@ const PlannerWrite = (props) => {
             },
             distance: p.distance, //userMarker에서 place까지의 거리
             placeBookmarked: p.bookmarked,
+            _originalIndex: idx,
           };
         });
-        setPlaceList(mappedData);
+        setPlaceList(
+          //북마크 된 장소를 우선적으로 맨앞으로 정렬
+          //이후 orderBy 기준을 기억해둔 idx를 이용해 2차 정렬
+          mappedData.sort((a, b) => {
+            if (b.placeBookmarked !== a.placeBookmarked)
+              return b.placeBookmarked - a.placeBookmarked;
+            return a._originalIndex - b._originalIndex;
+          })
+        );
         setTotalCount(totalCount);
         setPageInfo(pageInfo);
       })
