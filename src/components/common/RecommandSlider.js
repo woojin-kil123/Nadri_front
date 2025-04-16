@@ -105,7 +105,7 @@ const PlanCard = ({ plan }) => {
         <h3 className="title">{plan.planName}</h3>
         <p className="description">작성자 : {plan.memberNickname}</p>
         <p className="date">
-          {plan.startDate}~{plan.endDate}
+          {plan.startDate} ~ {plan.endDate}
         </p>
       </div>
     </div>
