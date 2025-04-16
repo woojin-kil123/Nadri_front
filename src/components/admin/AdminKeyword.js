@@ -78,6 +78,23 @@ const AdminKeyword = () => {
       .get(`${process.env.REACT_APP_BACK_SERVER}/admin/keyword/${keyword}`)
       .then((res) => {
         setFormData(res.data);
+      })
+      .catch((err) => {
+        Swal.fire({
+          icon: "warning",
+          title: "조회 실패",
+          text: "조회 결과가 없습니다.",
+        }).then(() => {
+          setFormData({
+            keyword: "",
+            placeType: "",
+            cat1: "",
+            cat2: "",
+            cat3: "",
+            area: "",
+            placeId: "",
+          });
+        });
       });
   };
   const updateKeyword = () => {
@@ -90,7 +107,7 @@ const AdminKeyword = () => {
           }).then(() => {
             setFormData({
               keyword: "",
-              placeType: 0,
+              placeType: "",
               cat1: "",
               cat2: "",
               cat3: "",
