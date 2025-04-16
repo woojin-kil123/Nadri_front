@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Checkbox } from "@mui/material";
+import { Checkbox, Tooltip } from "@mui/material";
 import { Bookmark, BookmarkBorder } from "@mui/icons-material";
 
 const ToggleBookmark = ({ bookmarked, objectNo, controllerUrl }) => {
@@ -47,15 +47,17 @@ const ToggleBookmark = ({ bookmarked, objectNo, controllerUrl }) => {
 
   return (
     <div className="close-btn">
-      <Checkbox
-        sx={{ m: 1 }}
-        size="large"
-        checked={bookmarkState}
-        onClick={(e) => e.stopPropagation()} // 이거 꼭 필요!
-        onChange={handleClick}
-        icon={<BookmarkBorder />}
-        checkedIcon={<Bookmark />}
-      />
+      <Tooltip title="북마크">
+        <Checkbox
+          sx={{ m: 1 }}
+          size="medium"
+          checked={bookmarkState}
+          onClick={(e) => e.stopPropagation()} // 이거 꼭 필요!
+          onChange={handleClick}
+          icon={<BookmarkBorder />}
+          checkedIcon={<Bookmark />}
+        />
+      </Tooltip>
     </div>
   );
 };

@@ -2,6 +2,7 @@ import { Close, Delete } from "@mui/icons-material";
 import dayjs from "dayjs";
 import { Link, useParams } from "react-router-dom";
 import ToggleBookmark from "./utils/ToggleBookmark";
+import DeletePlannerButton from "./utils/DeletePlannerButton";
 
 const PlannerView = (props) => {
   const {
@@ -43,6 +44,7 @@ const PlannerView = (props) => {
           setOpenOverlay={setOpenOverlay}
           setMapCenter={setMapCenter}
           bookmarked={bookmarked}
+          isOwner={isOwner}
         />
       ) : (
         <div
@@ -86,9 +88,9 @@ const Planner = (props) => {
   const setOpenOverlay = props.setOpenOverlay;
   const setMapCenter = props.setMapCenter;
   const bookmarked = props.bookmarked;
+  const isOwner = props.isOwner;
 
   const { planNo } = useParams();
-  const ctrlUrl = "/plan";
 
   return (
     <div className={`planner-wrap ${plannerMode === "view" ? "full" : ""}`}>
@@ -97,11 +99,15 @@ const Planner = (props) => {
           <div className="logo planner-logo">
             <Link to="/">NADRI</Link>
           </div>
-          <ToggleBookmark
-            bookmarked={bookmarked}
-            objectNo={planNo}
-            controllerUrl={ctrlUrl}
-          />
+          {!isOwner ? (
+            <ToggleBookmark
+              bookmarked={bookmarked}
+              objectNo={planNo}
+              controllerUrl={"/plan"}
+            />
+          ) : (
+            <DeletePlannerButton objectNo={planNo} />
+          )}
         </>
       )}
       {plannerMode === "write" && (
