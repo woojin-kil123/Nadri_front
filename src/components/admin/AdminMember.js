@@ -68,14 +68,13 @@ const AdminMember = () => {
       <table className="admin-table member-tbl tbl">
         <thead>
           <tr>
-            <th style={{ width: "7%" }}>번호</th>
-            <th style={{ width: "13%" }}>닉네임</th>
+            <th style={{ width: "10%" }}>번호</th>
+            <th style={{ width: "15%" }}>닉네임</th>
             <th style={{ width: "15%" }}>전화번호</th>
             <th style={{ width: "20%" }}>이메일</th>
             <th style={{ width: "15%" }}>생년월일</th>
-            <th style={{ width: "7%" }}>경고</th>
-            <th style={{ width: "13%" }}>레벨</th>
-            <th style={{ width: "12%" }}>관리</th>
+            <th style={{ width: "10%" }}>경고</th>
+            <th style={{ width: "15%" }}>관리</th>
           </tr>
         </thead>
         <tbody>
@@ -87,17 +86,6 @@ const AdminMember = () => {
               <td>{m.memberEmail}</td>
               <td>{m.memberBirth}</td>
               <td>{m.warningStack}</td>
-              <td>
-                <select
-                  value={m.memberLevel}
-                  onChange={(e) =>
-                    handleLevelChange(m.memberNo, e.target.value)
-                  }
-                >
-                  <option value={1}>일반</option>
-                  <option value={2}>관리자</option>
-                </select>
-              </td>
               <td>
                 <button onClick={() => handleKick(m.memberNo)}>강퇴</button>
               </td>
