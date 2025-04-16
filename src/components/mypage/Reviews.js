@@ -35,9 +35,6 @@ const Reviews = () => {
       case "todo":
         message = "내가 쓴 즐길거리 리뷰가 없습니다.";
         break;
-      case "planner":
-        message = "내가 쓴 플래너 리뷰가 없습니다.";
-        break;
       default:
         message = "";
     }
@@ -58,7 +55,7 @@ const Reviews = () => {
 
   // 페이지가 로드될 때 자동으로 "다가오는 플래너"로 설정
   useEffect(() => {
-    changeContent("room");
+    changeContent("spot");
   }, []);
 
   return (
@@ -68,17 +65,8 @@ const Reviews = () => {
         <nav className="manage-nav">
           <ul>
             <li
-              className={content === "room" ? "active-link" : ""}
-              style={{ width: "20%" }}
-              onClick={() => {
-                changeContent("room");
-              }}
-            >
-              숙소
-            </li>
-            <li
               className={content === "spot" ? "active-link" : ""}
-              style={{ width: "20%" }}
+              style={{ width: "25%" }}
               onClick={() => {
                 changeContent("spot");
               }}
@@ -86,17 +74,8 @@ const Reviews = () => {
               관광지
             </li>
             <li
-              className={content === "food" ? "active-link" : ""}
-              style={{ width: "20%" }}
-              onClick={() => {
-                changeContent("food");
-              }}
-            >
-              음식
-            </li>
-            <li
               className={content === "todo" ? "active-link" : ""}
-              style={{ width: "20%" }}
+              style={{ width: "25%" }}
               onClick={() => {
                 changeContent("todo");
               }}
@@ -104,13 +83,22 @@ const Reviews = () => {
               즐길거리
             </li>
             <li
-              className={content === "planner" ? "active-link" : ""}
-              style={{ width: "20%" }}
+              className={content === "room" ? "active-link" : ""}
+              style={{ width: "25%" }}
               onClick={() => {
-                changeContent("planner");
+                changeContent("room");
               }}
             >
-              플래너
+              숙박
+            </li>
+            <li
+              className={content === "food" ? "active-link" : ""}
+              style={{ width: "25%" }}
+              onClick={() => {
+                changeContent("food");
+              }}
+            >
+              음식점
             </li>
           </ul>
         </nav>
@@ -123,7 +111,7 @@ const Reviews = () => {
               <p>지금 새로운 리뷰를 작성해보세요.</p>
               <button
                 className="manage-button"
-                onClick={() => navigate("/review")}
+                onClick={() => navigate("/place")}
               >
                 리뷰 쓰러가기
               </button>
