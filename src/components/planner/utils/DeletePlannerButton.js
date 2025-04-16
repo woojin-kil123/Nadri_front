@@ -18,7 +18,11 @@ const DeletePlannerButton = ({ objectNo }) => {
       )
       .then((res) => {
         if (res.data == 1) {
-          navigate("/mypage/planners");
+          Swal.fire({
+            title: "삭제 완료",
+            icon: "success",
+            confirmButtonText: "확인",
+          }).then(() => navigate("/mypage/planners"));
         }
       })
       .catch((err) => {
