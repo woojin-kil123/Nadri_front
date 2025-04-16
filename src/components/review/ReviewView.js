@@ -262,7 +262,7 @@ const ReviewView = () => {
         <div className="review-left">
           <div className="place-card">
             <img
-              src={placeInfo.placeThumb || "/image/default_img.png"}
+              src={placeInfo.placeThumb || "/image/default_thumb.png"}
               alt="장소 이미지"
               className="review-image"
             />

@@ -80,7 +80,7 @@ const ReviewWrite = () => {
         <h2 className="page-title2">방문하신 시설은 만족스러우셨나요?</h2>
         <div className="place-card">
           <img
-            src={placeInfo.placeThumb || "/image/default_img.png"}
+            src={placeInfo.placeThumb || "/image/default_thumb.png"}
             alt="장소 이미지"
             className="review-image"
           />
