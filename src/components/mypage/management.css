@@ -62,18 +62,6 @@
   background-color: #166139;
 }
 
-.place-wrap .card {
-  background: white;
-  border-radius: 16px;
-  overflow: hidden;
-  cursor: pointer;
-  /* transition: transform 0.2s ease, box-shadow 0.2s ease; */
-}
-
-.place-wrap .card:hover {
-  box-shadow: #888;
-}
-
 .posting-wrap > .posting-item {
   width: calc(100% / 3);
 }
