@@ -98,7 +98,11 @@ const PlaceDetail = () => {
   const [overviewLoading, setOverviewLoading] = useState(false);
 
   useEffect(() => {
-    if (!place?.placeOverview && place?.placeId && !overviewLoading) {
+    if (
+      !overviewLoading &&
+      place?.placeId &&
+      (place?.placeOverview === undefined || place?.placeOverview === null)
+    ) {
       setOverviewLoading(true); // 요청 1회만 수행
 
       axios
@@ -109,9 +113,11 @@ const PlaceDetail = () => {
             placeOverview: res.data.placeOverview,
           }));
         })
-        .catch((err) => {});
+        .catch((err) => {
+          console.error("개요 fetch 실패:", err);
+        });
     }
-  }, [placeId, overviewLoading]);
+  }, [place, overviewLoading]);
 
   const handleHeartClick = (e) => {
     e.stopPropagation();
@@ -389,13 +395,17 @@ const PlaceDetail = () => {
           <div className="main-description">
             <strong>개요</strong>
             {editMode ? (
-              <textarea
-                className="place-overview-textarea"
-                name="placeOverview"
-                value={editPlace.placeOverview ?? ""}
-                onChange={handleChange}
-              />
-            ) : place.placeOverview ? (
+              editPlace ? (
+                <textarea
+                  className="place-overview-textarea"
+                  name="placeOverview"
+                  value={editPlace.placeOverview ?? ""}
+                  onChange={handleChange}
+                />
+              ) : (
+                <p>개요 수정 정보를 불러오는 중입니다...</p>
+              )
+            ) : place?.placeOverview ? (
               <p>{place.placeOverview}</p>
             ) : (
               <p>개요 정보를 불러오는 중입니다...</p>

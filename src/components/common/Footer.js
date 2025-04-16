@@ -24,7 +24,7 @@ export default function Footer() {
         <div className="footer-left">
           <div className="footer-text">
             <div className="footer-logo">
-              <img src="/image/nadri_logo.svg" />
+              <img src="/image/logo_icon_white.png" />
             </div>
             <ul className="footer-info">
               {company && (
