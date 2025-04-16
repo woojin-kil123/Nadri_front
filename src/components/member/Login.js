@@ -97,8 +97,6 @@ const Login = () => {
     axios
       .post(`${process.env.REACT_APP_BACK_SERVER}/member/login`, member)
       .then((res) => {
-        console.log(res);
-        console.log(res.data);
         if (res.data === "") {
           Swal.fire({
             text: "강제탈퇴 된 회원입니다.",
@@ -112,12 +110,9 @@ const Login = () => {
                   member
                 )
                 .then((res) => {
-                  console.log(res);
                   navigate("/");
                 })
-                .catch((err) => {
-                  console.error(err);
-                });
+                .catch((err) => {});
             }
           });
         } else {
@@ -132,7 +127,6 @@ const Login = () => {
         navigate("/"); // 로그인 후 홈으로 이동
       })
       .catch((err) => {
-        console.log(err);
         // 로그인 실패 시 경고 메시지 표시
         Swal.fire({
           text: "아이디 또는 비밀번호를 확인하세요.",
@@ -272,7 +266,7 @@ const Login = () => {
 
 const REST_API_KEY = process.env.REACT_APP_REST_API_KEY;
 const REDIRECT_URL = process.env.REACT_APP_REDIRECT_URL;
-const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URL}&response_type=code`;
+const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${"0f9506fb15c78477c1e301647bd62df2"}&redirect_uri=${"http://192.168.10.20:3000/login/kakao"}&response_type=code`;
 
 const handleKakaoLogin = () => {
   window.location.href = kakaoURL; //kakaoURL로 이동

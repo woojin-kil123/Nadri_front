@@ -7,6 +7,7 @@ import PageNavigation from "../utils/PageNavigtion";
 import { useRecoilValue } from "recoil";
 import { isLoginState, loginNicknameState } from "../utils/RecoilData";
 import { convertFiltersToCodes } from "../utils/FilterMap";
+import { CircularProgress } from "@mui/material";
 
 const PlaceList = () => {
   const [selectedFilters, setSelectedFilters] = useState([]);
@@ -50,9 +51,7 @@ const PlaceList = () => {
           setPi(res.data.pi);
           setTotalCount(res.data.totalCount);
         })
-        .catch((err) => {
-          console.log("전체목록 조회 실패", err);
-        });
+        .catch((err) => {});
     } else {
       axios
         .post(`${backServer}/place/filter`, {
@@ -67,50 +66,80 @@ const PlaceList = () => {
           setPi(res.data.pi);
           setTotalCount(res.data.totalCount);
         })
-        .catch((err) => {
-          console.log("세부필터 목록 조회 실패", err);
-        });
+        .catch((err) => {});
     }
   }, [reqPage, selectedPlaceTypeId, selectedFilters, order]);
-
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 800); // ⏱ 2초 후 로딩 해제
+    return () => clearTimeout(timer); // cleanup
+  }, []);
   return (
-    <div className="place-wrap">
-      <div className="page-title">나드리와 함께 나들이를 계획해요</div>
-      <div className="page-content">
-        <div className="placelist-side">
-          <section className="section menu-box">
-            <LeftSideMenu
-              menus={menus}
-              selectedMenu={selectedPlaceTypeId}
-              setSelectedMenu={setSelectedPlaceTypeId}
-              selectedFilters={selectedFilters}
-              setSelectedFilters={setSelectedFilters}
+    <>
+      {loading && (
+        <div className="loading">
+          <CircularProgress
+            size={60}
+            thickness={3}
+            color="inherit"
+            sx={{
+              "& circle": {
+                stroke: "#27b778",
+              },
+            }}
+          />
+          <div className="spinner-wrap">
+            <img
+              src="/image/nadri_logo.svg"
+              alt="로딩 중"
+              className="loading-image"
             />
-          </section>
+            <p className="loading-text">잠시만 기다려 주세요...</p>
+          </div>
         </div>
-        <div className="placelist-content">
-          <div className="placelist option-box">
-            {totalCount && <div>총 {totalCount.toLocaleString()}개</div>}
-            <div>
-              <select onChange={changeOrder}>
-                <option value={1}>리뷰 많은순</option>
-                <option value={2}>별점 높은순</option>
-                <option value={3}>추천순</option>
-              </select>
+      )}
+      <div className="place-wrap">
+        <div className="page-title">나드리와 함께 나들이를 계획해요</div>
+        <div className="page-content">
+          <div className="placelist-side">
+            <section className="section menu-box">
+              <LeftSideMenu
+                menus={menus}
+                selectedMenu={selectedPlaceTypeId}
+                setSelectedMenu={setSelectedPlaceTypeId}
+                selectedFilters={selectedFilters}
+                setSelectedFilters={setSelectedFilters}
+              />
+            </section>
+          </div>
+          <div className="placelist-content">
+            <div className="placelist option-box">
+              {totalCount && <div>총 {totalCount.toLocaleString()}개</div>}
+              <div>
+                <select onChange={changeOrder}>
+                  <option value={1}>리뷰 많은순</option>
+                  <option value={2}>별점 높은순</option>
+                  <option value={3}>추천순</option>
+                </select>
+              </div>
             </div>
-          </div>
-          <div className="place-card-wrap">
-            {Array.isArray(cards) &&
-              placeList.map((card, i) => {
-                return <ListCard key={"card-" + i} place={card} />;
-              })}
-          </div>
-          <div className="pageNavi-box">
-            <PageNavigation pi={pi} reqPage={reqPage} setReqPage={setReqPage} />
+            <div className="place-card-wrap">
+              {Array.isArray(cards) &&
+                placeList.map((card, i) => {
+                  return <ListCard key={"card-" + i} place={card} />;
+                })}
+            </div>
+            <div className="pageNavi-box">
+              <PageNavigation
+                pi={pi}
+                reqPage={reqPage}
+                setReqPage={setReqPage}
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

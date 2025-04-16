@@ -25,7 +25,7 @@ const ReviewWrite = () => {
         `${process.env.REACT_APP_BACK_SERVER}/place/detail?placeId=${placeId}`
       )
       .then((res) => setPlaceInfo(res.data))
-      .catch((err) => console.log(err));
+      .catch((err) => {});
   }, [placeId]);
 
   const fileChange = (e) => {
@@ -65,13 +65,10 @@ const ReviewWrite = () => {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
-        console.log(res);
         alert("리뷰가 성공적으로 등록되었습니다!");
         navigate("/review");
       })
       .catch((err) => {
-        console.log(err);
-
         alert("리뷰 등록에 실패했습니다.");
       });
   };
@@ -83,7 +80,7 @@ const ReviewWrite = () => {
         <h2 className="page-title2">방문하신 시설은 만족스러우셨나요?</h2>
         <div className="place-card">
           <img
-            src={placeInfo.placeThumb || "/image/default_img.png"}
+            src={placeInfo.placeThumb || "/image/default_thumb.png"}
             alt="장소 이미지"
             className="review-image"
           />

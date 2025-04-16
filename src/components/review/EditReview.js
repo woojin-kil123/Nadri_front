@@ -23,14 +23,13 @@ const EditReview = () => {
     axios
       .get(`${process.env.REACT_APP_BACK_SERVER}/review/${reviewNo}`)
       .then((res) => {
-        console.log(res);
         setTitle(res.data.reviewTitle);
         setContent(res.data.reviewContent);
         setRating(res.data.starRate);
         setPlaceId(res.data.placeId);
         // 기존 이미지 미리보기를 위해 필요시 여기서 불러오기 추가 가능
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {});
   }, [reviewNo]);
   useEffect(() => {
     if (reviewNo) {
@@ -39,13 +38,10 @@ const EditReview = () => {
           `${process.env.REACT_APP_BACK_SERVER}/review/reviewImage?reviewNo=${reviewNo}`
         )
         .then((res) => {
-          console.log(res);
           setFiles(res.data); // res.data는 PlaceImgDTO 리스트여야 함
           setFilePreviews(res.data);
         })
-        .catch((err) => {
-          console.log("리뷰 이미지 불러오기 실패:", err);
-        });
+        .catch((err) => {});
     }
   }, []);
   const fileChange = (e) => {
@@ -104,12 +100,10 @@ const EditReview = () => {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
-        console.log(res);
         alert("리뷰가 성공적으로 수정되었습니다!");
         navigate("/review");
       })
       .catch((err) => {
-        console.log(err);
         alert("리뷰 수정에 실패했습니다.");
       });
   };
@@ -162,7 +156,7 @@ const EditReview = () => {
               {[
                 ...files.map((img, index) => ({
                   type: "existing",
-                  src: `${process.env.REACT_APP_BACK_SERVER}/place/image/${img.filepath}`,
+                  src: `${process.env.REACT_APP_BACK_SERVER}/assets/place/image/${img.filepath}`,
                   onClick: () => remove(index),
                 })),
                 ...newFilePreviews.map((src, index) => ({

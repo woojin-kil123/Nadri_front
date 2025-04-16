@@ -14,8 +14,11 @@ export default function MypageListCard(props) {
   const memberNickname = useRecoilValue(loginNicknameState);
   const navigate = useNavigate();
   const place = props.place;
+  const bookmark = props.bookmark;
+  const setBookmark = props.setBookmark;
   const [bookmarked, setBookmarked] = useState(place.bookmarked);
   const [liked, setLiked] = useState(false);
+
   const handleClick = () => {
     setLiked((prev) => !prev);
   };
@@ -34,11 +37,15 @@ export default function MypageListCard(props) {
         }
       )
       .then((res) => {
-        setBookmarked(res.data);
+        if (res.data === 0) {
+          const data = bookmark.filter((item) => {
+            return item !== place;
+          });
+
+          setBookmark(data);
+        }
       })
-      .catch((err) => {
-        console.error("좋아요 토글 실패:", err);
-      });
+      .catch((err) => {});
   };
 
   const handleHeartClick = (e) => {
@@ -61,8 +68,6 @@ export default function MypageListCard(props) {
     setBookmarked(place.bookmarked);
   }, [place.bookmarked]);
 
-  console.log(bookmarked);
-
   return (
     <>
       {!place ? (
@@ -76,7 +81,9 @@ export default function MypageListCard(props) {
         >
           <div className="image-container">
             <img
-              src={place.placeThumb ? place.placeThumb : "/image/dora.png"}
+              src={
+                place.placeThumb ? place.placeThumb : "/image/default_thumb.png"
+              }
               className="card-image"
               alt={place.placeTitle}
             />

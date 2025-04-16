@@ -90,8 +90,10 @@
   width: 310px;
   height: 50px;
   border: none;
+  background-color: transparent;
   border-bottom: 1px solid rgb(233, 233, 233);
   color: rgb(160, 160, 160);
+  text-indent: 5px;
 }
 .info-wrap {
   float: left;
@@ -126,9 +128,12 @@
   color: rgb(160, 160, 160);
 }
 .delete-user-title {
-  margin-top: 50px;
+  width: 82%;
+  margin-top: 20px;
+  padding: 10px 20px;
   font-size: 17px;
   color: rgb(97, 97, 97);
+  border-top: 1px solid rgb(233, 233, 233);
 }
 .delete-user-title > button {
   font-weight: 600;
@@ -223,9 +228,12 @@
 label[for="check2"] {
   height: 70px; /* 원하는 height 값 */
 }
-.join-chevron-icon {
-}
+
 .agree-content2 > h3 {
   margin-top: 10px;
   margin-bottom: 5px;
+}
+.section > .mypage-info-wrap {
+  display: flex;
+  flex-direction: column;
 }

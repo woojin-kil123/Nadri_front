@@ -1,7 +1,7 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { placeTypeState } from "../utils/RecoilData";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { Box, Pagination, Stack, Tab, Tabs } from "@mui/material";
 import ListCard from "../utils/ListCard";
@@ -14,7 +14,6 @@ const SearchResult = () => {
   const queryParams = new URLSearchParams(location.search);
   const [query, setQuery] = useState(null);
   const [typeId, setTypeId] = useState(null);
-  const placeType = useRecoilValue(placeTypeState);
   const [placeResult, setPlaceResult] = useState(null);
   const [planResult, setPlanResult] = useState(null);
   const [reviewResult, setReviewResult] = useState(null);
@@ -33,7 +32,6 @@ const SearchResult = () => {
       axios
         .get(`${process.env.REACT_APP_BACK_SERVER}/search?query=${query}`)
         .then((res) => {
-          console.log(res.data);
           setPlaceResult(res.data.place);
           setPlanResult(res.data.plan);
           setReviewResult(res.data.review);
@@ -50,32 +48,20 @@ const SearchResult = () => {
           setOn={setOnContent}
         />
         <div className="result-wrap">
-          {placeResult && (
-            <>
-              {onContent === 1 && (
-                <>
-                  <Result result={placeResult} onContent={onContent} />
-                </>
-              )}
-            </>
+          {onContent === 1 && (
+            <Result
+              result={placeResult || { list: [] }}
+              onContent={onContent}
+            />
           )}
-          {planResult && (
-            <>
-              {onContent === 2 && (
-                <>
-                  <Result result={planResult} onContent={onContent} />
-                </>
-              )}
-            </>
+          {onContent === 2 && (
+            <Result result={planResult || { list: [] }} onContent={onContent} />
           )}
-          {reviewResult && (
-            <>
-              {onContent === 3 && (
-                <>
-                  <Result result={reviewResult} onContent={onContent} />
-                </>
-              )}
-            </>
+          {onContent === 3 && (
+            <Result
+              result={reviewResult || { list: [] }}
+              onContent={onContent}
+            />
           )}
         </div>
       </section>
@@ -111,46 +97,68 @@ const FilterNavWithPanel = ({ categories, on, setOn }) => {
     </Box>
   );
 };
+
 const Result = ({ result, onContent }) => {
+  const [index, setIndex] = useState(1);
+  const [showList, setShowList] = useState([]);
+
+  useEffect(() => {
+    setIndex(1);
+  }, [result]);
+
+  useEffect(() => {
+    if (Array.isArray(result?.list)) {
+      const sliced = result.list.slice((index - 1) * 9, index * 9);
+      setShowList(sliced);
+    } else {
+      setShowList([]);
+    }
+  }, [index, result]);
+
+  // list가 없거나 빈 배열이면 메시지 출력
+  if (!Array.isArray(result?.list) || result.list.length === 0) {
+    return (
+      <h3 style={{ textAlign: "center", marginTop: "2rem" }}>
+        검색결과가 없습니다.
+      </h3>
+    );
+  }
+
   return (
     <>
-      {result.list.length > 0 ? (
-        <>
-          <div className="place-wrap">
-            {onContent === 1 &&
-              result.list.map((item, i) => (
-                <ListCard key={"card-" + i} place={item} />
-              ))}
-            {onContent === 2 &&
-              result.list.map((item, i) => (
-                <PlanCard key={"card-" + i} plan={item} />
-              ))}
-            {onContent === 3 &&
-              result.list.map((item, i) => (
-                <ReviewCard key={"card-" + i} review={item} />
-              ))}
-          </div>
-          <div className="pageNavi-box">
-            <Stack spacing={2}>
-              <Pagination
-                count={Math.ceil(result.list.length / 9)}
-                sx={{
-                  "& .Mui-selected": {
-                    backgroundColor: "var(--main2)",
-                    color: "#fff",
-                    borderRadius: "50%",
-                  },
-                  "& .MuiPaginationItem-root": {
-                    borderRadius: "50%",
-                  },
-                }}
-              />
-            </Stack>
-          </div>
-        </>
-      ) : (
-        <h3>검색결과가 없습니다.</h3>
-      )}
+      <div className="place-wrap">
+        {onContent === 1 &&
+          showList.map((item) => (
+            <ListCard key={"PlaceCard-" + item.placeId} place={item} />
+          ))}
+        {onContent === 2 &&
+          showList.map((item) => (
+            <PlanCard key={"planCard-" + item.planNo} plan={item} />
+          ))}
+        {onContent === 3 &&
+          showList.map((item) => (
+            <ReviewCard key={"ReviewCard-" + item.reviewNo} review={item} />
+          ))}
+      </div>
+      <div className="pageNavi-box">
+        <Stack spacing={2}>
+          <Pagination
+            page={index}
+            onChange={(e, value) => setIndex(value)}
+            count={Math.ceil(result.list.length / 9)}
+            sx={{
+              "& .Mui-selected": {
+                backgroundColor: "var(--main2)",
+                color: "#fff",
+                borderRadius: "50%",
+              },
+              "& .MuiPaginationItem-root": {
+                borderRadius: "50%",
+              },
+            }}
+          />
+        </Stack>
+      </div>
     </>
   );
 };
@@ -199,12 +207,15 @@ const ReviewCard = ({ review }) => {
         backgroundImage: `url(${thumbUrl})`,
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
+        borderRadius: "10px",
+        marginBottom: "20px",
+        cursor: "pointer",
       }}
       onClick={() => {
         navigate(`/review/detail/${review.reviewNo}`);
       }}
     >
-      <div className="card-content">
+      <div className="card-content" style={{ width: "100%" }}>
         <StarRating rating={review.starRate} />
         <p className="score">{review.placeTitle}</p>
         <h3 className="title">{review.reviewTitle}</h3>

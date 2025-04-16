@@ -128,9 +128,9 @@ const AdminMain = () => {
                     <th>순위</th>
                     <th>ID</th>
                     <th>이름</th>
-                    <th>분류</th>
+                    <th style={{ width: "15%" }}>분류</th>
                     <th>주소</th>
-                    <th>방문 횟수</th>
+                    <th style={{ width: "10%" }}>횟수</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -143,7 +143,7 @@ const AdminMain = () => {
                         }}
                         style={{ cursor: "pointer" }}
                       >
-                        <td>{i + 1}</td>
+                        <td style={{ height: "40px" }}>{i + 1}</td>
                         <td>{place.placeId}</td>
                         <td>{place.placeTitle}</td>
                         <td>
@@ -158,8 +158,8 @@ const AdminMain = () => {
                       </tr>
                     ))}
                   <tr>
-                    <th>총 플랜</th>
-                    <td colSpan={5}>{planStat && `${planStat.planCount}개`}</td>
+                    <th colSpan={2}>총 플랜</th>
+                    <td colSpan={4}>{planStat && `${planStat.planCount}개`}</td>
                   </tr>
                 </tbody>
               </table>

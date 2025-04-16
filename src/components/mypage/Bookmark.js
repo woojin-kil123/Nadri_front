@@ -46,12 +46,9 @@ const Bookmark = () => {
         `${process.env.REACT_APP_BACK_SERVER}/mypage/bookmark?nickname=${memberNickname}&value=${value}`
       )
       .then((res) => {
-        console.log(res.data);
         setBookmark(res.data.list);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 
   // 페이지가 로드될 때 자동으로 "다가오는 플래너"로 설정
@@ -121,7 +118,14 @@ const Bookmark = () => {
             <ul className="posting-wrap">
               {Array.isArray(cards) &&
                 bookmark.map((card, i) => {
-                  return <MypageListCard key={"card-" + i} place={card} />;
+                  return (
+                    <MypageListCard
+                      key={"card-" + i}
+                      place={card}
+                      bookmark={bookmark}
+                      setBookmark={setBookmark}
+                    />
+                  );
                 })}
             </ul>
           )}

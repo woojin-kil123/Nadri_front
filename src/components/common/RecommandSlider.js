@@ -20,9 +20,7 @@ export default function RecommandSlider({ on, content }) {
           .then((res) => {
             setCards(res.data.list);
           })
-          .catch((err) => {
-            console.log(err);
-          });
+          .catch((err) => {});
 
         break;
       case "plan":
@@ -31,12 +29,11 @@ export default function RecommandSlider({ on, content }) {
           .get(
             `${
               process.env.REACT_APP_BACK_SERVER
-            }/plan?reqPage=${1}&order=${on}&loginNickanme=${
+            }/plan?reqPage=${1}&order=${on}&loginNickname=${
               loginNickname ? loginNickname : ""
             }`
           )
           .then((res) => {
-            console.log(res.data);
             setCards(res.data);
           });
         break;
@@ -97,6 +94,7 @@ const PlanCard = ({ plan }) => {
 
         <ToggleBookmark
           bookmarked={bookmarked}
+          setBookmarked={setBookmarked}
           objectNo={plan.planNo}
           controllerUrl={"/plan"}
         />
@@ -105,7 +103,7 @@ const PlanCard = ({ plan }) => {
         <h3 className="title">{plan.planName}</h3>
         <p className="description">작성자 : {plan.memberNickname}</p>
         <p className="date">
-          {plan.startDate}~{plan.endDate}
+          {plan.startDate} ~ {plan.endDate}
         </p>
       </div>
     </div>

@@ -25,8 +25,6 @@ const UpdateInfo = () => {
         `${process.env.REACT_APP_BACK_SERVER}/member/memberInfo?memberNickname=${loginNickname}`
       )
       .then((res) => {
-        console.log(res);
-        console.log(res.data);
         setMember(res.data);
 
         // 서버에서 프로필 이미지가 있다면 그 이미지로 설정
@@ -45,9 +43,7 @@ const UpdateInfo = () => {
           setDay(birthDay);
         }
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   }, [loginNickname]);
 
   // 회원 정보 입력 필드 업데이트 핸들러
@@ -71,16 +67,13 @@ const UpdateInfo = () => {
             `${process.env.REACT_APP_BACK_SERVER}/member/exists?memberNickname=${member.memberNickname}`
           )
           .then((res) => {
-            console.log(res);
             if (res.data === 0) {
               setNicknameCheck(1); // 사용 가능한 닉네임
             } else {
               setNicknameCheck(4); // 이미 사용중인 닉네임
             }
           })
-          .catch((err) => {
-            console.log(err); // 에러 발생 시 콘솔 출력
-          });
+          .catch((err) => {});
       } else {
         setNicknameCheck(3); // 유효하지 않은 닉네임
       }
@@ -207,14 +200,7 @@ const UpdateInfo = () => {
     if (sendProfileImg) {
       form.append("uploadProfile", sendProfileImg); // 실제 이미지 파일 객체를 추가
     }
-    console.log(member.memberEmail);
-    console.log(member.memberNickname);
-    console.log(member.memberPhone);
-    console.log(member.memberGender);
-    console.log(member.memberBirth);
-    console.log(member.profileImg);
-    console.log(sendProfileImg);
-    console.log(form);
+
     axios
       .patch(`${process.env.REACT_APP_BACK_SERVER}/member`, form, {
         headers: {
@@ -223,7 +209,6 @@ const UpdateInfo = () => {
         },
       })
       .then((res) => {
-        console.log(res);
         Swal.fire({
           title: "정보 수정 완료!",
           text: "회원 정보가 성공적으로 수정되었습니다.",
@@ -236,7 +221,6 @@ const UpdateInfo = () => {
         });
       })
       .catch((err) => {
-        console.log(err);
         Swal.fire({
           title: "오류 발생",
           text: "정보 수정 중 오류가 발생했습니다. 다시 시도해주세요.",
@@ -246,7 +230,6 @@ const UpdateInfo = () => {
         });
       });
   };
-  console.log("test", year, month, day, days);
   return (
     <div>
       <h1 className="mypage-menu-title">회원 정보 수정</h1>
@@ -398,7 +381,7 @@ const UpdateInfo = () => {
                           <option
                             key={yearOption}
                             value={yearOption}
-                            selected={yearOption === year}
+                            // selected={yearOption === year}
                           >
                             {yearOption}
                           </option>

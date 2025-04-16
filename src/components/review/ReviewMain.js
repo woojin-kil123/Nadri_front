@@ -19,13 +19,10 @@ const ReviewMain = () => {
         `${process.env.REACT_APP_BACK_SERVER}/review?reqPage=${reqPage}&type=${content}`
       )
       .then((res) => {
-        console.log(res);
         setReview(res.data.list);
         setPi(res.data.pi);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   }, [reqPage, content]);
   //타입에 따른 데이터
   const changeContnent = (value) => {
@@ -106,7 +103,7 @@ const ReviewItem = (props) => {
     >
       <div className="posting-thumb">
         <img
-          src={review.placeThumb || "/image/default_img.png"}
+          src={review.placeThumb || "/image/default_thumb.png"}
           className="place-image"
           alt=""
         />

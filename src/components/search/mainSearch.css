@@ -32,3 +32,11 @@
 .pageNavi-box .css-etfcq2-MuiPagination-root .Mui-selected:hover {
   background-color: var(--main2);
 }
+.search-result button {
+  font-size: 18px;
+}
+.search-result .css-1usuzwp-MuiButtonBase-root-MuiTab-root.Mui-selected {
+  font-size: 18px;
+  font-family: ns-b;
+  color: #27b778;
+}

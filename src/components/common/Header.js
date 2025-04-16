@@ -26,7 +26,7 @@ import MainSearch from "../search/MainSearch";
 
 const Header = () => {
   const isLogin = useRecoilValue(isLoginState);
-  console.log(isLogin);
+
   return (
     <header className="header">
       <div className="logo">
@@ -91,18 +91,18 @@ const HeaderLink = (props) => {
       }),
     new DropdownItem(<Logout />, "로그아웃", logout),
   ].filter(Boolean);
-  const alarmMenu = [
-    new DropdownItem(<TagFacesIcon />, "안녕하세요", null),
-    new DropdownItem(<TagFacesIcon />, "잘가요", null),
-  ];
+  // const alarmMenu = [
+  //   new DropdownItem(<TagFacesIcon />, "안녕하세요", null),
+  //   new DropdownItem(<TagFacesIcon />, "잘가요", null),
+  // ];
+  // const [alarmEl, setAlarmEl] = useState(null);
+  // const alarmOpen = (e) => {
+  //   setAlarmEl(e.currentTarget);
+  // };
 
   const [accountEl, setAccountEl] = useState(null);
   const accountOpen = (e) => {
     setAccountEl(e.currentTarget);
-  };
-  const [alarmEl, setAlarmEl] = useState(null);
-  const alarmOpen = (e) => {
-    setAlarmEl(e.currentTarget);
   };
 
   return (
@@ -117,7 +117,7 @@ const HeaderLink = (props) => {
                 textAlign: "center",
               }}
             >
-              <IconButton
+              {/* <IconButton
                 onClick={alarmOpen}
                 size="small"
                 sx={{ ml: 2 }}
@@ -133,7 +133,7 @@ const HeaderLink = (props) => {
                   anchorEl={alarmEl}
                   setAnchorEl={setAlarmEl}
                 ></Dropdown>
-              </IconButton>
+              </IconButton> */}
               {/*<Tooltip title="Account settings"> */}
               <IconButton
                 onClick={accountOpen}
