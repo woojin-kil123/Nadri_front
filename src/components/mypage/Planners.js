@@ -115,8 +115,13 @@ const Planner = () => {
             </div>
           ) : content !== "3" ? (
             <ul className="posting-wrap">
-              {planner.map((planner, index) => (
-                <PlannerCard key={"planner-" + index} planner={planner} />
+              {planner.map((card, index) => (
+                <PlannerCard
+                  key={"planner-" + index}
+                  planner={card}
+                  cards={planner}
+                  setCards={setPlanner}
+                />
               ))}
             </ul>
           ) : (

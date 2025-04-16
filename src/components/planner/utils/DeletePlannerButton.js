@@ -6,11 +6,19 @@ import axios from "axios";
 import { IconButton, Tooltip } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 
-const DeletePlannerButton = ({ objectNo }) => {
+const DeletePlannerButton = (props) => {
   const isLogin = useRecoilValue(isLoginState);
   const memberNickname = useRecoilValue(loginNicknameState);
   const navigate = useNavigate();
+  const objectNo = props.objectNo;
+  const planner = props.planner;
+  const cards = props.cards;
+  const setCards = props.setCards;
+
   console.log(objectNo);
+  console.log(planner);
+  console.log(cards);
+  console.log(setCards);
 
   const deletePlanner = (objectNo) => {
     axios
@@ -23,7 +31,15 @@ const DeletePlannerButton = ({ objectNo }) => {
             title: "삭제 완료",
             icon: "success",
             confirmButtonText: "확인",
-          }).then(() => navigate("/mypage/planners"));
+          }).then(navigate("/mypage/planners"));
+          if (setCards) {
+            if (planner !== null) {
+              const data = cards.filter((item) => {
+                return item !== planner;
+              });
+              setCards(data);
+            }
+          }
         }
       })
       .catch((err) => {
