@@ -52,7 +52,7 @@ export default function PlannerCard(props) {
               src={
                 planner.placeThumb
                   ? `${process.env.REACT_APP_BACK_SERVER}/assets/plan/thumb/${planner.planThumb}`
-                  : "/image/dora.png"
+                  : "/image/default_thumb.png"
               }
               className="card3-image"
             />
