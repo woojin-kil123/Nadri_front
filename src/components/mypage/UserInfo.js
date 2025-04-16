@@ -20,9 +20,7 @@ const UserInfo = () => {
       .then((res) => {
         setMember(res.data);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   }, [loginNickname]);
 
   const formatBirthDate = (birthDate) => {
@@ -61,9 +59,7 @@ const UserInfo = () => {
               });
             }
           })
-          .catch((err) => {
-            console.log(err);
-          });
+          .catch((err) => {});
       }
     });
   };

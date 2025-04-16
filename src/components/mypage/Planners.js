@@ -43,12 +43,9 @@ const Planner = () => {
           `${process.env.REACT_APP_BACK_SERVER}/mypage/planner?nickname=${memberNickname}&value=${content}`
         )
         .then((res) => {
-          console.log(res);
           setPlanner(res.data.list);
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => {});
     } else if (content === "3") {
       axios
         .get(
@@ -57,7 +54,6 @@ const Planner = () => {
           }/plan?reqPage=${1}&order=${1}&loginNickname=${memberNickname}&isBookmark=true`
         )
         .then((res) => {
-          console.log(res);
           setCards(res.data);
         });
     }
@@ -150,7 +146,6 @@ const PlanCard = ({ plan, cards, setCards }) => {
 
     setCards(data);
   };
-  console.log(plan.bookmarked);
 
   const calculateDDay = (startDate, endDate) => {
     const today = new Date(); // 현재 날짜

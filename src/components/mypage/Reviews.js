@@ -15,8 +15,6 @@ const Reviews = () => {
   const [memberNickname, setMemberNickname] =
     useRecoilState(loginNicknameState);
 
-  console.log(memberNickname);
-
   const changeContent = (value) => {
     setContent(value);
 
@@ -45,12 +43,9 @@ const Reviews = () => {
         `${process.env.REACT_APP_BACK_SERVER}/mypage/reviews?nickname=${memberNickname}&value=${value}`
       )
       .then((res) => {
-        console.log(res);
         setReviews(res.data.list);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 
   // 페이지가 로드될 때 자동으로 "다가오는 플래너"로 설정

@@ -51,9 +51,7 @@ const PlaceList = () => {
           setPi(res.data.pi);
           setTotalCount(res.data.totalCount);
         })
-        .catch((err) => {
-          console.log("전체목록 조회 실패", err);
-        });
+        .catch((err) => {});
     } else {
       axios
         .post(`${backServer}/place/filter`, {
@@ -68,9 +66,7 @@ const PlaceList = () => {
           setPi(res.data.pi);
           setTotalCount(res.data.totalCount);
         })
-        .catch((err) => {
-          console.log("세부필터 목록 조회 실패", err);
-        });
+        .catch((err) => {});
     }
   }, [reqPage, selectedPlaceTypeId, selectedFilters, order]);
   const [loading, setLoading] = useState(true);

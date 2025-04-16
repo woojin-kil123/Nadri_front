@@ -13,8 +13,6 @@ const Join3 = () => {
   const [isPasswordVisible1, setIsPasswordVisible1] = useState(false);
   const [isPasswordVisible2, setIsPasswordVisible2] = useState(false);
 
-  console.log(email);
-
   useEffect(() => {
     if (!email) {
       Swal.fire({
@@ -108,16 +106,13 @@ const Join3 = () => {
           `${process.env.REACT_APP_BACK_SERVER}/member/exists?memberNickname=${member.memberNickname}`
         )
         .then((res) => {
-          console.log(res);
           if (res.data === 0) {
             setNicknameCheck(1); // 사용 가능한 닉네임
           } else {
             setNicknameCheck(3); // 이미 사용중인 닉네임
           }
         })
-        .catch((err) => {
-          console.log(err); // 에러 발생 시 콘솔 출력
-        });
+        .catch((err) => {});
     } else {
       setNicknameCheck(2); // 유효하지 않은 닉네임
     }
@@ -159,7 +154,6 @@ const Join3 = () => {
       return;
     }
 
-    console.log(member); // 회원 정보 확인
     axios
       .post(`${process.env.REACT_APP_BACK_SERVER}/member/join`, member) // 서버에 회원가입 요청
       .then((res) => {
@@ -222,7 +216,6 @@ const Join3 = () => {
   useEffect(() => {
     if (member.memberBirth) {
       // memberBirth가 변경될 때마다 콘솔 로그로 출력
-      console.log(member);
     }
   }, [member.memberBirth]); // memberBirth 상태에 의존
 

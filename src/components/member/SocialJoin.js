@@ -17,8 +17,6 @@ const SocialJoin = () => {
   const [isOpen5, setIsOpen5] = useState(false);
   const [isOpen6, setIsOpen6] = useState(false);
 
-  console.log(email);
-
   const [check1, setCheck1] = useState(false); // '약관 전체 동의' 상태
   const [check2, setCheck2] = useState(false);
   const [check3, setCheck3] = useState(false);
