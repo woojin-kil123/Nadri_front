@@ -191,6 +191,9 @@ const PlanCard = ({ plan }) => {
               bookmarked={bookmarked}
               objectNo={plan.planNo}
               controllerUrl={"/plan"}
+              onChange={(item) => {
+                item;
+              }}
             />
           </div>
           <div className="card3-content">

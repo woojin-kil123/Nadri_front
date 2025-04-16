@@ -319,3 +319,34 @@
 .popup-content > .event .description > p:last-child {
   align-self: flex-end;
 }
+
+.content .loading {
+  position: fixed;
+  top: 80px; /* header 높이만큼 */
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 80px);
+  background: var(--gray8); /* 배경 색상 커스텀 */
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.spinner-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.loading-image {
+  width: 80px; /* 원하는 크기 */
+  height: 80px;
+}
+
+.loading-text {
+  font-size: 16px;
+  color: var(--main1);
+  font-weight: bold;
+}
