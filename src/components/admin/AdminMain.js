@@ -105,7 +105,7 @@ const AdminMain = () => {
               </ResponsiveContainer>
             </div>
             <div className="description">
-              <h4>총 리뷰 </h4>
+              <h3>총 리뷰 </h3>
               {pieChartData &&
                 pieChartData.map((data, i) => (
                   <div key={"review-des" + i}>
@@ -125,7 +125,7 @@ const AdminMain = () => {
               <table className="tbl">
                 <thead>
                   <tr>
-                    <th>순위</th>
+                    <th style={{ width: "7%" }}>순위</th>
                     <th>ID</th>
                     <th>이름</th>
                     <th style={{ width: "15%" }}>분류</th>
