@@ -14,6 +14,7 @@ const Planner = () => {
   const [planner, setPlanner] = useState([]);
   const [cards, setCards] = useState(null);
   const [message, setMessage] = useState("");
+
   const [memberNickname, setMemberNickname] =
     useRecoilState(loginNicknameState);
   const changeContent = (value) => {
@@ -30,7 +31,7 @@ const Planner = () => {
         message = "지나간 플래너가 없습니다.";
         break;
       case "3":
-        message = "찜한 플래너가 없습니다.";
+        message = "즐겨찾기한 플래너가 없습니다.";
         break;
       default:
         message = "";
@@ -66,7 +67,6 @@ const Planner = () => {
   useEffect(() => {
     changeContent("1");
   }, []);
-
   return (
     <section className="section">
       <div className="page-title">플래너 관리</div>
@@ -98,7 +98,7 @@ const Planner = () => {
                 changeContent("3");
               }}
             >
-              찜한 플래너
+              즐겨찾기 한 플래너
             </li>
           </ul>
         </nav>
@@ -126,7 +126,13 @@ const Planner = () => {
           ) : (
             <ul className="posting-wrap">
               {cards.map((card, index) => (
-                <PlanCard key={"planCard-" + index} plan={card} />
+                <PlanCard
+                  key={"planCard-" + index}
+                  plan={card}
+                  cards={cards}
+                  setCards={setCards}
+                  index={index}
+                />
               ))}
             </ul>
           )}
@@ -136,9 +142,15 @@ const Planner = () => {
   );
 };
 
-const PlanCard = ({ plan }) => {
+const PlanCard = ({ plan, cards, setCards, index }) => {
   const navigate = useNavigate();
-  const [bookmarked, setBookmarked] = useState(plan.bookmarked);
+  const setBookmarked = () => {
+    const data = cards.filter((item) => {
+      return item !== plan;
+    });
+
+    setCards(data);
+  };
   console.log(plan.bookmarked);
 
   const calculateDDay = (startDate, endDate) => {
@@ -183,12 +195,13 @@ const PlanCard = ({ plan }) => {
               src={
                 plan.placeThumb
                   ? `${process.env.REACT_APP_BACK_SERVER}/assets/plan/thumb/${plan.planThumb}`
-                  : "/image/dora.png"
+                  : "/image/default_thumb.png"
               }
               className="card3-image"
             />
             <ToggleBookmark
-              bookmarked={bookmarked}
+              bookmarked={plan.bookmarked}
+              setBookmarked={setBookmarked}
               objectNo={plan.planNo}
               controllerUrl={"/plan"}
             />

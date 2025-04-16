@@ -7,7 +7,6 @@ import axios from "axios";
 export default function PlannerCard(props) {
   const navigate = useNavigate();
   const planner = props.planner;
-  const [bookmarked, setBookmarked] = useState(planner.bookmarked);
 
   const calculateDDay = (startDate, endDate) => {
     const today = new Date(); // 현재 날짜
@@ -53,7 +52,7 @@ export default function PlannerCard(props) {
               src={
                 planner.placeThumb
                   ? `${process.env.REACT_APP_BACK_SERVER}/assets/plan/thumb/${planner.planThumb}`
-                  : "/image/dora.png"
+                  : "/image/default_thumb.png"
               }
               className="card3-image"
             />
