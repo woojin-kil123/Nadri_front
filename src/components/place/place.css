@@ -294,4 +294,7 @@
 }
 .review-wap .posting-wrap .posting-item {
   height: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

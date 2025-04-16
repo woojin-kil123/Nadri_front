@@ -12,11 +12,11 @@
   margin: 10px 0px;
   font-family: ns-b;
   font-size: 16px;
-  color: var(--main1);
+  color: white;
 }
 
 .footer a {
-  color: var(--main6);
+  color: white;
 }
 .footer > .contact-wrap {
   width: 1200px;
@@ -29,8 +29,11 @@
   width: 100px;
   align-self: center;
 }
+.footer-logo > img {
+  width: 50%;
+}
 .footer li {
-  color: var(--main6);
+  color: white;
 }
 .footer-info {
   list-style: none;
@@ -72,7 +75,7 @@
   gap: 50px;
 }
 .social-btn-wrap svg {
-  fill: var(--main6);
+  fill: white;
 }
 .footer-right > .link-wrap {
   display: flex;
