@@ -66,7 +66,18 @@ export default function ListCard(props) {
         >
           <div className="image-container">
             <img
-              src={place.placeThumb || "/image/dora.png"}
+              src={
+                place.placeThumb ||
+                (place.placeTypeId === 12
+                  ? "/image/default_spot.png"
+                  : place.placeTypeId === 14
+                  ? "/image/default_todo.png"
+                  : place.placeTypeId === 32
+                  ? "/image/default_stay.png"
+                  : place.placeTypeId === 39
+                  ? "/image/default_food.png"
+                  : "/image/default_thumb.png")
+              }
               className="card-image"
               alt={place.placeTitle}
             />
