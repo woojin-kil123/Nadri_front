@@ -1,4 +1,11 @@
-import { CancelOutlined, Close, Save, Search } from "@mui/icons-material";
+import {
+  CancelOutlined,
+  Close,
+  Favorite,
+  FavoriteBorder,
+  Save,
+  Search,
+} from "@mui/icons-material";
 import { Button, IconButton, InputBase, Paper } from "@mui/material";
 import axios from "axios";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -33,7 +40,7 @@ const PlannerWrite = (props) => {
     mapLevel,
   } = props;
 
-  const loginNickname = useRecoilValue(loginNicknameState);
+  const memberNickname = useRecoilValue(loginNicknameState);
   //플래너 저장 창 여닫음
   const [openSaveModal, setOpenSaveModal] = useState(false);
 
@@ -89,20 +96,24 @@ const PlannerWrite = (props) => {
     const { width, height } = GetBoundsByLevel(mapLevel);
 
     axios
-      .get(`${process.env.REACT_APP_BACK_SERVER}/plan/nearby`, {
-        params: {
-          lat,
-          lng,
-          width,
-          height,
-          page: reqPage,
-          size: 60,
-          sortOption: sortOption,
-          filterOption: filterOption,
-        },
-      })
+      .get(
+        `${process.env.REACT_APP_BACK_SERVER}/plan/${memberNickname}/nearby`,
+        {
+          params: {
+            lat,
+            lng,
+            width,
+            height,
+            page: reqPage,
+            size: 60, //한 페이지 당 장소 수
+            sortOption: sortOption,
+            filterOption: filterOption,
+          },
+        }
+      )
       .then((res) => {
         const { list, totalCount, pageInfo } = res.data;
+        console.log(list);
         const mappedData = list.map((p) => {
           return {
             placeId: p.placeId,
@@ -117,6 +128,7 @@ const PlannerWrite = (props) => {
               lng: p.mapLng,
             },
             distance: p.distance, //userMarker에서 place까지의 거리
+            placeBookmarked: p.bookmarked,
           };
         });
         setPlaceList(mappedData);
@@ -247,7 +259,6 @@ const PlannerWrite = (props) => {
       <PlannerGuideModal />
       {openSaveModal && (
         <SavePlanModal
-          loginNickname={loginNickname}
           planName={planName}
           setPlanName={setPlanName}
           setOpenSaveModal={setOpenSaveModal}
@@ -298,6 +309,14 @@ const PrintPlaceList = (props) => {
 
   return (
     <div className="place-item">
+      <div
+        className="heart-icon"
+        onClick={() => {
+          console.log(p);
+        }}
+      >
+        {p.placeBookmarked === 1 ? <Favorite /> : <FavoriteBorder />}
+      </div>
       <img className="place-img" src={p.placeThumb} alt="테스트" />
       <div className="place-title-wrap">
         <span className="place-titlename">{p.placeTitle}</span>
@@ -455,7 +474,7 @@ const PlanningModal = (props) => {
 
 //플래너 저장 모달
 const SavePlanModal = (props) => {
-  const loginNickname = props.loginNickname;
+  const memberNickname = useRecoilValue(loginNicknameState);
   const [planStatus, setPlanStatus] = useState("공개");
   const [planName, setPlanName] = [props.planName, props.setPlanName];
   const setOpenSaveModal = props.setOpenSaveModal;
@@ -474,7 +493,7 @@ const SavePlanModal = (props) => {
         endDate: plannedPlaceList[plannedPlaceList.length - 1].itineraryDate,
         planThumb: "",
         planStatus: planStatus === "공개" ? 1 : 2, //2: 비공개
-        memberNickname: loginNickname,
+        memberNickname: memberNickname,
       },
       itineraryList: plannedPlaceList.map((item) => {
         return {
@@ -537,7 +556,7 @@ const SavePlanModal = (props) => {
             .then((res) => {
               if (res.data) {
                 window.localStorage.removeItem(
-                  `${loginNickname}_cache_planner`
+                  `${memberNickname}_cache_planner`
                 );
                 setOpenSaveModal(false);
                 setSaving(false);
@@ -598,7 +617,7 @@ const SavePlanModal = (props) => {
           .then((res) => {
             //썸네일 업로드 및 plan 저장 성공 시(then)
             if (res.data) {
-              window.localStorage.removeItem(`${loginNickname}_cache_planner`);
+              window.localStorage.removeItem(`${memberNickname}_cache_planner`);
               setOpenSaveModal(false);
               navigate("/mypage/planners");
             }
