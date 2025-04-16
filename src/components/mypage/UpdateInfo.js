@@ -69,7 +69,6 @@ const UpdateInfo = () => {
             `${process.env.REACT_APP_BACK_SERVER}/member/exists?memberNickname=${member.memberNickname}`
           )
           .then((res) => {
-            console.log(res);
             if (res.data === 0) {
               setNicknameCheck(1); // 사용 가능한 닉네임
             } else {
@@ -193,7 +192,6 @@ const UpdateInfo = () => {
   }, [year, month, day]);
 
   const UpdateInfo = () => {
-    console.log("업데이트 동작");
     const form = new FormData();
     form.append("memberEmail", member.memberEmail);
     form.append("memberNickname", member.memberNickname);
@@ -215,8 +213,6 @@ const UpdateInfo = () => {
         },
       })
       .then((res) => {
-        console.log(res.data);
-
         Swal.fire({
           title: "정보 수정 완료!",
           text: "회원 정보가 성공적으로 수정되었습니다.",
