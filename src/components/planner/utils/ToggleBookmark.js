@@ -54,8 +54,8 @@ const ToggleBookmark = ({
         checked={bookmarked === 1}
         onClick={(e) => e.stopPropagation()} // 이거 꼭 필요!
         onChange={handleClick}
-        icon={<BookmarkBorder />}
-        checkedIcon={<Bookmark />}
+        icon={<BookmarkBorder sx={{ fill: "var(--gray4)" }} />}
+        checkedIcon={<Bookmark sx={{ fill: "var(--main4)" }} />}
       />
     </div>
   );

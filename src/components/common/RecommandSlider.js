@@ -97,6 +97,7 @@ const PlanCard = ({ plan }) => {
 
         <ToggleBookmark
           bookmarked={bookmarked}
+          setBookmarked={setBookmarked}
           objectNo={plan.planNo}
           controllerUrl={"/plan"}
         />

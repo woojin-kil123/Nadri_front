@@ -204,9 +204,6 @@ const PlanCard = ({ plan, cards, setCards, index }) => {
               setBookmarked={setBookmarked}
               objectNo={plan.planNo}
               controllerUrl={"/plan"}
-              onChange={(item) => {
-                item;
-              }}
             />
           </div>
           <div className="card3-content">
