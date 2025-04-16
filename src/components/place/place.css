@@ -7,11 +7,9 @@
   display: flex;
   gap: 10px;
 }
-
 .menu-box {
   width: 200px;
 }
-
 .menu-box li {
   display: flex;
   justify-content: space-between;
@@ -36,12 +34,20 @@
 .option-box > div:last-child {
   cursor: pointer;
 }
-.place-wrap {
+.place-card-wrap {
+  width: 1000px;
   overflow: hidden;
   padding: 10px;
 }
+.place-wrap .card {
+  width: 320px;
+  float: left;
+  padding: 20px;
+  box-sizing: border-box;
+  margin: 5px;
+}
 
-.place-wrap > .card:hover {
+.place-wrap .card:hover {
   background: white;
   border-radius: 16px;
   overflow: hidden;
