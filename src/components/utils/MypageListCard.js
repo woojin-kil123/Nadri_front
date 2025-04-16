@@ -85,7 +85,9 @@ export default function MypageListCard(props) {
         >
           <div className="image-container">
             <img
-              src={place.placeThumb ? place.placeThumb : "/image/dora.png"}
+              src={
+                place.placeThumb ? place.placeThumb : "/image/default_thumb.png"
+              }
               className="card-image"
               alt={place.placeTitle}
             />
