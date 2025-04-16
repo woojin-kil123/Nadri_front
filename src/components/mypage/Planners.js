@@ -131,7 +131,6 @@ const Planner = () => {
                   plan={card}
                   cards={cards}
                   setCards={setCards}
-                  index={index}
                 />
               ))}
             </ul>
@@ -142,7 +141,7 @@ const Planner = () => {
   );
 };
 
-const PlanCard = ({ plan, cards, setCards, index }) => {
+const PlanCard = ({ plan, cards, setCards }) => {
   const navigate = useNavigate();
   const setBookmarked = () => {
     const data = cards.filter((item) => {
