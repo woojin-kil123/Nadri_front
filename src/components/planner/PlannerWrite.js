@@ -179,9 +179,10 @@ const PlannerWrite = (props) => {
             />
           </div>
           <div className="filter-wrap">
-            {filterItems.map((item) => {
+            {filterItems.map((item, i) => {
               return (
                 <div
+                  key={"filter-" + i}
                   className={
                     filterOption === item.value ? "filter-pressed" : ""
                   }
